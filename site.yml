@@ -15,7 +15,7 @@ cpus: 1
 #
 # Network Settings
 #
-hostname: vccm-all.dev
+hostname: vccm-all.local
 ip: 192.168.33.12
 
 #
