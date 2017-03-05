@@ -16,3 +16,7 @@ If you are finished with your work, you can commit your changes (bear in mind ou
 1. The wordpress site is accessible through IP (192.168.33.12) or through the URL vccm-all.local 
 2. The username / password for the wp site is 'admin'/'admin'
 
+## Important information for Windows user
+Vagrant can't change the hosts file on Windows. To ensure that the environment works, you have to add following lines to the hosts file (it's in the path C:\Windows\system32\drivers\etc)
+
+`192.168.33.12  vccm-all.local`
