@@ -13,6 +13,6 @@ Now a virtual machine is created and provisioned. If for some reason the configu
 If you are finished with your work, you can commit your changes (bear in mind our git workflow) and halt the virtual machine with `vagrant halt`.
 
 ## Wordpress installation
-1. The wordpress site is accessible through IP (192.168.33.12) or through the URL vccm-all.dev 
+1. The wordpress site is accessible through IP (192.168.33.12) or through the URL vccm-all.local 
 2. The username / password for the wp site is 'admin'/'admin'
 
