@@ -104,21 +104,49 @@
       --path={{ path }}
       --activate
 
+  # Delete old Plugin Download
+  - name: Delete old plugin download
+    file:
+      path: "/tmp/BergclubPlugin-master"
+      state: absent
+
+  # Download bergclub-plugin
   - name: Download bergclub-plugin
     unarchive:
       src: https://github.com/PSEBergclubBern/BergclubPlugin/archive/master.zip
       dest: /tmp
       remote_src: True
 
+  # Remove old plugin
+  - name: Delete old plugin
+    file:
+      path: "{{ path }}/wp-content/plugins/bergclub-plugin"
+      state: absent
+
+  # Move plugin to new location
   - name: Move plugin to right place
     command: mv /tmp/BergclubPlugin-master/wordpress/wp-content/plugins/bergclub-plugin {{ path }}/wp-content/plugins/bergclub-plugin
-      
+
+  # Delete old Theme Download
+  - name: Delete old theme download
+    file:
+      path: "/tmp/BergclubTheme-master"
+      state: absent
+
+  # Download theme
   - name: Download bergclub-theme
     unarchive:
       src: https://github.com/PSEBergclubBern/BergclubTheme/archive/master.zip
       dest: /tmp
       remote_src: True
 
+  # Remove old theme
+  - name: Delete old theme
+    file:
+      path: "{{ path }}/wp-content/themes/bergclub-theme"
+      state: absent
+
+  # Move theme to new location
   - name: Move plugin to right place
     command: mv /tmp/BergclubTheme-master/wordpress/wp-content/themes/bergclub-theme {{ path }}/wp-content/themes/bergclub-theme
 
