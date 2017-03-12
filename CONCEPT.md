@@ -91,23 +91,27 @@ Wordpress Funktion.
 ### Basics	
 - [WordPress Semantics](https://codex.wordpress.org/WordPress_Semantics)
 - [WordPress Glossary](https://codex.wordpress.org/Glossary)
+
 ### Theme Development	
 - [Getting Started Theme Development](https://developer.wordpress.org/themes/getting-started/)
 - [Theme Development](https://codex.wordpress.org/Theme_Development)
 - [The Loop](https://codex.wordpress.org/The_Loop)
 - [Theme Unit Test](https://codex.wordpress.org/Theme_Unit_Test)
 - [Bootstrap Navwalker](https://github.com/twittem/wp-bootstrap-navwalker)
+
 ### Plugin Development
 - [Plugin Developer Handbook](https://developer.wordpress.org/plugins/)
 - [Writing a Plugin](https://codex.wordpress.org/Writing_a_Plugin)
 - [Plugin API/Action Reference](https://codex.wordpress.org/Plugin_API/Action_Reference)
 - [Gutes Beispiel für Aktivierungs/Deaktivierungs Hooks](http://wordpress.stackexchange.com/questions/25910/uninstall-activate-deactivate-a-plugin-typical-features-how-to/25979#25979)
 - [Unit Tests for WordPress Plugins](https://pippinsplugins.com/unit-tests-wordpress-plugins-setting-up-testing-suite/)
+
 ### Diverses
 - [Creating a custom WordPress registration](https://code.tutsplus.com/tutorials/creating-a-custom-wordpress-registration-form-plugin--cms-20968)
 - [Custom Fields](https://codex.wordpress.org/Custom_Fields)
 - [Custom Post status](http://jamescollings.co.uk/blog/wordpress-create-custom-post-status/)
 - [How to Create Custom User Roles](https://managewp.com/create-custom-user-roles-wordpress)
+
 ### PHPStorm
 - [Lizenz für Studenten (mit Uni Email registrieren)](https://www.jetbrains.com/shop/eform/students)
 - [Download](https://www.jetbrains.com/phpstorm/)
