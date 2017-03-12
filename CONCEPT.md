@@ -20,25 +20,21 @@ Das Plugin wird mehrere thematische Gebiete abdecken. Somit macht es Sinn, das P
 
 Die Adressverwaltung wird im Plugin abgebildet. Dabei hat das Plugin folgende Aufgaben:
 
-1) Datenbankänderungen ([Link](https://codex.wordpress.org/Creating_Tables_with_Plugins)) für zusätzliche Felder, welche nicht als [User Metadata](https://developer.wordpress.org/plugins/users/working-with-user-metadata/) abgebildet werden können. 
-
-2) Exportfunktionen als [WP-Admin Menüpunkt.](https://developer.wordpress.org/plugins/administration-menus/)
-
-3) Funktion um eigene Adresse zu bearbeiten [Hier.](https://developer.wordpress.org/plugins/users/roles-and-capabilities/)
+1. Datenbankänderungen ([Link](https://codex.wordpress.org/Creating_Tables_with_Plugins)) für zusätzliche Felder, welche nicht als [User Metadata](https://developer.wordpress.org/plugins/users/working-with-user-metadata/) abgebildet werden können. 
+2. Exportfunktionen als [WP-Admin Menüpunkt.](https://developer.wordpress.org/plugins/administration-menus/)
+3. Funktion um eigene Adresse zu bearbeiten [Hier.](https://developer.wordpress.org/plugins/users/roles-and-capabilities/)
 
 ### Tourdaten
 
 Die Tourdaten werden mit Wordpress Posts inkl. Custom Fields abgearbeitet. Dabei hat das Theme folgende Aufgaben:
 
-1) Definieren der Custom Fields (siehe [Hier](https://developer.wordpress.org/plugins/metadata/))
-
-2) Korrektes Rendering der Metadaten.
+1. Definieren der Custom Fields (siehe [Hier](https://developer.wordpress.org/plugins/metadata/))
+2. Korrektes Rendering der Metadaten.
 
 Das Plugin hat folgende Aufgabe:
 
-1) Die Touren sollten mit dem korrekten Workflow bearbeitet werden ([Loop anpassen](https://codex.wordpress.org/The_Loop) / [Custom Post](https://developer.wordpress.org/plugins/post-types/)).
-
-2) Das Plugin definiert die Rollen und Rechte der Benutzer [Hier.](https://developer.wordpress.org/plugins/users/roles-and-capabilities/)
+1. Die Touren sollten mit dem korrekten Workflow bearbeitet werden ([Loop anpassen](https://codex.wordpress.org/The_Loop) / [Custom Post](https://developer.wordpress.org/plugins/post-types/)).
+2. Das Plugin definiert die Rollen und Rechte der Benutzer [Hier.](https://developer.wordpress.org/plugins/users/roles-and-capabilities/)
 
 
 ### Konfiguration WP
