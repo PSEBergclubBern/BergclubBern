@@ -1,0 +1,24 @@
+body {
+    padding-top: 50px;
+}
+.page-content {
+    padding: 40px 15px;
+    text-align: center;
+}
+.header-img {
+    overflow: hidden;
+    height: auto;
+    width: 100%;
+    vertical-align:middle;
+}
+.header-carousel {
+    max-height: 350px;
+    overflow: hidden;
+}
+.header-logo {
+    position: absolute;
+    top: 330px;
+    right: 20px;
+    max-width: 200px;
+    height: auto;
+}

@@ -34,6 +34,13 @@ wp-content/plugins/hello.php
 /sitemap.xml
 /sitemap.xml.gz
 
-wordpress/*
-!wordpress/.gitignore
 
+wordpress/*
+!wordpress/wp-content
+wordpress/wp-content/*
+!wordpress/wp-content/plugins
+!wordpress/wp-content/themes
+wordpress/wp-content/plugins/*
+!wordpress/wp-content/plugins/bergclub-plugin
+wordpress/wp-content/themes/*
+!wordpress/wp-content/themes/bergclub-theme
