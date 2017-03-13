@@ -1,5 +1,7 @@
 # BergclubBern
 
+To see the concept, click [here.](CONCEPT.md)
+
 ## HowTo Code
 
 This project has an Vagrant configuration File in the root. The general procedure is:
