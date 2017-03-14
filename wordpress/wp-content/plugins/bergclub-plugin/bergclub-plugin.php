@@ -19,6 +19,17 @@ Text Domain: unibe.ch
 	//exit;
 //}
 
+
+if( defined( 'WP_CLI' ) && WP_CLI ) {
+
+    require_once __DIR__ . '/Commands/Init.php';
+    require_once __DIR__ . '/Commands/Import.php';
+    require_once __DIR__ . '/Commands/Mitteilung.php';
+    require_once __DIR__ . '/Commands/Entities/Mitteilung.php';
+    WP_CLI::add_command( 'bergclub import', 'Commands\Import' );
+    WP_CLI::add_command( 'bergclub mitteilung', 'Commands\Mitteilung' );
+}
+
 include "include/FavColours.php";
 // Hook for adding admin menus
 add_action('admin_menu', 'bcp_add_pages');

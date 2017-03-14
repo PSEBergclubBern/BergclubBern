@@ -44,3 +44,6 @@ wordpress/wp-content/plugins/*
 !wordpress/wp-content/plugins/bergclub-plugin
 wordpress/wp-content/themes/*
 !wordpress/wp-content/themes/bergclub-theme
+
+
+import/*
