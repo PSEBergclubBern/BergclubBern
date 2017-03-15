@@ -22,3 +22,6 @@ body {
     max-width: 200px;
     height: auto;
 }
+.bootstrap-table {
+    padding-top: 30px;
+}
