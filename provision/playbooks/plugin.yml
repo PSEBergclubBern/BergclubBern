@@ -1,0 +1,10 @@
+---
+- hosts: all
+  vars:
+    path: "{{ vccw.document_root }}/{{ vccw.wp_siteurl }}"
+
+  tasks:
+    - name: Install Composer library for plugin
+      command: composer update
+      args:
+        chdir: "{{ path }}/wp-content/plugins/bergclub-plugin"
