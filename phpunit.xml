@@ -4,6 +4,7 @@
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
          backupGlobals="false"
          colors="true"
+         bootstrap="./wordpress/wp-content/plugins/bergclub-plugin/vendor/autoload.php"
 >
     <php>
         <ini name="error_reporting" value="-1" />
