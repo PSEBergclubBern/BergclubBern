@@ -19,9 +19,9 @@ Text Domain: unibe.ch
 	//exit;
 //}
 
+require_once __DIR__ . '/vendor/autoload.php';
 
 if( defined( 'WP_CLI' ) && WP_CLI ) {
-    require_once __DIR__ . '/vendor/autoload.php';
     WP_CLI::add_command( 'bergclub import', 'BergclubPlugin\Commands\Import' );
     WP_CLI::add_command( 'bergclub mitteilung', 'BergclubPlugin\Commands\Mitteilung' );
 }
