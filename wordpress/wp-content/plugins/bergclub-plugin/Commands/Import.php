@@ -6,10 +6,10 @@
  * Time: 16:30
  */
 
-namespace Commands;
+namespace BergclubPlugin\Commands;
 
 
-use Commands\Entities\Meldung;
+use BergclubPlugin\Commands\Entities\Meldung;
 
 class Import extends Init
 {

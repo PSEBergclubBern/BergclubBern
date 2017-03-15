@@ -6,7 +6,7 @@
  * Time: 16:38
  */
 
-namespace Commands\Entities;
+namespace BergclubPlugin\Commands\Entities;
 
 
 class Mitteilung

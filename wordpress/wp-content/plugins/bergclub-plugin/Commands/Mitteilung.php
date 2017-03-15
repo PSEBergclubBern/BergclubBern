@@ -6,7 +6,7 @@
  * Time: 17:50
  */
 
-namespace Commands;
+namespace BergclubPlugin\Commands;
 
 
 class Mitteilung extends Init

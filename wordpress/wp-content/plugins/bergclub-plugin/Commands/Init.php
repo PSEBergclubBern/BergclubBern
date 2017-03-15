@@ -6,7 +6,7 @@
  * Time: 16:39
  */
 
-namespace Commands;
+namespace BergclubPlugin\Commands;
 
 
 abstract class Init
