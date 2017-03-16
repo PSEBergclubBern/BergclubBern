@@ -13,12 +13,6 @@ use BergclubPlugin\Commands\Entities\Meldung;
 
 class Import extends Init
 {
-    private $wpdb;
-
-    public function __construct()
-    {
-        $this->wpdb = $GLOBALS['wpdb'];
-    }
 
     /**
      * Import old database files into wordpress.
