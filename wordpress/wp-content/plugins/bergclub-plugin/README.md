@@ -95,8 +95,8 @@ In diesem Ordner muss eine `app.php` erstellt werden. In dieser kann genau so ge
 Hook und keine Funktion erstellt werden, dieser wird einfach in `activate.php` resp. `deactivate.php` abgelegt.
 
 ### MVC Pattern verwenden
-Für jeden Menüpunkt der im WordPress erstellt werden soll wird ein Controller erstellt, hierzu wird die
-`Bergclub\MVCAbstractController` erweitert:
+Für jeden Menüpunkt der im WordPress Admin erstellt werden soll, wird ein Controller erstellt. Hierzu wird die
+`Bergclub\MVC\AbstractController` Klasse erweitert:
 
 ```php
 namespace BergclubPlugin\MeinSubmodul;
@@ -106,7 +106,7 @@ use BergclubPlugin\MVC\AbstractController;
 class MeinController extends AbstractController
 {
     protected $viewDirectory = __DIR__ . '/../views';
-    protected $view = 'pages.main';
+    protected $view = 'view';
 
     protected function first(){}
 
@@ -169,7 +169,7 @@ Hallo Welt!
 </div>
 ```
 
-Das Routing auf die Controller wird über die Erstellung der Menüpunkte in `app.php` generiert.
+Das Routing auf die Controller wird über die Erstellung der Menüpunkte in `app.php` generiert:
 
 ```php
 use BergclubPlugin\MVC\Menu;
