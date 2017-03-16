@@ -15,8 +15,8 @@ Text Domain: unibe.ch
 
 // Make sure we don't expose any info if called directly
 //if ( !function_exists( 'add_action' ) ) {
-	//echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
-	//exit;
+//echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
+//exit;
 //}
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -26,12 +26,33 @@ if( defined( 'WP_CLI' ) && WP_CLI ) {
     WP_CLI::add_command( 'bergclub mitteilung', 'BergclubPlugin\Commands\Mitteilung' );
 }
 
-/*
- * Scan for init files in sub folders and include them.
+// Hook for plugin activation
+register_activation_hook(__FILE__, 'bcb_activate_plugin');
+
+//Hook for plugin deactivation
+register_deactivation_hook(__FILE__, 'bcb_deactivate_plugin');
+
+function bcb_activate_plugin(){
+    //include all activate.php from sub folders
+    include_sub_directory_file('activate.php');
+}
+
+function bcb_deactivate_plugin(){
+    //include all deactivate.php from sub folders
+    include_sub_directory_file('deactivate.php');
+}
+
+/**
+ * @param string $fileName the fileName to look for in all subfolders, will be included if found.
  */
-$files = scandir(__DIR__);
-foreach($files as $item) {
-    if ($item != "." && $item != ".." && file_exists(__DIR__ . '/' . $item . '/init.php')) {
-        require_once __DIR__ . '/' . $item . '/init.php';
+function include_sub_directory_file($fileName){
+    $files = scandir(__DIR__);
+    foreach($files as $item) {
+        if ($item != "." && $item != ".." && is_dir(__DIR__ . '/' . $item) && file_exists(__DIR__ . '/' . $item . '/' . $fileName)) {
+            require_once __DIR__ . '/' . $item . '/' . $fileName;
+        }
     }
 }
+
+//include all app.php from sub folders
+include_sub_directory_file('app.php');
