@@ -20,6 +20,27 @@ class Import extends Init
         $this->wpdb = $GLOBALS['wpdb'];
     }
 
+    /**
+     * Import old database files into wordpress.
+     *
+     * ## OPTIONS
+     *
+     * <filename>
+     * : Filename with the content of the old database. The file should be utf-8 encoded and be a php export of a db.
+     *
+     * ---
+     * default: success
+     * options:
+     *   - success
+     *   - error
+     * ---
+     *
+     * ## EXAMPLES
+     *
+     *     wp bergclub import /tmp/import.php
+     *
+     * @when after_wp_load
+     */
     function __invoke($args, $assoc_args)
     {
         if (!is_array($args)) {
