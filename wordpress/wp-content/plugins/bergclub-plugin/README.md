@@ -1,4 +1,4 @@
-#Plugin Bergclub Bern
+# Plugin Bergclub Bern
 
 ## Struktur
 ```
@@ -83,7 +83,7 @@ Wird ein dritter Parameter mit Wert `true` übergeben lässt sich die Nachricht 
 ```
 Die Nachrichten werden beim ausgeben aus der Session entfernt.
 
-##Submodul erstellen
+## Submodul erstellen
 
 Dazu muss zuerst unter `bergglub-plugin` ein neuer Ordner erstellt werden.
 Falls prozedural gearbeitet wird ist die Namensgebung nicht so relevant. Wenn jedoch mit Klassen resp. dem MVC Pattern
@@ -94,7 +94,7 @@ In diesem Ordner muss eine `app.php` erstellt werden. In dieser kann genau so ge
 `-plugin.php` mit Ausnahme des auszuführenden Codes beim aktivieren resp. deaktivieren des Plugins. Es muss hierfür kein
 Hook und keine Funktion erstellt werden, dieser wird einfach in `activate.php` resp. `deactivate.php` abgelegt.
 
-###MVC Pattern verwenden
+### MVC Pattern verwenden
 Für jeden Menüpunkt der im WordPress erstellt werden soll wird ein Controller erstellt, hierzu wird die
 `Bergclub\MVCAbstractController` erweitert:
 
