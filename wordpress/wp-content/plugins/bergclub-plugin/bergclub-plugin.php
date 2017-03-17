@@ -26,7 +26,6 @@ if( defined( 'WP_CLI' ) && WP_CLI ) {
     WP_CLI::add_command( 'bergclub mitteilung', 'BergclubPlugin\Commands\Mitteilung' );
 }
 
-
 /*
  * Plugin activation
  */
