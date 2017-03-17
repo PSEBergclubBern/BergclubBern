@@ -6,10 +6,10 @@
  * Time: 10:46
  */
 
-namespace BergclubPlugin\MVC\WPModels;
+namespace BergclubPlugin\MVC\Models;
 
 
-abstract class AbstractKeyValuePair
+abstract class AbstractKeyValuePair implements IModelSingle
 {
     protected $key;
     protected $value;

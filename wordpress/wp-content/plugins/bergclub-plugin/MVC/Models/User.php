@@ -1,9 +1,9 @@
 <?php
 
-namespace BergclubPlugin\MVC\WPModels;
+namespace BergclubPlugin\MVC\Models;
 
 
-class User
+class User implements IModelMultiple
 {
     private $data = [
         'ID' => null,
@@ -87,6 +87,19 @@ class User
         foreach($this->custom as $key => $value){
             update_user_meta($id, $key, $value);
         }
+    }
+
+    public function delete()
+    {
+        self::remove($this->data['ID']);
+        $this->data = [];
+        $this->custom = [];
+        $this->roles = [];
+    }
+
+    public static function remove($id)
+    {
+        wp_delete_user($id);
     }
 
     private function fillFromArray(array $data){
