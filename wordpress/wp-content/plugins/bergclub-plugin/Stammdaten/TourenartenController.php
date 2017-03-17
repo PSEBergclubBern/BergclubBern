@@ -8,7 +8,7 @@
 
 namespace BergclubPlugin\Stammdaten;
 
-
+use BergclubPlugin\FlashMessage;
 use BergclubPlugin\MVC\AbstractController;
 
 class TourenartenController extends AbstractController
@@ -19,16 +19,35 @@ class TourenartenController extends AbstractController
     protected function first()
     {
         $this->data['title'] = "Tourenarten";
+        $this->data['tourenarten'] = get_option('bcb_tourenarten');
     }
 
     protected function get()
     {
+        if ( isset($_GET['action']) && isset($_GET['id']) ){
+            if ( $_GET['action']=='delete' && $_GET['id'] ){
+                $key = $_GET['id'];
 
+                unset($this->data['tourenarten'][$key]);
+
+                update_option('bcb_tourenarten', $this->data['tourenarten'],'no');
+                delete_option($key);
+
+                FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Tourenart gelöscht');
+            }
+        }
     }
 
     protected function post()
     {
+        if($_POST['new_tourenart']){
 
+            $key = sanitize_title_with_dashes('bcb_' . $_POST['new_tourenart']);
+            $this->data['tourenarten'][$key] = $_POST['new_tourenart'];
+            update_option('bcb_tourenarten', $this->data['tourenarten'], 'no');
+
+            FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Hinzufügen erfolgreich');
+        }
     }
 
     protected function last()
