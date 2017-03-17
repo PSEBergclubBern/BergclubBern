@@ -1,5 +1,7 @@
 <?php
 
+namespace BergclubPlugin\MVC\Models;
+
 interface IModelSingle
 {
     /**
