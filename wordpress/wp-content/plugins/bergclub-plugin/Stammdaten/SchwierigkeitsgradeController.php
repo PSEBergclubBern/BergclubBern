@@ -34,8 +34,11 @@ class SchwierigkeitsgradeController extends AbstractController
         }
 
         $this->data['schwierigkeitsgrade'] = get_option( $this->data['tourenartId'] );
-        $this->data['tourenart'] = $this->data[ 'tourenarten' ][ $this->data[ 'tourenartId' ] ];
-
+        if (! empty($this->data[ 'tourenarten']) ){
+            $this->data['tourenart'] = $this->data[ 'tourenarten' ][ $this->data[ 'tourenartId' ] ];
+        } else {
+            $this->data['tourenart'] = null;
+        }
     }
 
     protected function get()

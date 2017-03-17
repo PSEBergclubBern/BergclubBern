@@ -6,11 +6,13 @@
             <thead><tr><th align="left">Tourenart</th></thead>
             <tbody>
 
-            @foreach($tourenarten as $key => $tourenart)
+            @forelse($tourenarten as $key => $tourenart)
                 <tr>
                     <td align="left"><label for="{{ $key }}">{{ $tourenart }}</label></td><td><a href="admin.php?page=bergclubplugin-stammdaten-schwierigkeitsgradecontroller&tourid={{ $key }}"><span class="dashicons dashicons-edit"></span></a></td><td><a href="admin.php?page=bergclubplugin-stammdaten-tourenartencontroller&action=delete&id={{ $key }}"><span class="dashicons dashicons-trash"></span></a></td>
                 </tr>
-            @endforeach
+            @empty
+                <tr><td>Keine Tourenarten erfasst.</td></tr>
+            @endforelse
             </tbody>
         </table>
     </form>

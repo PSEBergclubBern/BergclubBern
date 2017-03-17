@@ -46,6 +46,9 @@ class TourenartenController extends AbstractController
             $this->data['tourenarten'][$key] = $_POST['new_tourenart'];
             update_option('bcb_tourenarten', $this->data['tourenarten'], 'no');
 
+            $arrOptions = [];
+            add_option($key, $arrOptions,'', 'no');
+
             FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Hinzufügen erfolgreich');
         }
     }
