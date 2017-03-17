@@ -2,6 +2,7 @@
 use BergclubPlugin\MVC\Models\User;
 
 $user = new User([
+    'gender' => 'M',
     'first_name' => 'Dominik',
     'last_name' => 'Fankhauser',
     'email' => 'domi.92@hotmail.com',
@@ -12,6 +13,7 @@ $user = new User([
 $user->save();
 
 $user = new User([
+    'gender' => 'M',
     'first_name' => 'Kevin',
     'last_name' => 'Studer',
     'email' => 'kreemer@me.com',
@@ -22,6 +24,7 @@ $user = new User([
 $user->save();
 
 $user = new User([
+    'gender' => 'M',
     'first_name' => 'Marcel',
     'last_name' => 'Chavez',
     'email' => 'chavez.marcel@gmail.com',
@@ -32,6 +35,7 @@ $user = new User([
 $user->save();
 
 $user = new User([
+    'gender' => 'M',
     'first_name' => 'Marco',
     'last_name' => 'Indermühle',
     'email' => 'indy26@bluewin.ch',
@@ -42,12 +46,13 @@ $user = new User([
 $user->save();
 
 $user = new User([
+    'gender' => 'M',
     'first_name' => 'Mathias',
     'last_name' => 'Stocker',
     'email' => 'mathias.stocker@students.unibe.ch',
     'street' => 'Dorfstrasse 67',
-    'zip' => 'PLZ',
-    'location' => 'Ort',
+    'zip' => '3073',
+    'location' => 'Gümligen',
     'phone_mobile' => '079 659 60 95',
     'phone_private' => '031 511 23 43',
     'phone_work' => '031 511 23 03',
@@ -57,6 +62,7 @@ $user = new User([
 $user->save();
 
 $user = new User([
+    'gender' => 'M',
     'first_name' => 'Sven',
     'last_name' => 'Kellenberger',
     'email' => 'sven.kellenberger@kellenberger.tv',
@@ -67,6 +73,7 @@ $user = new User([
 $user->save();
 
 $user = new User([
+    'gender' => 'M',
     'first_name' => 'Timm',
     'last_name' => 'Gross',
     'email' => 'timm.gross@students.unibe.ch',
