@@ -45,13 +45,19 @@ abstract class AbstractController
      * - `post` (only if it is a POST request)
      * - `last`
      */
-    public function __construct(){
-        $method = strtolower($_SERVER['REQUEST_METHOD']);
-        $this->first();
-        $this->$method();
-        $this->last();
 
-        View::render($this->viewDirectory, $this->view, $this->data);
+    protected static $alreadyRun = false;
+
+    public function __construct(){
+        if(!static::$alreadyRun) {
+            static::$alreadyRun = true;
+            $method = strtolower($_SERVER['REQUEST_METHOD']);
+            $this->first();
+            $this->$method();
+            $this->last();
+
+            View::render($this->viewDirectory, $this->view, $this->data);
+        }
     }
 
     /**
