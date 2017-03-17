@@ -13,6 +13,7 @@ vendor
 Thumbs.db
 Desktop.ini
 *.retry
+composer.lock
 
 *.log
 wp-config.php
