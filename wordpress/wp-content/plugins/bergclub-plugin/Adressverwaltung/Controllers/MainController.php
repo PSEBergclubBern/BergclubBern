@@ -4,6 +4,7 @@ namespace BergclubPlugin\Adressverwaltung\Controllers;
 
 use BergclubPlugin\FlashMessage;
 use BergclubPlugin\MVC\AbstractController;
+use BergclubPlugin\MVC\Helpers;
 use BergclubPlugin\MVC\Models\User;
 
 class MainController extends AbstractController
@@ -12,12 +13,18 @@ class MainController extends AbstractController
     protected $view = 'pages.main';
 
     protected function first(){
+        if(isset($_GET['action']) && $_GET['action'] == 'delete'){
+            User::remove($_GET['id']);
+            FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Datensatz erfolgreich gelöscht.');
+            Helpers::redirect('?page=' . $_GET['page']);
+        }
+
         if(isset($_GET['view'])){
             $this->view = 'pages.' . $_GET['view'];
         }
 
         if($this->view == 'pages.main') {
-            $this->data['title'] = "Adressverwalung";
+            $this->data['title'] = "Adressverwaltung";
             $this->data['users'] = User::findAll();
         }elseif($this->view == 'pages.detail'){
             $user = $this->data['user'] = User::find($_GET['id']);

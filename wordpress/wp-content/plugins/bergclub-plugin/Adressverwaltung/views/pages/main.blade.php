@@ -26,7 +26,7 @@
                 <td>{{ $user->phone_mobile }}</td>
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->type }}</td>
-                <td class="dt-right"><a href="?page={{ $_GET['page'] }}&view=detail&id={{ $user->ID }}" title="Bearbeiten"><span class="dashicons dashicons-edit"></span></a></td>
+                <td class="dt-right"><a href="?page={{ $_GET['page'] }}&view=detail&id={{ $user->ID }}" title="Bearbeiten"><span class="dashicons dashicons-edit"></span></a> <a class="delete" data-id="{{ $user->ID }}" title="Löschen" href="javascript:void(0)"><span class="dashicons dashicons-trash"></span></a></td>
             </tr>
         @endforeach
         </tbody>
@@ -42,6 +42,22 @@
                 columnDefs: [
                     { targets: 'no-sort', orderable: false }
                 ]
+            });
+
+            jQuery('.delete').click(function(){
+                var id = jQuery(this).data('id');
+                swal({
+                    title: 'Sind Sie sicher?',
+                    text: "Der Löschvorgang kann nicht Rückgängig gemacht werden",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ja, Löschen',
+                    cancelButtonText: 'Abbrechen',
+                }).then(function () {
+                        document.location.href = document.location.href + '&action=delete&id=' + id;
+                })
             });
         } );
     </script>
