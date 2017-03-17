@@ -26,6 +26,7 @@ if( defined( 'WP_CLI' ) && WP_CLI ) {
     WP_CLI::add_command( 'bergclub mitteilung', 'BergclubPlugin\Commands\Mitteilung' );
 }
 
+
 /*
  * Plugin activation
  */
@@ -59,6 +60,7 @@ function bcb_register_session(){
  * Looks trough all first level folders in plugins sub folder and includes the given file name if found.
  * @param string $fileName the file name to look for.
  */
+
 function include_sub_directory_file($fileName){
     $files = scandir(__DIR__);
     foreach($files as $item) {
