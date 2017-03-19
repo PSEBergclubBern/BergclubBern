@@ -1,11 +1,11 @@
 <?php
-namespace BergclubPlugin\MVC\WPModels;
+namespace BergclubPlugin\MVC\Models;
 
 /**
  * A wrapper for the WordPress option.
  *
  * Class Option
- * @package BergclubPlugin\MVC\WPModels
+ * @package BergclubPlugin\MVC\Models
  */
 class Option extends AbstractKeyValuePair
 {

@@ -48,6 +48,7 @@ class FlashMessage
                 }
                 $html .= '"><p>' . $flashMessage['message'] . '</p></div>';
             }
+            $html .='<p></p>';
         }
 
         unset($_SESSION['bcb_flashmessages']);
