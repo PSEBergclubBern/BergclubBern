@@ -622,12 +622,12 @@ function bcb_add_header_navigation() {
      * Deletes the main menu, used during menu development.
      * Comment out, when finished.
      */
-
+    /*
     if($menu_exists){
         wp_delete_nav_menu( $menu_name );
         $menu_exists = false;
     }
-
+    */
 
     // If it doesn't exist, let's create it.
     if( !$menu_exists){
