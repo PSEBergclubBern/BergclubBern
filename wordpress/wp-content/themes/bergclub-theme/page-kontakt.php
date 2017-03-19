@@ -7,7 +7,7 @@ get_header(); ?>
                 <div class="page-content">
                     <h1>Kontaktformular</h1>
                     <br />
-                    <form class="form-horizontal">
+                    <form class="form-horizontal text-left">
 
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="anrede">Anrede:</label>
@@ -78,10 +78,10 @@ get_header(); ?>
                         </div>
 
                         <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-2"><button class="btn btn-default" type="submit">Absenden</button></div>
+                            <div class="col-sm-offset-2 col-sm-2"><button class="btn btn-default btn-lg pull-left" type="submit">Absenden</button></div>
                         </div>
                     </form>
-                    <br /> 
+                    <br />
                 </div>
             </div>
 		</main><!-- .site-main -->
