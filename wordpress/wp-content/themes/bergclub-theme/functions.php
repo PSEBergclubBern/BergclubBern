@@ -429,19 +429,27 @@ require_once('wp_bootstrap_navwalker.php');
 
 include 'functions-menu.php';
 
+//Creates a new category "Mitteilung" in the wp-admin section
 function bcb_create_category()
 {
-    wp_insert_category(array(
-        'cat_name' => 'Mitteilungen',
-        'category_description' => 'In dieser Kategorie werden alle Mitteilungen erfasst',
-        'category_nicename' => 'category-mitteilungen',
-        'taxonomy' => 'category'
+    $category_mitteilungen = get_category_by_path('category-mitteilungen');
+    if(!$category_mitteilungen){
+        require_once( ABSPATH . '/wp-admin/includes/taxonomy.php');
 
-    ));
+        wp_insert_category(array(
+            'cat_name' => 'Mitteilungen',
+            'category_description' => 'In dieser Kategorie werden alle Mitteilungen erfasst',
+            'category_nicename' => 'category-mitteilungen',
+            'taxonomy' => 'category'
+
+        ));
+    }
 }
 
-add_filter('admin_init', 'bcb_create_category');
+add_filter('init', 'bcb_create_category');
 
+//Some Dummy posts in category "Mitteilungen"
+//DELETE BEFORE PRODUCTIV
 function bcb_create_posts_mitteilungen()
 {
     $category_mitteilungen = get_category_by_path('category-mitteilungen');
@@ -455,8 +463,8 @@ function bcb_create_posts_mitteilungen()
             'post_category' => array($category_mitteilungen->cat_ID),
             'post_status' => 'publish',
             'post_type' => 'post',
-            'comment_status' => 'closed',
-            'ping_status' => 'closed'
+            'ping_status' => 'closed',
+            'comment_status' => 'closed'
         ));
     }
 
@@ -469,8 +477,8 @@ function bcb_create_posts_mitteilungen()
             'post_category' => array($category_mitteilungen->cat_ID),
             'post_status' => 'publish',
             'post_type' => 'post',
-            'comment_status' => 'closed',
-            'ping_status' => 'closed'
+            'ping_status' => 'closed',
+            'comment_status' => 'closed'
         ));
     }
 
@@ -483,8 +491,8 @@ function bcb_create_posts_mitteilungen()
             'post_category' => array($category_mitteilungen->cat_ID),
             'post_status' => 'publish',
             'post_type' => 'post',
-            'comment_status' => 'closed',
-            'ping_status' => 'closed'
+            'ping_status' => 'closed',
+            'comment_status' => 'closed'
         ));
     }
 }

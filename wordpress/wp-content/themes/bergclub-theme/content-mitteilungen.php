@@ -14,7 +14,7 @@
     twentyfifteen_post_thumbnail();
     ?>
     <td>
-        <?php the_date(); ?>
+        <?php echo get_the_date(); ?>
     </td>
     <td>
         <a href="<?php echo get_post_permalink(); ?>"><?php the_title() ?></a>

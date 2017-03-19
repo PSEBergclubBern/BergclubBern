@@ -12,7 +12,6 @@
  */
 
 get_header(); ?>
-
     <div id="primary" class="content-area">
         <main id="main" class="site-main" role="main">
             <div class="container">
@@ -40,7 +39,7 @@ get_header(); ?>
                                 <?php
                                 $query = new WP_Query(array('category_name' => 'category-mitteilungen'));
                                 $count = 0;
-                                // Start the loop.
+                                // Start the loop. Retriev Posts in Category "Mitteilungen"
                                 while ($query->have_posts()) : $query->the_post(); ?>
                                     <tr data-index="<?php echo $count ?>"
                                     <?php
