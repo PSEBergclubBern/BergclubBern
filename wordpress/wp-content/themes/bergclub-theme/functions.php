@@ -498,3 +498,5 @@ function bcb_create_posts_mitteilungen()
 }
 
 add_filter('init', 'bcb_create_posts_mitteilungen');
+
+add_filter('show_admin_bar', '__return_false');
