@@ -4,7 +4,7 @@ namespace BergclubPlugin\DemoMVC\Controllers;
 
 use BergclubPlugin\FlashMessage;
 use BergclubPlugin\MVC\AbstractController;
-use BergclubPlugin\MVC\WPModels\Option;
+use BergclubPlugin\MVC\Models\Option;
 
 class FormController extends AbstractController
 {
