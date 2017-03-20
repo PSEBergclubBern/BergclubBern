@@ -33,10 +33,42 @@ function bcb_add_pages(){
         wp_insert_post(bcb_get_page_data('Touren', $touren_page_content, 'touren'));
     }
 
+
+    $page = get_page_by_path('tourenprogramm');
+    if (!$page) {
+        wp_insert_post(bcb_get_page_data_from_title('Tourenprogramm'));
+    }
+
+    $page = get_page_by_path('tourenleiter');
+    if (!$page) {
+        wp_insert_post(bcb_get_page_data_from_title('Tourenleiter'));
+    }
+
+    $page = get_page_by_path('informationen');
+    if (!$page) {
+        wp_insert_post(bcb_get_page_data_from_title('Informationen'));
+    }
+
     $page = get_page_by_path('mitteilungen');
     if (!$page) {
         $mitteilungen_page_content = 'Mitteilungen';
         wp_insert_post(bcb_get_page_data('Mitteilungen', $mitteilungen_page_content, 'mitteilungen'));
+    }
+
+
+    $page = get_page_by_path('kontakt');
+    if (!$page) {
+        wp_insert_post(bcb_get_page_data_from_title('Kontakt'));
+    }
+
+    $page = get_page_by_path('mitgliedschaft');
+    if (!$page) {
+        wp_insert_post(bcb_get_page_data_from_title('Mitgliedschaft'));
+    }
+
+    $page = get_page_by_path('dokumente-links');
+    if (!$page) {
+        wp_insert_post(bcb_get_page_data('Dokumente & Links', 'Dokumente & Links', 'dokumente-links'));
     }
 
     $page = get_page_by_path('service');
@@ -52,13 +84,18 @@ function bcb_add_pages(){
     }
 }
 
+
+function bcb_get_page_data_from_title($title){
+    return bcb_get_page_data($title, $title, strtolower($title));
+}
+
 function bcb_get_page_data($title, $content, $slug){
     return array(
         'post_type' => 'page',
         'post_title' => $title,
         'post_content' => $content,
         'post_status' => 'publish',
-        'post_slug' => 'login'
+        'post_slug' => $slug
     );
 }
 
@@ -98,13 +135,33 @@ function bcb_add_header_navigation() {
 
         wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('statuten', 4, $parentId));
 
-        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('touren', 5));
+        $parentId = wp_update_nav_menu_item($menu_id, 0, array(
+            'menu-item-title' =>  __('Touren'),
+            'menu-item-position' => 5,
+            'menu-item-classes' => 'touren',
+            'menu-item-status' => 'publish'));
 
-        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('mitteilungen', 6));
+        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('tourenprogramm', 6, $parentId));
 
-        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('service', 7));
+        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('tourenleiter', 7, $parentId));
 
-        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('login', 8));
+        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('informationen', 8, $parentId));
+
+        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('mitteilungen', 9));
+
+        $parentId = wp_update_nav_menu_item($menu_id, 0, array(
+            'menu-item-title' =>  __('Service'),
+            'menu-item-position' => 10,
+            'menu-item-classes' => 'service',
+            'menu-item-status' => 'publish'));
+
+        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('kontakt', 11, $parentId));
+
+        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('mitgliedschaft', 12, $parentId));
+
+        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('dokumente-links', 13, $parentId));
+
+        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('login', 14));
     }
 }
 
