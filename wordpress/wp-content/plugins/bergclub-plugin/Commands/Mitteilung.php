@@ -43,9 +43,40 @@ class Mitteilung extends Init
     {
         list($filename) = $args;
 
-        \WP_CLI::runcommand("post create '" . $filename . "' \\
-            --post_title='" . $assoc_args['title'] . "' \\
-            --post_date='" . $assoc_args['date'] . "'
-        ");
+        $options = array(
+            'return'        => true,
+            'parse'         => 'json',
+            'launch'        => false,
+            'exit_error'    => false,
+        );
+
+        $terms = \WP_CLI::runcommand('term list category --format=json', $options);
+
+        if (!$this->categoryId) {
+            foreach ($terms as $term) {
+                if ($term['slug'] == 'category-mitteilungen') {
+                    $this->categoryId = $term['term_id'];
+                }
+            }
+        }
+
+        if (!$this->categoryId) {
+            \WP_CLI::error('Couldnt find out correct id of mitteilungen');
+        } else {
+            \WP_CLI::runcommand("post create '" . $filename . "' \\
+                --post_title='" . $assoc_args['title'] . "' \\
+                --post_date='" . $assoc_args['date'] . "' \\
+                --post_category=" . $this->categoryId
+            );
+        }
+
+
     }
+
+    /**
+     * Used to store the category of mitteilungen
+     * @var int
+     */
+    private $categoryId;
+
 }

@@ -90,9 +90,9 @@ class Import extends Init
             touch($tempDirectory . '/' . $mit->id);
             file_put_contents($tempDirectory . '/' . $mit->id, $mit->text);
 
-            \WP_CLI::runcommand("post create " . $tempDirectory . "/" . $mit->id . " \\
-                    --post_title='" . $mitteilung->titel . "' \\
-                    --post_date='" . $mitteilung->datum . "'
+            \WP_CLI::runcommand("bergclub mitteilung create " . $tempDirectory . "/" . $mit->id . " \\
+                    --title='" . $mitteilung->titel . "' \\
+                    --date='" . $mitteilung->datum . "'
                 ");
 
 
