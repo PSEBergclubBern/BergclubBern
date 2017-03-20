@@ -22,7 +22,7 @@ ip: 192.168.33.12
 # WordPress Settings
 #
 version: latest
-lang: en_US
+lang: de_CH
 title: Welcome to the VCCW
 multisite: false
 rewrite_structure: /archives/%post_id%
@@ -67,6 +67,7 @@ theme: 'bergclub-theme'
 #
 options:
   blogdescription: Hello VCCW.
+  permalink_structure: /%category%/%postname%-%post_id%
 
 #
 # WordPress Multisite Options

@@ -13,13 +13,28 @@ use BergclubPlugin\Commands\Entities\Meldung;
 
 class Import extends Init
 {
-    private $wpdb;
 
-    public function __construct()
-    {
-        $this->wpdb = $GLOBALS['wpdb'];
-    }
-
+    /**
+     * Import old database files into wordpress.
+     *
+     * ## OPTIONS
+     *
+     * <filename>
+     * : Filename with the content of the old database. The file should be utf-8 encoded and be a php export of a db.
+     *
+     * ---
+     * default: success
+     * options:
+     *   - success
+     *   - error
+     * ---
+     *
+     * ## EXAMPLES
+     *
+     *     wp bergclub import /tmp/import.php
+     *
+     * @when after_wp_load
+     */
     function __invoke($args, $assoc_args)
     {
         if (!is_array($args)) {
@@ -75,9 +90,9 @@ class Import extends Init
             touch($tempDirectory . '/' . $mit->id);
             file_put_contents($tempDirectory . '/' . $mit->id, $mit->text);
 
-            \WP_CLI::runcommand("post create " . $tempDirectory . "/" . $mit->id . " \\
-                    --post_title='" . $mitteilung->titel . "' \\
-                    --post_date='" . $mitteilung->datum . "'
+            \WP_CLI::runcommand("bergclub mitteilung create " . $tempDirectory . "/" . $mit->id . " \\
+                    --title='" . $mitteilung->titel . "' \\
+                    --date='" . $mitteilung->datum . "'
                 ");
 
 
