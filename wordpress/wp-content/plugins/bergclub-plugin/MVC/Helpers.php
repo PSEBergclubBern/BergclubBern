@@ -23,4 +23,8 @@ class Helpers
         return strtolower(str_replace('\\', '-', $class));
     }
 
+    public static function redirect($url){
+        echo '<script type="text/javascript">document.location.href="' . $url . '";</script>';
+        exit;
+    }
 }

@@ -10,7 +10,9 @@ get_header() ?>
 <div class="container">
     <div class="page-content">
         <!-- Start the Loop. -->
-        <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
+        <?php
+        $query = new WP_Query(array('category_name' => 'uncategorized'));
+        if ( $query->have_posts() ) : while ( $query->have_posts() ) : $query->the_post(); ?>
             <div class="post">
 
                 <!-- Display the Title as a link to the Post's permalink. -->

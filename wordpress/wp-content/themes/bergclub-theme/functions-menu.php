@@ -33,6 +33,7 @@ function bcb_add_pages(){
         wp_insert_post(bcb_get_page_data('Touren', $touren_page_content, 'touren'));
     }
 
+
     $page = get_page_by_path('tourenprogramm');
     if (!$page) {
         wp_insert_post(bcb_get_page_data_from_title('Tourenprogramm'));
@@ -53,6 +54,7 @@ function bcb_add_pages(){
         $mitteilungen_page_content = 'Mitteilungen';
         wp_insert_post(bcb_get_page_data('Mitteilungen', $mitteilungen_page_content, 'mitteilungen'));
     }
+
 
     $page = get_page_by_path('kontakt');
     if (!$page) {
@@ -81,6 +83,7 @@ function bcb_add_pages(){
         wp_insert_post(bcb_get_page_data('Login', $login_page_content, 'login'));
     }
 }
+
 
 function bcb_get_page_data_from_title($title){
     return bcb_get_page_data($title, $title, strtolower($title));
