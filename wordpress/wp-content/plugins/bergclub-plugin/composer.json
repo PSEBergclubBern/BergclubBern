@@ -3,5 +3,8 @@
         "psr-4": {
             "BergclubPlugin\\": "."
         }
+    },
+    "require": {
+        "duncan3dc/blade": "^3.4"
     }
 }
