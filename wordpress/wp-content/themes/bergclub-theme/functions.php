@@ -468,19 +468,31 @@ function bcb_add_pages(){
         wp_insert_post($statuten_page);
     }
 
-    $page = get_page_by_path('touren');
-    if (!$page) {
-        $touren_page_title = 'Touren';
-        $touren_page_content = 'Tourenberichte';
-        $touren_page = array(
-            'post_type' => 'page',
-            'post_title' => $touren_page_title,
-            'post_content' => $touren_page_content,
-            'post_status' => 'publish',
-            'post_slug' => 'touren'
-        );
-        wp_insert_post($touren_page);
-    }
+    ///////////////////////
+    $touren_page_title = 'Touren1';
+    $touren_page_content = 'Tourenberichte1';
+    $touren_page = array(
+        'post_type' => 'tourenverwaltung',
+        'post_title' => $touren_page_title,
+        'post_content' => $touren_page_content,
+        'post_status' => 'publish',
+        'post_slug' => 'touren'
+    );
+    wp_insert_post($touren_page);
+
+
+    $touren_page_title = 'Touren2';
+    $touren_page_content = 'Tourenberichte2';
+    $touren_page = array(
+        'post_type' => 'tourenverwaltung',
+        'post_title' => $touren_page_title,
+        'post_content' => $touren_page_content,
+        'post_status' => 'publish',
+        'post_slug' => 'touren'
+    );
+    wp_insert_post($touren_page);
+
+    ///////////////////////////////////////
 
     $page = get_page_by_path('mitteilungen');
     if (!$page) {

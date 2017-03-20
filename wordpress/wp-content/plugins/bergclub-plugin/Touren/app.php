@@ -7,7 +7,7 @@
  */
 
 
-function register_my_tourenverwaltung() {
+function bcb_register_my_tourenverwaltung() {
 
     /**
      * Post Type: Touren.
@@ -50,4 +50,4 @@ function register_my_tourenverwaltung() {
     register_post_type( "tourenverwaltung", $args );
 }
 
-add_action( 'init', 'register_my_tourenverwaltung' );
+add_action( 'init', 'bcb_register_my_tourenverwaltung' );
