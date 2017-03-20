@@ -28,3 +28,14 @@ body {
 .bootstrap-table {
     padding-top: 30px;
 }
+.logo-col{
+    padding-top: 70vh;
+    padding-left: 20px;
+}
+.newest-posts{
+    padding-top: 20vh;
+    padding-bottom: 50px;
+}
+h3{
+    margin: 5px 5px;
+}

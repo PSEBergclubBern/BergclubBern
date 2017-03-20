@@ -19,10 +19,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="<?php echo esc_url( get_template_directory_uri() ); ?>/style.css">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="<?php echo esc_url( get_template_directory_uri() ); ?>/carousel.css">
     <link rel="profile" href="http://gmpg.org/xfn/11">
     <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
     <!--[if lt IE 9]>
@@ -35,7 +32,7 @@
 <div id="page" class="hfeed site">
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+        <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                     <span class="sr-only">Toggle navigation</span>
@@ -43,7 +40,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="<?php echo home_url('/')?>">Bergclub Bern</a>
+                <a class="navbar-brand" href="#">Bergclub Bern</a>
             </div>
             <?php /* Primary navigation */
             wp_nav_menu( array(
@@ -60,25 +57,5 @@
             ?>
         </div>
     </nav>
-    <div id="myCarousel" class="carousel slide header-carousel" data-ride="carousel">
-        <ol class="carousel-indicators">
-            <li data-target="#headerCarousel" data-slide-to="0" class="active"></li>
-            <li data-target="#headerCarousel" data-slide-to="1"></li>
-
-        </ol>
-
-        <!-- Wrapper for slides -->
-        <div class="carousel-inner" role="listbox">
-            <div class="item active">
-                <img class="header-img" src="<?php echo esc_url( get_template_directory_uri() ); ?>/berg1.jpg" alt="Berg Landschaft">
-            </div>
-
-            <div class="item">
-                <img class="header-img" src="<?php echo esc_url( get_template_directory_uri() ); ?>/berg2.jpg" alt="Berg Landschaft">
-            </div>
-        </div>
-    </div>
-
-    <img class="header-logo" src="<?php echo esc_url( get_template_directory_uri() ); ?>/BergclubBernLogo.png" alt="Logo">
 
     <div id="content" class="site-content">
