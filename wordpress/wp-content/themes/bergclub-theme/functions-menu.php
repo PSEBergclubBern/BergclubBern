@@ -2,27 +2,27 @@
 
 //Creates initial pages with dummy content
 function bcb_add_pages(){
-    $page = get_page_by_path('uber-uns');
+    $page = get_page_by_path('ueber-uns');
     if (!$page) {
         $uber_uns_page_content = 'Text über uns';
-        wp_insert_post(bcb_get_page_data('Über uns', $uber_uns_page_content, 'uber-uns'));
+        wp_insert_post(bcb_get_page_data('Über uns', $uber_uns_page_content, 'ueber-uns'));
     }
 
     $page = get_page_by_path('portrait');
     if (!$page) {
-        $portrait_page_content = 'Wieder irgendwelcher Text über den Bergclub';
+        $portrait_page_content = 'Das Programm des Bergclubs Bern bietet eine breite Palette von attraktiven Touren für Erwachsene ab ca. 20 Jahren. Nebst Touren in Schnee, Fels und Eis runden zahlreiche Wanderungen sowie Skiwochen, Velotouren und gesellschaftliche Veranstaltungen das Angebot ab. Sportliche Betätigung, Freude an den Bergen, das gemeinsame Erlebnis in der Natur und viel Spass bilden den Grundstock für eindrückliche Tourenerlebnisse.
+        Das vielseitige Tourenprogramm ist auf die Bedürfnisse der Teilnehmerinnen und Teilnehmer abgestimmt und umfasst Touren in allen Schwierigkeitsgraden und für alle Altersstufen. Detailierte Angaben zur Länge der Tour und zu den technischen Schwierigkeiten erleichtern die Auswahl einer geeigneten Tour. Im Zweifelsfall geben die Tourenchefs gerne Auskunft. Nicht nur für Einsteigerinnen und Einsteiger, sondern auch für alle, die noch etwas dazulernen wollen, finden zudem zahlreiche Ausbildungstouren statt.';
         wp_insert_post(bcb_get_page_data('Portrait', $portrait_page_content, 'portrait'));
     }
 
     $page = get_page_by_path('vorstand');
     if (!$page) {
-        $vorstand_page_content = 'Hier kommen alle Vorstandsmitglieder';
+        $vorstand_page_content = 'Hast Du ein einen Tourenwunsch, Materialprobleme oder ein spezielles Anliegen? Nachfolgend sind alle Mitglieder des Vorstands und weitere wichtige Personen des Bergclub Bern aufgelistet, Du kannst direkt mit der verantwortlichen Person Kontakt aufnehmen.';
         wp_insert_post(bcb_get_page_data('Vorstand', $vorstand_page_content, 'vorstand'));
     }
 
     $page = get_page_by_path('statuten');
     if (!$page) {
-        $statuten_page_title = 'Statuten';
         $statuten_page_content = 'Dokumente';
         wp_insert_post(bcb_get_page_data('Statuten', $statuten_page_content, 'statuten'));
     }
@@ -111,12 +111,12 @@ function bcb_add_header_navigation() {
      * Deletes the main menu, used during menu development.
      * Comment out, when finished.
      */
-    /*
+/*
     if($menu_exists){
         wp_delete_nav_menu( $menu_name );
         $menu_exists = false;
     }
-    */
+*/
 
     // If it doesn't exist, let's create it.
     if( !$menu_exists){

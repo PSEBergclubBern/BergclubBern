@@ -15,7 +15,7 @@
     ?>
     <div class="container">
         <div class="page-content">
-            <?php the_title('<h1 class="entry-title">', '</h1>'); ?>
+            <?php the_title('<h1 class="page-header">', '</h1>'); ?>
             <?php the_content('<p>', '</p>'); ?>
             <?php
             wp_link_pages(array(

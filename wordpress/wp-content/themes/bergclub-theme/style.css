@@ -4,9 +4,8 @@ html{
 body {
     padding-top: 50px;
 }
-.page-content {
+.content-area {
     padding: 40px 15px;
-    text-align: center;
 }
 .header-img {
     overflow: hidden;
@@ -25,9 +24,6 @@ body {
     max-width: 200px;
     height: auto;
 }
-.bootstrap-table {
-    padding-top: 30px;
-}
 .logo-col{
     padding-top: 70vh;
     padding-left: 20px;
@@ -38,4 +34,14 @@ body {
 }
 h3{
     margin: 5px 5px;
+}
+.th-inner a {
+    color: black;
+    text-decoration: none;
+    border: none;
+    pointer-events: none;
+}
+
+.table > tbody > tr:first-child > td {
+    border: none;
 }

@@ -432,14 +432,14 @@ include 'functions-menu.php';
 //Creates a new category "Mitteilung" in the wp-admin section
 function bcb_create_category()
 {
-    $category_mitteilungen = get_category_by_path('category-mitteilungen');
-    if(!$category_mitteilungen){
-        require_once( ABSPATH . '/wp-admin/includes/taxonomy.php');
+    $category_mitteilungen = get_category_by_path('mitteilungen');
+    if (!$category_mitteilungen) {
+        require_once(ABSPATH . '/wp-admin/includes/taxonomy.php');
 
         wp_insert_category(array(
             'cat_name' => 'Mitteilungen',
             'category_description' => 'In dieser Kategorie werden alle Mitteilungen erfasst',
-            'category_nicename' => 'category-mitteilungen',
+            'category_nicename' => 'mitteilungen',
             'taxonomy' => 'category'
 
         ));
@@ -452,10 +452,10 @@ add_filter('init', 'bcb_create_category');
 //DELETE BEFORE PRODUCTIV
 function bcb_create_posts_mitteilungen()
 {
-    $category_mitteilungen = get_category_by_path('category-mitteilungen');
+    $category_mitteilungen = get_category_by_path('mitteilungen');
 
     $post = get_page_by_path('post-mitteilung1', 'OBJECT', 'post');
-    if(!$post){
+    if (!$post) {
         wp_insert_post(array(
             'post_title' => 'Mitteilung 1',
             'post_name' => 'post-mitteilung1',
@@ -469,7 +469,7 @@ function bcb_create_posts_mitteilungen()
     }
 
     $post = get_page_by_path('post-mitteilung2', 'OBJECT', 'post');
-    if(!$post){
+    if (!$post) {
         wp_insert_post(array(
             'post_title' => 'Mitteilung 2',
             'post_name' => 'post-mitteilung2',
@@ -483,7 +483,7 @@ function bcb_create_posts_mitteilungen()
     }
 
     $post = get_page_by_path('post-mitteilung3', 'OBJECT', 'post');
-    if(!$post){
+    if (!$post) {
         wp_insert_post(array(
             'post_title' => 'Mitteilung 3',
             'post_name' => 'post-mitteilung3',
