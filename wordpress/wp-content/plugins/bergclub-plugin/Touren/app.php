@@ -6,6 +6,12 @@
  * Time: 10:09
  */
 
+define("BCB_CUSTOM_POST_TYPE_TOUREN", "touren");
+
+$a = new \BergclubPlugin\Touren\MetaBoxes\Common();
+
+add_action('add_meta_boxes', [$a, 'add']);
+add_action('save_post', [$a, 'save']);
 
 function bcb_register_my_tourenverwaltung() {
 
@@ -47,7 +53,7 @@ function bcb_register_my_tourenverwaltung() {
         "supports" => array( "title", "editor", "thumbnail", "custom-fields" ),
     );
 
-    register_post_type( "tourenverwaltung", $args );
+    register_post_type( BCB_CUSTOM_POST_TYPE_TOUREN, $args );
 }
 
 add_action( 'init', 'bcb_register_my_tourenverwaltung' );
