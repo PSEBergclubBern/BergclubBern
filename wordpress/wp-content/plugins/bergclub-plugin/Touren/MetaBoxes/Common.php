@@ -14,11 +14,22 @@ use BergclubPlugin\FlashMessage;
 class Common extends MetaBox
 {
     const DATE_FROM_IDENTIFIER = '_date-from';
+    const DATE_TO_IDENTIFIER = '_date-to';
+    const LEADER = '_leader';
 
     public function getUniqueFieldNames()
     {
         return array(
             self::DATE_FROM_IDENTIFIER,
+            self::DATE_TO_IDENTIFIER,
+            self::LEADER,
+        );
+    }
+
+    protected function addAdditionalValuesForView()
+    {
+        return array(
+            'leiter' => \get_users(array('role_in' => 'Leiter')),
         );
     }
 
