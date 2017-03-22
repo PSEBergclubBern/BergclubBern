@@ -15,16 +15,15 @@ get_header() ?>
             <div class="carousel-inner" role="listbox">
                 <div class="item active"></div>
                 <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
             </div>
         </div>
 
-
         <div class="row">
-            <div class="col-md-4 logo-col">
-                <img class="img-responsive header-logo" src="<?php echo esc_url( get_template_directory_uri() ); ?>/BergclubBernLogo.png" alt="Logo">
-            </div>
+            <img class="img-responsive header-logo" src="<?php echo esc_url( get_template_directory_uri() ); ?>/BergclubBernLogo.png" alt="Logo">
 
-            <div class="col-md-4 col-md-offset-4 newest-posts">
+            <div class="col-md-4 col-md-offset-8 newest-posts">
 
                 <div class="well well-sm">
                     <h3>Tourenberichte</h3>
@@ -77,7 +76,5 @@ get_header() ?>
 
         </div>
     </div><!-- /.container-fluid -->
-
-    <script>jQuery('.carousel').carousel();</script>
 
 <?php get_footer() ?>
