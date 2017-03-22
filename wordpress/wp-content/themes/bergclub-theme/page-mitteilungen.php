@@ -15,42 +15,44 @@ get_header(); ?>
     <div id="primary" class="content-area">
         <main id="main" class="site-main" role="main">
             <div class="container">
-                <?php the_title('<h1 class="page-header">','</h1>')?>
-                <table id="mitteilung-table" class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>
-                            <div class="th-inner">Datum</div>
-                            <div class="fht-cell"></div>
-                        </th>
-                        <th colspan="2">
-                            <div class="th-inner">Titel</div>
-                            <div class="fht-cell"></div>
-                        </th>
-                        <th>
-                            <div class="th-inner">Autor</div>
-                            <div class="fht-cell"></div>
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    $query = new WP_Query(array('category_name' => 'mitteilungen', 'posts_per_page' => 1000));
-                    // Start the loop. Retriev Posts in Category "Mitteilungen"
-                    while ($query->have_posts()) : $query->the_post(); ?>
-                        <tr class="mitteilung-table-row">
+                <div class="row">
+                    <?php the_title('<h1 class="page-header">', '</h1>') ?>
+                </div>
+                <div class="row">
+                    <div class="table-responsive page-content">
+                        <table id="mitteilung-table" class="table table-hover">
+                            <colgroup>
+                                <col class="col-md-2">
+                                <col class="col-md-7">
+                                <col class="col-md-3">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Titel</th>
+                                <th>Autor</th>
+                            </tr>
+                            </thead>
+                            <tbody>
                             <?php
-                            // Include the page content template.
-                            get_template_part('content', 'mitteilungen');
+                            $query = new WP_Query(array('category_name' => 'mitteilungen', 'posts_per_page' => 1000));
+                            // Start the loop. Retriev Posts in Category "Mitteilungen"
+                            while ($query->have_posts()) : $query->the_post(); ?>
+                                <tr>
+                                    <?php
+                                    // Include the page content template.
+                                    get_template_part('content', 'mitteilungen');
+                                    ?>
+                                </tr>
+                                <?php
+                                // End the loop.
+                            endwhile;
+                            wp_reset_postdata();
                             ?>
-                        </tr>
-                        <?php
-                        // End the loop.
-                    endwhile;
-                    wp_reset_postdata();
-                    ?>
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </main><!-- .site-main -->
     </div><!-- .content-area -->

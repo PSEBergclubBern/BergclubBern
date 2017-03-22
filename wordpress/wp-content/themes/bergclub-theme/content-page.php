@@ -13,21 +13,23 @@
     // Post thumbnail.
     twentyfifteen_post_thumbnail();
     ?>
-    <div class="container">
+    <div class="row">
+        <?php the_title('<h1 class="page-header">', '</h1>'); ?>
+    </div>
+    <div class="row">
         <div class="page-content">
-            <?php the_title('<h1 class="page-header">', '</h1>'); ?>
             <?php the_content('<p>', '</p>'); ?>
-            <?php
-            wp_link_pages(array(
-                'before' => '<div class="page-links"><span class="page-links-title">' . __('Pages:', 'twentyfifteen') . '</span>',
-                'after' => '</div>',
-                'link_before' => '<span>',
-                'link_after' => '</span>',
-                'pagelink' => '<span class="screen-reader-text">' . __('Page', 'twentyfifteen') . ' </span>%',
-                'separator' => '<span class="screen-reader-text">, </span>',
-            ));
-            ?>
         </div>
-    </div><!-- .entry-content -->
+    </div>
+    <?php
+    wp_link_pages(array(
+        'before' => '<div class="page-links"><span class="page-links-title">' . __('Pages:', 'twentyfifteen') . '</span>',
+        'after' => '</div>',
+        'link_before' => '<span>',
+        'link_after' => '</span>',
+        'pagelink' => '<span class="screen-reader-text">' . __('Page', 'twentyfifteen') . ' </span>%',
+        'separator' => '<span class="screen-reader-text">, </span>',
+    ));
+    ?>
 
 </article><!-- #post-## -->
