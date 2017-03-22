@@ -9,23 +9,43 @@
 namespace BergclubPlugin\Touren\MetaBoxes;
 
 
+use BergclubPlugin\FlashMessage;
+
 class Common extends MetaBox
 {
-    protected function getUniqueFieldNames()
+    const DATE_FROM_IDENTIFIER = '_date-from';
+
+    public function getUniqueFieldNames()
     {
         return array(
-            '_date-from' => 'dateFrom',
+            self::DATE_FROM_IDENTIFIER,
         );
     }
 
-    protected function getUniqueMetaBoxName()
+    public function getUniqueMetaBoxName()
     {
         return 'common-metadata';
     }
 
-    protected function getUniqueMetaBoxTitle()
+    public function getUniqueMetaBoxTitle()
     {
         return 'Zusatzinformationen';
+    }
+
+    public function isValid($values)
+    {
+        $errors = array();
+        if (array_key_exists(self::DATE_FROM_IDENTIFIER, $values)) {
+            $date = \DateTime::createFromFormat("d.m.Y", $values[self::DATE_FROM_IDENTIFIER]);
+            if ($date === false) {
+                $errors[] = 'Datum ist ungültig';
+            }
+        }
+
+        foreach ($errors as $errorMsg) {
+            FlashMessage::add(FlashMessage::TYPE_ERROR, $errorMsg);
+        }
+        return count($errors) == 0;
     }
 
 }

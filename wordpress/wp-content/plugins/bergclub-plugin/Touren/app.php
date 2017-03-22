@@ -8,10 +8,30 @@
 
 define("BCB_CUSTOM_POST_TYPE_TOUREN", "touren");
 
-$a = new \BergclubPlugin\Touren\MetaBoxes\Common();
+$metaBoxes = array(
+    new \BergclubPlugin\Touren\MetaBoxes\Common(),
+);
 
-add_action('add_meta_boxes', [$a, 'add']);
-add_action('save_post', [$a, 'save']);
+foreach ($metaBoxes as $metaBox) {
+    add_action('add_meta_boxes', [$metaBox, 'add']);
+    add_action('save_post', [$metaBox, 'save']);
+}
+
+add_action('admin_notices', function() { echo \BergclubPlugin\FlashMessage::show(); } );
+add_action('admin_enqueue_scripts', function() {
+    wp_enqueue_script('jquery-ui-datepicker');
+    wp_register_style('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css');
+    wp_enqueue_style('jquery-ui');
+    wp_enqueue_script(
+        'bcb-datepicker-script',
+        plugins_url('views/script.js', __FILE__),
+        array('jquery-ui-datepicker'),
+        false,
+        true
+    );
+});
+
+
 
 function bcb_register_my_tourenverwaltung() {
 
