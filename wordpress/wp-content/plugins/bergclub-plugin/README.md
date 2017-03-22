@@ -16,7 +16,7 @@ bergclub-plugin
 
 **Commands**
 
-@Kevin kannst du das noch ergänzen
+Klassen um wp-cli zu erweitern. wp-cli ist in der Vagrant Box vorinstalliert.
 
 **MVC**
 
