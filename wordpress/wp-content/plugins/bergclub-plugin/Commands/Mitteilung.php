@@ -54,7 +54,7 @@ class Mitteilung extends Init
 
         if (!$this->categoryId) {
             foreach ($terms as $term) {
-                if ($term['slug'] == 'category-mitteilungen') {
+                if (strpos($term['slug'], 'mitteilungen') !== false) {
                     $this->categoryId = $term['term_id'];
                 }
             }
@@ -63,10 +63,10 @@ class Mitteilung extends Init
         if (!$this->categoryId) {
             \WP_CLI::error('Couldnt find out correct id of mitteilungen');
         } else {
-            \WP_CLI::runcommand("post create '" . $filename . "' \\
-                --post_title='" . $assoc_args['title'] . "' \\
-                --post_date='" . $assoc_args['date'] . "' \\
-                --post_category=" . $this->categoryId
+            \WP_CLI::runcommand("post create '" . $filename . "' " .
+                "--post_title='" . $assoc_args['title'] . "' " .
+                "--post_date='" . $assoc_args['date'] . "' " .
+                "--post_category=" . $this->categoryId
             );
         }
 
