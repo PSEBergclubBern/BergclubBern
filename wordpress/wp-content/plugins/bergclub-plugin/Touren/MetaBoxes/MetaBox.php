@@ -50,6 +50,15 @@ abstract class MetaBox
         return true;
     }
 
+    /**
+     * adds an array as additional data for the view
+     *
+     * @return array
+     */
+    protected function addAdditionalValuesForView() {
+        return array();
+    }
+
     public function add()
     {
         $screens = [ BCB_CUSTOM_POST_TYPE_TOUREN ];
@@ -98,8 +107,12 @@ abstract class MetaBox
         if(!file_exists(__DIR__ . '/cache')){
             mkdir(__DIR__ . '/cache');
         }
+        $arguments = array_merge(array('values' => $values), $this->addAdditionalValuesForView());
         $blade = new BladeInstance(__DIR__ . '/../views', __DIR__ . '/../cache');
-        echo $blade->render($this->getViewName(), array('values' => $values));
+        echo $blade->render(
+            $this->getViewName(),
+            $arguments
+        );
 
     }
 }
