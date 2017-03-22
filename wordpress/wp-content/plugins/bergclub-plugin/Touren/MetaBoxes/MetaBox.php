@@ -17,7 +17,7 @@ abstract class MetaBox
      * get the view for this element
      * @return string filename of the view
      */
-    protected function getViewName()
+    public function getViewName()
     {
         $reflect = new \ReflectionClass($this);
 
@@ -34,19 +34,19 @@ abstract class MetaBox
      * get unique meta-box name
      * @return unique meta-box name
      */
-    abstract protected function getUniqueMetaBoxName();
+    abstract public function getUniqueMetaBoxName();
 
     /**
      * get meta-box title
      * @return meta-box title
      */
-    abstract protected function getUniqueMetaBoxTitle();
+    abstract public function getUniqueMetaBoxTitle();
 
     /**
      * check if fields are valid
      * @return bool
      */
-    protected function isValid($values) {
+    public function isValid($values) {
         return true;
     }
 
@@ -66,15 +66,23 @@ abstract class MetaBox
     public function save($postId)
     {
         if (!$this->isValid($_POST)) {
+            // unhook this function to prevent indefinite loop
+            remove_action('save_post', [$this, 'save']);
+
+            // update the post to change post status
+            wp_update_post(array('ID' => $postId, 'post_status' => 'draft'));
+
+            // re-hook this function again
+            add_action('save_post', [$this, 'save']);
             return false;
         }
 
-        foreach ($this->getUniqueFieldNames() as $fieldId => $fieldName) {
-            if (array_key_exists($fieldName, $_POST)) {
+        foreach ($this->getUniqueFieldNames() as $fieldId) {
+            if (array_key_exists($fieldId, $_POST)) {
                 \update_post_meta(
                     $postId,
                     $fieldId,
-                    $_POST[$fieldName]
+                    $_POST[$fieldId]
                 );
             }
         }
@@ -83,7 +91,7 @@ abstract class MetaBox
     public function html($post)
     {
         $values = array();
-        foreach ($this->getUniqueFieldNames() as $fieldId => $fieldName) {
+        foreach ($this->getUniqueFieldNames() as $fieldId) {
             $values[$fieldId] = get_post_meta($post->ID, $fieldId, true);
         }
 
