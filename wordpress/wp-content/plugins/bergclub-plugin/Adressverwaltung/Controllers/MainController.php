@@ -20,7 +20,24 @@ class MainController extends AbstractController
         }
 
         if(isset($_GET['view'])){
-            $this->view = 'pages.' . $_GET['view'];
+            $view = $_GET['view'];
+            if($view == "detail"){
+                $this->data['edit'] = false;
+                $tab = "data";
+                if(isset($_GET['tab'])){
+                    $tab = $_GET['tab'];
+                }
+                $viewtype = "show";
+                //TODO: check rights
+                if(isset($_GET["edit"])){
+                    $this->data['edit'] = true;
+                    $viewtype = "edit";
+                }
+
+                $this->data['tab'] = $tab;
+                $this->data['tab_file'] = 'includes.' . $view . '-' . $tab . '-' . $viewtype;
+            }
+            $this->view = 'pages.' . $view;
         }
 
         if($this->view == 'pages.main') {
