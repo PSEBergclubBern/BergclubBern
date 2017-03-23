@@ -4,6 +4,7 @@ namespace BergclubPlugin\MVC\Models;
 
 
 use BergclubPlugin\MVC\Exceptions\NotABergClubUserException;
+use BergclubPlugin\MVC\Helpers;
 
 /**
  * Represents a Berg Club address entry. Takes care of the WP User functionality in this project.
@@ -14,6 +15,13 @@ use BergclubPlugin\MVC\Exceptions\NotABergClubUserException;
  */
 class User implements IModelMultiple
 {
+    const LEAVING_REASON_1 = 'Ausgetreten';
+    const LEAVING_REASON_2 = 'Verstorben';
+    const PROGRAM_SHIPMENT_0 = 'Nein';
+    const PROGRAM_SHIPMENT_1 = 'Ja';
+    const GENDER_M = 'Herr';
+    const GENDER_F = 'Frau';
+
 
     /**
      * @var array $data holds the main user values from WP that magic getters and setters allow to access.
@@ -29,10 +37,13 @@ class User implements IModelMultiple
      * this array if more custom fields are needed.
      */
     private $custom = [
+        'leaving_reason' => null,
+        'program_shipment' => 1,
         'company' => null,
+        'gender' => '',
         'first_name' => null,
         'last_name' => null,
-        'gender' => null,
+        'address_addition' => null,
         'street' => null,
         'zip' => null,
         'location' => null,
@@ -40,6 +51,8 @@ class User implements IModelMultiple
         'phone_work' => null,
         'phone_mobile' => null,
         'email' => null,
+        'birthdate' => null,
+        'comments' => null,
     ];
 
     /**
@@ -52,6 +65,11 @@ class User implements IModelMultiple
      * users don't have a default WP role.
      */
     private $deletedRoles = [];
+
+    /**
+     * @var User $spouse
+     */
+    private $spouse;
 
     /**
      * User constructor.
@@ -264,7 +282,18 @@ class User implements IModelMultiple
             return $role->getName();
         }
 
-        return "";
+        return '';
+    }
+
+    public function getGenderDisplay(){
+        if(isset($this->custom['gender'])) {
+            if ($this->custom['gender'] == 'M') {
+                return 'Herr';
+            } elseif ($this->custom['gender'] == 'F') {
+                return 'Frau';
+            }
+        }
+        return '';
     }
 
     /**
@@ -275,17 +304,25 @@ class User implements IModelMultiple
      * @param mixed $value the value to set.
      */
     public function __set($key, $value){
-        if (array_key_exists($key, $this->data)) {
+        $method = "set" . Helpers::snakeToCamelCase($key);
+        if(method_exists($this, $method)){
+            return $this->$method($value);
+        } elseif (array_key_exists($key, $this->data)) {
             $this->data[$key] = $value;
         } elseif (array_key_exists($key, $this->custom)) {
             $this->custom[$key] = $value;
         } elseif ( $key == 'roles' && is_array( $value ) ){
             $this->setRoles($value);
         }
+
+        return null;
     }
 
     public function __get($key){
-        if (array_key_exists($key, $this->data)) {
+        $method = "get" . Helpers::snakeToCamelCase($key);
+        if(method_exists($this, $method)){
+            return $this->$method();
+        } elseif (array_key_exists($key, $this->data)) {
             return $this->data[$key];
         } elseif (array_key_exists($key, $this->custom)) {
             return $this->custom[$key];
@@ -344,5 +381,74 @@ class User implements IModelMultiple
             }
         }
         return $result;
+    }
+
+    /**
+     * @return User
+     */
+    private function getSpouse()
+    {
+        return $this->spouse;
+    }
+
+    /**
+     * @param User $spouse
+     */
+    private function setSpouse(User $spouse)
+    {
+        $this->spouse = $spouse;
+    }
+
+    private function getLeavingReason(){
+        return $this->getConstant('leaving_reason', $this->custom['leaving_reason']);
+    }
+
+    private function setLeavingReason($value){
+        $this->setByConstant('leaving_reason', $value);
+    }
+
+    private function getProgramShipment(){
+        return $this->getConstant('program_shipment', $this->custom['program_shipment']);
+    }
+
+    private function setProgramShipment($value){
+        $this->setByConstant('program_shipment', $value);
+    }
+
+    private function getGender(){
+        return $this->getConstant('gender', $this->custom['gender']);
+    }
+
+    private function setGender($value){
+        $this->setByConstant('gender', $value);
+    }
+
+    private function getBirthdate(){
+        return date("d.m.Y", strtotime($this->custom['birthdate']));
+    }
+
+    private function setBirthdate($value){
+        $this->custom['birthdate'] = date("Y-m-d", strtotime($value));
+    }
+
+    private static function isAConstant($value){
+        $reflection = new \ReflectionClass(__CLASS__);
+        return isset($reflection->getConstants()[$value]);
+    }
+
+    private function getConstant($key, $variant){
+        if(!empty($variant)) {
+            return constant('self::' . strtoupper($key . '_' . $variant));
+        }
+        return null;
+    }
+
+    private function setByConstant($key, $value){
+        if(!empty($value)) {
+            if (!self::isAConstant(strtoupper($key) . '_' . strtoupper($value))) {
+                throw new \UnexpectedValueException('the given value "' . $value . '" for ' . $key . ' is not correct.');
+            }
+        }
+        $this->custom[$key] = $value;
     }
 }

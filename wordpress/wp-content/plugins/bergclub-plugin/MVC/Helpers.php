@@ -53,4 +53,8 @@ class Helpers
         $roles = Option::get('bcb_roles');
         return $roles['functionary'];
     }
+
+    public static function snakeToCamelCase($string){
+        return str_replace('_', '', ucwords($string, '_'));
+    }
 }

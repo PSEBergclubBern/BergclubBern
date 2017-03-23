@@ -24,6 +24,7 @@ function createFakeUser(Role $role, $times, $createCompany = false){
             'phone_work' => $faker->phoneNumber,
             'phone_mobile' => $faker->phoneNumber,
             'email' => $faker->email,
+            'birthdate' => $faker->date('d.m.Y', '1997-01-01'),
             'roles' => [$role],
         ]);
         $user->save();
