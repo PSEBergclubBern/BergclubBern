@@ -9,6 +9,8 @@
 namespace BergclubPlugin\MVC\Models;
 
 
+use BergclubPlugin\MVC\Helpers;
+
 abstract class AbstractKeyValuePair implements IModelSingle
 {
     protected $key;
@@ -18,8 +20,7 @@ abstract class AbstractKeyValuePair implements IModelSingle
     protected static $wpGetMethod;
 
     public function __construct($key, $value = null){
-        self::ensureKeyHasPrefix($key);
-        $this->key = $key;
+        $this->key = Helpers::ensureKeyHasPrefix($key);
         $this->value = $value;
     }
 
@@ -37,27 +38,21 @@ abstract class AbstractKeyValuePair implements IModelSingle
     }
 
     public static function remove($key){
-        self::ensureKeyHasPrefix($key);
+        $key = Helpers::ensureKeyHasPrefix($key);
         $method = static::$wpDeleteMethod;
         $method($key);
     }
 
     public static function find($key){
-        self::ensureKeyHasPrefix($key);
+        $key = Helpers::ensureKeyHasPrefix($key);
         $method = static::$wpGetMethod;
         $value = $method($key);
         $class = get_called_class();
         return new $class($key, $value);
     }
 
-    private static function ensureKeyHasPrefix(&$key){
-        if(!substr($key, 0, 4) == "bcb_"){
-            $key = "bcb_" . $key;
-        }
-    }
-
     /**
-     * @return null
+     * @return mixed
      */
     public function getValue()
     {
@@ -65,7 +60,7 @@ abstract class AbstractKeyValuePair implements IModelSingle
     }
 
     /**
-     * @param null $value
+     * @param mixed $value
      */
     public function setValue($value)
     {

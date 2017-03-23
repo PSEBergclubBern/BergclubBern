@@ -27,4 +27,18 @@ class Helpers
         echo '<script type="text/javascript">document.location.href="' . $url . '";</script>';
         exit;
     }
+
+    public static function ensureKeyHasPrefix($key){
+        if(substr($key, 0, 4) != "bcb_"){
+            $key = "bcb_" . $key;
+        }
+        return $key;
+    }
+
+    public static function ensureKeyHasNoPrefix($key){
+        if(substr($key, 0, 4) == "bcb_"){
+            $key = substr($key, 4);
+        }
+        return $key;
+    }
 }
