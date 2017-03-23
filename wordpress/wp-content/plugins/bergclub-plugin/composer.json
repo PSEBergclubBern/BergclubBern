@@ -5,6 +5,7 @@
         }
     },
     "require": {
-        "duncan3dc/blade": "^3.4"
+        "duncan3dc/blade": "^3.4",
+        "jbroadway/urlify": "^1.1"
     }
 }
