@@ -6,6 +6,7 @@
     },
     "require": {
         "duncan3dc/blade": "^3.4",
-        "jbroadway/urlify": "^1.1"
+        "jbroadway/urlify": "^1.1",
+        "fzaninotto/faker": "^1.6"
     }
 }

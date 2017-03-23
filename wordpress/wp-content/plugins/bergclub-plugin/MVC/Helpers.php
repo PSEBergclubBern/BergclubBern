@@ -8,6 +8,8 @@
 
 namespace BergclubPlugin\MVC;
 
+use BergclubPlugin\MVC\Models\Option;
+
 class Helpers
 {
 
@@ -40,5 +42,15 @@ class Helpers
             $key = substr($key, 4);
         }
         return $key;
+    }
+
+    public static function getAddressRoles(){
+        $roles = Option::get('bcb_roles');
+        return $roles['address'];
+    }
+
+    public static function getFunctionaryRoles(){
+        $roles = Option::get('bcb_roles');
+        return $roles['functionary'];
     }
 }
