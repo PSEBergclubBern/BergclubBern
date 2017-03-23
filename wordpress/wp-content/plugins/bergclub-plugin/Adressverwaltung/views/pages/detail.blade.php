@@ -29,5 +29,7 @@
             @if($edit)
         </form>
     @endif
-    <a class="button-primary" href="?page={{ $_GET['page'] }}">&laquo; Zurück</a>
+    @if(!$edit)
+        <a class="button-primary" href="?page={{ $_GET['page'] }}">&laquo; Zurück</a>
+    @endif
 @endsection
