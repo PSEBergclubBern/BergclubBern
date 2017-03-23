@@ -4,6 +4,7 @@
     <table id="mitglieder" class="row-border stripe responsive" cellspacing="0" width="100%">
         <thead>
         <tr>
+            <th class="dt-left">Firma</th>
             <th class="dt-left">Name</th>
             <th class="dt-left">Strasse</th>
             <th class="dt-left">PLZ Ort</th>
@@ -18,6 +19,7 @@
         <tbody>
         @foreach($users as $user)
             <tr>
+                <td>{{ $user->company }}</td>
                 <td>{{ $user->last_name . ' ' . $user->first_name }}</td>
                 <td>{{ $user->street }}</td>
                 <td>{{ $user->zip . ' ' .$user->location }}</td>
@@ -25,7 +27,7 @@
                 <td>{{ $user->phone_work }}</td>
                 <td>{{ $user->phone_mobile }}</td>
                 <td>{{ $user->email }}</td>
-                <td>{{ $user->type }}</td>
+                <td>{{ $user->getAddressRoleName() }}</td>
                 <td class="dt-right"><a href="?page={{ $_GET['page'] }}&view=detail&id={{ $user->ID }}" title="Bearbeiten"><span class="dashicons dashicons-edit"></span></a> <a class="delete" data-id="{{ $user->ID }}" title="Löschen" href="javascript:void(0)"><span class="dashicons dashicons-trash"></span></a></td>
             </tr>
         @endforeach
