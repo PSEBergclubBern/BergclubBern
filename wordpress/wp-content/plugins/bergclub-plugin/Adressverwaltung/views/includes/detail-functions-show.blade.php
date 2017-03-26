@@ -1,7 +1,6 @@
-<h1>Erfasste Funktionen</h1>
-<table class="user-detail">
-    @forelse($functions as $key => $function)
-        <tr><td>{{  $function }}</td></tr>
+<table id="functions">
+    @forelse($user->functionary_roles as $role)
+        <tr><td>{{  $role->getName() }}</td></tr>
     @empty
         <tr><td>Keine Funktionen erfasst.</td></tr>
     @endforelse

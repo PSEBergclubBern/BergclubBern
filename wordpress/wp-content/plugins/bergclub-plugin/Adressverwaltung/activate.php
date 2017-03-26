@@ -25,8 +25,8 @@ function createFakeUser(Role $role, $times, $createCompany = false){
             'phone_mobile' => $faker->phoneNumber,
             'email' => $faker->email,
             'birthdate' => $faker->date('d.m.Y', '1997-01-01'),
-            'roles' => [$role],
         ]);
+        $user->addRole($role);
         $user->save();
     }
 }
@@ -80,4 +80,24 @@ $role->save();
 
 createFakeUser($role, 3);
 
+require_once 'activate_functionary_roles.php';
 
+foreach($functionaryRoles as $slug => $item){
+    $role = new Role(Role::TYPE_FUNCTIONARY, $slug, $item['name']);
+    $role->setCapabilities($item['capabilities']);
+    $role->save();
+}
+
+/*
+ * The custom role `internet` will be the assigned to the administrator of Bergclub Bern, so we add all capabilities of
+ * the default `administrator` role except for the capabilities needed for user management, because user management will
+ * be done in "Adressverwaltung".
+ */
+$role = Role::find('internet');
+
+$roleAdministrator = get_role('administrator');
+foreach($roleAdministrator->capabilities as $capability => $grant){
+    if(substr($capability, -6) != "_users") {
+        $role->addCapability($capability, $grant);
+    }
+}

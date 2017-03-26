@@ -105,7 +105,6 @@ class User implements IModelMultiple
      * User constructor.
      *
      * @param array $data an array that contains the data associated with the user. Will be added to the $data field.
-     * @throws MassAssignmentException if $data contains a field key that is not a key for the existing data array.
      */
     public function __construct(array $data = []){
         foreach($data as $key => $value){
