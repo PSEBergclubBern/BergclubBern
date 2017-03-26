@@ -2,7 +2,9 @@
 
 namespace BergclubPlugin\MVC\Models;
 
-
+/**
+ * Should be implemented in Models which can have multiple representations.
+ */
 interface IModelMultiple extends IModelSingle
 {
     /**

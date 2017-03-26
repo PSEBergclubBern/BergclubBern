@@ -2,6 +2,10 @@
 
 namespace BergclubPlugin\MVC\Models;
 
+/**
+ * Should be implemented by Models which have a single representation.
+ * e.g. WP Option
+ */
 interface IModelSingle
 {
     /**

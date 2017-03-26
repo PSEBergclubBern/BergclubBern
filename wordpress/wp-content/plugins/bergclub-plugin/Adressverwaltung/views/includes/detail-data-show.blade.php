@@ -23,7 +23,7 @@
             <td>{{ $user->company }}</td>
         </tr>
     @endif
-    @if($user->gender_display)
+    @if($user->gender)
         <tr>
             <td>Anrede:</td>
             <td>{{ $user->gender }}</td>
