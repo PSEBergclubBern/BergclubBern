@@ -84,9 +84,6 @@ class User implements IModelMultiple
      */
     public function __construct(array $data = []){
         foreach($data as $key => $value){
-            if(!isset($this->data[$key])){
-                throw new MassAssignmentException('The field ' . $key . ' is not in the allowed fields for mass assignment.');
-            }
             $this->__set($key, $value);
         }
     }
@@ -130,7 +127,7 @@ class User implements IModelMultiple
     public static function find($id){
         $item = get_user_by('ID', $id);
         if ($item) {
-            $user = new User((array)$item->data);
+            $user = new User((array) $item->data);
             $metadata = get_user_meta($item->ID);
             foreach ($metadata as $key => $arr) {
                 $user->$key = $arr[0];
