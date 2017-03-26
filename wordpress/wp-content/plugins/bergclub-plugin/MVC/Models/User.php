@@ -99,7 +99,7 @@ class User implements IModelMultiple
      * ];
      * </code>
      */
-    private $history = [];
+    private $historie = [];
 
     /**
      * User constructor.
@@ -199,7 +199,7 @@ class User implements IModelMultiple
             update_user_meta($this->main['ID'], $key, $value);
         }
 
-        update_user_meta($this->main['ID'], 'history', $this->history);
+        update_user_meta($this->main['ID'], 'history', $this->historie);
 
         $user = get_user_by('ID', $this->main['ID'] );
 
@@ -281,24 +281,34 @@ class User implements IModelMultiple
     }
 
     private function openHistory(Role $role){
-        if(!isset($this->history[$role->getKey()])) {
-            $this->history[$role->getKey()] = ['date_from' => date('Y-m-d'), 'date_to' => null];
+        if(!isset($this->historie[$role->getKey()])) {
+            $this->historie[$role->getKey()] = ['date_from' => date('Y-m-d'), 'date_to' => null];
         }
     }
 
     private function closeHistory(Role $role){
-        $this->history[$role->getKey()]['date_to'] = date('Y-m-d');
+        $this->historie[$role->getKey()]['date_to'] = date('Y-m-d');
     }
 
     private function setHistory($history){
         if(is_array($history)) {
-            $this->history = $history;
+            $newHistory = [];
+            foreach($history as $key => $item){
+                if(array_key_exists('date_from', $item)){
+                    $newHistory[$key]['date_from'] = date('Y-m-d', strtotime($item['date_from']));
+                    $newHistory[$key]['date_to'] = null;
+                    if(array_key_exists('date_to', $item) && !empty($item['date_to'])){
+                        $newHistory[$key]['date_to'] = date('Y-m-d', strtotime($item['date_to']));
+                    }
+                }
+            }
+            $this->historie = $newHistory;
         }
     }
 
     private function getHistory(){
         $history = [];
-        foreach($this->history as $key => $item){
+        foreach($this->historie as $key => $item){
             $role = Role::find($key);
             if($role) {
                 $date_to = $item['date_to'];

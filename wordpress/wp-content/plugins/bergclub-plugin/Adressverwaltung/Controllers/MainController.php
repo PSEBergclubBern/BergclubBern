@@ -41,17 +41,20 @@ class MainController extends AbstractController
     }
 
     protected function get(){
-        $action = $this->getGET('action', null);
-        if($action == 'delete'){
-            User::remove($_GET['id']);
-            FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Datensatz erfolgreich gelöscht.');
-            Helpers::redirect('?page=' . $_GET['page']);
+        if($method = $this->getTabMethod('get')){
+            $this->$method();
+        }else {
+            $action = $this->getGET('action', null);
+            if ($action == 'delete') {
+                User::remove($_GET['id']);
+                FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Datensatz erfolgreich gelöscht.');
+                Helpers::redirect('?page=' . $_GET['page']);
+            }
         }
     }
 
     protected function post(){
-        $method = "post" . strtoupper(substr($this->data['tab'], 0, 1)) . substr($this->data['tab'], 1);
-        if(method_exists($this, $method)){
+        if($method = $this->getTabMethod('post')){
             $this->$method();
         }
     }
@@ -99,9 +102,35 @@ class MainController extends AbstractController
         //HIER DEN FORMULARPOST DER FUNKTIONSROLLEN VERARBEITEN
     }
 
+    private function getHistory(){
+        $action = $this->getGET('action', null);
+        if($action == "delete"){
+            /* @var User $user */
+            $user = $this->data['user'];
+            $history = $user->history;
+            if(key_exists($_GET['key'], $history)){
+                unset($history[$_GET['key']]);
+                $user->history = $history;
+                $user->save();
+                FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Datensatz erfolgreich gelöscht.');
+                Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
+            }
+        }
+    }
+
     private function postHistory(){
-        FlashMessage::add(FlashMessage::TYPE_INFO, 'Historie wurde geposted.');
-        //HIER DEN FORMULARPOST DER HISTORIE VERWARBEITEN
+        /* @var User $user */
+        $user = $this->data['user'];
+
+        foreach($_POST['history'] as &$item){
+            $item = array_map('sanitize_text_field', $item);
+        }
+
+        $user->history = $_POST['history'];
+        $user->save();
+
+        FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Historie wurde erfolgreich gespeichert.');
+        Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
     }
 
 
@@ -122,5 +151,16 @@ class MainController extends AbstractController
             return $_GET[$key];
         }
         return $default;
+    }
+
+    private function getTabMethod($requestType){
+        if(isset($this->data['tab']) && !empty($this->data['tab'])) {
+            $method = strtolower($requestType) . strtoupper(substr($this->data['tab'], 0, 1)) . substr($this->data['tab'], 1);
+            if (method_exists($this, $method)) {
+                return $method;
+            }
+        }
+
+        return false;
     }
 }
