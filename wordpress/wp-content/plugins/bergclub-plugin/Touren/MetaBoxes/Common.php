@@ -16,6 +16,7 @@ class Common extends MetaBox
     const DATE_FROM_IDENTIFIER = '_date-from';
     const DATE_TO_IDENTIFIER = '_date-to';
     const LEADER = '_leader';
+    const CO_LEADER = '_co-leader';
 
     public function getUniqueFieldNames()
     {
@@ -35,7 +36,7 @@ class Common extends MetaBox
 
     public function getUniqueMetaBoxName()
     {
-        return 'common-metadata';
+        return 'common';
     }
 
     public function getUniqueMetaBoxTitle()
