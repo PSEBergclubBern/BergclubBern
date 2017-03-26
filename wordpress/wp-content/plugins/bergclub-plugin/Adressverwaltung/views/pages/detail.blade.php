@@ -33,3 +33,11 @@
         <a class="button-primary" href="?page={{ $_GET['page'] }}">&laquo; Zurück</a>
     @endif
 @endsection
+
+@section('scripts')
+    <script>
+        jQuery(document).ready(function($) {
+            jQuery(".datepicker").datepicker();
+        });
+    </script>
+@endsection
