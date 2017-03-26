@@ -40,7 +40,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Bergclub Bern</a>
+                <a class="navbar-brand" href="<?php echo home_url()?>">Bergclub Bern</a>
             </div>
             <?php /* Primary navigation */
             wp_nav_menu( array(

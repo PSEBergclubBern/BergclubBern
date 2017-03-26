@@ -76,12 +76,6 @@ function bcb_add_pages(){
         $service_page_content = 'Have you tried turn it off and on again?';
         wp_insert_post(bcb_get_page_data('Service', $service_page_content, 'service'));
     }
-
-    $page = get_page_by_path('login');
-    if (!$page) {
-        $login_page_content = 'Log yourself in';
-        wp_insert_post(bcb_get_page_data('Login', $login_page_content, 'login'));
-    }
 }
 
 
@@ -160,8 +154,6 @@ function bcb_add_header_navigation() {
         wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('mitgliedschaft', 12, $parentId));
 
         wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('dokumente-links', 13, $parentId));
-
-        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('login', 14));
     }
 }
 
