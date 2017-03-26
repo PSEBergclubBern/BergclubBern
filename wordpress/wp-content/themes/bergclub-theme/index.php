@@ -20,12 +20,13 @@ get_header() ?>
             </div>
         </div>
 
+        <img class="img-responsive header-logo"
+             src="<?php echo esc_url(get_template_directory_uri()); ?>/BergclubBernLogo.png" alt="Logo">
+
         <div class="row">
-            <img class="img-responsive header-logo"
-                 src="<?php echo esc_url(get_template_directory_uri()); ?>/BergclubBernLogo.png" alt="Logo">
 
             <div class="col-md-4 col-md-offset-8 newest-posts">
-
+                <div class="hidden-lg hidden-md mobile-placeholder">&nbsp;</div>
                 <div class="well well-sm">
                     <h3>Tourenberichte</h3>
                     <ul class="list-group">

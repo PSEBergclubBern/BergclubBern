@@ -73,7 +73,7 @@ function bcb_add_pages(){
 
     $page = get_page_by_path('service');
     if (!$page) {
-        $service_page_content = 'Have you tried turn it off and on again?';
+        $service_page_content = 'Have you tried turning it off and on again?';
         wp_insert_post(bcb_get_page_data('Service', $service_page_content, 'service'));
     }
 }
