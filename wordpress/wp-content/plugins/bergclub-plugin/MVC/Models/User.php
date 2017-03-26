@@ -291,7 +291,28 @@ class User implements IModelMultiple
     }
 
     private function setHistory($history){
-        $this->history = $history;
+        if(is_array($history)) {
+            $this->history = $history;
+        }
+    }
+
+    private function getHistory(){
+        $history = [];
+        foreach($this->history as $key => $item){
+            $role = Role::find($key);
+            if($role) {
+                $date_to = $item['date_to'];
+                if($date_to){
+                    $date_to = date("d.m.Y", strtotime($item['date_to']));
+                }
+                $history[$key] = [
+                    'name' => $role->getName(),
+                    'date_from' => date("d.m.Y", strtotime($item['date_from'])),
+                    'date_to' => $date_to,
+                ];
+            }
+        }
+        return $history;
     }
 
     /**
