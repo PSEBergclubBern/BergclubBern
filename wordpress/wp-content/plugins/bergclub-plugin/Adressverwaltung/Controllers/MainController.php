@@ -71,13 +71,27 @@ class MainController extends AbstractController
 
         }
 
+        //mache das hier, damit IDE erkennt dass es ein User objekt ist.
+        /* @var User $user */
+        $user = $this->data['user'];
 
         foreach($_POST as $key => $value){
-            $this->data['user']->$key = $value;
+            $user->$key = $value;
         }
 
-        $this->data['user']->save();
+        $role = Role::find($_POST['address_type']);
+        if($role) {
+            $user->addRole($role);
+        }else{
+            print $_POST['address_type'];
+            exit;
+        }
+
+        $user->save();
         FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Benutzerdaten wurden erfolgreich gespeichert.');
+
+        //weiterleitung auf show modus
+        Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
     }
 
     private function postFunctions(){

@@ -77,6 +77,31 @@ class User implements IModelMultiple
     private $spouse;
 
     /**
+     * @var array an array that holds the history of the user.
+     * The key is the role slug. It always has a valid date_from. When date_to is null, this means that the user has the
+     * role at the time.
+     *
+     * Example:
+     * <code>
+     * $history = [
+     *   'bcb_intressent' => [
+     *     'date_from' => '2016-10-04',
+     *     'date_to' => '2016-11-13',
+     *   ],
+     *   'bcb_aktivmitglied' => [
+     *     'date_from' => '2016-11-13',
+     *     'date_to' => null,
+     *   ],
+     *   'bcb_leiter' => [
+     *      'date_from' => '2017-03-26',
+     *      'date_to' => null,
+     *   ],
+     * ];
+     * </code>
+     */
+    private $history = [];
+
+    /**
      * User constructor.
      *
      * @param array $data an array that contains the data associated with the user. Will be added to the $data field.
@@ -130,13 +155,16 @@ class User implements IModelMultiple
             $user = new User((array) $item->data);
             $metadata = get_user_meta($item->ID);
             foreach ($metadata as $key => $arr) {
-                $user->$key = $arr[0];
+                if($key == 'history') {
+                    $arr[0] = unserialize($arr[0]);
+                }
+                $user->__set($key, $arr[0]);
             }
 
             foreach($item->roles as $wpRole){
                 $role = Role::find($wpRole);
                 if($role){
-                    $user->addRole($role);
+                    $user->addRole($role, false);
                 }
             }
 
@@ -170,6 +198,8 @@ class User implements IModelMultiple
         foreach($this->data as $key => $value){
             update_user_meta($this->main['ID'], $key, $value);
         }
+
+        update_user_meta($this->main['ID'], 'history', $this->history);
 
         $user = get_user_by('ID', $this->main['ID'] );
 
@@ -220,15 +250,18 @@ class User implements IModelMultiple
      *
      * @param Role $role the role to add
      */
-    public function addRole( Role $role ){
-        if($role->getType() == Role::TYPE_ADDRESS && $this->getAddressRole()){
+    public function addRole( Role $role , $updateHistory = true){
+        if($role->getType() == Role::TYPE_ADDRESS && $this->hasAddressRole()){
             if($role->getKey() != $this->getAddressRole()->getKey()){
-                $this->removeRole($role);
+                $this->removeRole($this->getAddressRole());
             }
         }
 
-        if ( $role->getType() != Role::TYPE_SYSTEM){
+        if ( !isset($this->roles[$role->getKey()]) && $role->getType() != Role::TYPE_SYSTEM){
             $this->roles[$role->getKey()] = $role;
+            if($updateHistory) {
+                $this->openHistory($role);
+            }
         }
     }
 
@@ -237,11 +270,28 @@ class User implements IModelMultiple
      *
      * @param Role $role the role to add
      */
-    public function removeRole( $role ){
+    public function removeRole( $role , $updateHistory = true){
         if(isset($this->roles[$role->getKey()])) {
             unset($this->roles[$role->getKey()]);
             $this->deletedRoles[]=$role;
+            if($updateHistory) {
+                $this->closeHistory($role);
+            }
         }
+    }
+
+    private function openHistory(Role $role){
+        if(!isset($this->history[$role->getKey()])) {
+            $this->history[$role->getKey()] = ['date_from' => date('Y-m-d'), 'date_to' => null];
+        }
+    }
+
+    private function closeHistory(Role $role){
+        $this->history[$role->getKey()]['date_to'] = date('Y-m-d');
+    }
+
+    private function setHistory($history){
+        $this->history = $history;
     }
 
     /**
@@ -323,6 +373,21 @@ class User implements IModelMultiple
         $role = $this->getAddressRole();
         if($role){
             return $role->getName();
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the key of the address role assigned to the user.
+     * Use $user->address_role_key to call this from outside the class over the magic get method.
+     *
+     * @return string
+     */
+    private function getAddressRoleKey(){
+        $role = $this->getAddressRole();
+        if($role){
+            return $role->getKey();
         }
 
         return null;
