@@ -30,7 +30,7 @@ class MainController extends AbstractController
             if($user) {
                 $this->data['title'] = $user->last_name . ' ' . $user->first_name;
                 //Domi
-                $this->data['functions'] = $user->getFunctionaryRoles();
+                $this->data['functions'] = $user->functionary_roles;
                 $this->data['address_roles'] = Role::findByType('address');
 
             }else{
