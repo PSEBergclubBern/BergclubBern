@@ -5,6 +5,7 @@ namespace BergclubPlugin\Adressverwaltung\Controllers;
 use BergclubPlugin\FlashMessage;
 use BergclubPlugin\MVC\AbstractController;
 use BergclubPlugin\MVC\Helpers;
+use BergclubPlugin\MVC\Models\Role;
 use BergclubPlugin\MVC\Models\User;
 
 class MainController extends AbstractController
@@ -28,6 +29,9 @@ class MainController extends AbstractController
 
             if($user) {
                 $this->data['title'] = $user->last_name . ' ' . $user->first_name;
+                //Domi
+                $this->data['functions'] = $user->getFunctionaryRoles();
+                $this->data['address_roles'] = Role::findByType('address');
 
             }else{
                 FlashMessage::add(FlashMessage::TYPE_ERROR, 'Der gewünschte Datensatz existiert nicht.');
@@ -58,8 +62,22 @@ class MainController extends AbstractController
 
 
     private function postData(){
-        FlashMessage::add(FlashMessage::TYPE_INFO, 'Benutzerdaten wurden geposted.');
-        //HIER DEN FORMULARPOST DER BENUTZERDATEN VERWARBEITEN
+
+
+
+        if ( true ){
+
+
+
+        }
+
+
+        foreach($_POST as $key => $value){
+            $this->data['user']->$key = $value;
+        }
+
+        $this->data['user']->save();
+        FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Benutzerdaten wurden erfolgreich gespeichert.');
     }
 
     private function postFunctions(){
