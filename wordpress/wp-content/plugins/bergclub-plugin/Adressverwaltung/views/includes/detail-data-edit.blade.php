@@ -5,7 +5,7 @@
         <td>
             <select name="address_type">
                 @foreach($address_roles as $role)
-                    <option value="{{ $role->getKey() }}" @if($user->address_role_key==$role->getKey()) selected @endif>{{ $role->getName() }}</option>
+                    <option value="{{ $role->getKey() }}" @if($role->getKey() == $user->address_role_key) selected @endif>{{ $role->getName() }}</option>
                 @endforeach
             </select>
         </td>
