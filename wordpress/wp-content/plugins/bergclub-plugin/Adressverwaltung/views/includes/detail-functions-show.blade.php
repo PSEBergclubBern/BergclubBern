@@ -1,4 +1,4 @@
-<table id="functions">
+<table class="edit-list">
     @forelse($user->functionary_roles as $role)
         <tr><td>{{  $role->getName() }}</td></tr>
     @empty

@@ -1,5 +1,5 @@
 <form method="post">
-    <table id="history">
+    <table class="edit-list">
         <thead>
         <tr>
             <th>Rolle</th>

@@ -29,9 +29,13 @@ class MainController extends AbstractController
 
             if($user) {
                 $this->data['title'] = $user->last_name . ' ' . $user->first_name;
-                //Domi
-                $this->data['functions'] = $user->functionary_roles;
-                $this->data['address_roles'] = Role::findByType('address');
+                if($this->data['tab'] == 'data' && $this->data['edit']){
+                    $this->data['address_roles'] = Role::findByType(Role::TYPE_ADDRESS);
+                }elseif($this->data['tab'] == 'functions' && $this->data['edit']) {
+                    $this->data['user_functionary_roles'] = $this->data['user']->functionary_roles;
+                    $this->data['functionary_roles'] = Role::findByType(Role::TYPE_FUNCTIONARY);
+                }
+
 
             }else{
                 FlashMessage::add(FlashMessage::TYPE_ERROR, 'Der gewünschte Datensatz existiert nicht.');
@@ -98,8 +102,29 @@ class MainController extends AbstractController
     }
 
     private function postFunctions(){
-        FlashMessage::add(FlashMessage::TYPE_INFO, 'Funktionsrollen wurden geposted.');
-        //HIER DEN FORMULARPOST DER FUNKTIONSROLLEN VERARBEITEN
+        /* @var User $user */
+        $user = $this->data['user'];
+
+        foreach($user->functionary_roles as $role){
+            /* @var Role $role */
+            if(!isset($_POST['functionary_roles']) || !in_array($role->getKey(), $_POST['functionary_roles'])){
+                $user->removeRole($role);
+            }
+        }
+
+        if(isset($_POST['functionary_roles'])) {
+            foreach ($_POST['functionary_roles'] as $slug) {
+                $role = Role::find($slug);
+                if ($role) {
+                    $user->addRole($role);
+                }
+            }
+        }
+
+        $user->save();
+
+        FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Funktionsrollen wurden erfolgreich gespeichert.');
+        Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
     }
 
     private function getHistory(){

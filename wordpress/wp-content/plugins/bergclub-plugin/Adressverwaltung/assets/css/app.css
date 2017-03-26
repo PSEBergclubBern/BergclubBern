@@ -30,20 +30,20 @@ table.user-detail tr td:first-child{
     padding-right: 20px;
 }
 
-#history{
+.edit-list{
     border-spacing: 0;
     font-size: 1.2em;
 }
 
-#history th{
+.edit-list th{
     text-align: left;
     padding: 5px 10px;
 }
 
-#history td{
+.edit-list td{
     padding: 10px;
 }
 
-#history tbody tr:nth-child(odd){
+.edit-list tbody tr:nth-child(odd){
     background-color: #f9f9f9;
 }
