@@ -497,6 +497,12 @@ function bcb_create_posts_mitteilungen()
     }
 }
 
+function add_query_vars_filter( $vars ){
+    $vars[] = "jugend";
+    return $vars;
+}
+add_filter( 'query_vars', 'add_query_vars_filter' );
+
 add_filter('init', 'bcb_create_posts_mitteilungen');
 
 add_filter('show_admin_bar', '__return_false');

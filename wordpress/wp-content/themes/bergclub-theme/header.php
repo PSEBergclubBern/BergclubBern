@@ -19,17 +19,18 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="<?php echo esc_url( get_template_directory_uri() ); ?>/style.css">
+    <link rel="stylesheet" href="<?php echo esc_url( get_template_directory_uri() ); ?>/jugend-style.css">
     <link rel="stylesheet" href="<?php echo esc_url( get_template_directory_uri() ); ?>/carousel.css">
     <link rel="profile" href="http://gmpg.org/xfn/11">
     <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
     <!--[if lt IE 9]>
-    <script src="<?php echo esc_url( get_template_directory_uri() ); ?>/js/html5.js"></script>
+    <script src="<?php echo  esc_url( get_template_directory_uri() ); ?>/js/html5.js"></script>
     <![endif]-->
     <?php wp_head(); ?>
 </head>
 
 <body <?php body_class(); ?>>
-<div id="page" class="hfeed site">
+<div id="page" class="hfeed site <?php echo (get_query_var("jugend", "false") == "false") ? "" : "jugend" ?>">
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
@@ -40,7 +41,9 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="<?php echo home_url()?>">Bergclub Bern</a>
+                <a class="navbar-brand" href="<?php echo (get_query_var("jugend", "false") == "false") ? esc_url( add_query_arg( 'jugend', 'true' )) : home_url()?>">
+                    <?php echo (get_query_var("jugend", "false") == "false") ? "Bergclub Jugend" : "Bergclub Bern" ?>
+                </a>
             </div>
             <?php /* Primary navigation */
             wp_nav_menu( array(
