@@ -22,7 +22,7 @@ use BergclubPlugin\MVC\Helpers;
  * @see User for how the roles are added, removed and managed.
  * @see ../Adressverwaltung/activate.php for the generated roles and capabilities for Berg Club Bern.
  */
-class Role implements IModelMultiple
+class Role implements IModel
 {
     const TYPE_SYSTEM = 'system';
     const TYPE_ADDRESS = 'address';
@@ -152,12 +152,22 @@ class Role implements IModelMultiple
      */
     public function save()
     {
-        add_role($this->key, $this->name, $this->capabilities);
+        $wpRole = get_role($this->key);
+        if(!$wpRole){
+            add_role($this->key, $this->name, $this->capabilities);
+        }else{
+            foreach($this->getCapabilities() as $capability => $grant){
+                $wpRole->add_cap($capability, $grant);
+            }
+        }
+
+
         if($this->type != self::TYPE_SYSTEM){
             $customRoles = Option::get('roles');
             $customRoles[$this->type][$this->key] = $this->name;
             Option::set('roles', $customRoles);
         }
+
     }
 
     /**

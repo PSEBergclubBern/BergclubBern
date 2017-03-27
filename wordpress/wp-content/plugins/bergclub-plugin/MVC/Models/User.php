@@ -16,7 +16,7 @@ use BergclubPlugin\MVC\MassAssignmentException;
  *
  * @see Role for more information about the custom roles for Berg Club Bern.
  */
-class User implements IModelMultiple
+class User implements IModel
 {
     const LEAVING_REASON_1 = 'Ausgetreten';
     const LEAVING_REASON_2 = 'Verstorben';
