@@ -13,10 +13,13 @@ use BergclubPlugin\FlashMessage;
 
 class Common extends MetaBox
 {
-    const DATE_FROM_IDENTIFIER = '_date-from';
-    const DATE_TO_IDENTIFIER = '_date-to';
+    const DATE_FROM_IDENTIFIER = '_dateFrom';
+    const DATE_TO_IDENTIFIER = '_dateTo';
     const LEADER = '_leader';
-    const CO_LEADER = '_co-leader';
+    const CO_LEADER = '_coLeader';
+    const SIGNUP_UNTIL = '_signupUntil';
+    const SIGNUP_TO = '_signupTo';
+    const SLEEPOVER = '_sleepOver';
 
     public function getUniqueFieldNames()
     {
@@ -24,6 +27,10 @@ class Common extends MetaBox
             self::DATE_FROM_IDENTIFIER,
             self::DATE_TO_IDENTIFIER,
             self::LEADER,
+            self::CO_LEADER,
+            self::SIGNUP_UNTIL,
+            self::SIGNUP_TO,
+            self::SLEEPOVER,
         );
     }
 

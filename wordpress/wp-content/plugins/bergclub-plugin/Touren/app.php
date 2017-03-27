@@ -10,6 +10,8 @@ define("BCB_CUSTOM_POST_TYPE_TOUREN", "touren");
 
 $metaBoxes = array(
     new \BergclubPlugin\Touren\MetaBoxes\Common(),
+    new \BergclubPlugin\Touren\MetaBoxes\MeetingPoint(),
+    new \BergclubPlugin\Touren\MetaBoxes\Tour(),
 );
 
 foreach ($metaBoxes as $metaBox) {

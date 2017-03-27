@@ -14,30 +14,31 @@ use BergclubPlugin\FlashMessage;
 class MeetingPoint extends MetaBox
 {
     const MEETPOINT = '_meetpoint';
-    const MEETPOINT_DIFFERENT = '_meetpoint-different';
-    const TIME = '_time';
-    const RETURNBACK = '_returnback';
+    const MEETPOINT_DIFFERENT = '_meetpointDifferent';
+    const TIME = '_meetingPointTime';
+    const RETURNBACK = '_returnBack';
+    const FOOD = '_food';
 
-
-/*
-- Kartenmaterial (Textfeld, single line)
-- URL Online Route (Textfeld, single line, z.B. schweizmobilplus.ch)
-- Verpflegung (Textfeld, multi line)
-- Übernachtung (Textfeld, multi line, wird nur angezeigt wenn Datum
-bis definiert und nicht gleich Datum von)
-- Kosten CHF (Textfeld, single line, Betrag #(#*).##)
-- Kosten für (Textfeld, single line)
-- Anmeldung bis (Datepicker)
-- Anmeldung an (Dropdown Leiter / Co-Leiter)
- */
     public function getUniqueFieldNames()
     {
-        return array();
+        return array(
+            self::MEETPOINT,
+            self::MEETPOINT_DIFFERENT,
+            self::TIME,
+            self::RETURNBACK,
+            self::FOOD,
+        );
     }
 
     protected function addAdditionalValuesForView()
     {
         return array(
+            'meetingPoints' => array(
+                array('id' => 1, 'text' => 'Bern HB, Treffpunkt'),
+                array('id' => 2, 'text' => 'Bern HB, auf dem Abfahrtsperron'),
+                array('id' => 3, 'text' => 'Bern, auf der Welle'),
+                array('id' => 0, 'text' => 'Anderer'),
+            ),
         );
     }
 

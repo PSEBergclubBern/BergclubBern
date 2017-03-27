@@ -15,29 +15,48 @@ class Tour extends MetaBox
 {
 
     const TYPE = '_type';
-    const REQUIREMENTS_TECHNICAL = '_requirements-technical';
-    const REQUIREMENTS_CONDITIONAL = '_requirements-conditional';
-    const RISE_UP_METERS = '_rise_up_meters';
-    const RISE_DOWN_METERS = '_rise_down_meters';
-    const PAUSE_TIME = '_pause';
-    const ADDITIONAL_INFO = '_additional-info';
+    const REQUIREMENTS_TECHNICAL = '_requirementsTechnical';
+    const REQUIREMENTS_CONDITIONAL = '_requirementsConditional';
+    const RISE_UP_METERS = '_riseUpMeters';
+    const RISE_DOWN_METERS = '_riseDownMeters';
+    const DURATION = '_duration';
+    const ADDITIONAL_INFO = '_additionalInfo';
     const TRAINING = '_training';
-    const JSEVENT = '_jsevent';
+    const JSEVENT = '_jsEvent';
     const PROGRAM = '_program';
     const EQUIPMENT = '_equipment';
-    const MAPMATERIAL = '_map-material';
-    const ONLINEMAP = '_onlinemap';
-
+    const MAPMATERIAL = '_mapMaterial';
+    const ONLINEMAP = '_onlineMap';
+    const COSTS = '_costs';
+    const COSTS_FOR = '_costsFor';
 
 
     public function getUniqueFieldNames()
     {
-        return array();
+        return array(
+            self::TYPE,
+            self::REQUIREMENTS_TECHNICAL,
+            self::REQUIREMENTS_CONDITIONAL,
+            self::RISE_UP_METERS,
+            self::RISE_DOWN_METERS,
+            self::DURATION,
+            self::ADDITIONAL_INFO,
+            self::TRAINING,
+            self::JSEVENT,
+            self::PROGRAM,
+            self::EQUIPMENT,
+            self::MAPMATERIAL,
+            self::ONLINEMAP,
+            self::COSTS,
+            self::COSTS_FOR
+        );
     }
 
     protected function addAdditionalValuesForView()
     {
         return array(
+            'tourenarten' => get_option('bcb_tourenarten'),
+            'conditions' => array(1 => 'Leicht', 2 => 'Mittel', 3 => 'Schwer'),
         );
     }
 
