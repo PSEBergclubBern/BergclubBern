@@ -243,3 +243,8 @@
       chdir: "{{ vccw.vagrant_dir }}"
       creates: Movefile
     when: is_command.stdout == "0" and is_movefile.stat.exists != true
+
+  - name: Set permalink structure
+    command: |
+      wp rewrite structure '{{ vccw.permalink_structure }}' --path={{ path }}
+    when: vccw.permalink_structure != ''
