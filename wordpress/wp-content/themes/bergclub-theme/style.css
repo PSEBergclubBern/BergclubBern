@@ -39,3 +39,15 @@ body {
 h3{
     margin: 5px 5px;
 }
+
+.noresize {
+    resize: none;
+}
+
+.vresize {
+    resize: vertical;
+}
+
+.hresize {
+    resize: horizontal;
+}
