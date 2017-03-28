@@ -38,7 +38,7 @@ get_header(); ?>
                             $query = new WP_Query(array('category_name' => 'mitteilungen', 'posts_per_page' => 1000));
                             // Start the loop. Retriev Posts in Category "Mitteilungen"
                             while ($query->have_posts()) : $query->the_post(); ?>
-                                <tr>
+                                <tr class="table-row-hover">
                                     <?php
                                     // Include the page content template.
                                     get_template_part('content', 'mitteilungen');

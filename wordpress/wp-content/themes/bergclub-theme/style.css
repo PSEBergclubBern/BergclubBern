@@ -38,3 +38,7 @@ h3{
 .page-content {
     padding: 0 20px;
 }
+.table-row-hover{
+    cursor: pointer;
+    cursor: hand;
+}
