@@ -170,3 +170,13 @@ function bcb_get_nav_menu_data($path, $position, $parentId = 0){
 }
 
 add_filter( 'init', 'bcb_add_header_navigation' );
+
+function add_jugend_to_href( $atts, $item, $args ) {
+    // check if the page is in the jugend-part
+    if(get_query_var("jugend", "false") == "true") {
+        $atts['href'] = add_query_arg( 'jugend', 'true', $atts['href']);
+    }
+    return $atts;
+}
+add_filter( 'nav_menu_link_attributes', 'add_jugend_to_href', 10, 3 );
+

@@ -41,23 +41,36 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="<?php echo (get_query_var("jugend", "false") == "false") ? esc_url( add_query_arg( 'jugend', 'true' )) : home_url()?>">
-                    <?php echo (get_query_var("jugend", "false") == "false") ? "Bergclub Jugend" : "Bergclub Bern" ?>
-                </a>
+                <?php if(get_query_var("jugend", "false") == "false"){
+                    echo "<a class='navbar-brand' href='" . home_url() . "'>Bergclub Bern</a>";
+                } else {
+                    echo "<a class='navbar-brand' href='" . esc_url( add_query_arg( 'jugend', 'true')) . "'>Bergclub Jugend</a>";
+                }
+                ?>
+
             </div>
-            <?php /* Primary navigation */
-            wp_nav_menu( array(
-                    'menu' => 'header-navigation',
-                    'theme_location'    => 'header-navigation',
-                    'depth'             => 2,
-                    'container'         => 'div',
-                    'container_class'   => 'collapse navbar-collapse',
-                    'container_id'      => 'navbar',
-                    'menu_class'        => 'nav navbar-nav',
-                    //Process nav menu using our custom nav walker
-                    'walker' => new wp_bootstrap_navwalker())
-            );
-            ?>
+            <div id="navbar" class="collapse navbar-collapse">
+                <?php /* Primary navigation */
+                wp_nav_menu( array(
+                        'menu' => 'header-navigation',
+                        'theme_location'    => 'header-navigation',
+                        'depth'             => 2,
+                        'container'         => false,
+                        'menu_class'        => 'nav navbar-nav',
+                        //Process nav menu using our custom nav walker
+                        'walker' => new wp_bootstrap_navwalker())
+                );
+                ?>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <?php if(get_query_var("jugend", "false") == "false") {
+                        echo "<li><a href='" . add_query_arg( 'jugend', 'true', home_url()) . "'>zur Jugend</a>";
+                    } else {
+                        echo "<li><a href='" .  home_url() . "'>zum Bergclub</a>";
+                    }
+                    ?>
+                </ul>
+            </div>
         </div>
     </nav>
 
