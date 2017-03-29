@@ -13,7 +13,17 @@ include 'contact-form-action.php';
 		<main id="main" class="site-main" role="main">
             <div class="container">
                 <div class="page-content">
+                    <div class="row">
+                    <?=$success?'
+                    <div class="col-sm-4 col-sm-offset-4 alert alert-success alert-dismissable fade in">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        Nachricht erfolgreich versendet.
+                    </div>
+                    ':'';?>
+                    </div>
+                    <div class="row">
                     <h1>Kontaktformular</h1>
+                    </div>
                     <br />
                     <form class="form-horizontal text-left" method="post">
                         <div class="form-group enquirytype">
