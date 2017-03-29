@@ -46,7 +46,7 @@ get_header() ?>
                         $query = new WP_Query(array('category_name' => 'mitteilungen', 'posts_per_page' => 5));
                         // Start the loop. Retriev Posts in Category "Mitteilungen"
                         while ($query->have_posts()) : $query->the_post(); ?>
-                            <a class="list-group-item" href="<?php echo get_post_permalink(); ?>"><?php the_title() ?></a>
+                            <a class="list-group-item" href="<?php the_permalink(); ?>"><?php the_title() ?></a>
                             <?php
                             // End the loop.
                         endwhile;

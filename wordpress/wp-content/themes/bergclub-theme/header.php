@@ -44,7 +44,7 @@
                 <?php if(get_query_var("jugend", "false") == "false"){
                     echo "<a class='navbar-brand' href='" . home_url() . "'>Bergclub Bern</a>";
                 } else {
-                    echo "<a class='navbar-brand' href='" . esc_url( add_query_arg( 'jugend', 'true')) . "'>Bergclub Jugend</a>";
+                    echo "<a class='navbar-brand' href='" . esc_url( add_query_arg( 'jugend', 'true', home_url())) . "'>Bergclub Jugend</a>";
                 }
                 ?>
 

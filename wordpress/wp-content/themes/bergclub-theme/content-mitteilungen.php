@@ -14,7 +14,7 @@
     </td>
     <td>
         <div class="th-inner">
-            <a href="<?php echo get_post_permalink(); ?>"><?php the_title() ?></a>
+            <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
         </div>
     </td>
     <td>
