@@ -2,8 +2,10 @@
 
 namespace BergclubPlugin\MVC\Models;
 
-
-interface IModelMultiple extends IModelSingle
+/**
+ * Should be implemented in Models which can have multiple representations.
+ */
+interface IModel extends IModelSingle
 {
     /**
      * Loads all models from the database.

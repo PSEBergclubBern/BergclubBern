@@ -13,7 +13,7 @@ class FormController extends AbstractController
 
     protected function first(){
         $this->data['title'] = "MVC Form";
-        $this->data['key'] = Option::find('mvcdemo_key')->getValue();
+        $this->data['key'] = Option::get('mvcdemo_key');
     }
 
     protected function get(){}
@@ -24,9 +24,7 @@ class FormController extends AbstractController
         if(empty($this->data['key'])){
             FlashMessage::add(FlashMessage::TYPE_ERROR, 'Kein Wert definiert.');
         }else{
-            $option = Option::find('mvcdemo_key');
-            $option->setValue($this->data['key']);
-            $option->save();
+            Option::set('mvcdemo_key', $this->data['key']);
             FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Wert gespeichert.');
         }
     }
