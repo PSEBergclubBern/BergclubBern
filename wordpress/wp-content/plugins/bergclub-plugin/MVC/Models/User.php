@@ -279,6 +279,16 @@ class User implements IModel
         }
     }
 
+    public function hasCapability($key){
+        foreach($this->getRoles() as $role){
+            /* @var Role $role */
+            if($role->hasCapability($key)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private function openHistory(Role $role){
         if(!isset($this->historie[$role->getKey()])) {
             $this->historie[$role->getKey()] = ['date_from' => date('Y-m-d'), 'date_to' => null];

@@ -152,6 +152,9 @@ class Role implements IModel
      */
     public function save()
     {
+        if($this->key=="bcb_administrator"){
+            $this->key="administrator";
+        }
         $wpRole = get_role($this->key);
         if(!$wpRole){
             add_role($this->key, $this->name, $this->capabilities);
@@ -286,6 +289,10 @@ class Role implements IModel
     public function getName()
     {
         return $this->name;
+    }
+
+    public function hasCapability($key){
+        return isset($this->capabilities[$key]) && $this->capabilities[$key];
     }
 
     /**

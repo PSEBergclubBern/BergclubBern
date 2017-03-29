@@ -28,7 +28,7 @@
                 <td>{{ $user->phone_mobile }}</td>
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->address_role_name }}</td>
-                <td class="dt-right"><a href="?page={{ $_GET['page'] }}&view=detail&id={{ $user->ID }}" title="Bearbeiten"><span class="dashicons dashicons-edit"></span></a> <a class="delete" data-id="{{ $user->ID }}" title="Löschen" href="javascript:void(0)"><span class="dashicons dashicons-trash"></span></a></td>
+                <td class="dt-right"><a href="?page={{ $_GET['page'] }}&view=detail&id={{ $user->ID }}" title="Anzeigen"><span class="dashicons dashicons-visibility"></span></a> @if($showEdit) <a class="delete" data-id="{{ $user->ID }}" title="Löschen" href="javascript:void(0)"><span class="dashicons dashicons-trash"></span></a> @endif</td>
             </tr>
         @endforeach
         </tbody>

@@ -21,7 +21,7 @@
                     @if($edit)
                         <input type="submit" class="button-primary" value="Speichern"/>
                         <a class="button-secondary" href="?page={{ $_GET['page'] }}&view={{ $_GET['view'] }}&tab={{ $tab }}&id={{ $_GET['id'] }}">Abbrechen</a>
-                    @else
+                    @elseif($showEdit)
                         <a class="button-primary" href="?page={{ $_GET['page'] }}&view={{ $_GET['view'] }}&tab={{ $tab }}&id={{ $_GET['id'] }}&edit=1">Bearbeiten</a>
                     @endif
                 </div>

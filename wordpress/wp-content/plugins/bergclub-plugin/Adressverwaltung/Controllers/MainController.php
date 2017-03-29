@@ -42,6 +42,8 @@ class MainController extends AbstractController
                 $this->view = 'pages.empty';
             }
         }
+
+        $this->checkRights();
     }
 
     protected function get(){
@@ -187,5 +189,27 @@ class MainController extends AbstractController
         }
 
         return false;
+    }
+
+    private function checkRights(){
+        $currentUser = User::findCurrent();
+        if(!$currentUser->hasCapability('adressen_read')){
+            FlashMessage::add(FlashMessage::TYPE_ERROR, 'Sie haben nicht die benötigten Rechte um diese Seite anzuzeigen.');
+            $this->abort();
+        }
+
+        $this->data['showEdit'] = false;
+        if($currentUser->hasCapability('adressen_edit')){
+            $this->data['showEdit'] = true;
+        }elseif(isset($_GET['action']) || isset($this->data['edit']) && $this->data['edit']){
+            FlashMessage::add(FlashMessage::TYPE_ERROR, 'Sie haben nicht die benötigten Rechte um diese Seite anzuzeigen.');
+            $this->abort();
+        }
+    }
+
+    private function abort(){
+        $this->data['title'] = "Ungenügende Rechte";
+        $this->view = "pages.empty";
+        $this->render();
     }
 }

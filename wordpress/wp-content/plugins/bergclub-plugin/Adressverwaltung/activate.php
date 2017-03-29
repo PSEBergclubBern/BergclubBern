@@ -99,19 +99,38 @@ foreach($functionaryRoles as $slug => $item){
 
 /*
  * The custom role `internet` will be the assigned to the administrator of Bergclub Bern, so we add all capabilities of
- * the default `administrator` role except for the capabilities needed for user management, because user management will
- * be done in "Adressverwaltung".
+ * our functionary roles and the default `administrator` role except for the capabilities needed for user management,
+ * because user management will be done in "Adressverwaltung".
  */
-$role = Role::find('internet');
+$roleInternet = new Role(Role::TYPE_FUNCTIONARY, 'internet', 'Internet');
 
-$roleAdministrator = get_role('administrator');
-foreach($roleAdministrator->capabilities as $capability => $grant){
-    if(substr($capability, -6) != "_users") {
-        $role->addCapability($capability, $grant);
+$roles = Role::findByType(Role::TYPE_FUNCTIONARY);
+foreach($roles as $role){
+    /* @var Role $role */
+    foreach($role->getCapabilities() as $capability => $grant){
+        $roleInternet->addCapability($capability, $grant);
     }
 }
 
-$role->save();
+$roleAdministrator = Role::find('administrator');
+foreach($roleAdministrator->getCapabilities() as $capability => $grant){
+    if(substr($capability, -6) != "_users") {
+        $roleInternet->addCapability($capability, $grant);
+    }
+}
+
+$roleInternet->save();
+
+/**
+ * Also add the custom capabilities to WP administrator
+ */
+foreach($roleInternet->getCapabilities() as $capability => $grant){
+    if(substr($capability, -6) != "_users") {
+        $roleAdministrator->addCapability($capability, $grant);
+    }
+}
+
+$roleAdministrator->save();
 
 /**
  * Create a user with login for each functionary role that has capabilities. Username and password will be the role slug
