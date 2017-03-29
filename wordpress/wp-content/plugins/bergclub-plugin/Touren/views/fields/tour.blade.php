@@ -3,7 +3,8 @@
         <tr>
             <th align="left">Art</th>
             <td>
-                <select name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::TYPE }}">
+                <select name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::TYPE }}"
+                        id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::TYPE }}">
                     @foreach($tourenarten as $key => $tourenart)
                         @if($key == $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::TYPE])
                             <option selected="selected" value="{{ $key }}">{{ $tourenart }}</option>
@@ -19,6 +20,20 @@
         <tr>
             <th align="left">Anforderungen technisch (Artabhängig)</th>
             <td>
+                <select name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::REQUIREMENTS_TECHNICAL }}"
+                        id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::REQUIREMENTS_TECHNICAL }}">
+                    @foreach($difficulties as $key => $diffArray)
+                        <optgroup id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::REQUIREMENTS_TECHNICAL }}-opt-{{ $key }}" label="{{ $diffArray['title'] }}">
+                            @foreach($diffArray['options'] as $value)
+                                @if($value == $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::REQUIREMENTS_TECHNICAL])
+                                    <option selected="selected" value="{{ $value }}">{{ $value }}</option>
+                                @else
+                                    <option value="{{ $value }}">{{ $value }}</option>
+                                @endif
+                            @endforeach
+                        </optgroup>
+                    @endforeach
+                </select>
             </td>
         </tr>
 
@@ -83,17 +98,10 @@
             <th align="left">Training</th>
             <td>
                 <fieldset>
-                    @if(0 == $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::TRAINING])
-                        <?php
-                        $noCheckBox = ' checked="checked"';
-                        $yesCheckBox = '';
-                        ?>
-                    @else
-                        <?php
-                        $noCheckBox = '';
-                        $yesCheckBox = ' checked="checked"';
-                        ?>
-                    @endif
+                    <?php
+                    $noCheckBox = (0 == $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::TRAINING ]) ? ' checked="checked"' : '';
+                    $yesCheckBox = ('' == $noCheckBox ) ? ' checked="checked"' : '';
+                    ?>
                     <input type="radio"
                            id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::TRAINING }}-NO"
                            name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::TRAINING }}"
@@ -112,17 +120,10 @@
             <th align="left">J+S Event</th>
             <td>
                 <fieldset>
-                    @if(0 == $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::JSEVENT])
-                        <?php
-                        $noCheckBox = ' checked="checked"';
-                        $yesCheckBox = '';
-                        ?>
-                    @else
-                        <?php
-                        $noCheckBox = '';
-                        $yesCheckBox = ' checked="checked"';
-                        ?>
-                    @endif
+                    <?php
+                    $noCheckBox = (0 == $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::JSEVENT ]) ? ' checked="checked"' : '';
+                    $yesCheckBox = ('' == $noCheckBox ) ? ' checked="checked"' : '';
+                    ?>
                     <input type="radio"
                            id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::JSEVENT }}-NO"
                            name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::JSEVENT }}"
@@ -141,14 +142,18 @@
         <tr>
             <th align="left">Programm</th>
             <td>
-
+                <textarea name="{{ BergclubPlugin\Touren\MetaBoxes\Tour::PROGRAM }}"
+                          id = "{{ BergclubPlugin\Touren\MetaBoxes\Tour::PROGRAM }}"
+                          >{{ $values[ BergclubPlugin\Touren\MetaBoxes\Tour::PROGRAM ] }}</textarea>
             </td>
         </tr>
 
         <tr>
             <th align="left">Ausrüstung</th>
             <td>
-
+                <textarea name="{{ BergclubPlugin\Touren\MetaBoxes\Tour::EQUIPMENT }}"
+                          id = "{{ BergclubPlugin\Touren\MetaBoxes\Tour::EQUIPMENT }}"
+                >{{ $values[ BergclubPlugin\Touren\MetaBoxes\Tour::EQUIPMENT ] }}</textarea>
             </td>
         </tr>
 
@@ -156,28 +161,44 @@
         <tr>
             <th align="left">Kartenmaterial</th>
             <td>
-
+                <input type="text"
+                       name="{{ BergclubPlugin\Touren\MetaBoxes\Tour::MAPMATERIAL }}"
+                       id = "{{ BergclubPlugin\Touren\MetaBoxes\Tour::MAPMATERIAL }}"
+                       value="{{ $values[ BergclubPlugin\Touren\MetaBoxes\Tour::MAPMATERIAL ] }}"
+                />
             </td>
         </tr>
 
         <tr>
             <th align="left">URL Online Route</th>
             <td>
-
+                <input type="text"
+                       name="{{ BergclubPlugin\Touren\MetaBoxes\Tour::ONLINEMAP }}"
+                       id = "{{ BergclubPlugin\Touren\MetaBoxes\Tour::ONLINEMAP }}"
+                       value="{{ $values[ BergclubPlugin\Touren\MetaBoxes\Tour::ONLINEMAP ] }}"
+                />
             </td>
         </tr>
 
         <tr>
             <th align="left">Kosten (CHF)</th>
             <td>
-
+                <input type="text"
+                       name="{{ BergclubPlugin\Touren\MetaBoxes\Tour::COSTS }}"
+                       id = "{{ BergclubPlugin\Touren\MetaBoxes\Tour::COSTS }}"
+                       value="{{ $values[ BergclubPlugin\Touren\MetaBoxes\Tour::COSTS ] }}"
+                />
             </td>
         </tr>
 
         <tr>
             <th align="left">Kostengrund</th>
             <td>
-
+                <input type="text"
+                       name="{{ BergclubPlugin\Touren\MetaBoxes\Tour::COSTS_FOR }}"
+                       id = "{{ BergclubPlugin\Touren\MetaBoxes\Tour::COSTS_FOR }}"
+                       value="{{ $values[ BergclubPlugin\Touren\MetaBoxes\Tour::COSTS_FOR ] }}"
+                />
             </td>
         </tr>
     </tbody>

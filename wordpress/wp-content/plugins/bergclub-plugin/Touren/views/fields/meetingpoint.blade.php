@@ -3,7 +3,8 @@
         <tr>
             <th align="left">Treffpunkt</th>
             <td>
-                <select name="{{ \BergclubPlugin\Touren\MetaBoxes\MeetingPoint::MEETPOINT }}">
+                <select name="{{ \BergclubPlugin\Touren\MetaBoxes\MeetingPoint::MEETPOINT }}"
+                        id="{{ \BergclubPlugin\Touren\MetaBoxes\MeetingPoint::MEETPOINT }}">
                     @foreach($meetingPoints as $meetingPoint)
                         @if($meetingPoint['id'] == $values[ \BergclubPlugin\Touren\MetaBoxes\MeetingPoint::MEETPOINT])
                             <option selected="selected" value="{{ $meetingPoint['id'] }}">{{ $meetingPoint['text'] }}</option>
@@ -30,6 +31,7 @@
             <th align="left">Zeit</th>
             <td>
                 <input type="text"
+                       class="bcb-time-picker-field"
                        id="{{ \BergclubPlugin\Touren\MetaBoxes\MeetingPoint::TIME }}"
                        name="{{ \BergclubPlugin\Touren\MetaBoxes\MeetingPoint::TIME }}"
                        value="{{ $values[ \BergclubPlugin\Touren\MetaBoxes\MeetingPoint::TIME ] }}"

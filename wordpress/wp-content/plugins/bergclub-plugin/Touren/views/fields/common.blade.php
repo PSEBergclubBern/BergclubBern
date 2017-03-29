@@ -40,7 +40,7 @@
             <th align="left">Co-Leiter</th>
             <td>
                 <select name="{{ \BergclubPlugin\Touren\MetaBoxes\Common::CO_LEADER }}">
-                    @foreach($leiter as $user)
+                    @foreach($coLeiter as $user)
                         @if($user->ID == $values[ \BergclubPlugin\Touren\MetaBoxes\Common::CO_LEADER])
                             <option selected="selected" value="{{ $user->ID }}">{{ $user->last_name }} {{ $user->first_name }}</option>
                         @else
@@ -59,7 +59,7 @@
                        class="bcb-date-picker-field"
                        id="{{ \BergclubPlugin\Touren\MetaBoxes\Common::SIGNUP_UNTIL }}"
                        name="{{ \BergclubPlugin\Touren\MetaBoxes\Common::SIGNUP_UNTIL }}"
-                       value="{{ $values[ \BergclubPlugin\Touren\MetaBoxes\Common::SIGNUP_TO ] }}">
+                       value="{{ $values[ \BergclubPlugin\Touren\MetaBoxes\Common::SIGNUP_UNTIL ] }}">
             </td>
         </tr>
 
@@ -67,7 +67,7 @@
             <th align="left">Anmeldung an</th>
             <td>
                 <select name="{{ \BergclubPlugin\Touren\MetaBoxes\Common::SIGNUP_TO }}">
-                    @foreach($leiter as $user)
+                    @foreach($signUpTo as $user)
                         @if($user->ID == $values[ \BergclubPlugin\Touren\MetaBoxes\Common::SIGNUP_TO])
                             <option selected="selected" value="{{ $user->ID }}">{{ $user->last_name }} {{ $user->first_name }}</option>
                         @else

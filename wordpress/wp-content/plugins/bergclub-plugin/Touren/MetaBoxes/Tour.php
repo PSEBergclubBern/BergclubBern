@@ -54,9 +54,15 @@ class Tour extends MetaBox
 
     protected function addAdditionalValuesForView()
     {
+        $difficulty = array();
+        foreach (get_option('bcb_tourenarten') as $key => $tourenart) {
+            $difficulty[$key]['options'] = get_option($key);
+            $difficulty[$key]['title'] = $tourenart;
+        }
         return array(
-            'tourenarten' => get_option('bcb_tourenarten'),
-            'conditions' => array(1 => 'Leicht', 2 => 'Mittel', 3 => 'Schwer'),
+            'tourenarten'   => get_option('bcb_tourenarten'),
+            'conditions'    => array(1 => 'Leicht', 2 => 'Mittel', 3 => 'Schwer'),
+            'difficulties'  => $difficulty,
         );
     }
 

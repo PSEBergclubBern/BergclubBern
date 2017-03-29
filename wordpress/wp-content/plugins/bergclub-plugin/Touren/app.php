@@ -31,6 +31,14 @@ add_action('admin_enqueue_scripts', function() {
         false,
         true
     );
+    wp_enqueue_style(
+        'bcb-timepicker-style',
+        plugins_url('views/jquery.timepicker.css', __FILE__)
+    );
+    wp_enqueue_script(
+        'bcb-timepicker-script',
+        plugins_url('views/jquery.timepicker.min.js', __FILE__)
+    );
 });
 
 

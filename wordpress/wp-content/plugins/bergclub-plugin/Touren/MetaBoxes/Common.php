@@ -36,8 +36,17 @@ class Common extends MetaBox
 
     protected function addAdditionalValuesForView()
     {
+        $roles = wp_get_current_user()->roles;
+        if (in_array('bcb_leiter', $roles)) {
+            $leiter = array(wp_get_current_user());
+        } else {
+            $leiter = get_users(array('role' => 'bcb_leiter'));
+        }
+
         return array(
-            'leiter' => \get_users(array('role_in' => 'Leiter')),
+            'leiter'   => $leiter,
+            'coLeiter' => get_users(),
+            'signUpTo' => get_users(),
         );
     }
 
@@ -57,9 +66,17 @@ class Common extends MetaBox
         if (array_key_exists(self::DATE_FROM_IDENTIFIER, $values)) {
             $date = \DateTime::createFromFormat("d.m.Y", $values[self::DATE_FROM_IDENTIFIER]);
             if ($date === false) {
-                $errors[] = 'Datum ist ungültig';
+                $errors[] = '"Datum von" ist ungültig';
             }
         }
+
+        if (array_key_exists(self::DATE_TO_IDENTIFIER, $values) && !empty($values[self::DATE_TO_IDENTIFIER])) {
+            $date = \DateTime::createFromFormat("d.m.Y", $values[self::DATE_TO_IDENTIFIER]);
+            if ($date === false) {
+                $errors[] = '"Datum bis" ist ungültig';
+            }
+        }
+
 
         foreach ($errors as $errorMsg) {
             FlashMessage::add(FlashMessage::TYPE_ERROR, $errorMsg);

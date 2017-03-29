@@ -37,7 +37,7 @@ class MeetingPoint extends MetaBox
                 array('id' => 1, 'text' => 'Bern HB, Treffpunkt'),
                 array('id' => 2, 'text' => 'Bern HB, auf dem Abfahrtsperron'),
                 array('id' => 3, 'text' => 'Bern, auf der Welle'),
-                array('id' => 0, 'text' => 'Anderer'),
+                array('id' => 99, 'text' => 'Anderer'),
             ),
         );
     }
@@ -61,5 +61,4 @@ class MeetingPoint extends MetaBox
         }
         return count($errors) == 0;
     }
-
 }
