@@ -71,16 +71,6 @@ class MainController extends AbstractController
 
 
     private function postData(){
-
-
-
-        if ( true ){
-
-
-
-        }
-
-        //mache das hier, damit IDE erkennt dass es ein User objekt ist.
         /* @var User $user */
         $user = $this->data['user'];
 
