@@ -67,7 +67,8 @@ abstract class MetaBox
                 $this->getUniqueMetaBoxName(),
                 $this->getUniqueMetaBoxTitle(),
                 [$this, 'html'],
-                $screen
+                $screen,
+                'bcb-metabox-holder'
             );
         }
     }

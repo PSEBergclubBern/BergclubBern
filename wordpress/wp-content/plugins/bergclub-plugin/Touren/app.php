@@ -81,9 +81,17 @@ function bcb_register_my_tourenverwaltung() {
         "rewrite" => array( "slug" => "tourenverwaltung", "with_front" => true ),
         "query_var" => true,
         "supports" => array( "title", "editor", "thumbnail", "custom-fields" ),
+        "menu_position" => 5, //below Posts according to https://codex.wordpress.org/Function_Reference/register_post_type
     );
 
     register_post_type( BCB_CUSTOM_POST_TYPE_TOUREN, $args );
 }
 
 add_action( 'init', 'bcb_register_my_tourenverwaltung' );
+
+
+function bcb_create_new_metabox_context( $post ) {
+    do_meta_boxes( null, 'bcb-metabox-holder', $post );
+}
+
+add_action( 'edit_form_after_title', 'bcb_create_new_metabox_context' );
