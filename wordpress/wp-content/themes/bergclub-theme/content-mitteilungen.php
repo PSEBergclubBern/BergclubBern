@@ -9,18 +9,15 @@
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-    <?php
-    // Post thumbnail.
-    twentyfifteen_post_thumbnail();
-    ?>
     <td>
         <?php echo get_the_date(); ?>
     </td>
     <td>
-        <a href="<?php echo get_post_permalink(); ?>"><?php the_title() ?></a>
+        <div class="th-inner">
+            <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
+        </div>
     </td>
     <td>
-        <?php the_author() ?>
+        <?php the_author(); ?>
     </td>
-
 </article><!-- #post-## -->

@@ -15,17 +15,18 @@ get_header() ?>
             <div class="carousel-inner" role="listbox">
                 <div class="item active"></div>
                 <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
             </div>
         </div>
 
+        <img class="img-responsive header-logo"
+             src="<?php echo esc_url(get_template_directory_uri()); ?>/BergclubBernLogo.png" alt="Logo">
 
         <div class="row">
-            <div class="col-md-4 logo-col">
-                <img class="img-responsive header-logo" src="<?php echo esc_url( get_template_directory_uri() ); ?>/BergclubBernLogo.png" alt="Logo">
-            </div>
 
-            <div class="col-md-4 col-md-offset-4 newest-posts">
-
+            <div class="col-md-4 col-md-offset-8 newest-posts">
+                <div class="hidden-lg hidden-md mobile-placeholder">&nbsp;</div>
                 <div class="well well-sm">
                     <h3>Tourenberichte</h3>
                     <ul class="list-group">
@@ -39,10 +40,19 @@ get_header() ?>
 
                 <div class="well well-sm">
                     <h3>Mitteilungen</h3>
+
                     <ul class="list-group">
-                        <a class="list-group-item">Mitteilung 1</a>
-                        <a class="list-group-item">Mitteilung 2</a>
-                        <a class="list-group-item">Mitteilung 3</a>
+                        <?php
+                        $query = new WP_Query(array('category_name' => 'mitteilungen', 'posts_per_page' => 5));
+                        // Start the loop. Retriev Posts in Category "Mitteilungen"
+                        while ($query->have_posts()) : $query->the_post(); ?>
+                            <a class="list-group-item" href="<?php the_permalink(); ?>"><?php the_title() ?></a>
+                            <?php
+                            // End the loop.
+                        endwhile;
+                        wp_reset_postdata();
+                        ?>
+
                     </ul>
                 </div>
 
@@ -57,7 +67,8 @@ get_header() ?>
                 <!---->
                 <!--                    <!-- Display the date (November 16th, 2009 format) and a link to other posts by this posts author. -->
                 <!---->
-                <!--                    <!-- <small>--><?php ////the_time('F jS, Y'); ?><!--<!-- by --><?php ////the_author_posts_link(); ?><!--<!--</small>-->
+                <!--                    <!-- <small>--><?php ////the_time('F jS, Y'); ?><!--<!-- by -->
+                <?php ////the_author_posts_link(); ?><!--<!--</small>-->
                 <!---->
                 <!---->
                 <!--                    <!-- Display the Post's content in a div box. -->
@@ -69,7 +80,8 @@ get_header() ?>
                 <!---->
                 <!--                    <!-- Display a comma separated list of the Post's Categories. -->
                 <!---->
-                <!--                    <p class="postmetadata">--><?php //_e( 'Posted in' ); ?><!-- --><?php //the_category( ', ' ); ?><!--</p>-->
+                <!--                    <p class="postmetadata">--><?php //_e( 'Posted in' ); ?><!-- -->
+                <?php //the_category( ', ' ); ?><!--</p>-->
                 <!--                </div> <!-- closes the first div box -->
                 <!--            --><?php //endwhile; endif; ?>
 
@@ -77,7 +89,5 @@ get_header() ?>
 
         </div>
     </div><!-- /.container-fluid -->
-
-    <script>jQuery('.carousel').carousel();</script>
 
 <?php get_footer() ?>

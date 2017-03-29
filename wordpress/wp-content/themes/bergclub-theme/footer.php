@@ -13,9 +13,15 @@
 	</div><!-- .site-content -->
 
     <nav class="navbar navbar-inverse navbar-fixed-bottom">
-        <div class="container">
-            <div class="navbar-footer">
-                <p class="text-muted"><span class="glyphicon glyphicon-copyright-mark" aria-hidden="true"></span> Bergclub Bern</p>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-offset-1">
+                    <div class="navbar-footer">
+                        <div class="footer-text" style="padding-top: 10px;padding-bottom: 10px;">
+                            <p class="text-muted"><span class="glyphicon glyphicon-copyright-mark" aria-hidden="true"></span> Bergclub Bern</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
