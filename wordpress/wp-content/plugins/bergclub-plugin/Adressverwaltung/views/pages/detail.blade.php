@@ -53,75 +53,43 @@
                 var $selected = jQuery("#address_type").val();
 
                 if ( $selected == 'bcb_institution' || $selected == 'bcb_inserent' ){
-                    hidePhonePrivate();
-                    hideBirthdate();
-                    showCompany();
-                    hideEhemalig();
+                    hide('phone_private');
+                    hide('birthdate');
+                    hide('leaving_reason');
+                    show('company');
                 }
 
                 else if ( $selected == 'bcb_interessent' || $selected == 'bcb_interessent_jugend' || $selected == 'bcb_aktivmitglied' || $selected == 'bcb_aktivmitglied_jugend' || $selected == 'bcb_ehrenmitglied' ){
-                    showPhonePrivate();
-                    showBirthdate();
-                    hideCompany();
-                    hideEhemalig();
+                    hide('leaving_reason');
+                    hide('company');
+                    show('phone_private');
+                    show('birthdate');
                 }
 
                 else if ($selected == 'bcb_ehemalig'){
-                    showPhonePrivate();
-                    showBirthdate();
-                    hideCompany();
-                    showEhemalig();
+                    hide('company');
+                    show('phone_private');
+                    show('birthdate');
+                    show('leaving_reason');
                 }
 
                 else{
-                    hidePhonePrivate();
-                    hideBirthdate();
-                    hideCompany();
-                    hideEhemalig();
+                    hide('leaving_reason');
+                    hide('company');
+                    hide('birthdate');
+                    hide('phone_private');
                 }
 
             }
 
-            function hideEhemalig(){
-                jQuery("#label_leaving_reason").hide();
-                jQuery("#input_leaving_reason").hide();
+            function show(field){
+                jQuery(".td-" + field).show();
             }
 
-            function showEhemalig(){
-                jQuery("#label_leaving_reason").show();
-                jQuery("#input_leaving_reason").show();
+            function hide(field){
+                jQuery(".td-" + field).hide();
+                jQuery("#" + field).val('');
             }
-
-            function hideCompany(){
-                jQuery("#label_company").hide();
-                jQuery("#input_company").hide();
-            }
-
-            function showCompany(){
-                jQuery("#label_company").show();
-                jQuery("#input_company").show();
-            }
-
-            function hidePhonePrivate(){
-                jQuery("#label_phone_private").hide();
-                jQuery("#input_phone_private").hide();
-            }
-
-            function showPhonePrivate(){
-                jQuery("#label_phone_private").show();
-                jQuery("#input_phone_private").show();
-            }
-
-            function hideBirthdate(){
-                jQuery("#label_birthdate").hide();
-                jQuery("#input_birthdate").hide();
-            }
-
-            function showBirthdate(){
-                jQuery("#label_birthdate").show();
-                jQuery("#input_birthdate").show();
-            }
-
         @endif
     </script>
 @endsection
