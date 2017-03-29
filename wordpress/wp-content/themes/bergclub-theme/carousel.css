@@ -51,16 +51,16 @@ html {
     background-size: cover;
 }
 .item:nth-child(1) {
-    background: url(Startseite1.jpg) no-repeat center center fixed;
+    background: url(Startseite1.jpg) no-repeat top center fixed;
 }
 .item:nth-child(2) {
-    background: url(Startseite2.jpg) no-repeat center center fixed;
+    background: url(Startseite2.jpg) no-repeat top center fixed;
 }
 .item:nth-child(3) {
-    background: url(Startseite3.jpg) no-repeat center center fixed;
+    background: url(Startseite3.jpg) no-repeat top center fixed;
 }
 .item:nth-child(4) {
-    background: url(Startseite4.jpg) no-repeat center center fixed;
+    background: url(Startseite4.jpg) no-repeat top center fixed;
 }
 .carousel {
     z-index: -99;
