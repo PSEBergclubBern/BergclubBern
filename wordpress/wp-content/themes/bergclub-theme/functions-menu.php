@@ -2,11 +2,6 @@
 
 //Creates initial pages with dummy content
 function bcb_add_pages(){
-    $page = get_page_by_path('ueber-uns');
-    if (!$page) {
-        $uber_uns_page_content = 'Text über uns';
-        wp_insert_post(bcb_get_page_data('Über uns', $uber_uns_page_content, 'ueber-uns'));
-    }
 
     $page = get_page_by_path('portrait');
     if (!$page) {
@@ -26,13 +21,6 @@ function bcb_add_pages(){
         $statuten_page_content = 'Dokumente';
         wp_insert_post(bcb_get_page_data('Statuten', $statuten_page_content, 'statuten'));
     }
-
-    $page = get_page_by_path('touren');
-    if (!$page) {
-        $touren_page_content = 'Tourenberichte';
-        wp_insert_post(bcb_get_page_data('Touren', $touren_page_content, 'touren'));
-    }
-
 
     $page = get_page_by_path('tourenprogramm');
     if (!$page) {
@@ -55,7 +43,6 @@ function bcb_add_pages(){
         wp_insert_post(bcb_get_page_data('Mitteilungen', $mitteilungen_page_content, 'mitteilungen'));
     }
 
-
     $page = get_page_by_path('kontakt');
     if (!$page) {
         wp_insert_post(bcb_get_page_data_from_title('Kontakt'));
@@ -69,12 +56,6 @@ function bcb_add_pages(){
     $page = get_page_by_path('dokumente-links');
     if (!$page) {
         wp_insert_post(bcb_get_page_data('Dokumente & Links', 'Dokumente & Links', 'dokumente-links'));
-    }
-
-    $page = get_page_by_path('service');
-    if (!$page) {
-        $service_page_content = 'Have you tried turning it off and on again?';
-        wp_insert_post(bcb_get_page_data('Service', $service_page_content, 'service'));
     }
 }
 
