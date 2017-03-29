@@ -67,7 +67,11 @@ theme: 'bergclub-theme'
 #
 options:
   blogdescription: Hello VCCW.
-  permalink_structure: /%category%/%postname%-%post_id%
+
+#
+# Permalink
+#
+permalink_structure: /%category%/%postname%-%post_id%
 
 #
 # WordPress Multisite Options
