@@ -75,7 +75,7 @@ function bcb_register_my_tourenverwaltung() {
         "has_archive" => false,
         "show_in_menu" => true,
         "exclude_from_search" => false,
-        "capability_type" => "post",
+        "capability_type" => ['tour', 'touren'],
         "map_meta_cap" => true,
         "hierarchical" => false,
         "rewrite" => array( "slug" => "tourenverwaltung", "with_front" => true ),
