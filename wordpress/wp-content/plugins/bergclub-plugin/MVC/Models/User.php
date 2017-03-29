@@ -101,6 +101,8 @@ class User implements IModel
      */
     private $historie = [];
 
+    private $allowWpUser = false;
+
     /**
      * User constructor.
      *
@@ -118,7 +120,7 @@ class User implements IModel
      * @return User|null returns User object if found, null otherwise.
      */
     public static function findCurrent(){
-        return self::find(get_current_user_id());
+        return self::find(get_current_user_id(), true);
     }
 
     /**
@@ -148,7 +150,7 @@ class User implements IModel
      * @param integer $id the user id
      * @return User|null returns the User object if found and if a address type role is assigned, null otherwise
      */
-    public static function find($id){
+    public static function find($id, $allowWpUsers = false){
         $item = get_user_by('ID', $id);
         if ($item) {
             $user = new User((array) $item->data);
@@ -163,11 +165,11 @@ class User implements IModel
             foreach($item->roles as $wpRole){
                 $role = Role::find($wpRole);
                 if($role){
-                    $user->addRole($role, false);
+                    $user->addRole($role, false, $allowWpUsers);
                 }
             }
 
-            if (!$user->hasAddressRole()) {
+            if (!$user->hasAddressRole() && !$allowWpUsers) {
                 return null;
             }
             return $user;
@@ -249,14 +251,14 @@ class User implements IModel
      *
      * @param Role $role the role to add
      */
-    public function addRole( Role $role , $updateHistory = true){
+    public function addRole( Role $role , $updateHistory = true, $allowSystemRoles = false){
         if($role->getType() == Role::TYPE_ADDRESS && $this->hasAddressRole()){
             if($role->getKey() != $this->getAddressRole()->getKey()){
                 $this->removeRole($this->getAddressRole());
             }
         }
 
-        if ( !isset($this->roles[$role->getKey()]) && $role->getType() != Role::TYPE_SYSTEM){
+        if ( !isset($this->roles[$role->getKey()]) && ($allowSystemRoles || $role->getType() != Role::TYPE_SYSTEM)){
             $this->roles[$role->getKey()] = $role;
             if($updateHistory) {
                 $this->openHistory($role);
