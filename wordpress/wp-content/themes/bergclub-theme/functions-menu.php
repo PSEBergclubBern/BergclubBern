@@ -2,37 +2,25 @@
 
 //Creates initial pages with dummy content
 function bcb_add_pages(){
-    $page = get_page_by_path('uber-uns');
-    if (!$page) {
-        $uber_uns_page_content = 'Text über uns';
-        wp_insert_post(bcb_get_page_data('Über uns', $uber_uns_page_content, 'uber-uns'));
-    }
 
     $page = get_page_by_path('portrait');
     if (!$page) {
-        $portrait_page_content = 'Wieder irgendwelcher Text über den Bergclub';
+        $portrait_page_content = 'Das Programm des Bergclubs Bern bietet eine breite Palette von attraktiven Touren für Erwachsene ab ca. 20 Jahren. Nebst Touren in Schnee, Fels und Eis runden zahlreiche Wanderungen sowie Skiwochen, Velotouren und gesellschaftliche Veranstaltungen das Angebot ab. Sportliche Betätigung, Freude an den Bergen, das gemeinsame Erlebnis in der Natur und viel Spass bilden den Grundstock für eindrückliche Tourenerlebnisse.
+        Das vielseitige Tourenprogramm ist auf die Bedürfnisse der Teilnehmerinnen und Teilnehmer abgestimmt und umfasst Touren in allen Schwierigkeitsgraden und für alle Altersstufen. Detailierte Angaben zur Länge der Tour und zu den technischen Schwierigkeiten erleichtern die Auswahl einer geeigneten Tour. Im Zweifelsfall geben die Tourenchefs gerne Auskunft. Nicht nur für Einsteigerinnen und Einsteiger, sondern auch für alle, die noch etwas dazulernen wollen, finden zudem zahlreiche Ausbildungstouren statt.';
         wp_insert_post(bcb_get_page_data('Portrait', $portrait_page_content, 'portrait'));
     }
 
     $page = get_page_by_path('vorstand');
     if (!$page) {
-        $vorstand_page_content = 'Hier kommen alle Vorstandsmitglieder';
+        $vorstand_page_content = 'Hast Du ein einen Tourenwunsch, Materialprobleme oder ein spezielles Anliegen? Nachfolgend sind alle Mitglieder des Vorstands und weitere wichtige Personen des Bergclub Bern aufgelistet, Du kannst direkt mit der verantwortlichen Person Kontakt aufnehmen.';
         wp_insert_post(bcb_get_page_data('Vorstand', $vorstand_page_content, 'vorstand'));
     }
 
     $page = get_page_by_path('statuten');
     if (!$page) {
-        $statuten_page_title = 'Statuten';
         $statuten_page_content = 'Dokumente';
         wp_insert_post(bcb_get_page_data('Statuten', $statuten_page_content, 'statuten'));
     }
-
-    $page = get_page_by_path('touren');
-    if (!$page) {
-        $touren_page_content = 'Tourenberichte';
-        wp_insert_post(bcb_get_page_data('Touren', $touren_page_content, 'touren'));
-    }
-
 
     $page = get_page_by_path('tourenprogramm');
     if (!$page) {
@@ -55,7 +43,6 @@ function bcb_add_pages(){
         wp_insert_post(bcb_get_page_data('Mitteilungen', $mitteilungen_page_content, 'mitteilungen'));
     }
 
-
     $page = get_page_by_path('kontakt');
     if (!$page) {
         wp_insert_post(bcb_get_page_data_from_title('Kontakt'));
@@ -69,18 +56,6 @@ function bcb_add_pages(){
     $page = get_page_by_path('dokumente-links');
     if (!$page) {
         wp_insert_post(bcb_get_page_data('Dokumente & Links', 'Dokumente & Links', 'dokumente-links'));
-    }
-
-    $page = get_page_by_path('service');
-    if (!$page) {
-        $service_page_content = 'Have you tried turn it off and on again?';
-        wp_insert_post(bcb_get_page_data('Service', $service_page_content, 'service'));
-    }
-
-    $page = get_page_by_path('login');
-    if (!$page) {
-        $login_page_content = 'Log yourself in';
-        wp_insert_post(bcb_get_page_data('Login', $login_page_content, 'login'));
     }
 }
 
@@ -111,12 +86,12 @@ function bcb_add_header_navigation() {
      * Deletes the main menu, used during menu development.
      * Comment out, when finished.
      */
-    /*
+/*
     if($menu_exists){
         wp_delete_nav_menu( $menu_name );
         $menu_exists = false;
     }
-    */
+*/
 
     // If it doesn't exist, let's create it.
     if( !$menu_exists){
@@ -160,8 +135,6 @@ function bcb_add_header_navigation() {
         wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('mitgliedschaft', 12, $parentId));
 
         wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('dokumente-links', 13, $parentId));
-
-        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('login', 14));
     }
 }
 
@@ -178,3 +151,13 @@ function bcb_get_nav_menu_data($path, $position, $parentId = 0){
 }
 
 add_filter( 'init', 'bcb_add_header_navigation' );
+
+function add_jugend_to_href( $atts, $item, $args ) {
+    // check if the page is in the jugend-part
+    if(get_query_var("jugend", "false") == "true") {
+        $atts['href'] = add_query_arg( 'jugend', 'true', $atts['href']);
+    }
+    return $atts;
+}
+add_filter( 'nav_menu_link_attributes', 'add_jugend_to_href', 10, 3 );
+
