@@ -17,7 +17,7 @@ abstract class Init
         $text = urldecode($text);
 
         // to utf8
-        $text = iconv('iso-8859-1', 'UTF-8', $text);
+        $text = mb_convert_encoding($text, 'UTF-8');
 
         // replace br
         $text = str_replace('<br>', '', $text);

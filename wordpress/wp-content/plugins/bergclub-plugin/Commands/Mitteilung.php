@@ -66,7 +66,8 @@ class Mitteilung extends Init
             \WP_CLI::runcommand("post create '" . $filename . "' " .
                 "--post_title='" . $assoc_args['title'] . "' " .
                 "--post_date='" . $assoc_args['date'] . "' " .
-                "--post_category=" . $this->categoryId
+                "--post_category=" . $this->categoryId . " " .
+                "--post_status='publish'"
             );
         }
 
