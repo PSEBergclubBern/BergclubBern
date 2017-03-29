@@ -5,7 +5,7 @@ $fields = [
     'gender' => 'Anrede',
     'first-name' => 'Vorname',
     'last-name' => 'Nachname',
-    'name-affix' => 'Namenszusatz',
+    'adress-affix' => 'Adresszusatz',
     'street' => 'Strasse',
     'zip' => 'PLZ',
     'city' => 'Ort',
@@ -38,12 +38,12 @@ if (!empty($_POST)){
     $subject = '[Bergclub-Admin][' . $_POST['enquirytype'] . '] Nachricht von ' . $_POST['last-name'] . ' ' . $_POST['first-name'];
 
     if (isset($_POST['email']) && !empty($_POST['email'])) {
-        $headers[] = 'From: ' . $_POST['last-name'] . ' ' . $_POST['first-name'] . ' <' . $_POST['email'] . '>';
+        $headers[] = 'Reply-To: ' . $_POST['last-name'] . ' ' . $_POST['first-name'] . ' <' . $_POST['email'] . '>';
     }
 
     foreach($_POST as $key => $value){
         if (isset($_POST[$key]) && !empty($_POST[$key])) {
-            $message .= $fields[$key] . ': ' . $value . '\n';
+            $message .= $fields[$key] . ': ' . $value . '\r\n';
         }
     }
 

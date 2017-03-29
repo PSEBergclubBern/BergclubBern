@@ -53,9 +53,9 @@ include 'contact-form-action.php';
                             <div class="col-sm-10"><input name="first-name" id="first-name" class="form-control always-required maybe-required" type="text" placeholder="Vorname" required /></div>
                         </div>
 
-                        <div class="form-group name-affix">
-                            <label class="control-label col-sm-2" for="name-affix">Namenszusatz:</label>
-                            <div class="col-sm-10"><input name="name-affix" id="name-affix" class="form-control" type="text" placeholder="Namenszusatz" /></div>
+                        <div class="form-group adress-affix">
+                            <label class="control-label col-sm-2" for="adress-affix">Adresszusatz:</label>
+                            <div class="col-sm-10"><input name="adress-affix" id="adress-affix" class="form-control" type="text" placeholder="Adresszusatz" /></div>
                         </div>
 
                         <div class="form-group street">
