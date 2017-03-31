@@ -65,4 +65,112 @@ class CommonTest extends TestCase
         $this->assertTrue($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000')));
         $this->assertEmpty(FlashMessage::show());
     }
+
+    /**
+     * @test
+     */
+    public function dateToIsAcceptingValidDates() {
+        $this->assertTrue($this->common->isValid(array(Common::DATE_TO_IDENTIFIER => '01.01.2000')));
+        $this->assertEmpty(FlashMessage::show());
+    }
+
+    /**
+     * @test
+     */
+    public function dateToIsEqualDateFrom() {
+        $this->assertTrue($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
+                                                       Common::DATE_TO_IDENTIFIER => '01.01.2000',
+                                                       Common::SLEEPOVER => "Nein" )));
+        $this->assertEmpty(FlashMessage::show());
+    }
+
+    /**
+     * @test
+     */
+    public function dateToIsEqualDateFromButSleepoverJa() {
+        $this->assertFalse($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
+                                                       Common::DATE_TO_IDENTIFIER => '01.01.2000',
+                                                       Common::SLEEPOVER => "Ja" )));
+        $this->assertNotEmpty(FlashMessage::show());
+    }
+
+    /**
+     * @test
+     */
+    public function dateToIsAfterDateFromAndSleepoverIsSet() {
+        $this->assertTrue($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
+                                                       Common::DATE_TO_IDENTIFIER => '01.02.2000',
+                                                       Common::SLEEPOVER => "Ja")));
+        $this->assertEmpty(FlashMessage::show());
+    }
+
+    /**
+     * @test
+     */
+    public function dateToIsAfterDateFromAndSleepoverIsNein() {
+        $this->assertFalse($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
+                                                       Common::DATE_TO_IDENTIFIER => '01.02.2000',
+                                                       Common::SLEEPOVER => "Nein")));
+        $this->assertNotEmpty(FlashMessage::show());
+    }
+
+    /**
+     * @test
+     */
+    public function dateToIsAfterDateFromAndSleepoverIsNotSet() {
+        $this->assertFalse($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
+                                                       Common::DATE_TO_IDENTIFIER => '01.02.2000')));
+        $this->assertNotEmpty(FlashMessage::show());
+    }
+
+    /**
+     * @test
+     */
+    public function dateToIsBeforeDateFrom() {
+        $this->assertFalse($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.02.2000',
+                                                        Common::DATE_TO_IDENTIFIER => '01.01.2000' )));
+        $this->assertNotEmpty(FlashMessage::show());
+    }
+
+    /**
+     * @test
+     */
+    public function signUpUntilHasInValidDate() {
+        $this->assertFalse($this->common->isValid(array(Common::SIGNUP_UNTIL => 'test')));
+        $this->assertNotEmpty(FlashMessage::show());
+    }
+
+    /**
+     * @test
+     */
+    public function signUpUntilHasValidValue() {
+        $this->assertTrue($this->common->isValid(array(Common::SIGNUP_UNTIL => '01.01.2017')));
+        $this->assertEmpty(FlashMessage::show());
+    }
+
+    /**
+     * @test
+     */
+    public function signUpUntilIsAfterTourBeginn() {
+	    $values = array( Common::SIGNUP_UNTIL => '01.01.2017', Common::DATE_FROM_IDENTIFIER => '01.06.2017' );
+	    $this->assertTrue($this->common->isValid( $values ));
+        $this->assertEmpty(FlashMessage::show());
+    }
+
+    /**
+     * @test
+     */
+    public function signUpUntilIsEqualToTourBeginn() {
+	    $values = array( Common::SIGNUP_UNTIL => '01.01.2017', Common::DATE_FROM_IDENTIFIER => '01.01.2017' );
+	    $this->assertTrue($this->common->isValid( $values ));
+        $this->assertEmpty(FlashMessage::show());
+    }
+    /**
+     * @test
+     */
+    public function signUpUntilIsBeforeTourBeginn() {
+	    $values = array( Common::SIGNUP_UNTIL => '01.01.2017', Common::DATE_FROM_IDENTIFIER => '01.01.2000' );
+	    $this->assertFalse($this->common->isValid( $values ));
+        $this->assertNotEmpty(FlashMessage::show());
+    }
 }
