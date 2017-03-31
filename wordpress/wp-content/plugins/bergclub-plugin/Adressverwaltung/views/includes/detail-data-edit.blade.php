@@ -54,6 +54,13 @@
                 </td>
             </tr>
 
+        @elseif( $key == 'comments' )
+
+            <tr>
+                <td class="td-{{ $key }}"><label id="label-{{ $key }}" for="{{ $key }}">{{ $value }}</label></td>
+                <td><textarea name="{{ $key  }}" id="{{ $key }}">{{  $user->comments }}</textarea></td>
+            </tr>
+
         @else
 
             <tr>
