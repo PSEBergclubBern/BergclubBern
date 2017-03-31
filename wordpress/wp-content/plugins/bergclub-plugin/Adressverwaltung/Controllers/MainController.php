@@ -31,10 +31,89 @@ class MainController extends AbstractController
                 $this->data['title'] = $user->last_name . ' ' . $user->first_name;
                 if($this->data['tab'] == 'data' && $this->data['edit']){
                     $this->data['address_roles'] = Role::findByType(Role::TYPE_ADDRESS);
+
+                    //TODO: add field with all data
+
+                    $this->data['required'] = [
+                        'bcb_unset' => [
+                            'leaving_reason' => 'Austrittsgrund',
+                            'company' => 'Firma',
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                            'birthdate' => 'Geburtstag',
+                        ],
+                        'bcb_institution' => [
+                            'company' => 'Firma',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                        ],
+                        'bcb_inserent' => [
+                            'company' => 'Firma',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                        ],
+                        'bcb_interessent' => [
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                        ],
+                        'bcb_interessent_jugend' => [
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                        ],
+                        'bcb_aktivmitglied' => [
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                            'birthdate' => 'Geburtstag',
+                        ],
+                        'bcb_aktivmitglied_jugend' => [
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                            'birthdate' => 'Geburtstag',
+                        ],
+                        'bcb_ehrenmitglied' => [
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                            'birthdate' => 'Geburtstag',
+                        ],
+                        'bcb_ehemalig' => [
+                            'leaving_reason' => 'Austrittsgrund',
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                        ],
+                    ];
+
                 }elseif($this->data['tab'] == 'functions' && $this->data['edit']) {
                     $this->data['user_functionary_roles'] = $this->data['user']->functionary_roles;
                     $this->data['functionary_roles'] = Role::findByType(Role::TYPE_FUNCTIONARY);
                 }
+
 
 
             }else{
@@ -74,23 +153,56 @@ class MainController extends AbstractController
         /* @var User $user */
         $user = $this->data['user'];
 
+        /* validate form data */
+        $role = Role::find($_POST['address_type']);
+
+        /* get form data */
         foreach($_POST as $key => $value){
             $user->$key = $value;
         }
 
-        $role = Role::find($_POST['address_type']);
-        if($role) {
-            $user->addRole($role);
-        }else{
-            print $_POST['address_type'];
-            exit;
+        if ( !$role ){
+
+            /* if no role is selected, an error message is displayed */
+
+            $user->removeRole( Role::find( $user->address_role_key ) , false );
+            $this->data['user'] = $user;
+            FlashMessage::add(FlashMessage::TYPE_ERROR, "Bitte einen Adresstypen auswählen!");
+
+        } else {
+
+            /* validate required fields */
+            $fieldsToValidate = $this->data['required'][$role->getKey()];
+            $errorMessage = "";
+
+            foreach( $fieldsToValidate as $key => $label){
+                if ( $user->$key == false ){
+                    if( !$errorMessage ){
+                        $errorMessage = $label;
+                    } else {
+                        $errorMessage = $errorMessage + ", " + $label;
+                    }
+                }
+            }
+
+
+            /* check if validation was successful */
+            if ( $errorMessage ){
+                $errorMessage = "Folgende Pflichtfelder müssen noch ausgefüllt werden: " . $errorMessage;
+                $this->data['user'] = $user->addRole( $role, false );
+                $this->data['user'] = $user;
+                FlashMessage::add(FlashMessage::TYPE_ERROR, $errorMessage);
+            } else{
+
+                /* save user */
+                $user->save();
+                FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Benutzerdaten wurden erfolgreich gespeichert.');
+                Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
+
+            }
+
         }
 
-        $user->save();
-        FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Benutzerdaten wurden erfolgreich gespeichert.');
-
-        //weiterleitung auf show modus
-        Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
     }
 
     private function postFunctions(){

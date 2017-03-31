@@ -43,14 +43,40 @@
         @if($tab=='data' && $edit)
             jQuery(document).ready(function() {
                 displayForm();
+
+                var $arrRequired = <?= json_encode($required) ?>;
+
+                var $unset = $arrRequired[ 'bcb_unset' ];
+                setFieldsNotRequired($unset);
+
+                var $selected = getAddressType();
+                var $required = $arrRequired[ $selected ];
+
+                jQuery.each($required, function( index, value ){
+                    setFieldRequired( index );
+                });
+
             });
 
             jQuery("#address_type").change( function(){
                 displayForm();
+
+                var $arrRequired = <?= json_encode($required) ?>;
+
+                var $unset = $arrRequired[ 'bcb_unset' ];
+                setFieldsNotRequired($unset);
+
+                var $selected = getAddressType();
+                var $required = $arrRequired[ $selected ];
+
+                jQuery.each($required, function( index, value ){
+                    setFieldRequired( index );
+                });
+
             });
 
             function displayForm(){
-                var $selected = jQuery("#address_type").val();
+                var $selected = getAddressType();
 
                 if ( $selected == 'bcb_institution' || $selected == 'bcb_inserent' ){
                     hide('phone_private');
@@ -90,6 +116,21 @@
                 jQuery(".td-" + field).hide();
                 jQuery("#" + field).val('');
             }
+
+            function getAddressType(){
+                return jQuery("#address_type").val();
+            }
+
+            function setFieldRequired(field){
+                jQuery("#label-" + field).addClass("required");
+            }
+
+            function setFieldsNotRequired(arrFields){
+                jQuery.each(arrFields, function( index, value ){
+                    jQuery("#label-" + index).removeClass("required");
+                });
+            }
+
         @endif
     </script>
 @endsection

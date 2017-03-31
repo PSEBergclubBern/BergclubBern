@@ -1,7 +1,7 @@
 <table class="user-detail">
 
     <tr>
-        <td><label for="address_type">Adresstyp</label></td>
+        <td><label class="required" for="address_type">Adresstyp</label></td>
         <td>
             <select name="address_type" id="address_type">
                 <option value="">-- Bitte wählen --</option>
@@ -14,7 +14,7 @@
     </tr>
 
     <tr>
-        <td class="td-leaving_reason"><label for="leaving_reason">Austrittsgrund</label></td>
+        <td class="td-leaving_reason"><label id="label-leaving_reason" for="leaving_reason">Austrittsgrund</label></td>
         <td class="td-leaving_reason">
             <select id="leaving_reason" name="leaving_reason">
                 <option value="">-- Bitte wählen --</option>
@@ -39,12 +39,12 @@
     </tr>
 
     <tr>
-        <td class="td-company"><label for="company">Firma</label></td>
+        <td class="td-company"><label id="label-company" for="company">Firma</label></td>
         <td class="td-company"><input type="text" id="company" name="company" value="{{  $user->company }}" /></td>
     </tr>
 
     <tr>
-        <td><label for="gender">Anrede</label></td>
+        <td><label id="label-gender" for="gender">Anrede</label></td>
         <td>
             <select id="gender" name="gender">
                 <option value="">-- Bitte wählen --</option>
@@ -54,12 +54,12 @@
         </td>
     </tr>
     <tr>
-        <td><label for="first_name">Vorname</label></td>
+        <td><label id="label-first_name" for="first_name">Vorname</label></td>
         <td><input type="text" id="first_name" name="first_name" value="{{  $user->first_name }}" /></td>
     </tr>
 
     <tr>
-        <td><label for="last_name">Nachname</label></td>
+        <td><label id="label-last_name" for="last_name">Nachname</label></td>
         <td><input type="text" id="last_name" name="last_name" value="{{  $user->last_name }}" /></td>
     </tr>
 
@@ -69,17 +69,17 @@
     </tr>
 
     <tr>
-        <td><label for="street">Strasse</label></td>
+        <td><label id="label-street" for="street">Strasse</label></td>
         <td><input type="text" id="street" name="street" value="{{  $user->street }}" /></td>
     </tr>
 
     <tr>
-        <td><label for="zip">Postleitzahl</label></td>
+        <td><label id="label-zip" for="zip">Postleitzahl</label></td>
         <td><input type="text" id="zip" name="zip" value="{{  $user->zip }}" /></td>
     </tr>
 
     <tr>
-        <td><label for="location">Ort</label></td>
+        <td><label id="label-location" for="location">Ort</label></td>
         <td><input type="text" id="location" name="location" value="{{  $user->location }}" /></td>
     </tr>
 
@@ -112,7 +112,7 @@
     </tr>
 
     <tr>
-        <td class="td-birthdate"><label for="birthdate">Geburtsdatum</label></td>
+        <td class="td-birthdate"><label id="label-birthdate" for="birthdate">Geburtsdatum</label></td>
         <td class="td-birthdate"><input type="text" id="birthdate" name="birthdate" value="{{  $user->birthdate }}" /></td>
     </tr>
 
