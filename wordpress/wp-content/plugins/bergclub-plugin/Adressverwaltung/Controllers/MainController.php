@@ -32,9 +32,26 @@ class MainController extends AbstractController
                 if($this->data['tab'] == 'data' && $this->data['edit']){
                     $this->data['address_roles'] = Role::findByType(Role::TYPE_ADDRESS);
 
-                    //TODO: add field with all data
-
                     $this->data['required'] = [
+                        'bcb_all' => [
+                            'address_type' => 'Adresstyp',
+                            'leaving_reason' => 'Austrittsgrund',
+                            'program_shipment' => 'Versand Programm',
+                            'company' => 'Firma',
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'address_addition' => 'Zusatz',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                            'phone_private' => 'Telefon P',
+                            'phone_work' => 'Telefon G',
+                            'phone_mobile' => 'Telefon M',
+                            'email' => 'Email',
+                            'birthdate' => 'Geburtstag',
+                            'comments' => 'Bemerkungen',
+                        ],
                         'bcb_unset' => [
                             'leaving_reason' => 'Austrittsgrund',
                             'company' => 'Firma',
@@ -193,6 +210,8 @@ class MainController extends AbstractController
                 $this->data['user'] = $user;
                 FlashMessage::add(FlashMessage::TYPE_ERROR, $errorMessage);
             } else{
+
+                $this->data['user'] = $user->addRole( $role, true );
 
                 /* save user */
                 $user->save();
