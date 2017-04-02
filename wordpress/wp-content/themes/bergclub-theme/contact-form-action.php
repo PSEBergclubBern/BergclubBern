@@ -5,7 +5,7 @@ $fields = [
     'gender' => 'Anrede',
     'first-name' => 'Vorname',
     'last-name' => 'Nachname',
-    'adress-affix' => 'Adresszusatz',
+    'address-affix' => 'Adresszusatz',
     'street' => 'Strasse',
     'zip' => 'PLZ',
     'city' => 'Ort',
@@ -19,36 +19,185 @@ $fields = [
 
 $selectValues = [
     'message' => 'Mitteilung',
-    'adresschange' => 'Adressänderung',
+    'addresschange' => 'Adressänderung',
     'membership' => 'Interesse and Mitgliedschaft',
 ];
 
+$fieldSettings = [
+    'message' => [
+        'street' => [
+            'required' => false,
+            'show' => true,
+        ],
+        'zip' => [
+            'required' => false,
+            'show' => true,
+        ],
+        'city' => [
+            'required' => false,
+            'show' => true,
+        ],
+        'birthday' => [
+            'required' => false,
+            'show' => false,
+        ],
+        'comment' => [
+            'required' => false,
+            'show' => true,
+        ],
+    ],
+    'addresschange' => [
+        'street' => [
+            'required' => true,
+            'show' => true,
+        ],
+        'zip' => [
+            'required' => true,
+            'show' => true,
+        ],
+        'city' => [
+            'required' => true,
+            'show' => true,
+        ],
+        'birthday' => [
+            'required' => true,
+            'show' => false,
+        ],
+        'comment' => [
+            'required' => false,
+            'show' => true,
+        ],
+    ],
+    'membership' => [
+        'street' => [
+            'required' => true,
+            'show' => true,
+        ],
+        'zip' => [
+            'required' => true,
+            'show' => true,
+        ],
+        'city' => [
+            'required' => true,
+            'show' => true,
+        ],
+        'birthday' => [
+            'required' => true,
+            'show' => true,
+        ],
+        'comment' => [
+            'required' => false,
+            'show' => true,
+        ],
+    ],
+];
+
+$fieldSettingsSame = [
+    'enquirytype' => [
+        'required' => true,
+        'show' => true,
+    ],
+    'gender' => [
+        'required' => true,
+        'show' => true,
+    ],
+    'first-name' => [
+        'required' => true,
+        'show' => true,
+    ],
+    'last-name' => [
+        'required' => true,
+        'show' => true,
+    ],
+    'email' => [
+        'required' => true,
+        'show' => true,
+    ],
+    'address-affix' => [
+        'required' => false,
+        'show' => true,
+    ],
+    'phone-p' => [
+        'required' => false,
+        'show' => true,
+    ],
+    'phone-g' => [
+        'required' => false,
+        'show' => true,
+    ],
+    'phone-m' => [
+        'required' => false,
+        'show' => true,
+    ],
+];
+
+foreach($fieldSettings as &$arr){
+    $arr = array_merge($arr, $fieldSettingsSame);
+}
+
+unset($fieldSettingsSame);
+
 $success = false;
 
+$missingFields = [];
+
 if (!empty($_POST)){
-    $to = 'bergclubadmin@bergclub.ch';
-    $message = '';
-    $headers = [];
-
-    $_POST = array_map('sanitize_text_field', $_POST);
-    $_POST['email'] = sanitize_email($_POST['email']);
-
-    $_POST['enquirytype'] = $selectValues[$_POST['enquirytype']];
-
-    $subject = '[Bergclub-Admin][' . $_POST['enquirytype'] . '] Nachricht von ' . $_POST['last-name'] . ' ' . $_POST['first-name'];
-
-    if (isset($_POST['email']) && !empty($_POST['email'])) {
-        $headers[] = 'Reply-To: ' . $_POST['last-name'] . ' ' . $_POST['first-name'] . ' <' . $_POST['email'] . '>';
-    }
 
     foreach($_POST as $key => $value){
-        if (isset($_POST[$key]) && !empty($_POST[$key])) {
-            $message .= $fields[$key] . ': ' . $value . '\r\n';
+        $value = trim($value);
+        $enquirytype = $_POST["enquirytype"];
+
+        if($key == "email"){
+            $value = sanitize_email($value);
+        }else{
+            $value = sanitize_text_field($value);
         }
+
+        if(!isset($fieldSettings[$enquirytype][$key]) || !$fieldSettings[$enquirytype][$key]["show"]){
+            unset($_POST[$key]);
+        }elseif($fieldSettings[$_POST["enquirytype"]][$key]["required"]){
+            if($key == "email" && !filter_var($value, FILTER_VALIDATE_EMAIL)){
+                $missingFields[] = $key;
+            }elseif(empty($value)){
+                $missingFields[] = $key;
+            }
+        }
+        $_POST[$key] = $value;
     }
 
-    $success = wp_mail($to, $subject, $message, $headers);
 
+    if(empty($missingFields)) {
+        $to = 'bergclubadmin@bergclub.ch';
+        $message = '';
+        $headers = [];
+
+        $type = $_POST['enquirytype'] = $selectValues[$_POST['enquirytype']];
+
+        $subject = '[Bergclub-Admin][' . $type . '] Nachricht von ' . $_POST['last-name'] . ' ' . $_POST['first-name'];
+
+        if (isset($_POST['email']) && !empty($_POST['email'])) {
+            $headers[] = 'Reply-To: ' . $_POST['last-name'] . ' ' . $_POST['first-name'] . ' <' . $_POST['email'] . '>';
+        }
+
+        foreach ($_POST as $key => $value) {
+            if (isset($_POST[$key]) && !empty($_POST[$key])) {
+                $message .= $fields[$key] . ': ' . $value . '\r\n';
+            }
+        }
+
+        $success = wp_mail($to, $subject, $message, $headers);
+        if($success){
+            unset($_POST);
+        }
+    }
+}else{
+    if($page == "mitgliedschaft"){
+        $_POST["enquirytype"] = "membership";
+    }else{
+        $_POST["enquirytype"] = "message";
+    }
+
+    $_POST['gender'] = "Frau";
 }
 
 ?>

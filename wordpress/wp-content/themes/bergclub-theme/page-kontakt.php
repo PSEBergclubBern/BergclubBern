@@ -6,7 +6,6 @@ $pathParts = explode('/', trim($parsedURL['path'], '/'));
 $page = $pathParts[0];
 
 include 'contact-form-action.php';
-
 ?>
 
 	<div id="primary" class="content-area">
@@ -14,15 +13,20 @@ include 'contact-form-action.php';
             <div class="container">
                 <div class="page-content">
                     <div class="row">
-                    <?=$success?'
-                    <div class="col-sm-4 col-sm-offset-4 alert alert-success alert-dismissable fade in">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        Nachricht erfolgreich versendet.
-                    </div>
-                    ':'';?>
                     </div>
                     <div class="row">
                     <h1>Kontaktformular</h1>
+                    <?php if(!empty($missingFields)){ ?>
+                        <div class="col-sm-4 col-sm-offset-4 alert alert-danger alert-dismissable fade in">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            Ergänzen Sie die rot markierten Felder.
+                        </div>
+                    <?php }elseif($success){ ?>
+                        <div class="col-sm-4 col-sm-offset-4 alert alert-success alert-dismissable fade in">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            Nachricht erfolgreich versendet.
+                        </div>
+                        <?php } ?>
                     </div>
                     <br />
                     <form class="form-horizontal text-left" method="post">
@@ -30,7 +34,7 @@ include 'contact-form-action.php';
                             <label class="control-label col-sm-2" for="enquirytype">Anfrageart:</label>
                             <div class="col-sm-10"><select name="enquirytype" id="enquirytype" class="form-control">
                                 <?php foreach($selectValues as $key => $name){?>
-                                <option value="<?=$key ?>"><?=$name ?></option>
+                                <option value="<?=$key ?>" <?php if($_POST['enquirytype'] == $key){ echo 'selected'; } ?>><?=$name ?></option>
                                 <?php } ?>
                             </select></div>
                         </div>
@@ -39,68 +43,68 @@ include 'contact-form-action.php';
                             <label class="control-label col-sm-2" for="gender">Anrede:</label>
                             <div class="col-sm-10"><select name="gender" id="gender" class="form-control">
                                 <option>Frau</option>
-                                <option>Herr</option>
+                                <option <?php if($_POST['gender'] == "Herr"){ echo 'selected'; } ?>>Herr</option>
                             </select></div>
                         </div>
 
                         <div class="form-group last-name">
                             <label class="control-label col-sm-2" for="last-name">Nachname:</label>
-                            <div class="col-sm-10"><input name="last-name" id="last-name" class="form-control always-required maybe-required" type="text" placeholder="Nachname" required /></div>
+                            <div class="col-sm-10"><input name="last-name" id="last-name" class="form-control" type="text" placeholder="Nachname" value="<?= @$_POST['last-name'] ?>"/></div>
                         </div>
 
                         <div class="form-group first-name">
                             <label class="control-label col-sm-2" for="first-name">Vorname:</label>
-                            <div class="col-sm-10"><input name="first-name" id="first-name" class="form-control always-required maybe-required" type="text" placeholder="Vorname" required /></div>
+                            <div class="col-sm-10"><input name="first-name" id="first-name" class="form-control" type="text" placeholder="Vorname" value="<?= @$_POST['first-name'] ?>"/></div>
                         </div>
 
-                        <div class="form-group adress-affix">
-                            <label class="control-label col-sm-2" for="adress-affix">Adresszusatz:</label>
-                            <div class="col-sm-10"><input name="adress-affix" id="adress-affix" class="form-control" type="text" placeholder="Adresszusatz" /></div>
+                        <div class="form-group address-affix">
+                            <label class="control-label col-sm-2" for="address-affix">Adresszusatz:</label>
+                            <div class="col-sm-10"><input name="address-affix" id="address-affix" class="form-control" type="text" placeholder="Adresszusatz" value="<?= @$_POST['address-affix'] ?>"/></div>
                         </div>
 
                         <div class="form-group street">
                             <label class="control-label col-sm-2" for="street">Strasse:</label>
-                            <div class="col-sm-10"><input name="street" id="street" class="form-control adresschange-required membership-required maybe-required" type="text" placeholder="Strasse" /></div>
+                            <div class="col-sm-10"><input name="street" id="street" class="form-control" type="text" placeholder="Strasse" value="<?= @$_POST['street'] ?>" /></div>
                         </div>
 
                         <div class="form-group zip">
                             <label class="control-label col-sm-2" for="zip">PLZ:</label>
-                            <div class="col-sm-10"><input name="zip" id="zip" class="form-control adresschange-required membership-required maybe-required" type="text" placeholder="PLZ" pattern="[1-9][0-9]{3}"/></div>
+                            <div class="col-sm-10"><input name="zip" id="zip" class="form-control" type="text" placeholder="PLZ" value="<?= @$_POST['zip'] ?>"/></div>
                         </div>
 
                         <div class="form-group city">
                             <label class="control-label col-sm-2" for="city">Ort:</label>
-                            <div class="col-sm-10"><input name="city" id="city" class="form-control adresschange-required membership-required maybe-required" type="text" placeholder="Ort" /></div>
+                            <div class="col-sm-10"><input name="city" id="city" class="form-control" type="text" placeholder="Ort" value="<?= @$_POST['city'] ?>"/></div>
                         </div>
 
                         <div class="form-group phone-p">
                             <label class="control-label col-sm-2" for="phone-p">Telefon (P):</label>
-                            <div class="col-sm-10"><input name="phone-p" id="phone-p" class="form-control maybe-required" type="tel" placeholder="Telefon (P)" /></div>
+                            <div class="col-sm-10"><input name="phone-p" id="phone-p" class="form-control" type="tel" placeholder="Telefon (P)" value="<?= @$_POST['phone-p'] ?>"/></div>
                         </div>
 
                         <div class="form-group phone-g">
                             <label class="control-label col-sm-2" for="phone-g">Telefon (G):</label>
-                            <div class="col-sm-10"><input name="phone-g" id="phone-g" class="form-control maybe-required" type="tel" placeholder="Telefon (G)" /></div>
+                            <div class="col-sm-10"><input name="phone-g" id="phone-g" class="form-control" type="tel" placeholder="Telefon (G)" value="<?= @$_POST['phone-g'] ?>"/></div>
                         </div>
 
                         <div class="form-group phone-m">
                             <label class="control-label col-sm-2" for="phone-m">Telefon (M):</label>
-                            <div class="col-sm-10"><input name="phone-m" id="phone-m" class="form-control maybe-required" type="tel" placeholder="Telefon (M)" /></div>
+                            <div class="col-sm-10"><input name="phone-m" id="phone-m" class="form-control" type="tel" placeholder="Telefon (M)" value="<?= @$_POST['phone-m'] ?>"/></div>
                         </div>
 
                         <div class="form-group email">
                             <label class="control-label col-sm-2" for="email">Email:</label>
-                            <div class="col-sm-10"><input name="email" id="email" class="form-control maybe-required" type="email" placeholder="Email" /></div>
+                            <div class="col-sm-10"><input name="email" id="email" class="form-control" type="email" placeholder="Email" value="<?= @$_POST['email'] ?>"/></div>
                         </div>
 
                         <div class="form-group birthday">
                             <label class="control-label col-sm-2" for="birthday">Geburtsdatum:</label>
-                            <div class="col-sm-10"><input name="birthday" id="birthday" class="form-control membership-required maybe-required" type="date" /></div>
+                            <div class="col-sm-10"><input name="birthday" id="birthday" class="form-control" type="date" value="<?= @$_POST['birthday'] ?>"/></div>
                         </div>
 
                         <div class="form-group comment">
                             <label class="control-label col-sm-2" for="comment">Bemerkungen:</label>
-                            <div class="col-sm-10"><textarea name="comment" id="comment" class="form-control vresize message-required maybe-required" rows="5" required></textarea></div>
+                            <div class="col-sm-10"><textarea name="comment" id="comment" class="form-control vresize" rows="5"><?= @$_POST['comment'] ?></textarea></div>
                         </div>
 
                         <div class="form-group submit">
@@ -112,5 +116,10 @@ include 'contact-form-action.php';
             </div>
 		</main>
 	</div>
+
+<script type="text/javascript">
+    var fieldSettings = <?= json_encode($fieldSettings) ?>;
+    var missingFields = <?= json_encode($missingFields) ?>;
+</script>
 
 <?php get_footer(); ?>
