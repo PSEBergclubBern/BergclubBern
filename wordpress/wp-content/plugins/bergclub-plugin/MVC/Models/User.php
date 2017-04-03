@@ -279,7 +279,7 @@ class User implements IModel
      * @param Role $role the role to add
      */
     public function removeRole( $role , $updateHistory = true){
-        if($role != null) {
+        if($role) {
             if (isset($this->roles[$role->getKey()])) {
                 unset($this->roles[$role->getKey()]);
                 $this->deletedRoles[] = $role;
