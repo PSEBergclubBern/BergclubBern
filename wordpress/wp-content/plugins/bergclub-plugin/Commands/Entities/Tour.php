@@ -6,6 +6,8 @@
  * Time: 12:59
  */
 
+namespace BergclubPlugin\Commands\Entities;
+
 class Tour
 {
 
