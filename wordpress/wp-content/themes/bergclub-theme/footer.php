@@ -37,6 +37,15 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
+
+<?php
+if($post->post_name == "kontakt" || $post->post_name == "mitgliedschaft"){
+    ?>
+    <script src="<?=get_theme_root_uri();?>/bergclub-theme/js/contact-form-functions.js"></script>
+    <?php
+}
+?>
+
 <?php wp_footer(); ?>
 
 </body>
