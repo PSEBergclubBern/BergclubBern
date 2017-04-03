@@ -10,7 +10,7 @@
 get_header(); ?>
 
 <div id="primary" class="content-area">
-    <div id="main" class="site-main" role="main">
+    <main id="main" class="site-main" role="main">
         <div class="container">
             <?php
             // Start the loop.
@@ -23,11 +23,19 @@ get_header(); ?>
                  */
                 get_template_part('content', get_post_format());
 
+                // Previous/next post navigation.
+                the_post_navigation(array(
+                    'next_text' => '<span class="screen-reader-text">' . __('Nächste Mitteilung:', 'twentyfifteen') . '</span> ' .
+                        '<span class="post-title">%title</span>',
+                    'prev_text' => '<span class="screen-reader-text">' . __('Vorherige Mitteilung:', 'twentyfifteen') . '</span> ' .
+                        '<span class="post-title">%title</span>',
+                    'in_same_term' => true
+                ));
                 // End the loop.
             endwhile;
             ?>
         </div>
-        </main><!-- .site-main -->
-    </div><!-- .content-area -->
+    </main><!-- .site-main -->
+</div><!-- .content-area -->
 
-    <?php get_footer(); ?>
+<?php get_footer(); ?>

@@ -74,7 +74,7 @@ class Import extends Init
             $mit = new Entities\Mitteilung();
             $mit->id = $mitteilung['id'];
             $mit->datum = $mitteilung['datum'];
-            $mit->titel = $this->convertTextField($mitteilung['titel']);
+            $mit->titel = $this->convertTitleField($mitteilung['titel']);
             $mit->text = $this->convertTextField($mitteilung['text']);
 
             \WP_CLI::debug($mit->__toString());

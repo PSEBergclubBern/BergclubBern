@@ -55,9 +55,12 @@ abstract class AbstractController
             $this->first();
             $this->$method();
             $this->last();
-
-            View::render($this->viewDirectory, $this->view, $this->data);
+            $this->render();
         }
+    }
+
+    protected function render(){
+        View::render($this->viewDirectory, $this->view, $this->data);
     }
 
     /**
