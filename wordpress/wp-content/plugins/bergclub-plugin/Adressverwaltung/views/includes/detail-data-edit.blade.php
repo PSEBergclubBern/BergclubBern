@@ -65,7 +65,7 @@
 
             <tr>
                 <td class="td-{{ $key }}"><label id="label-{{ $key }}" for="{{ $key }}">{{ $value }}</label></td>
-                <td class="td-{{ $key }}"><input type="text" id="{{ $key }}" name="{{ $key }}" value="{{  $user->$key }}" /></td>
+                <td class="td-{{ $key }}"><input type="text" id="{{ $key }}" name="{{ $key }}" value='{{ $user->$key }}' /></td>
             </tr>
 
         @endif

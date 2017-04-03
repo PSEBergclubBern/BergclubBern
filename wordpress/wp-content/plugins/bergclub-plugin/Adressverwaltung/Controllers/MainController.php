@@ -22,14 +22,22 @@ class MainController extends AbstractController
             $this->data['title'] = "Adressverwaltung";
             $this->data['users'] = User::findAll();
 
-        }elseif($this->view == 'pages.detail'){
+        }elseif($this->view == 'pages.detail' || $this->view == 'pages.new'){
             $this->prepareInclude();
 
-            $user = $this->data['user'] = User::find($_GET['id']);
+            if($this->view == 'pages.detail') {
+                $user = $this->data['user'] = User::find($_GET['id']);
+            }else{
+                $user = $this->data['user'] = new User();
+            }
 
             if($user) {
-                $this->data['title'] = $user->last_name . ' ' . $user->first_name;
-                if($this->data['tab'] == 'data' && $this->data['edit']){
+                if($this->view == 'pages.detail') {
+                    $this->data['title'] = $user->last_name . ' ' . $user->first_name;
+                }else{
+                    $this->data['title'] = "Neuer Eintrag";
+                }
+                if(($this->data['tab'] == 'data' && $this->data['edit']) || $this->view == 'pages.new'){
                     $this->data['address_roles'] = Role::findByType(Role::TYPE_ADDRESS);
 
                     $this->data['required'] = [
@@ -175,7 +183,7 @@ class MainController extends AbstractController
 
         /* get form data */
         foreach($_POST as $key => $value){
-            $user->$key = $value;
+            $user->$key = trim($value);
         }
 
         if ( !$role ){
@@ -193,15 +201,16 @@ class MainController extends AbstractController
             $errorMessage = "";
 
             foreach( $fieldsToValidate as $key => $label){
-                if ( $user->$key == false ){
+                if (!$user->$key){
                     if( !$errorMessage ){
                         $errorMessage = $label;
                     } else {
-                        $errorMessage = $errorMessage + ", " + $label;
+                        $errorMessage .= ", " . $label;
                     }
                 }
             }
 
+            $foundError = false;
 
             /* check if validation was successful */
             if ( $errorMessage ){
@@ -209,15 +218,27 @@ class MainController extends AbstractController
                 $this->data['user'] = $user->addRole( $role, false );
                 $this->data['user'] = $user;
                 FlashMessage::add(FlashMessage::TYPE_ERROR, $errorMessage);
-            } else{
+                $foundError = true;
+            }
+
+            if(!empty($user->email) && !filter_var($user->email, FILTER_VALIDATE_EMAIL)){
+                FlashMessage::add(FlashMessage::TYPE_ERROR, "Die Emailadresse hat kein korrektes Format.");
+                $foundError = true;
+            }
+
+
+            if(!$foundError){
 
                 $this->data['user'] = $user->addRole( $role, true );
 
                 /* save user */
                 $user->save();
                 FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Benutzerdaten wurden erfolgreich gespeichert.');
-                Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
-
+                if($this->view == "page.new") {
+                    Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
+                }else{
+                    Helpers::redirect('?page=' . $_GET['page']);
+                }
             }
 
         }
@@ -283,15 +304,20 @@ class MainController extends AbstractController
 
 
 
-    private function prepareInclude(){
+    private function prepareInclude()
+    {
         $this->data['tab'] = $this->getGET('tab', 'data');
         $this->data['edit'] = $this->getGET('edit', 0);
         $viewType = "show";
-        if($this->data['edit']){
+        $view = $this->view;
+        if ($view == 'pages.new'){
+            $view = 'pages.detail';
+        }
+        if($this->data['edit'] || $this->view == 'pages.new'){
             $viewType = "edit";
         }
 
-        $this->data['tab_file'] = str_replace('pages.', 'includes.', $this->view) . '-' . $this->data['tab'] . '-' . $viewType;
+        $this->data['tab_file'] = str_replace('pages.', 'includes.', $view) . '-' . $this->data['tab'] . '-' . $viewType;
     }
 
     private function getGET($key, $default){
@@ -322,7 +348,7 @@ class MainController extends AbstractController
         $this->data['showEdit'] = false;
         if($currentUser->hasCapability('adressen_edit')){
             $this->data['showEdit'] = true;
-        }elseif(isset($_GET['action']) || isset($this->data['edit']) && $this->data['edit']){
+        }elseif((isset($_GET['action']) || isset($this->data['edit']) && $this->data['edit']) || $this->view == "pages.new"){
             FlashMessage::add(FlashMessage::TYPE_ERROR, 'Sie haben nicht die benötigten Rechte um diese Seite anzuzeigen.');
             $this->abort();
         }
