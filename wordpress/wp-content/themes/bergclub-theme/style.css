@@ -52,12 +52,11 @@ h3{
     resize: horizontal;
 }
 
-label {
-    font-weight: normal;
-}
-
-label.required {
-    font-weight: bold;
+label.required:after {
+    color: red;
+    font-size: 125%;
+    content: ' *';
+    display: inline;
 }
 
 label.error {

@@ -55,8 +55,10 @@ function updateFields(){
 
             if(fieldSettings[type][id].required){
                 $("div." + id + " label").addClass("required");
+                $("#" + id).prop('required',true);
             }else{
                 $("div." + id + " label").removeClass("required");
+                $("#" + id).prop('required',false);
             }
         }
     }

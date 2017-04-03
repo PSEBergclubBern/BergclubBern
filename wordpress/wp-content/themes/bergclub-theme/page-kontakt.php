@@ -34,7 +34,7 @@ include 'contact-form-action.php';
                             <label class="control-label col-sm-2" for="enquirytype">Anfrageart:</label>
                             <div class="col-sm-10"><select name="enquirytype" id="enquirytype" class="form-control">
                                 <?php foreach($selectValues as $key => $name){?>
-                                <option value="<?=$key ?>" <?php if($_POST['enquirytype'] == $key){ echo 'selected'; } ?>><?=$name ?></option>
+                                <option value="<?=$key ?>" <?php if(isset($_POST['enquirytype']) && $_POST['enquirytype'] == $key){ echo 'selected'; } ?>><?=$name ?></option>
                                 <?php } ?>
                             </select></div>
                         </div>
@@ -43,7 +43,7 @@ include 'contact-form-action.php';
                             <label class="control-label col-sm-2" for="gender">Anrede:</label>
                             <div class="col-sm-10"><select name="gender" id="gender" class="form-control">
                                 <option>Frau</option>
-                                <option <?php if($_POST['gender'] == "Herr"){ echo 'selected'; } ?>>Herr</option>
+                                <option <?php if(isset($_POST['gender']) && $_POST['gender'] == "Herr"){ echo 'selected'; } ?>>Herr</option>
                             </select></div>
                         </div>
 

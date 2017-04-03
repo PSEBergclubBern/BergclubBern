@@ -42,7 +42,7 @@ $fieldSettings = [
             'show' => false,
         ],
         'comment' => [
-            'required' => false,
+            'required' => true,
             'show' => true,
         ],
     ],
@@ -60,7 +60,7 @@ $fieldSettings = [
             'show' => true,
         ],
         'birthday' => [
-            'required' => true,
+            'required' => false,
             'show' => false,
         ],
         'comment' => [
@@ -176,14 +176,21 @@ if (!empty($_POST)){
         $subject = '[Bergclub-Admin][' . $type . '] Nachricht von ' . $_POST['last-name'] . ' ' . $_POST['first-name'];
 
         if (isset($_POST['email']) && !empty($_POST['email'])) {
-            $headers[] = 'Reply-To: ' . $_POST['last-name'] . ' ' . $_POST['first-name'] . ' <' . $_POST['email'] . '>';
+            $headers[] .= 'Reply-To: ' . $_POST['last-name'] . ' ' . $_POST['first-name'] . ' <' . $_POST['email'] . '>';
         }
+
+        $headers[] .= 'MIME-Version: 1.0\r\n';
+        $headers[] .= 'Content-Type: text/html; charset=ISO-8859-1\r\n';
+
+        $message .= '<html><body><table cellspacing="0" cellpadding="5px" style="border: 0px; width:500px; font-family: Arial, Helvetica, sans-serif;">';
 
         foreach ($_POST as $key => $value) {
             if (isset($_POST[$key]) && !empty($_POST[$key])) {
-                $message .= $fields[$key] . ': ' . $value . '\r\n';
+                $message .= '<tr><td style="width:150px;" valign="top">' . $fields[$key] . ':</td><td style="width:350px;"> ' . $value . "</td></tr>";
             }
         }
+
+        $message .= "</table></body></html>";
 
         $success = wp_mail($to, $subject, $message, $headers);
         if($success){
