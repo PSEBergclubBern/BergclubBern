@@ -1,6 +1,9 @@
 @extends('template')
 
 @section('content')
+    @if($showEdit)
+    <p><a class="button-primary" href="?page={{ $_GET['page'] }}&view=new">Neuer Eintrag</a></p>
+    @endif
     <table id="mitglieder" class="row-border stripe responsive no-link-underline" cellspacing="0" width="100%">
         <thead>
         <tr>

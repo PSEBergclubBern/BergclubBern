@@ -193,10 +193,17 @@ class User implements IModel
         }
 
         if(!$this->main['ID']) {
-            $this->main['ID'] = wp_insert_user($this->main);
+            $main = $this->main;
+            array_map('sanitize_text_field', $main);
+            $this->main['ID'] = wp_insert_user($main);
         }
 
         foreach($this->data as $key => $value){
+            if($key == 'email'){
+                $value = sanitize_email($value);
+            }else{
+                $value = sanitize_text_field($value);
+            }
             update_user_meta($this->main['ID'], $key, $value);
         }
 
@@ -272,11 +279,13 @@ class User implements IModel
      * @param Role $role the role to add
      */
     public function removeRole( $role , $updateHistory = true){
-        if(isset($this->roles[$role->getKey()])) {
-            unset($this->roles[$role->getKey()]);
-            $this->deletedRoles[]=$role;
-            if($updateHistory) {
-                $this->closeHistory($role);
+        if($role) {
+            if (isset($this->roles[$role->getKey()])) {
+                unset($this->roles[$role->getKey()]);
+                $this->deletedRoles[] = $role;
+                if ($updateHistory) {
+                    $this->closeHistory($role);
+                }
             }
         }
     }
@@ -556,7 +565,11 @@ class User implements IModel
      * @return string the birthdate in the format d.m.Y
      */
     private function getBirthdate(){
-        return date("d.m.Y", strtotime($this->data['birthdate']));
+        if($this->data['birthdate']) {
+            return date("d.m.Y", strtotime($this->data['birthdate']));
+        }else{
+            return null;
+        }
     }
 
     /**
@@ -566,7 +579,11 @@ class User implements IModel
      * @param string $value a string representing a date.
      */
     private function setBirthdate($value){
-        $this->data['birthdate'] = date("Y-m-d", strtotime($value));
+        if(empty(trim($value))){
+            $this->data['birthdate'] = null;
+        }else {
+            $this->data['birthdate'] = date("Y-m-d", strtotime($value));
+        }
     }
 
     /**

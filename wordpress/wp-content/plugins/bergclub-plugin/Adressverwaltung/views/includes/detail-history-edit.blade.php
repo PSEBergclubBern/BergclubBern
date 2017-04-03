@@ -11,10 +11,10 @@
         @foreach($user->history as $key => $item)
             <tr>
                 <td>{{ $item['name'] }}</td>
-                <td><input type="text" class="datepicker" name="history[{{ $key }}][date_from]" value="{{ $item['date_from'] }}"></td>
+                <td><input type="text" class="datepicker" name="history[{{ $key }}][date_from]" value='{{ $item['date_from'] }}'></td>
                 <td>
                     @if(!empty($item['date_to']))
-                        <input type="text" class="datepicker" name="history[{{ $key }}][date_to]" value="{{ $item['date_to'] }}">
+                        <input type="text" class="datepicker" name="history[{{ $key }}][date_to]" value='{{ $item['date_to'] }}'>
                     @endif
                 </td>
                 <td class="dt-right no-link-underline">

@@ -22,19 +22,123 @@ class MainController extends AbstractController
             $this->data['title'] = "Adressverwaltung";
             $this->data['users'] = User::findAll();
 
-        }elseif($this->view == 'pages.detail'){
+        }elseif($this->view == 'pages.detail' || $this->view == 'pages.new'){
             $this->prepareInclude();
 
-            $user = $this->data['user'] = User::find($_GET['id']);
+            if($this->view == 'pages.detail') {
+                $user = $this->data['user'] = User::find($_GET['id']);
+            }else{
+                $user = $this->data['user'] = new User();
+            }
 
             if($user) {
-                $this->data['title'] = $user->last_name . ' ' . $user->first_name;
-                if($this->data['tab'] == 'data' && $this->data['edit']){
+                if($this->view == 'pages.detail') {
+                    $this->data['title'] = $user->last_name . ' ' . $user->first_name;
+                }else{
+                    $this->data['title'] = "Neuer Eintrag";
+                }
+                if(($this->data['tab'] == 'data' && $this->data['edit']) || $this->view == 'pages.new'){
                     $this->data['address_roles'] = Role::findByType(Role::TYPE_ADDRESS);
+
+                    $this->data['required'] = [
+                        'bcb_all' => [
+                            'address_type' => 'Adresstyp',
+                            'leaving_reason' => 'Austrittsgrund',
+                            'program_shipment' => 'Versand Programm',
+                            'company' => 'Firma',
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'address_addition' => 'Zusatz',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                            'phone_private' => 'Telefon P',
+                            'phone_work' => 'Telefon G',
+                            'phone_mobile' => 'Telefon M',
+                            'email' => 'Email',
+                            'birthdate' => 'Geburtstag',
+                            'comments' => 'Bemerkungen',
+                        ],
+                        'bcb_unset' => [
+                            'leaving_reason' => 'Austrittsgrund',
+                            'company' => 'Firma',
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                            'birthdate' => 'Geburtstag',
+                        ],
+                        'bcb_institution' => [
+                            'company' => 'Firma',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                        ],
+                        'bcb_inserent' => [
+                            'company' => 'Firma',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                        ],
+                        'bcb_interessent' => [
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                        ],
+                        'bcb_interessent_jugend' => [
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                        ],
+                        'bcb_aktivmitglied' => [
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                            'birthdate' => 'Geburtstag',
+                        ],
+                        'bcb_aktivmitglied_jugend' => [
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                            'birthdate' => 'Geburtstag',
+                        ],
+                        'bcb_ehrenmitglied' => [
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                            'birthdate' => 'Geburtstag',
+                        ],
+                        'bcb_ehemalig' => [
+                            'leaving_reason' => 'Austrittsgrund',
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                        ],
+                    ];
+
                 }elseif($this->data['tab'] == 'functions' && $this->data['edit']) {
                     $this->data['user_functionary_roles'] = $this->data['user']->functionary_roles;
                     $this->data['functionary_roles'] = Role::findByType(Role::TYPE_FUNCTIONARY);
                 }
+
 
 
             }else{
@@ -74,23 +178,71 @@ class MainController extends AbstractController
         /* @var User $user */
         $user = $this->data['user'];
 
-        foreach($_POST as $key => $value){
-            $user->$key = $value;
-        }
-
+        /* validate form data */
         $role = Role::find($_POST['address_type']);
-        if($role) {
-            $user->addRole($role);
-        }else{
-            print $_POST['address_type'];
-            exit;
+
+        /* get form data */
+        foreach($_POST as $key => $value){
+            $user->$key = trim($value);
         }
 
-        $user->save();
-        FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Benutzerdaten wurden erfolgreich gespeichert.');
+        if ( !$role ){
 
-        //weiterleitung auf show modus
-        Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
+            /* if no role is selected, an error message is displayed */
+
+            $user->removeRole( Role::find( $user->address_role_key ) , false );
+            $this->data['user'] = $user;
+            FlashMessage::add(FlashMessage::TYPE_ERROR, "Bitte einen Adresstypen auswählen!");
+
+        } else {
+
+            /* validate required fields */
+            $fieldsToValidate = $this->data['required'][$role->getKey()];
+            $errorMessage = "";
+
+            foreach( $fieldsToValidate as $key => $label){
+                if (!$user->$key){
+                    if( !$errorMessage ){
+                        $errorMessage = $label;
+                    } else {
+                        $errorMessage .= ", " . $label;
+                    }
+                }
+            }
+
+            $foundError = false;
+
+            /* check if validation was successful */
+            if ( $errorMessage ){
+                $errorMessage = "Folgende Pflichtfelder müssen noch ausgefüllt werden: " . $errorMessage;
+                $this->data['user'] = $user->addRole( $role, false );
+                $this->data['user'] = $user;
+                FlashMessage::add(FlashMessage::TYPE_ERROR, $errorMessage);
+                $foundError = true;
+            }
+
+            if(!empty($user->email) && !filter_var($user->email, FILTER_VALIDATE_EMAIL)){
+                FlashMessage::add(FlashMessage::TYPE_ERROR, "Die Emailadresse hat kein korrektes Format.");
+                $foundError = true;
+            }
+
+
+            if(!$foundError){
+
+                $this->data['user'] = $user->addRole( $role, true );
+
+                /* save user */
+                $user->save();
+                FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Benutzerdaten wurden erfolgreich gespeichert.');
+                if($this->view == "page.new") {
+                    Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
+                }else{
+                    Helpers::redirect('?page=' . $_GET['page']);
+                }
+            }
+
+        }
+
     }
 
     private function postFunctions(){
@@ -152,15 +304,20 @@ class MainController extends AbstractController
 
 
 
-    private function prepareInclude(){
+    private function prepareInclude()
+    {
         $this->data['tab'] = $this->getGET('tab', 'data');
         $this->data['edit'] = $this->getGET('edit', 0);
         $viewType = "show";
-        if($this->data['edit']){
+        $view = $this->view;
+        if ($view == 'pages.new'){
+            $view = 'pages.detail';
+        }
+        if($this->data['edit'] || $this->view == 'pages.new'){
             $viewType = "edit";
         }
 
-        $this->data['tab_file'] = str_replace('pages.', 'includes.', $this->view) . '-' . $this->data['tab'] . '-' . $viewType;
+        $this->data['tab_file'] = str_replace('pages.', 'includes.', $view) . '-' . $this->data['tab'] . '-' . $viewType;
     }
 
     private function getGET($key, $default){
@@ -191,7 +348,7 @@ class MainController extends AbstractController
         $this->data['showEdit'] = false;
         if($currentUser->hasCapability('adressen_edit')){
             $this->data['showEdit'] = true;
-        }elseif(isset($_GET['action']) || isset($this->data['edit']) && $this->data['edit']){
+        }elseif((isset($_GET['action']) || isset($this->data['edit']) && $this->data['edit']) || $this->view == "pages.new"){
             FlashMessage::add(FlashMessage::TYPE_ERROR, 'Sie haben nicht die benötigten Rechte um diese Seite anzuzeigen.');
             $this->abort();
         }
