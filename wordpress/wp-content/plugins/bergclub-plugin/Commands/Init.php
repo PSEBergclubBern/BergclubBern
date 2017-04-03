@@ -11,17 +11,34 @@ namespace BergclubPlugin\Commands;
 
 abstract class Init
 {
-
+    /**
+     * Convert a title field for the new database
+     *
+     * @param $text
+     * @return mixed|string
+     */
     protected function convertTitleField($text){
         return $this->cleanUp($text);
     }
 
+    /**
+     * Convert a text field for the new database
+     *
+     * @param $text
+     * @return mixed|string
+     */
     protected function convertTextField($text)
     {
         $text = $this->convertEncoding($text);
         return $this->cleanUp($text);
     }
 
+    /**
+     * cleanup old field
+     *
+     * @param $text
+     * @return mixed|string
+     */
     private function cleanUp($text){
         // replace br
         $text = str_replace('<br>', '', $text);
@@ -32,6 +49,12 @@ abstract class Init
         return $text;
     }
 
+    /**
+     * convert encoding to new format
+     *
+     * @param $text
+     * @return string
+     */
     private function convertEncoding($text){
         // urldecode
         $text = urldecode($text);

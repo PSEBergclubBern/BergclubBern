@@ -60,6 +60,13 @@ class Import extends Init
         } else {
             $this->importMitteilungen($mitteilungen);
         }
+
+        // Check for toueren
+        if (!isset($touren)) {
+            \WP_CLI::warning('Input file has no touren, skipping');
+        } else {
+            $this->importTouren($touren);
+        }
     }
 
     function importMitteilungen($mitteilungen)
@@ -98,6 +105,12 @@ class Import extends Init
 
 
         }
+    }
+
+    function importTouren($touren) {
+        \WP_CLI::log('Begin processing of mitteilungen');
+        \WP_CLI::log('It has ' . count($touren) . ' Touren');
+
 
     }
 }
