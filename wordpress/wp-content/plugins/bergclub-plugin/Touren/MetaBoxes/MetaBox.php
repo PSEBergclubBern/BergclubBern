@@ -12,6 +12,17 @@ use duncan3dc\Laravel\BladeInstance;
 
 abstract class MetaBox
 {
+    private static $saveActionRegistered = false;
+    private static $registeredBoxes = [];
+
+    public function __construct()
+    {
+        self::$registeredBoxes[] = $this;
+        if (!self::$saveActionRegistered){
+            self::$saveActionRegistered = true;
+            add_action('save_post', [$this, 'save']);
+        }
+    }
 
     /**
      * get the view for this element
@@ -75,27 +86,54 @@ abstract class MetaBox
 
     public function save($postId)
     {
-        if (!$this->isValid($_POST)) {
+        //get the status of the post (the one intended to save)
+        $status = get_post_status( $postId );
+
+        $valid = true;
+        foreach (self::$registeredBoxes as $box) {
+            /* @var MetaBox $box */
+            foreach ($box->getUniqueFieldNames() as $fieldId) {
+                if (array_key_exists($fieldId, $_POST)) {
+                    \update_post_meta(
+                        $postId,
+                        $fieldId,
+                        $_POST[$fieldId]
+                    );
+                }
+            }
+
+            //we don't want to validate a freshly created post (status: 'auto-draft')
+            if($status != 'auto-draft') {
+                if (!$box->isValid($_POST)) {
+                    $valid = false;
+                }
+            }
+        }
+
+        if(!$valid) {
             // unhook this function to prevent indefinite loop
             remove_action('save_post', [$this, 'save']);
 
+            //define fallback status for post (needs to be set if validation fails)
+            $fallback_status = null;
+
+            if ($status == "pending" || $status == "publish") {
+                //the fallback needs to be 'draft'.
+                $fallback_status = "draft";
+            } elseif ($status == "draft") {
+                //we set the fallback to 'auto-draft', this is the state a post has before it is saved first
+                //this means the post will not be displayed in the list of posts.
+                $fallback_status = "auto-draft";
+            }
+
             // update the post to change post status
-            wp_update_post(array('ID' => $postId, 'post_status' => 'draft'));
+            wp_update_post(array('ID' => $postId, 'post_status' => $fallback_status));
 
             // re-hook this function again
             add_action('save_post', [$this, 'save']);
             return false;
         }
-
-        foreach ($this->getUniqueFieldNames() as $fieldId) {
-            if (array_key_exists($fieldId, $_POST)) {
-                \update_post_meta(
-                    $postId,
-                    $fieldId,
-                    $_POST[$fieldId]
-                );
-            }
-        }
+        return true;
     }
 
     public function html($post)
