@@ -44,21 +44,32 @@
         if ( $selected == 'bcb_institution' || $selected == 'bcb_inserent' ){
             hide('phone_private');
             hide('birthdate');
+            hide('spouse');
             hide('leaving_reason');
             show('company');
         }
 
-        else if ( $selected == 'bcb_interessent' || $selected == 'bcb_interessent_jugend' || $selected == 'bcb_aktivmitglied' || $selected == 'bcb_aktivmitglied_jugend' || $selected == 'bcb_ehrenmitglied' || $selected == 'bcb_freimitglied' ){
+        else if ( $selected == 'bcb_interessent' || $selected == 'bcb_interessent_jugend' || $selected == 'bcb_ehrenmitglied' || $selected == 'bcb_freimitglied' ){
             hide('leaving_reason');
             hide('company');
             show('phone_private');
             show('birthdate');
+            hide('spouse');
+        }
+
+        else if ( $selected == 'bcb_aktivmitglied' || $selected == 'bcb_aktivmitglied_jugend' ){
+            hide('leaving_reason');
+            hide('company');
+            show('phone_private');
+            show('birthdate');
+            show('spouse');
         }
 
         else if ($selected == 'bcb_ehemalig'){
             hide('company');
             show('phone_private');
             show('birthdate');
+            hide('spouse');
             show('leaving_reason');
         }
 
@@ -66,6 +77,7 @@
             hide('leaving_reason');
             hide('company');
             hide('birthdate');
+            hide('spouse');
             hide('phone_private');
         }
 

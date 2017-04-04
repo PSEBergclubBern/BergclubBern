@@ -61,6 +61,19 @@
                 <td><textarea name="{{ $key  }}" id="{{ $key }}">{{  $user->comments }}</textarea></td>
             </tr>
 
+        @elseif( $key == 'spouse' )
+
+            <tr>
+                <td class="td-{{ $key }}"><label id="label-{{ $key }}" for="{{ $key }}">{{ $value }}</label></td>
+
+                @if( $spouse != null )
+                    <td class="td-{{ $key }}">{{ $spouse->first_name }} {{ $spouse->last_name  }}</td>
+                @else
+                    <td class="td-{{ $key }}"><a href="?page={{ $_GET['page'] }}&view=detail&tab=spouse&id={{ $_GET['id'] }}&edit=1">Zuweisen</a></td>
+                @endif
+
+            </tr>
+
         @else
 
             <tr>
