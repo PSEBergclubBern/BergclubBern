@@ -8,16 +8,19 @@
 
 namespace BergclubPlugin\Touren\MetaBoxes;
 
+use BergclubPlugin\FlashMessage;
 use duncan3dc\Laravel\BladeInstance;
 
 abstract class MetaBox
 {
     private static $saveActionRegistered = false;
+    private static $alreadyValidated = false;
     private static $registeredBoxes = [];
 
     public function __construct()
     {
         self::$registeredBoxes[] = $this;
+        //ensure that action hook only gets registered once
         if (!self::$saveActionRegistered){
             self::$saveActionRegistered = true;
             add_action('save_post', [$this, 'save']);
@@ -86,54 +89,84 @@ abstract class MetaBox
 
     public function save($postId)
     {
-        //get the status of the post (the one intended to save)
-        $status = get_post_status( $postId );
+        //ensure that is not a revision (seems to have nothing to do with the state "Review")
+        //ensure that it is not autosave which is calling
+        //ensure that action is set and the action is 'editpost'
+        if( ! ( wp_is_post_revision( $postId) || wp_is_post_autosave( $postId ) ) && isset($_POST['action']) && $_POST['action'] == 'editpost') {
+            //workaround (otherwise the method still gets called multiple times
+            if (!self::$alreadyValidated) {
+                self::$alreadyValidated = true;
 
-        $valid = true;
-        foreach (self::$registeredBoxes as $box) {
-            /* @var MetaBox $box */
-            foreach ($box->getUniqueFieldNames() as $fieldId) {
-                if (array_key_exists($fieldId, $_POST)) {
-                    \update_post_meta(
-                        $postId,
-                        $fieldId,
-                        $_POST[$fieldId]
-                    );
+                //remove the save_post hook, otherwise we will get an endless loop when why update the post
+                remove_action('save_post', [$this, 'save']);
+
+                //register the redirect hook, which WP calls after this function
+                add_filter('redirect_post_location', [$this, 'redirectPostLocation'], 10, 2);
+
+                //get the status of the post (the one intended to save)
+                $status = get_post_status($postId);
+                $originalStatus = $_POST['original_post_status'];
+                if($originalStatus == "auto-draft"){
+                    $originalStatus = "draft";
+                }
+
+                $valid = true;
+                foreach (self::$registeredBoxes as $box) {
+                    /* @var MetaBox $box */
+                    foreach ($box->getUniqueFieldNames() as $fieldId) {
+                        if (array_key_exists($fieldId, $_POST)) {
+                            \update_post_meta(
+                                $postId,
+                                $fieldId,
+                                $_POST[$fieldId]
+                            );
+                        }
+                    }
+
+                    //we don't want to validate a freshly created post (status: 'auto-draft')
+                    if ($status != 'auto-draft') {
+                        //IRGENDWO HIER MÜSST IHR EINE LÖSUNG FINDEN UM GEWISSE FELDER NUR ZU VALIDIEREN, WENN $status = 'pending' ODER 'publish'
+                        if (!$box->isValid($_POST)) {
+                            $valid = false;
+                        }
+                    }
+                }
+
+                if (!$valid) {
+                    file_put_contents($postId . "_" . uniqid(), "");
+                    // unhook this function to prevent indefinite loop
+
+                    //define fallback status for post (needs to be set if validation fails)
+                    $fallback_status = null;
+
+                    //ensure that the post will have the same state before saving
+                    if ($status == "draft" || $status == "pending" || $status == "publish") {
+                        wp_update_post(array('ID' => $postId, 'post_status' => $originalStatus));
+                    }
+
+                } elseif ($status != "auto-draft") {
+                    //add a success message when the post fields where valid.
+                    FlashMessage::add(FlashMessage::TYPE_SUCCESS, "Änderungen gespeichert.");
                 }
             }
-
-            //we don't want to validate a freshly created post (status: 'auto-draft')
-            if($status != 'auto-draft') {
-                if (!$box->isValid($_POST)) {
-                    $valid = false;
-                }
-            }
-        }
-
-        if(!$valid) {
-            // unhook this function to prevent indefinite loop
-            remove_action('save_post', [$this, 'save']);
-
-            //define fallback status for post (needs to be set if validation fails)
-            $fallback_status = null;
-
-            if ($status == "pending" || $status == "publish") {
-                //the fallback needs to be 'draft'.
-                $fallback_status = "draft";
-            } elseif ($status == "draft") {
-                //we set the fallback to 'auto-draft', this is the state a post has before it is saved first
-                //this means the post will not be displayed in the list of posts.
-                $fallback_status = "auto-draft";
-            }
-
-            // update the post to change post status
-            wp_update_post(array('ID' => $postId, 'post_status' => $fallback_status));
 
             // re-hook this function again
             add_action('save_post', [$this, 'save']);
-            return false;
         }
-        return true;
+    }
+
+    public function redirectPostLocation($location, $postId){
+        $status = get_post_status($postId);
+
+        //remove any system message (otherwise it could be e.g. 'successful published', but new state is 'draft')
+        $location = remove_query_arg('message', $location);
+
+        //forward to touren overview when publish button was clicked and state really is 'publish'.
+        if(isset($_POST['publish']) && $status == 'publish'){
+            $location = admin_url( "edit.php?post_type=" . BCB_CUSTOM_POST_TYPE_TOUREN );
+        }
+
+        return $location;
     }
 
     public function html($post)
