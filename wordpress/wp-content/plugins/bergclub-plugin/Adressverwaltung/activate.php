@@ -86,6 +86,13 @@ $role->save();
 
 createMultipleFakeUser($role, 3);
 
+$role = new Role(Role::TYPE_ADDRESS, 'freimitglied', 'Freimitglied');
+$role->addCapability('read', false);
+$role->save();
+
+createMultipleFakeUser($role, 10);
+
+
 /**
  * Load array with Functionary roles and assigned capabilities.
  */

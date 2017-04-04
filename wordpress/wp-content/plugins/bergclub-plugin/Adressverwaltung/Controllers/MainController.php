@@ -132,6 +132,15 @@ class MainController extends AbstractController
                             'first_name' => 'Vorname',
                             'last_name' => 'Nachname',
                         ],
+                        'bcb_freimitglied' => [
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                            'birthdate' => 'Geburtstag',
+                        ],
                     ];
 
                 }elseif($this->data['tab'] == 'functions' && $this->data['edit']) {

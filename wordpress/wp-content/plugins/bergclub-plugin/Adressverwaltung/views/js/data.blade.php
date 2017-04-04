@@ -48,7 +48,7 @@
             show('company');
         }
 
-        else if ( $selected == 'bcb_interessent' || $selected == 'bcb_interessent_jugend' || $selected == 'bcb_aktivmitglied' || $selected == 'bcb_aktivmitglied_jugend' || $selected == 'bcb_ehrenmitglied' ){
+        else if ( $selected == 'bcb_interessent' || $selected == 'bcb_interessent_jugend' || $selected == 'bcb_aktivmitglied' || $selected == 'bcb_aktivmitglied_jugend' || $selected == 'bcb_ehrenmitglied' || $selected == 'bcb_freimitglied' ){
             hide('leaving_reason');
             hide('company');
             show('phone_private');
