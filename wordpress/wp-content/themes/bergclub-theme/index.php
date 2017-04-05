@@ -21,7 +21,7 @@ get_header() ?>
         </div>
 
         <img class="img-responsive header-logo"
-             src="<?php echo esc_url(get_template_directory_uri()); ?>/BergclubBernLogo.png" alt="Logo">
+             src="<?php echo esc_url(get_template_directory_uri()); ?>/img/BergclubBernLogo.png" alt="Logo">
 
         <div class="row">
 

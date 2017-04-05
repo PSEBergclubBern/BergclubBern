@@ -45,22 +45,10 @@ html {
     }
 }
 .item{
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-}
-.item:nth-child(1) {
-    background: url(Startseite1.jpg) no-repeat top center fixed;
-}
-.item:nth-child(2) {
-    background: url(Startseite2.jpg) no-repeat top center fixed;
-}
-.item:nth-child(3) {
-    background: url(Startseite3.jpg) no-repeat top center fixed;
-}
-.item:nth-child(4) {
-    background: url(Startseite4.jpg) no-repeat top center fixed;
+    -webkit-background-size: cover !important;
+    -moz-background-size: cover !important;
+    -o-background-size: cover !important;
+    background-size: cover !important;
 }
 .carousel {
     z-index: -99;

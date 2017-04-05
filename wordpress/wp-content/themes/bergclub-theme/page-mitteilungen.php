@@ -20,7 +20,7 @@ get_header(); ?>
                 </div>
                 <div class="row">
                     <div class="table-responsive page-content">
-                        <table id="mitteilung-table" class="table table-hover">
+                        <table class="table table-hover hide-links">
                             <colgroup>
                                 <col class="col-md-2">
                                 <col class="col-md-7">
@@ -38,11 +38,16 @@ get_header(); ?>
                             $query = new WP_Query(array('category_name' => 'mitteilungen', 'posts_per_page' => 1000));
                             // Start the loop. Retriev Posts in Category "Mitteilungen"
                             while ($query->have_posts()) : $query->the_post(); ?>
-                                <tr class="table-row-hover">
-                                    <?php
-                                    // Include the page content template.
-                                    get_template_part('content', 'mitteilungen');
-                                    ?>
+                                <tr class="table-row-hover add-link">
+                                    <td>
+                                        <?php echo get_the_date(); ?>
+                                    </td>
+                                    <td>
+                                        <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
+                                    </td>
+                                    <td>
+                                        <?php the_author(); ?>
+                                    </td>
                                 </tr>
                                 <?php
                                 // End the loop.
@@ -56,16 +61,4 @@ get_header(); ?>
             </div>
         </main><!-- .site-main -->
     </div><!-- .content-area -->
-
-    <script type="text/javascript">
-        jQuery(document).ready(function () {
-            jQuery('#mitteilung-table tr').click(function () {
-                var href = $(this).find("a").attr("href");
-                if (href) {
-                    window.location = href;
-                }
-            })
-        })
-    </script>
-
 <?php get_footer(); ?>

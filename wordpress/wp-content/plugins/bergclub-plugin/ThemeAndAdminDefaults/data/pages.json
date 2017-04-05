@@ -1,0 +1,42 @@
+{
+  "portrait": {
+    "title": "Portrait",
+    "content": "<p>Das Programm des Bergclubs Bern bietet eine breite Palette von attraktiven Touren f\u00fcr Erwachsene ab ca. 20 Jahren. Nebst Touren in Schnee, Fels und Eis runden zahlreiche Wanderungen sowie Skiwochen, Velotouren und gesellschaftliche Veranstaltungen das Angebot ab. Sportliche Bet\u00e4tigung, Freude an den Bergen, das gemeinsame Erlebnis in der Natur und viel Spass bilden den Grundstock f\u00fcr eindr\u00fcckliche Tourenerlebnisse.<\/p><p>Das vielseitige Tourenprogramm ist auf die Bed\u00fcrfnisse der Teilnehmerinnen und Teilnehmer abgestimmt und umfasst Touren in allen Schwierigkeitsgraden und f\u00fcr alle Altersstufen. Detailierte Angaben zur L\u00e4nge der Tour und zu den technischen Schwierigkeiten erleichtern die Auswahl einer geeigneten Tour. Im Zweifelsfall geben die Tourenchefs gerne Auskunft. Nicht nur f\u00fcr Einsteigerinnen und Einsteiger, sondern auch f\u00fcr alle, die noch etwas dazulernen wollen, finden zudem zahlreiche Ausbildungstouren statt.<\/p>"
+  },
+  "vorstand": {
+    "title": "Vorstand",
+    "content": "<p>Hast Du ein einen Tourenwunsch, Materialprobleme oder ein spezielles Anliegen? Nachfolgend sind alle Mitglieder des Vorstands und weitere wichtige Personen des Bergclub Bern aufgelistet, Du kannst direkt mit der verantwortlichen Person Kontakt aufnehmen.<\/p>"
+  },
+  "statuten": {
+    "title": "Statuten",
+    "content": "Statuten"
+  },
+  "tourenprogramm": {
+    "title": "Tourenprogramm",
+    "content": "Tourenprogramm"
+  },
+  "tourenleiter": {
+    "title": "Tourenleiter",
+    "content": "Tourenleiter"
+  },
+  "informationen": {
+    "title": "Informationen",
+    "content": "Informationen"
+  },
+  "mitteilungen": {
+    "title": "Mitteilungen",
+    "content": "Mitteilungen"
+  },
+  "kontakt": {
+    "title": "Kontakt",
+    "content": "[bcb_contact_form]"
+  },
+  "mitgliedschaft": {
+    "title": "Mitgliedschaft",
+    "content": "[bcb_contact_form]"
+  },
+  "dokumente-links": {
+    "title": "Dokumente & Links",
+    "content": "Dokumente & Links"
+  }
+}

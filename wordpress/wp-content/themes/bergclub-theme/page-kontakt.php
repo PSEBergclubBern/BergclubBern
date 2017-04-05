@@ -1,9 +1,7 @@
 <?php
-get_header();
+wp_enqueue_script('contact-form', get_template_directory_uri() . '/js/contact-form.js', ['jquery-own'], null, true);
 
-$parsedURL = parse_url($_SERVER['REQUEST_URI']);
-$pathParts = explode('/', trim($parsedURL['path'], '/'));
-$page = $pathParts[0];
+get_header();
 
 include 'contact-form-action.php';
 ?>

@@ -11,7 +11,7 @@
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
     <?php
     // Post thumbnail.
-    twentyfifteen_post_thumbnail();
+    bcb_post_thumbnail();
     ?>
     <div class="row">
         <?php the_title('<h1 class="page-header">', '</h1>'); ?>

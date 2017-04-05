@@ -211,19 +211,20 @@ class User implements IModel
 
         $user = get_user_by('ID', $this->main['ID'] );
 
-        foreach( $this->roles as $role){
-            /* @var Role $role */
-            $role->save(); //ensure the role is saved (exists in WP) before added to the WP user.
-            $user->add_role($role->getKey());
+        if($user) {
+            foreach ($this->roles as $role) {
+                /* @var Role $role */
+                $role->save(); //ensure the role is saved (exists in WP) before added to the WP user.
+                $user->add_role($role->getKey());
+            }
+
+            foreach ($this->deletedRoles as $role) {
+                $user->remove_role($role->getKey());
+            }
+
+            //ensure that user does not have the WP default role
+            $user->remove_role('subscriber');
         }
-
-        foreach( $this->deletedRoles as $role){
-            $user->remove_role($role->getKey());
-        }
-
-        //ensure that user does not have the WP default role
-        $user->remove_role('subscriber');
-
         $this->deletedRoles = [];
 
     }

@@ -18,47 +18,59 @@
 
 get_header(); ?>
 
-	<section id="primary" class="content-area">
-		<main id="main" class="site-main" role="main">
+<div id="primary" class="content-area">
+    <main id="main" class="site-main" role="main">
+        <div class="container">
+            <div class="row">
 
-		<?php if ( have_posts() ) : ?>
+                <?php if ( have_posts() ){ ?>
 
-			<header class="page-header">
-				<?php
-					the_archive_title( '<h1 class="page-title">', '</h1>' );
-					the_archive_description( '<div class="taxonomy-description">', '</div>' );
-				?>
-			</header><!-- .page-header -->
+                <header class="page-header">
+                    <?php
+                    the_archive_title('<h1 class="page-title">', '</h1>');
+                    ?>
+                </header><!-- .page-header -->
+                <div class="row">
+                    <div class="table-responsive page-content">
+                        <table class="table table-hover hide-links">
+                            <colgroup>
+                                <col class="col-md-2">
+                                <col class="col-md-7">
+                                <col class="col-md-3">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Titel</th>
+                                <th>Autor</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php while (have_posts()) : the_post(); ?>
+                                <tr class="table-row-hover add-link">
+                                    <td>
+                                        <?php echo get_the_date(); ?>
+                                    </td>
+                                    <td>
+                                        <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
+                                    </td>
+                                    <td>
+                                        <?php the_author(); ?>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                        <?php
+                        bcb_pagination();
 
-			<?php
-			// Start the Loop.
-			while ( have_posts() ) : the_post();
-
-				/*
-				 * Include the Post-Format-specific template for the content.
-				 * If you want to override this in a child theme, then include a file
-				 * called content-___.php (where ___ is the Post Format name) and that will be used instead.
-				 */
-				get_template_part( 'content', get_post_format() );
-
-			// End the loop.
-			endwhile;
-
-			// Previous/next page navigation.
-			the_posts_pagination( array(
-				'prev_text'          => __( 'Previous page', 'twentyfifteen' ),
-				'next_text'          => __( 'Next page', 'twentyfifteen' ),
-				'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'twentyfifteen' ) . ' </span>',
-			) );
-
-		// If no content, include the "No posts found" template.
-		else :
-			get_template_part( 'content', 'none' );
-
-		endif;
-		?>
-
-		</main><!-- .site-main -->
-	</section><!-- .content-area -->
+                        }else { ?>
+                            Keine Beiträge vorhanden.
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+    </main><!-- .site-main -->
+</div>
 
 <?php get_footer(); ?>

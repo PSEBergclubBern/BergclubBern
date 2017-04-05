@@ -1,69 +1,14 @@
-html{
-    overflow-y: scroll;
-}
-body {
-    padding-top: 50px;
-}
-.content-area {
-    padding: 40px 15px;
-}
-.header-carousel {
-    max-height: 350px;
-    overflow: hidden;
-}
-.header-logo {
-    position: fixed;
-    bottom: 100px;
-    padding: 0px 50px;
-}
-.newest-posts{
-    padding: 20vh 50px 50px 50px;
-}
-.mobile-placeholder{
-    height: 70vh;
-}
-h3{
-    margin: 5px 5px;
-}
+/*
+Theme Name: Bergclub Bern
+Theme URI: https://github.com/PSEBergclubBern/BergclubBern/tree/master/wordpress/wp-content/themes/bergclub-theme
+Author: PSE2017, Group 1: Dominik Fankhauser, Kevin Studer, Marcel Chavez, Marco Indermühle, Mathias Stocker, Sven Kellenberger, Timm Gross
+Author URI: https://github.com/PSEBergclubBern/
+Description: Theme created for the new website of Bergclub Bern.
+Version: 1.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: bcb
 
-.th-inner a {
-    color: black;
-    text-decoration: none;
-    border: none;
-    pointer-events: none;
-}
-
-.table > tbody > tr:first-child > td {
-    border: none;
-}
-.page-content {
-    padding: 0 20px;
-}
-.table-row-hover{
-    cursor: pointer;
-}
-
-/* Kontaktformular */
-.noresize {
-    resize: none;
-}
-
-.vresize {
-    resize: vertical;
-}
-
-.hresize {
-    resize: horizontal;
-}
-
-label.required:after {
-    color: red;
-    font-size: 125%;
-    content: ' *';
-    display: inline;
-}
-
-label.error {
-    color: red;
-}
-/* /Kontaktformular */
+This theme, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned with others.
+*/
