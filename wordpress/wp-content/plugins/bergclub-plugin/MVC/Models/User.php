@@ -144,6 +144,17 @@ class User implements IModel
         return $users;
     }
 
+    public static function findVorstandList(){
+        $userPraesident = get_users(['role__in' => array('bcb_praesident')]);
+        $userVorstand = [];
+        foreach($userPraesident as $item){
+            $user = self::find( $item ->ID);
+            if($user)
+                $userVorstand = $user;
+        }
+        return $userVorstand;
+    }
+
     /**
      * Finds and WP User with the given id and converts it to our custom User.
      *
