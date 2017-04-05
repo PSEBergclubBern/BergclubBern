@@ -23,7 +23,8 @@ abstract class MetaBox
         //ensure that action hook only gets registered once
         if (!self::$saveActionRegistered){
             self::$saveActionRegistered = true;
-            add_action('save_post', [$this, 'save']);
+            //we create a hook only for this specific post type
+            add_action('save_post_' . BCB_CUSTOM_POST_TYPE_TOUREN, [$this, 'save']);
         }
     }
 
@@ -98,7 +99,7 @@ abstract class MetaBox
                 self::$alreadyValidated = true;
 
                 //remove the save_post hook, otherwise we will get an endless loop when why update the post
-                remove_action('save_post', [$this, 'save']);
+                remove_action('save_post_' . BCB_CUSTOM_POST_TYPE_TOUREN, [$this, 'save']);
 
                 //register the redirect hook, which WP calls after this function
                 add_filter('redirect_post_location', [$this, 'redirectPostLocation'], 10, 2);
@@ -151,7 +152,7 @@ abstract class MetaBox
             }
 
             // re-hook this function again
-            add_action('save_post', [$this, 'save']);
+            add_action('save_post_' . BCB_CUSTOM_POST_TYPE_TOUREN, [$this, 'save']);
         }
     }
 
