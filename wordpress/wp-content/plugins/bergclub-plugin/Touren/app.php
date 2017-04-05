@@ -81,7 +81,7 @@ function bcb_register_my_tourenverwaltung() {
         "rewrite" => array( "slug" => "tourenverwaltung", "with_front" => true ),
         "query_var" => true,
         "supports" => array( "title", "editor", "thumbnail", "custom-fields" ),
-        "menu_position" => 5, //below Posts according to https://codex.wordpress.org/Function_Reference/register_post_type
+        "menu_position" => 5, //below Posts according to https://codex.wordpress.org/Function_Reference/register_post_type,
     );
 
     register_post_type( BCB_CUSTOM_POST_TYPE_TOUREN, $args );
@@ -95,26 +95,3 @@ function bcb_create_new_metabox_context( $post ) {
 }
 
 add_action( 'edit_form_after_title', 'bcb_create_new_metabox_context' );
-
-
-function bcb_redirect_location($location, $post_id){
-    if(get_post_type( $post_id ) == BCB_CUSTOM_POST_TYPE_TOUREN) {
-        $status = get_post_status($post_id);
-
-        //Falls der post auf auto-draft zurückgesetzt wurde, entfernen wir die Erfolgsmeldung.
-        if ($status == 'auto-draft') {
-            $location = remove_query_arg('message', $location);
-        } elseif (isset($_POST['publish'])) {
-            //Falls versucht wurde zu publizieren, aber der status immer noch 'draft' ist, fügen wird
-            //die `Entwurf aktualisiert` Meldung hinzu.
-            if ($status == 'draft') {
-                $location = add_query_arg('message', 10, $location);
-            }else{
-                $location = admin_url( "edit.php?post_type=".BCB_CUSTOM_POST_TYPE_TOUREN );
-            }
-        }
-    }
-    return $location;
-}
-
-add_filter('redirect_post_location','bcb_redirect_location', 10, 2);
