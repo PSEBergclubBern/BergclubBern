@@ -174,7 +174,7 @@ class User implements IModel
         foreach($roleList as $vorstandRole){
             $role = Role::find($vorstandRole);
             if($role){
-                $item = ['title' => $role->getName()];
+                $item = ['title' => $role->getName(), 'users' => []];
                 $users = self::findByRole($vorstandRole);
                 foreach($users as $user){
                     $data = [
@@ -187,7 +187,9 @@ class User implements IModel
                     ];
                     $item['users'][] = (object) $data;
                 }
-                $vorstand[] = $item;
+                if(count($item['users']) > 0) {
+                    $vorstand[] = $item;
+                }
             }
         }
         return $vorstand;
