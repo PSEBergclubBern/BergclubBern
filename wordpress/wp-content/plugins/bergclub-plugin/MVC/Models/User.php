@@ -103,6 +103,23 @@ class User implements IModel
 
     private $allowWpUser = false;
 
+    private static $vorstandRoles = [
+        'bcb_praesident',
+        'bcb_tourenchef',
+        'bcb_tourenchef_jugend',
+        'kasse',
+        'mutationen',
+        'redaktion',
+        'sekretariat',
+    ];
+
+    private static $erweiterterVorstandRoles = [
+        'bcb_materialchef',
+        'bcb_materialchef_jugend',
+        'bcb_js_coach',
+        'bcb_versand',
+    ];
+
     /**
      * User constructor.
      *
@@ -144,15 +161,53 @@ class User implements IModel
         return $users;
     }
 
-    public static function findVorstandList(){
-        $userPraesident = get_users(['role__in' => array('bcb_praesident')]);
-        $userVorstand = [];
-        foreach($userPraesident as $item){
-            $user = self::find( $item ->ID);
-            if($user)
-                $userVorstand = $user;
+    public static function findVorstand(){
+        return self::findVorstandByArray(self::$vorstandRoles);
+    }
+
+    public static function findErweiterterVorstand(){
+        return self::findVorstandByArray(self::$erweiterterVorstandRoles);
+    }
+
+    private static function findVorstandByArray($roleList){
+        $vorstand = [];
+        foreach($roleList as $vorstandRole){
+            $role = Role::find($vorstandRole);
+            if($role){
+                $item = ['title' => $role->getName()];
+                $users = self::findByRole($vorstandRole);
+                foreach($users as $user){
+                    $data = [
+                        'name' => trim($user->last_name . ' ' . $user->first_name),
+                        'address' => $user->address,
+                        'phone_p' => $user->phone_p,
+                        'phone_g' => $user->phone_g,
+                        'phone_m' => $user->phone_m,
+                        'email' => $user->email,
+                    ];
+                    $item['users'][] = (object) $data;
+                }
+                $vorstand[] = $item;
+            }
         }
-        return $userVorstand;
+        return $vorstand;
+    }
+
+    public static function findByRole($role){
+        $role = Helpers::ensureKeyHasPrefix($role);
+        $result = get_users(['role' => $role]);
+        $users = [];
+        foreach($result as $item){
+            $user = self::find( $item ->ID );
+            if($user){
+                $users[] = $user;
+            }
+        }
+
+        usort($users, function($a, $b){
+            return strcmp($a->last_name.' '.$a->first_name, $b->last_name.' '.$b->first_name);
+        });
+        return $users;
     }
 
     /**
@@ -222,19 +277,20 @@ class User implements IModel
 
         $user = get_user_by('ID', $this->main['ID'] );
 
-        foreach( $this->roles as $role){
-            /* @var Role $role */
-            $role->save(); //ensure the role is saved (exists in WP) before added to the WP user.
-            $user->add_role($role->getKey());
+        if($user) {
+            foreach ($this->roles as $role) {
+                /* @var Role $role */
+                $role->save(); //ensure the role is saved (exists in WP) before added to the WP user.
+                $user->add_role($role->getKey());
+            }
+
+            foreach ($this->deletedRoles as $role) {
+                $user->remove_role($role->getKey());
+            }
+
+            //ensure that user does not have the WP default role
+            $user->remove_role('subscriber');
         }
-
-        foreach( $this->deletedRoles as $role){
-            $user->remove_role($role->getKey());
-        }
-
-        //ensure that user does not have the WP default role
-        $user->remove_role('subscriber');
-
         $this->deletedRoles = [];
 
     }
@@ -567,6 +623,20 @@ class User implements IModel
      */
     private function setGender($value){
         $this->_setByConstant('gender', $value);
+    }
+
+    private function getDisplayName(){
+        return trim($this->data['last_name'] . ' ' . $this->data['first_name']);
+    }
+
+    private function getAddress(){
+        $address = [];
+        if(!empty($this->data['address_addition'])) {
+            $address[] = $this->data['address_addition'];
+        }
+        $address[] = $this->data['street'];
+        $address[] = trim($this->data['zip'] . ' ' .$this->data['location']);
+        return join(', ', $address);
     }
 
     /**
