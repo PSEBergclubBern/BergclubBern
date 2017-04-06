@@ -54,9 +54,9 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     <?php if(!bcb_is_jugend()) {
-                        echo "<li><a href='" . bcb_jugend_home() . "'>zur Jugend</a>";
+                        echo "<li class='switch'><a href='" . bcb_jugend_home() . "'>Jugend &raquo;</a>";
                     } else {
-                        echo "<li><a href='" .  home_url() . "'>zum Bergclub</a>";
+                        echo "<li class='switch'><a href='" .  home_url() . "'>Bergclub &raquo;</a>";
                     }
                     ?>
                 </ul>

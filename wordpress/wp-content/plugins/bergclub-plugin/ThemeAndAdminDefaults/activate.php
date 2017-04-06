@@ -9,7 +9,6 @@ if($page) {
 
 //remove sample post
 $posts = get_posts(['name' => 'hello-world']);
-print_r($posts);
 if(is_array($posts) && isset($posts[0])){
     wp_delete_post($posts[0]->ID, true);
 }
@@ -49,7 +48,7 @@ function bcb_create_pages($pages)
 $pages = json_decode(file_get_contents(__DIR__ . '/data/pages.json'), true);
 bcb_create_pages($pages);
 
-function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, $page){
+function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, $page, $category){
     $args = [
         'menu-item-title' => $title,
         'menu-item-parent-id' => $parentId,
@@ -66,6 +65,22 @@ function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, $pag
             $args['menu-item-object-id'] = $wpPage->ID;
         }
     }
+
+    if(!empty($category)){
+        $categoryId = get_category_by_slug($category)->term_id;
+        if($categoryId){
+            $args['menu-item-type'] = 'taxonomy';
+            $args['menu-item-object'] = 'category';
+            $args['menu-item-object-id'] = $categoryId;
+        }
+    }
+
+    /*
+    if(!empty($category)){
+        print "<pre>".print_r($args,true)."</pre>";
+        exit;
+    }
+    */
     return wp_update_nav_menu_item($menuId, 0, $args);
 }
 
@@ -82,8 +97,12 @@ function bcb_create_menu($menu){
         if (isset($menuItem['page'])) {
             $page = $menuItem['page'];
         }
+        $category = null;
+        if (isset($menuItem['category'])) {
+            $category = $menuItem['category'];
+        }
 
-        $parentId = bcb_create_menu_item($menuId, $parentId, $slug, $menuItem['title'], $position, $page);
+        $parentId = bcb_create_menu_item($menuId, $parentId, $slug, $menuItem['title'], $position, $page, $category);
         if(isset($menuItem['sub-menu'])){
             $subPosition = 0;
             foreach ($menuItem['sub-menu'] as $subSlug => $subMenuItem){
@@ -93,7 +112,11 @@ function bcb_create_menu($menu){
                 if (isset($subMenuItem['page'])) {
                     $page = $subMenuItem['page'];
                 }
-                bcb_create_menu_item($menuId, $parentId, $slug, $subMenuItem['title'], $subPosition, $page);
+                $category = null;
+                if (isset($suMenuItem['category'])) {
+                    $category = $subMenuItem['category'];
+                }
+                bcb_create_menu_item($menuId, $parentId, $slug, $subMenuItem['title'], $subPosition, $page, $category);
             }
         }
     }

@@ -7,22 +7,22 @@ include 'contact-form-action.php';
 ?>
 
 	<div id="primary" class="content-area">
-		<main id="main" class="site-main" role="main">
-            <div class="container">
-                <div class="page-content">
-                    <div class="row">
-                    </div>
-                    <div class="row">
-                    <h1>Kontaktformular</h1>
+        <div class="container">
+            <div class="row">
+                    <h1 class="page-header">Kontaktformular</h1>
                     <?php if(!empty($missingFields)){ ?>
-                        <div class="col-sm-4 col-sm-offset-4 alert alert-danger alert-dismissable fade in">
+                        <div class="row">
+                        <div class="alert alert-danger alert-dismissable">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                             Ergänzen Sie die rot markierten Felder.
                         </div>
+                        </div>
                     <?php }elseif($success){ ?>
-                        <div class="col-sm-4 col-sm-offset-4 alert alert-success alert-dismissable fade in">
+                        <div class="row">
+                        <div class="alert alert-success alert-dismissable">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                             Nachricht erfolgreich versendet.
+                        </div>
                         </div>
                         <?php } ?>
                     </div>

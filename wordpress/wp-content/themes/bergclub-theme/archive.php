@@ -19,58 +19,42 @@
 get_header(); ?>
 
 <div id="primary" class="content-area">
-    <main id="main" class="site-main" role="main">
-        <div class="container">
-            <div class="row">
-
-                <?php if ( have_posts() ){ ?>
-
-                <header class="page-header">
-                    <?php
-                    the_archive_title('<h1 class="page-title">', '</h1>');
-                    ?>
-                </header><!-- .page-header -->
-                <div class="row">
-                    <div class="table-responsive page-content">
-                        <table class="table table-hover hide-links">
-                            <colgroup>
-                                <col class="col-md-2">
-                                <col class="col-md-7">
-                                <col class="col-md-3">
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th>Datum</th>
-                                <th>Titel</th>
-                                <th>Autor</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <?php while (have_posts()) : the_post(); ?>
-                                <tr class="table-row-hover add-link">
-                                    <td>
-                                        <?php echo get_the_date(); ?>
-                                    </td>
-                                    <td>
-                                        <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
-                                    </td>
-                                    <td>
-                                        <?php the_author(); ?>
-                                    </td>
-                                </tr>
-                            <?php endwhile; ?>
-                            </tbody>
-                        </table>
-                        <?php
-                        bcb_pagination();
-
-                        }else { ?>
-                            Keine Beiträge vorhanden.
-                        <?php } ?>
+    <div class="container">
+        <?php the_archive_title('<h1 class="page-header">', '</h1>'); ?>
+        <?php if ( have_posts() ){ ?>
+            <div class="container-fluid grid-table hide-links row-hover">
+                <div class="row row-header hidden-xs">
+                    <div class="col-sm-3">
+                        Datum
+                    </div>
+                    <div class="col-sm-6">
+                        Titel
+                    </div>
+                    <div class="col-sm-3">
+                        Author
                     </div>
                 </div>
+                <?php while (have_posts()) : the_post(); ?>
+                    <div class="row add-link">
+                        <div class="col-sm-3 italic-sm">
+                            <?php echo get_the_date(); ?>
+                        </div>
+                        <div class="col-sm-6">
+                            <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
+                        </div>
+                        <div class="col-sm-3 italic-sm">
+                            <?php the_author(); ?>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
             </div>
-    </main><!-- .site-main -->
-</div>
+            <div class="container">
+                <?php bcb_pagination(); ?>
+            </div>
+        <?php }else{ ?>
+            <div class="container">
+                <p>Keine Beiträge vorhanden.</p>
+            </div>
+        <?php } ?>
 
-<?php get_footer(); ?>
+        <?php get_footer(); ?>

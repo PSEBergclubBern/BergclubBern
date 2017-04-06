@@ -102,44 +102,54 @@ if ( ! function_exists( 'bcb_post_thumbnail' ) ) {
     }
 }
 
-function bcb_carousel_images(){
-    $files = scandir(__DIR__ . '/img/carousel');
-    $carouselImages = null;
-    $index = 0;
-    foreach($files as $file){
-        if($file != "." && $file != ".."){
-            $index++;
-            $carouselImages .= "
-                .item:nth-child(". $index . ") {
-                    background: url(" . get_template_directory_uri() . "/img/" . $file .") no-repeat top center fixed;
-                }";
-        }
-    }
-    return $carouselImages;
-}
-
+if ( ! function_exists( 'bcb_enqueue_scripts' ) ) {
 //adding css/js files
-function bcb_enqueue_scripts()
-{
-    wp_dequeue_script('jquery-core');
-    wp_deregister_script('jquery-core');
+    function bcb_enqueue_scripts()
+    {
+        wp_dequeue_script('jquery-core');
+        wp_deregister_script('jquery-core');
 
-    wp_enqueue_style('bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
-    wp_enqueue_style('default', get_template_directory_uri() . '/css/bergclub.css', ['bootstrap']);
-    wp_enqueue_style('jugend', get_template_directory_uri() . '/css/jugend.css', ['default']);
-    wp_enqueue_style('carousel', get_template_directory_uri() . '/css/carousel.css', ['bootstrap']);
+        wp_enqueue_style('bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
+        wp_enqueue_style('roboto', 'https://fonts.googleapis.com/css?family=Roboto:400,400i', ['bootstrap']);
+        if (!bcb_is_jugend()) {
+            wp_enqueue_style('default', get_template_directory_uri() . '/css/bergclub.css', ['bootstrap']);
+        } else {
+            wp_enqueue_style('default', get_template_directory_uri() . '/css/jugend.css', ['bootstrap']);
+        }
+        wp_enqueue_style('carousel', get_template_directory_uri() . '/css/carousel.css', ['bootstrap']);
 
-    wp_add_inline_style( 'carousel', bcb_carousel_images());
+        wp_add_inline_style('carousel', bcb_carousel_images_css());
 
-    wp_enqueue_script('ielt9', get_template_directory_uri() . '/js/html5.js');
-    wp_script_add_data('ielt9', 'conditional', 'lt IE 9');
+        wp_enqueue_script('ielt9', get_template_directory_uri() . '/js/html5.js');
+        wp_script_add_data('ielt9', 'conditional', 'lt IE 9');
 
-    wp_enqueue_script('jquery-own', 'https://code.jquery.com/jquery-3.1.1.min.js', null, null, true);
-    wp_enqueue_script('bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', ['jquery-own'], null, true);
-    wp_enqueue_script('bergclub', get_template_directory_uri() . '/js/bergclub.js', ['jquery-own'], null, true);
+        wp_enqueue_script('jquery-own', 'https://code.jquery.com/jquery-3.1.1.min.js', null, null, true);
+        wp_enqueue_script('bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', ['jquery-own'], null, true);
+        wp_enqueue_script('bergclub', get_template_directory_uri() . '/js/bergclub.js', ['jquery-own'], null, true);
+    }
 }
 
 add_action( 'wp_enqueue_scripts', 'bcb_enqueue_scripts' );
+
+if ( ! function_exists( 'bcb_carousel_images_css' ) ) {
+    function bcb_carousel_images_css()
+    {
+        $files = scandir(__DIR__ . '/img/carousel');
+        shuffle($files);
+        $carouselImages = null;
+        $index = 0;
+        foreach ($files as $file) {
+            if ($file != "." && $file != "..") {
+                $index++;
+                $carouselImages .= "
+                .item:nth-child(" . $index . ") {
+                    background: url(" . get_template_directory_uri() . "/img/carousel/" . $file . ") no-repeat top center fixed;
+                }";
+            }
+        }
+        return $carouselImages;
+    }
+}
 
 
 // Add navigation walker for bootstrap menu
@@ -164,29 +174,31 @@ function bcb_jugend_home(){
     return $hostParts[0] == 'jugend' ? '//' . $_SERVER['SERVER_NAME'] . '/' : '//jugend.' . $_SERVER['SERVER_NAME'] . '/';
 }
 
-function add_jugend_to_href( $atts, $item, $args ) {
+function bcb_add_jugend_to_url($url){
     if(bcb_is_jugend()){
-        $parsedURL = parse_url($atts['href']);
+        $parsedURL = parse_url($url);
         if(!empty($parsedURL)){
             if(!isset($parsedURL['path'])){
                 $parsedURL['path'] = '/';
             }
-            $atts['href'] = '//' . $_SERVER['SERVER_NAME'] . $parsedURL['path'];
+            $url = '//' . $_SERVER['SERVER_NAME'] . $parsedURL['path'];
 
             if(isset($parsedURL['query'])){
-                $atts['href'] .= '?' . $parseURL['query'];
+                $url .= '?' . $parseURL['query'];
             }
         }else{
-            $atts['href'] = '//' . $_SERVER['SERVER_NAME'] . '/';
+            $url = '//' . $_SERVER['SERVER_NAME'] . '/';
         }
+    }
 
-    }
-    if(get_query_var("jugend", false)) {
-        //$atts['href'] = add_query_arg( 'jugend', 'true', $atts['href']);
-    }
+    return $url;
+}
+
+function bcb_nav_menu_link_attributes( $atts, $item, $args ) {
+    $atts['href'] = bcb_add_jugend_to_url($atts['href']);
     return $atts;
 }
-add_filter( 'nav_menu_link_attributes', 'add_jugend_to_href', 10, 3 );
+add_filter( 'nav_menu_link_attributes', 'bcb_nav_menu_link_attributes', 10, 3 );
 
 
 /*
@@ -233,25 +245,52 @@ function bcb_pagination() {
         'type'            => 'array',
     ];
 
+    $pagination = "";
     $paginate = paginate_links($pagination_args);
-    $paginate = str_replace("<span class='page-numbers current'>", "", $paginate);
-    $paginate = str_replace("</span>", "", $paginate);
-    $paginate = str_replace(" class='page-numbers'", "", $paginate);
+    if(!empty($paginate)) {
+        $paginate = str_replace("<span class='page-numbers current'>", "", $paginate);
+        $paginate = str_replace("</span>", "", $paginate);
+        $paginate = str_replace(" class='page-numbers'", "", $paginate);
 
-    global $wp;
-    $current_url = home_url(add_query_arg(array(),$wp->request));
+        global $wp;
+        $current_url = home_url(add_query_arg(array(), $wp->request));
 
-    $pagination = "<ul class='pagination'>";
+        $pagination = "<ul class='pagination'>";
 
-    foreach($paginate as $page){
-        if($page == $paged) {
-            $pagination .= "<li class='active'><a href='" . $current_url . "'>" . $page . "</a></li>";
-        }else{
-            $pagination .= "<li>" . $page . "</li>";
+        foreach ($paginate as $page) {
+            if ($page == $paged) {
+                $pagination .= "<li class='active'><a href='" . $current_url . "'>" . $page . "</a></li>";
+            } else {
+                $pagination .= "<li>" . $page . "</li>";
+            }
         }
+        $pagination .= "</ul>";
     }
-    $pagination .= "</ul>";
-
-
     echo $pagination;
+}
+
+function bcb_prev_next_links(){
+    $prev = "";
+    $post = get_previous_post(true);
+    if($post){
+        $prev = "<li><a href='" . $post->guid . "'>&laquo; " . $post->post_title . "</a></li>";
+    }
+
+    $next = "";
+    $post = get_next_post(true);
+    if($post){
+        $next = "<li><a href='" . $post->guid . "'>" . $post->post_title . " &raquo;</a></li>";
+    }
+
+
+    $wpCategory = get_the_category();
+    $category = "";
+    if(!empty($wpCategory)){
+        $categoryId = $wpCategory[0]->term_id;
+        $category = "<li><a href='" . get_category_link($categoryId) . "'>Alle " . $wpCategory[0]->name . "</a></li>";
+        $prev = str_replace('/uncategorized/', '/' . $wpCategory[0]->slug . '/', $prev);
+        $next = str_replace('/uncategorized/', '/' . $wpCategory[0]->slug . '/', $next);
+    }
+
+    echo "<ul class='pagination'>" . $prev . $category . $next . "</ul>";
 }

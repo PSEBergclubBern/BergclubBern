@@ -1,22 +1,197 @@
-.jugend .navbar{
-    background-color: #AAAAAA;
-    border-color: #AAAAAA;
-}
-.jugend .navbar-inverse .navbar-brand{
-    color: black;
-}
-.jugend .navbar-inverse .navbar-brand:hover{
-    color: #555555;
-}
-.jugend .navbar-inverse .navbar-nav>li>a{
-    color: black;
-}
-.jugend .navbar-inverse .navbar-nav>li>a:hover{
-    color: #555555;
-}
-.jugend .navbar-inverse .navbar-nav>.active>a{
-    background-color: white;
-}
-.jugend .text-muted{
-    color:black
-}
+html {
+  overflow-y: scroll; }
+
+body {
+  padding-top: 50px;
+  font-family: 'Roboto', sans-serif; }
+
+h1 {
+  color: #00631a; }
+
+.content-area {
+  padding: 40px 15px; }
+
+.header-carousel {
+  max-height: 350px;
+  overflow: hidden; }
+
+.header-logo {
+  position: fixed;
+  bottom: 100px;
+  padding: 0 50px;
+  max-width: auto; }
+
+@media only screen and (max-width: 1200px) {
+  .header-logo {
+    max-width: 500px; } }
+@media only screen and (max-width: 990px) {
+  .header-logo {
+    position: fixed;
+    top: 75px;
+    max-height: 13vh;
+    margin-left: -2vh; } }
+.newest-posts {
+  padding: 10vh 50px 50px 50px; }
+
+@media only screen and (max-width: 990px) {
+  .newest-posts {
+    padding: 20vh 50px 50px 50px; } }
+.mobile-placeholder {
+  height: 70vh; }
+
+h3 {
+  margin: 5px 5px; }
+
+.hide-links a {
+  color: black;
+  text-decoration: none;
+  border: none;
+  pointer-events: none; }
+
+.table > tbody > tr:first-child > td {
+  border: none; }
+
+.page-content {
+  padding: 0 20px; }
+
+.table-hover tbody tr {
+  cursor: pointer; }
+
+.container, .form-control, .well {
+  font-size: 18px; }
+
+.form-control {
+  margin-top: 6px !important; }
+
+.error-404 h1 {
+  color: red; }
+
+.text-bold {
+  font-weight: bold; }
+
+/* Grid Table */
+.grid-table .row {
+  border-bottom: 1px solid #dddddd;
+  padding: 8px 4px; }
+
+.grid-table .row-header {
+  color: #00631a;
+  font-weight: bold;
+  border-bottom: 2px solid #dddddd; }
+
+.grid-table.row-hover .row {
+  cursor: pointer; }
+
+.grid-table.row-hover .row:hover {
+  background-color: whitesmoke; }
+
+.grid-table.row-hover .row-header, .grid-table.row-hover .row-header:hover {
+  cursor: inherit;
+  background-color: inherit; }
+
+/* Article */
+article h1 {
+  margin-bottom: 0.8em; }
+
+/* Navigation */
+.navbar-inverse .navbar-brand {
+  color: white !important;
+  font-size: 1.6em; }
+
+li.switch a {
+  color: white !important;
+  font-size: 1.3em; }
+
+.navbar-inverse .navbar-nav {
+  font-size: 1.1em; }
+
+.navbar-inverse {
+  background-color: rgba(0, 99, 26, 0.85);
+  border-bottom: none; }
+
+@media only screen and (max-width: 768px) {
+  .navbar-inverse {
+    background-color: #00631a;
+    border-bottom: none; } }
+.navbar-inverse .navbar-toggle {
+  background-color: #004a13 !important; }
+
+.navbar-inverse .navbar-nav > li > a {
+  color: #d5d5d5; }
+
+.navbar-inverse .navbar-nav > .open > a,
+.navbar-inverse .navbar-nav > .open > a:focus,
+.navbar-inverse .navbar-nav > .open > a:hover,
+.navbar-inverse .navbar-nav > .active > a,
+.navbar-inverse .navbar-nav > .active > a:focus,
+.navbar-inverse .navbar-nav > .active > a:hover,
+.navbar-inverse .navbar-nav .open .dropdown-menu > .active > a,
+.navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:focus,
+.navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:hover {
+  background-color: #00631a; }
+
+.navbar-inverse .dropdown-menu {
+  font-size: 1em; }
+
+.navbar-inverse .dropdown-menu > li > a {
+  color: #00631a; }
+.navbar-inverse .dropdown-menu > .active a {
+  color: #d5d5d5 !important; }
+
+.footer {
+  background-color: #1d1d1b;
+  color: white;
+  height: 30px;
+  overflow: hidden; }
+  .footer p {
+    display: inline-block;
+    margin: 6px 20px; }
+    .footer p a {
+      color: #d5d5d5; }
+
+.pagination > .active > a,
+.pagination > .active > a:focus,
+.pagination > .active > a:hover,
+.pagination > .active > span,
+.pagination > .active > span:focus,
+.pagination > .active > span:hover {
+  background-color: #006343; }
+
+.well {
+  background-color: rgba(0, 99, 26, 0.85);
+  border: none;
+  padding: 6px;
+  border-radius: 6px; }
+  .well h3 {
+    margin: 5px;
+    margin-top: 0;
+    color: white; }
+  .well ul {
+    margin-bottom: 0; }
+
+/* Kontaktformular */
+.noresize {
+  resize: none; }
+
+.vresize {
+  resize: vertical; }
+
+.hresize {
+  resize: horizontal; }
+
+label {
+  margin-top: 5px;
+  font-weight: normal; }
+
+label.required {
+  font-weight: bold; }
+
+label.error {
+  color: #b84444; }
+
+/* SM */
+@media only screen and (max-width: 768px) {
+  .italic-sm {
+    font-style: italic; } }
+
+/*# sourceMappingURL=jugend.css.map */

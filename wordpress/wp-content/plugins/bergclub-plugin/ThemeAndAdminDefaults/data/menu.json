@@ -35,7 +35,7 @@
   },
   "mitteilungen": {
     "title": "Mitteilungen",
-    "page": "mitteilungen"
+    "category": "mitteilungen"
   },
   "service": {
     "title": "Service",
