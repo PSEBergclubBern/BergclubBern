@@ -78,21 +78,48 @@ include_sub_directory_file('app.php');
 
 add_action('admin_enqueue_scripts', ['BergclubPlugin\\AssetHelper', 'getAssets']);
 
-function get_vorstand_list(){
-    $users = User::findVorstandList();
-    foreach($users as $user){
-        echo '<tr><td>' . $user->first_name . ' ' . $user->last_name . '<br>'.
-            $user->street . ', ' . $user->zip . ' ' . $user->location . '</td>';
-        echo '<td>';
-        if($user->phone_private)
-            echo $user->phone_private . '<br>';
-        if($user->phone_work)
-            echo $user->phone_work . '<br>';
-        if($user->phone_mobile)
-            echo $user->phone_mobile;
-        echo '</td>';
-        echo '<td>' . $user->email . '</td></tr>';
+function bcb_get_adress_table_view($page){
+    $vorstandTable = false;
+    if($page == 'vorstand'){
+        $roleArray = User::findVorstand();
+        $vorstandTable = true;
+    } elseif ($page == 'vorstandchargen'){
+        $roleArray = User::findErweiterterVorstand();
+        $vorstandTable = true;
+    } elseif ($page == 'tourenleiterinnen'){
+        $roleArray = User::findTourenleiterinnen();
+    } elseif ($page == 'tourenleiterinnenjugend'){
+        $roleArray = User::findTourenleiterinnenJugend();
+    } else {
+        return;
+    }
+
+    foreach($roleArray as $roleUser => $item){
+        $users = $item['users'];
+        foreach ($users as $user){
+            if($vorstandTable){
+                echo '<tr><td><strong>' . $item['title'] . '</strong><br>';
+                echo $user->name . '<br>';
+                echo $user->address . '</td>';
+                echo '<td>';
+            } else {
+                echo '<tr><td>' . $user->name . '<br>';
+                echo $user->address . '</td>';
+                echo '<td>';
+            }
+            if($user->phone_private)
+                echo $user->phone_private . '<br>';
+            if($user->phone_work)
+                echo $user->phone_work . '<br>';
+            if($user->phone_mobile)
+                echo $user->phone_mobile;
+            echo '</td>';
+            echo '<td>' . $user->email . '</td></tr>';
+        }
     }
 }
 
-add_action('bcb_vorstand_table', 'get_vorstand_list');
+add_action('bcb_tourenleiterinnen_table', 'bcb_get_adress_table_view');
+add_action('bcb_vorstand_table', 'bcb_get_adress_table_view');
+add_action('bcb_vorstand_table_chargen', 'bcb_get_adress_table_view');
+add_action('bcb_tourenleiterinnen_jugend_table', 'bcb_get_adress_table_view');

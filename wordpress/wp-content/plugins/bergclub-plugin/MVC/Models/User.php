@@ -120,6 +120,16 @@ class User implements IModel
         'bcb_versand',
     ];
 
+    private static $tourenleiterinnen =[
+        'bcb_tourenchef',
+        'bcb_leiter',
+    ];
+
+    private static $tourenleiterinnenJugend =[
+        'bcb_tourenchef_jugend',
+        'bcb_leiter_jugend',
+    ];
+
     /**
      * User constructor.
      *
@@ -162,37 +172,45 @@ class User implements IModel
     }
 
     public static function findVorstand(){
-        return self::findVorstandByArray(self::$vorstandRoles);
+        return self::findUsersAndRoleByArray(self::$vorstandRoles);
     }
 
     public static function findErweiterterVorstand(){
-        return self::findVorstandByArray(self::$erweiterterVorstandRoles);
+        return self::findUsersAndRoleByArray(self::$erweiterterVorstandRoles);
     }
 
-    private static function findVorstandByArray($roleList){
-        $vorstand = [];
-        foreach($roleList as $vorstandRole){
-            $role = Role::find($vorstandRole);
+    public static function findTourenleiterinnen(){
+        return self::findUsersAndRoleByArray(self::$tourenleiterinnen);
+    }
+
+    public static function findTourenleiterinnenJugend(){
+        return self::findUsersAndRoleByArray(self::$tourenleiterinnenJugend);
+    }
+
+    private static function findUsersAndRoleByArray($roleList){
+        $membersByRole = [];
+        foreach($roleList as $itemRole){
+            $role = Role::find($itemRole);
             if($role){
                 $item = ['title' => $role->getName(), 'users' => []];
-                $users = self::findByRole($vorstandRole);
+                $users = self::findByRole($itemRole);
                 foreach($users as $user){
                     $data = [
                         'name' => trim($user->last_name . ' ' . $user->first_name),
                         'address' => $user->address,
-                        'phone_p' => $user->phone_p,
-                        'phone_g' => $user->phone_g,
-                        'phone_m' => $user->phone_m,
+                        'phone_private' => $user->phone_private,
+                        'phone_work' => $user->phone_work,
+                        'phone_mobile' => $user->phone_mobile,
                         'email' => $user->email,
                     ];
                     $item['users'][] = (object) $data;
                 }
                 if(count($item['users']) > 0) {
-                    $vorstand[] = $item;
+                    $membersByRole[] = $item;
                 }
             }
         }
-        return $vorstand;
+        return $membersByRole;
     }
 
     public static function findByRole($role){

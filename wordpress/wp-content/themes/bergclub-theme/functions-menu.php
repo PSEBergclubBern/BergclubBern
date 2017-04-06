@@ -27,9 +27,15 @@ function bcb_add_pages(){
         wp_insert_post(bcb_get_page_data_from_title('Tourenprogramm'));
     }
 
-    $page = get_page_by_path('tourenleiter');
+    $page = get_page_by_path('tourenleiterinnen');
     if (!$page) {
-        wp_insert_post(bcb_get_page_data_from_title('Tourenleiter'));
+        wp_insert_post(array(
+            'post_type' => 'page',
+            'post_title' => 'Tourenleiter/innen',
+            'post_content' => 'Tourenleiter/innen',
+            'post_status' => 'publish',
+            'post_slug' => 'tourenleiterinnen'
+        ));
     }
 
     $page = get_page_by_path('informationen');
@@ -118,7 +124,7 @@ function bcb_add_header_navigation() {
 
         wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('tourenprogramm', 6, $parentId));
 
-        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('tourenleiter', 7, $parentId));
+        wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('tourenleiterinnen', 7, $parentId));
 
         wp_update_nav_menu_item($menu_id, 0, bcb_get_nav_menu_data('informationen', 8, $parentId));
 

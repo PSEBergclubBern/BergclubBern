@@ -448,61 +448,10 @@ function bcb_create_category()
 
 add_filter('init', 'bcb_create_category');
 
-//Some Dummy posts in category "Mitteilungen"
-//DELETE BEFORE PRODUCTIV
-function bcb_create_posts_mitteilungen()
-{
-    $category_mitteilungen = get_category_by_path('mitteilungen');
-
-    $post = get_page_by_path('post-mitteilung1', 'OBJECT', 'post');
-    if (!$post) {
-        wp_insert_post(array(
-            'post_title' => 'Mitteilung 1',
-            'post_name' => 'post-mitteilung1',
-            'post_content' => 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-            'post_category' => array($category_mitteilungen->cat_ID),
-            'post_status' => 'publish',
-            'post_type' => 'post',
-            'ping_status' => 'closed',
-            'comment_status' => 'closed'
-        ));
-    }
-
-    $post = get_page_by_path('post-mitteilung2', 'OBJECT', 'post');
-    if (!$post) {
-        wp_insert_post(array(
-            'post_title' => 'Mitteilung 2',
-            'post_name' => 'post-mitteilung2',
-            'post_content' => 'Irgendwas über mitteilung2',
-            'post_category' => array($category_mitteilungen->cat_ID),
-            'post_status' => 'publish',
-            'post_type' => 'post',
-            'ping_status' => 'closed',
-            'comment_status' => 'closed'
-        ));
-    }
-
-    $post = get_page_by_path('post-mitteilung3', 'OBJECT', 'post');
-    if (!$post) {
-        wp_insert_post(array(
-            'post_title' => 'Mitteilung 3',
-            'post_name' => 'post-mitteilung3',
-            'post_content' => 'Irgendwas über fadsfasd mitteilung3',
-            'post_category' => array($category_mitteilungen->cat_ID),
-            'post_status' => 'publish',
-            'post_type' => 'post',
-            'ping_status' => 'closed',
-            'comment_status' => 'closed'
-        ));
-    }
-}
-
 function add_query_vars_filter( $vars ){
     $vars[] = "jugend";
     return $vars;
 }
 add_filter( 'query_vars', 'add_query_vars_filter' );
-
-add_filter('init', 'bcb_create_posts_mitteilungen');
 
 add_filter('show_admin_bar', '__return_false');
