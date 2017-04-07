@@ -157,6 +157,9 @@ if ( ! function_exists( 'bcb_carousel_images_css' ) ) {
     }
 }
 
+/**
+ * Registers the custom post types
+ */
 function bcb_register_custom_post_types() {
 
     /**
@@ -195,6 +198,7 @@ function bcb_register_custom_post_types() {
         "query_var" => true,
         "supports" => array( "title", "editor", "thumbnail" ),
         "menu_position" => 5,
+        "rewrite" => ['slug' => 'tourenprogramm'],
     );
 
     register_post_type( "touren", $args );

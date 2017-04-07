@@ -120,12 +120,12 @@ class User implements IModel
         'bcb_versand',
     ];
 
-    private static $tourenleiterinnen =[
+    private static $leiter =[
         'bcb_tourenchef',
         'bcb_leiter',
     ];
 
-    private static $tourenleiterinnenJugend =[
+    private static $leiterJugend =[
         'bcb_tourenchef_jugend',
         'bcb_leiter_jugend',
     ];
@@ -179,12 +179,12 @@ class User implements IModel
         return self::findUsersAndRoleByArray(self::$erweiterterVorstandRoles);
     }
 
-    public static function findTourenleiterinnen(){
-        return self::findUsersAndRoleByArray(self::$tourenleiterinnen);
+    public static function findLeiter(){
+        return self::findUsersAndRoleByArray(self::$leiter);
     }
 
-    public static function findTourenleiterinnenJugend(){
-        return self::findUsersAndRoleByArray(self::$tourenleiterinnenJugend);
+    public static function findLeiterJugend(){
+        return self::findUsersAndRoleByArray(self::$leiterJugend);
     }
 
     private static function findUsersAndRoleByArray($roleList){
@@ -656,7 +656,7 @@ class User implements IModel
         }
         $address[] = $this->data['street'];
         $address[] = trim($this->data['zip'] . ' ' .$this->data['location']);
-        return join(', ', $address);
+        return $address;
     }
 
     /**

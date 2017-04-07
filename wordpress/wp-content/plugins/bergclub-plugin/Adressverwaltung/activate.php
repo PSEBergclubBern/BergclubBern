@@ -142,9 +142,7 @@ $roles = Role::findByType(Role::TYPE_FUNCTIONARY);
 foreach($roles as $role){
     /* @var Role $role */
     $capabilities = $role->getCapabilities();
-    if(array_key_exists('read', $capabilities) && $capabilities['read']) {
-        $user = createFakeUser($addressRole, false, \BergclubPlugin\MVC\Helpers::ensureKeyHasNoPrefix($role->getKey()));
-        $user->addRole($role);
-        $user->save();
-    }
+    $user = createFakeUser($addressRole, false, \BergclubPlugin\MVC\Helpers::ensureKeyHasNoPrefix($role->getKey()));
+    $user->addRole($role);
+    $user->save();
 }

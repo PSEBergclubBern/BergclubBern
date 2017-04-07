@@ -5,7 +5,7 @@
   },
   "vorstand": {
     "title": "Vorstand",
-    "content": "<p>Hast Du ein einen Tourenwunsch, Materialprobleme oder ein spezielles Anliegen? Nachfolgend sind alle Mitglieder des Vorstands und weitere wichtige Personen des Bergclub Bern aufgelistet, Du kannst direkt mit der verantwortlichen Person Kontakt aufnehmen.<\/p>"
+    "content": "<p>Hast Du ein einen Tourenwunsch, Materialprobleme oder ein spezielles Anliegen? Nachfolgend sind alle Mitglieder des Vorstands und weitere wichtige Personen des Bergclub Bern aufgelistet, Du kannst direkt mit der verantwortlichen Person Kontakt aufnehmen.<\/p>[bcb_vorstand_table]<h2>Weitere wichtige Personen<\/h2>[bcb_erweiterter_vorstand_table]"
   },
   "statuten": {
     "title": "Statuten",
@@ -15,9 +15,9 @@
     "title": "Tourenprogramm",
     "content": "Tourenprogramm"
   },
-  "tourenleiter": {
-    "title": "Tourenleiter",
-    "content": "Tourenleiter"
+  "tourenleiterinnen": {
+    "title": "Tourenleiter/innen",
+    "content": "[bcb_leiter_table]"
   },
   "informationen": {
     "title": "Informationen",

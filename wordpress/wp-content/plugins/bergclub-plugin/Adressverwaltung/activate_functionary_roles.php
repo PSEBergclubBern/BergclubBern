@@ -1,7 +1,7 @@
 <?php
 $functionaryRoles = [
     'leiter' => [
-        'name' => 'Leiter',
+        'name' => 'Leiter/in',
         'capabilities' => [
             'read' => true,
             'rueckmeldungen_read' => true,
@@ -11,7 +11,7 @@ $functionaryRoles = [
         ],
     ],
     'leiter_jugend' => [
-        'name' => 'Leiter Jugend',
+        'name' => 'Leiter/in Jugend',
         'capabilities' => [
             'read' => true,
             'rueckmeldungen_jugend_read' => true,
@@ -21,7 +21,7 @@ $functionaryRoles = [
         ],
     ],
     'tourenchef' => [
-        'name' => 'Tourenchef',
+        'name' => 'Tourenchef/in',
         'capabilities' => [
             'read' => true,
             'rueckmeldungen_read_others' => true,
@@ -33,7 +33,7 @@ $functionaryRoles = [
         ],
     ],
     'tourenchef_jugend' => [
-        'name' => 'Tourenchef Jugend',
+        'name' => 'Tourenchef/in Jugend',
         'capabilities' => [
             'read' => true,
             'rueckmeldungen_jugend_read_others' => true,
@@ -95,7 +95,7 @@ $functionaryRoles = [
         ],
     ],
     'praesident' => [
-        'name' => 'Präsident',
+        'name' => 'Präsident/in',
         'capabilities' => [
             'read' => true,
             'adressen_read' => true,
@@ -104,13 +104,13 @@ $functionaryRoles = [
         ],
     ],
     'materialchef' => [
-        'name' => 'Materialchef',
+        'name' => 'Materialchef/in',
         'capabilities' => [
             'read' => false,
         ],
     ],
     'materialchef_jugend' => [
-        'name' => 'Materialchef Jugend',
+        'name' => 'Materialchef/in Jugend',
         'capabilities' => [
             'read' => false,
         ],

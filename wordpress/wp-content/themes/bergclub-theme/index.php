@@ -28,7 +28,7 @@ get_header() ?>
             <div class="col-md-6 col-md-offset-6 col-lg-4 col-lg-offset-8 newest-posts">
                 <!--<div class="hidden-lg hidden-md mobile-placeholder">&nbsp;</div>-->
                 <div class="well">
-                    <h3>Neuste Tourenberichte <?php if(bcb_is_jugend()){ echo "Jugend"; } ?></h3>
+                    <h3>Nächste Touren <?php if(bcb_is_jugend()){ echo "Jugend"; } ?></h3>
                     <ul class="list-group">
                         <a class="list-group-item">Tour 1</a>
                         <a class="list-group-item">Tour 2</a>
@@ -39,7 +39,7 @@ get_header() ?>
                 </div>
 
                 <div class="well">
-                    <h3>Neuste Mitteilungen</h3>
+                    <h3>Neueste Mitteilungen</h3>
 
                     <ul class="list-group">
                         <?php
