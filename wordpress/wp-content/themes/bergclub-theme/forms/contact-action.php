@@ -142,15 +142,24 @@ $success = false;
 $missingFields = [];
 
 if (!empty($_POST)){
-
+    $posted = $_POST;
     foreach($_POST as $key => $value){
         $value = trim($value);
+        $posted[$value] = $value;
         $enquirytype = $_POST["enquirytype"];
 
         if($key == "email"){
             $value = sanitize_email($value);
         }else{
+            if($key == 'comment'){
+                $value = str_replace(PHP_EOL, '%br%', $value);
+            }
+
             $value = sanitize_text_field($value);
+
+            if($key == 'comment'){
+                $value = str_replace('%br%', PHP_EOL, $value);
+            }
         }
 
         if(!isset($fieldSettings[$enquirytype][$key]) || !$fieldSettings[$enquirytype][$key]["show"]){
@@ -165,8 +174,15 @@ if (!empty($_POST)){
         $_POST[$key] = $value;
     }
 
+    if(!bcb_captcha_is_solved()){
+        bcb_captcha_check_answer($_POST['captcha']);
+        if(!bcb_captcha_is_solved()){
+            $missingFields[] = "captcha";
+        }
+    }
 
-    if(empty($missingFields)) {
+
+    if(empty($missingFields) && bcb_captcha_is_solved()) {
         $to = 'bergclubadmin@bergclub.ch';
         $message = '';
         $headers = [];
@@ -185,8 +201,13 @@ if (!empty($_POST)){
         $message .= '<html><body><table cellspacing="0" cellpadding="5px" style="border: 0px; width:500px; font-family: Arial, Helvetica, sans-serif;">';
 
         foreach ($_POST as $key => $value) {
-            if (isset($_POST[$key]) && !empty($_POST[$key])) {
-                $message .= '<tr><td style="width:150px;" valign="top">' . $fields[$key] . ':</td><td style="width:350px;"> ' . $value . "</td></tr>";
+            if (isset($_POST[$key]) && !empty($_POST[$key]) && array_key_exists($key, $fields)) {
+                if($key != 'comment') {
+                    $message .= '<tr><td style="width:150px;" valign="top">' . $fields[$key] . ':</td><td style="width:350px;"> ' . $value . "</td></tr>";
+                }else{
+                    $message .= '<tr><td style="width:150px;" valign="top">' . $fields[$key] . ':</td></tr>';
+                    $message .= '<tr><td style="width:150px;" valign="top">' . nl2br($value) . '</xmp></td></tr>';
+                }
             }
         }
 
@@ -194,8 +215,11 @@ if (!empty($_POST)){
 
         $success = wp_mail($to, $subject, $message, $headers);
         if($success){
+            bcb_add_notice('success', 'Besten Dank für Ihre Nachricht.<br/>Diese wurde erfolgreich versendet', true);
             unset($_POST);
         }
+    }else{
+        bcb_add_notice('danger', 'Bitte ergänzen Sie die rot markierten Felder.', true);
     }
 }else{
     if($page == "mitgliedschaft"){
@@ -205,6 +229,18 @@ if (!empty($_POST)){
     }
 
     $_POST['gender'] = "Frau";
+    $_POST['enquirytype'] = "message";
+    if(is_page('mitgliedschaft')){
+        $_POST['enquirytype'] = "membership";
+    }
+
+    bcb_captcha_reset();
 }
 
+
+wp_enqueue_script('contact-form', get_template_directory_uri() . '/js/contact-form.js', ['jquery-own'], null, true);
+wp_add_inline_script('contact-form', "
+var fieldSettings = " . json_encode($fieldSettings) . "
+var missingFields = " . json_encode($missingFields)
+, 'before' );
 ?>

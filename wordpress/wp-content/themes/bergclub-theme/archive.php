@@ -18,9 +18,9 @@
 
 get_header(); ?>
 
-<div id="primary" class="content-area">
+
     <div class="container">
-        <?php the_archive_title('<h1 class="page-header">', '</h1>'); ?>
+        <h1><?php the_archive_title(); ?></h1>
         <?php if ( have_posts() ){ ?>
             <div class="container-fluid grid-table hide-links row-hover">
                 <div class="row row-header hidden-xs">
@@ -56,5 +56,5 @@ get_header(); ?>
                 <p>Keine Beiträge vorhanden.</p>
             </div>
         <?php } ?>
-
-        <?php get_footer(); ?>
+    </div>
+<?php get_footer(); ?>

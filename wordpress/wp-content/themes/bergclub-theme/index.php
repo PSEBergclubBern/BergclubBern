@@ -21,7 +21,7 @@ get_header() ?>
         </div>
 
         <img class="img-responsive header-logo"
-             src="<?php echo esc_url(get_template_directory_uri()); ?>/img/BergclubBern<?php if(bcb_is_jugend()){ echo "Jugend"; } ?>Logo.png" alt="Logo">
+             src="<?php echo esc_url(get_template_directory_uri()); ?>/img/logo<?php if(bcb_is_jugend()){ echo "-jugend"; } ?>.png" alt="Logo">
 
         <div class="row">
 

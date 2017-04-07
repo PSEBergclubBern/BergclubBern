@@ -34,7 +34,7 @@
                 <?php if(!bcb_is_jugend()){
                     echo "<a class='navbar-brand' href='" . home_url() . "'>Bergclub Bern</a>";
                 } else {
-                    echo "<a class='navbar-brand' href='" . esc_url( add_query_arg( 'jugend', 'true', home_url())) . "'>Bergclub Jugend</a>";
+                    echo "<a class='navbar-brand' href='" . bcb_jugend_home() . "'>Bergclub Jugend</a>";
                 }
                 ?>
 

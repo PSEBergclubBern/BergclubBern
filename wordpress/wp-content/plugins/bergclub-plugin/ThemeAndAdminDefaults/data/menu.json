@@ -21,7 +21,11 @@
     "sub-menu": {
       "tourenprogramm": {
         "title": "Tourenprogramm",
-        "page": "tourenprogramm"
+        "type": "touren"
+      },
+      "tourenberichte": {
+        "title": "Tourenberichte",
+        "type": "touren"
       },
       "tourenleiter": {
         "title": "Tourenleiter",

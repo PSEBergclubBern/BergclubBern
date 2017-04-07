@@ -59,6 +59,12 @@ h1{
   height: 70vh;
 }
 
+h1 {
+  padding-bottom: 9px;
+  margin: 40px 0 20px;
+  border-bottom: 1px solid lighten($primary-dark-color, 75%);
+}
+
 h3 {
   margin: 5px 5px;
 }

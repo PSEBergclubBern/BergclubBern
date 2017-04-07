@@ -4,3 +4,11 @@ $(".add-link").click(function () {
         window.location = href;
     }
 });
+
+$(document).ready(function(){
+    $('a.email').each(function(){
+        var email = atob($(this).data('id'));
+        $(this).attr('href', 'mailto:' + email);
+        $(this).html(email);
+    });
+});

@@ -48,7 +48,13 @@ function bcb_create_pages($pages)
 $pages = json_decode(file_get_contents(__DIR__ . '/data/pages.json'), true);
 bcb_create_pages($pages);
 
-function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, $page, $category){
+bcb_create_post_type_touren();
+
+function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, array $itemArgs){
+    $page = $itemArgs['page'];
+    $category = $itemArgs['category'];
+    $type = $itemArgs['type'];
+
     $args = [
         'menu-item-title' => $title,
         'menu-item-parent-id' => $parentId,
@@ -75,13 +81,29 @@ function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, $pag
         }
     }
 
-    /*
-    if(!empty($category)){
-        print "<pre>".print_r($args,true)."</pre>";
-        exit;
+    if(!empty($type)){
+        $args['menu-item-type'] = 'post_type_archive';
+        $args['menu-item-object'] = $type;
+        $args['menu-item-url'] = get_post_type_archive_link($type);
     }
-    */
+
     return wp_update_nav_menu_item($menuId, 0, $args);
+}
+
+function bcb_menu_args($menuItem){
+    $page = null;
+    $category = null;
+    $type = null;
+    if(!empty($menuItem['page'])){
+        $page = $menuItem['page'];
+    }
+    if(!empty($menuItem['category'])){
+        $category = $menuItem['category'];
+    }
+    if(!empty($menuItem['type'])){
+        $type = $menuItem['type'];
+    }
+    return ['page' => $page, 'category' => $category, 'type' => $type];
 }
 
 function bcb_create_menu($menu){
@@ -93,30 +115,14 @@ function bcb_create_menu($menu){
     foreach ($menu as $slug => $menuItem) {
         $parentId = 0;
         $position++;
-        $page = null;
-        if (isset($menuItem['page'])) {
-            $page = $menuItem['page'];
-        }
-        $category = null;
-        if (isset($menuItem['category'])) {
-            $category = $menuItem['category'];
-        }
 
-        $parentId = bcb_create_menu_item($menuId, $parentId, $slug, $menuItem['title'], $position, $page, $category);
+        $parentId = bcb_create_menu_item($menuId, $parentId, $slug, $menuItem['title'], $position, bcb_menu_args($menuItem));
         if(isset($menuItem['sub-menu'])){
             $subPosition = 0;
             foreach ($menuItem['sub-menu'] as $subSlug => $subMenuItem){
                 $subPosition++;
                 $slug .= "-" . $subSlug;
-                $page = null;
-                if (isset($subMenuItem['page'])) {
-                    $page = $subMenuItem['page'];
-                }
-                $category = null;
-                if (isset($suMenuItem['category'])) {
-                    $category = $subMenuItem['category'];
-                }
-                bcb_create_menu_item($menuId, $parentId, $slug, $subMenuItem['title'], $subPosition, $page, $category);
+                bcb_create_menu_item($menuId, $parentId, $slug, $subMenuItem['title'], $subPosition, bcb_menu_args($subMenuItem));
             }
         }
     }
