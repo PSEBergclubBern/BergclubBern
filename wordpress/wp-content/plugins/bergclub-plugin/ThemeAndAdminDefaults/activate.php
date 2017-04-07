@@ -48,8 +48,6 @@ function bcb_create_pages($pages)
 $pages = json_decode(file_get_contents(__DIR__ . '/data/pages.json'), true);
 bcb_create_pages($pages);
 
-bcb_create_post_type_touren();
-
 function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, array $itemArgs){
     $page = $itemArgs['page'];
     $category = $itemArgs['category'];

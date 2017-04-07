@@ -25,7 +25,7 @@
       },
       "tourenberichte": {
         "title": "Tourenberichte",
-        "type": "touren"
+        "type": "tourenberichte"
       },
       "tourenleiter": {
         "title": "Tourenleiter",

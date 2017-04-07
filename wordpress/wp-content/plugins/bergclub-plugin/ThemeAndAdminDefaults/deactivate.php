@@ -4,8 +4,6 @@ use BergclubPlugin\MVC\Models\Option;
 //delete the main menu
 wp_delete_nav_menu('header-navigation');
 
-unregister_post_type('touren');
-
 //delete WP pages from given array
 function bcb_delete_pages($pages)
 {

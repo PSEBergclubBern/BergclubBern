@@ -113,3 +113,34 @@ function bcb_content_filter($content){
     return $content;
 }
 add_filter( 'the_content', 'bcb_content_filter' );
+
+//override 'Beiträge'
+function bcb_change_post_label() {
+    global $menu;
+    global $submenu;
+    $menu[5][0] = 'Mitteilungen';
+    $submenu['edit.php'][5][0] = 'Mitteilungen';
+    $submenu['edit.php'][10][0] = 'Mitteilung hinzufügen';
+    //$submenu['edit.php'][16][0] = 'News Tags';
+}
+
+function bcb_change_post_object() {
+    global $wp_post_types;
+    $labels = &$wp_post_types['post']->labels;
+    $labels->name = 'Mitteilungen';
+    $labels->singular_name = 'Mitteilung';
+    $labels->add_new = 'Mitteilung hinzufügen';
+    $labels->add_new_item = 'Mitteilung hinzufügen';
+    $labels->edit_item = 'Mitteilung anpassen';
+    $labels->new_item = 'Mitteilung';
+    $labels->view_item = 'Mitteilung anschauen';
+    $labels->search_items = 'Mitteilung suchen';
+    $labels->not_found = 'Keine Mitteilungen gefunden';
+    $labels->not_found_in_trash = 'Keine Mitteilungen im Papierkorb gefunden';
+    $labels->all_items = 'Alle Mitteilungen';
+    $labels->menu_name = 'Mitteilungen';
+    $labels->name_admin_bar = 'Mitteilungen';
+}
+
+add_action( 'admin_menu', 'bcb_change_post_label' );
+add_action( 'init', 'bcb_change_post_object' );

@@ -1,7 +1,6 @@
 @extends('template')
 
 @section('content')
-    {{ get_post_type_archive_link('touren') }}
     @if($showEdit)
     <p><a class="button-primary" href="?page={{ $_GET['page'] }}&view=new">Neuer Eintrag</a></p>
     @endif

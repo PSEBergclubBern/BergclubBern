@@ -75,8 +75,6 @@ if ( ! function_exists( 'bcb_post_thumbnail' ) ) {
      *
      * Wraps the post thumbnail in an anchor element on index views, or a div
      * element when on single views.
-     *
-     * @since Twenty Fifteen 1.0
      */
     function bcb_post_thumbnail() {
         if ( post_password_required() || is_attachment() || ! has_post_thumbnail() ) {
@@ -159,6 +157,97 @@ if ( ! function_exists( 'bcb_carousel_images_css' ) ) {
     }
 }
 
+function bcb_register_custom_post_types() {
+
+    /**
+     * Post Type: Touren.
+     */
+
+    $labels = array(
+        "name" => __( 'Touren', '' ),
+        "singular_name" => __( 'Tour', '' ),
+        "menu_name" => __( 'Touren', '' ),
+        "all_items" => __( 'Touren', '' ),
+        "add_new" => __( 'Tour erfassen', '' ),
+        "add_new_item" => __( 'Neue Tour erfassen', '' ),
+        "edit_item" => __( 'Tour anpassen', '' ),
+        "new_item" => __( 'Neue Tour', '' ),
+        "view_item" => __( 'Tour ansehen', '' ),
+        "view_items" => __( 'Touren ansehen', '' ),
+        "search_items" => __( 'Tour suchen', '' ),
+    );
+
+    $args = array(
+        "label" => __( 'Touren', '' ),
+        "labels" => $labels,
+        "description" => "Touren des Bergclubs Bern",
+        "public" => true,
+        "publicly_queryable" => true,
+        "show_ui" => true,
+        "show_in_rest" => false,
+        "rest_base" => "",
+        "has_archive" => true,
+        "show_in_menu" => true,
+        "exclude_from_search" => false,
+        "capability_type" => ['tour', 'touren'],
+        "map_meta_cap" => true,
+        "hierarchical" => false,
+        "query_var" => true,
+        "supports" => array( "title", "editor", "thumbnail" ),
+        "menu_position" => 5,
+    );
+
+    register_post_type( "touren", $args );
+
+    //disable editor for post type 'touren';
+    remove_post_type_support( 'touren', 'editor' );
+
+
+    /**
+     * Post Type: Tourenberichte.
+     */
+
+    $labels = array(
+        "name" => __( 'Tourenberichte', '' ),
+        "singular_name" => __( 'Tourenbericht', '' ),
+        "menu_name" => __( 'Tourenberichte', '' ),
+        "all_items" => __( 'Tourenberichte', '' ),
+        "add_new" => __( 'Tourenbericht erfassen', '' ),
+        "add_new_item" => __( 'Neuen Tourenbericht erfassen', '' ),
+        "edit_item" => __( 'Tourenbericht anpassen', '' ),
+        "new_item" => __( 'Neuer Tourenbericht', '' ),
+        "view_item" => __( 'Tourenbericht ansehen', '' ),
+        "view_items" => __( 'Tourenberichte ansehen', '' ),
+        "search_items" => __( 'Tourenbericht suchen', '' ),
+    );
+
+    $args = array(
+        "label" => __( 'Tourenberichte', '' ),
+        "labels" => $labels,
+        "description" => "Tourenberichte des Bergclubs Bern",
+        "public" => true,
+        "publicly_queryable" => true,
+        "show_ui" => true,
+        "show_in_rest" => false,
+        "rest_base" => "",
+        "has_archive" => true,
+        "show_in_menu" => true,
+        "exclude_from_search" => false,
+        "capability_type" => ['tourenbericht', 'tourenberichte'],
+        "map_meta_cap" => true,
+        "hierarchical" => false,
+        "query_var" => true,
+        "supports" => array( "title", "editor", "thumbnail" ),
+        "menu_position" => 6,
+    );
+
+    register_post_type( "tourenberichte", $args );
+
+    remove_post_type_support( 'tourenberichte', 'title' );
+}
+
+add_action( 'init', 'bcb_register_custom_post_types' );
+
 
 //include bootstrap navigation walker
 require_once('inc/wp_bootstrap_navwalker.php');
@@ -177,16 +266,10 @@ require_once __DIR__ . '/inc/captcha.php';
 
 //Ensures that only the category name is shown as title in archive
 add_filter( 'get_the_archive_title', function ( $title ) {
-
-    if( is_category() ) {
-
-        $title = single_cat_title( '', false );
-
-    }
-
-    return $title;
-
+    return trim(str_replace('Kategorie:', '', str_replace('Archive:', '', $title)));
 });
 
 //disable admin bar in frontend
 add_filter('show_admin_bar', '__return_false');
+
+flush_rewrite_rules( false );

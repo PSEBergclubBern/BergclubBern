@@ -1,10 +1,4 @@
 <?php
-/**
- * The template for displaying all single posts and attachments
- *
- * @package WordPress
- * @subpackage Bergclub Bern
- */
 
 get_header(); ?>
     <?php
