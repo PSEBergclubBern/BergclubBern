@@ -1,7 +1,6 @@
 <?php
 
 use BergclubPlugin\MVC\Menu;
-use BergclubPlugin\MVC\SubMenu;
 
 $assets = [
     '//cdn.datatables.net/v/dt/dt-1.10.13/r-2.1.1/datatables.min.css',

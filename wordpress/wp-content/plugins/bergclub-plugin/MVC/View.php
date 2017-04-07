@@ -23,7 +23,6 @@ class View
         }
 
         $blade = new BladeInstance($viewDirectory, __DIR__ . '/cache');
-        echo $blade->render($view, $data);
-        exit;
+        return $blade->render($view, $data);
     }
 }

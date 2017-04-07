@@ -1,0 +1,61 @@
+{
+  "ueber-uns": {
+    "title": "\u00dcber uns",
+    "sub-menu": {
+      "portrait": {
+        "title": "Portrait",
+        "page": "portrait"
+      },
+      "vorstand": {
+        "title": "Vorstand",
+        "page": "vorstand"
+      },
+      "statuten": {
+        "title": "Statuen",
+        "page": "statuten"
+      }
+    }
+  },
+  "touren": {
+    "title": "Touren",
+    "sub-menu": {
+      "tourenprogramm": {
+        "title": "Tourenprogramm",
+        "type": "touren"
+      },
+      "tourenberichte": {
+        "title": "Tourenberichte",
+        "type": "tourenberichte"
+      },
+      "tourenleiter": {
+        "title": "Tourenleiter",
+        "page": "tourenleiter"
+      },
+      "informationen": {
+        "title": "Informationen",
+        "page": "informationen"
+      }
+    }
+  },
+  "mitteilungen": {
+    "title": "Mitteilungen",
+    "category": "mitteilungen"
+  },
+  "service": {
+    "title": "Service",
+    "sub-menu": {
+      "kontakt": {
+        "title": "Kontakt",
+        "page": "kontakt"
+      },
+      "mitgliedschaft": {
+        "title": "Mitgliedschaft",
+        "page": "mitgliedschaft"
+      },
+      "dokumente-links": {
+        "title": "Dokumente & Links",
+        "page": "dokumente-links"
+      }
+    }
+  }
+}

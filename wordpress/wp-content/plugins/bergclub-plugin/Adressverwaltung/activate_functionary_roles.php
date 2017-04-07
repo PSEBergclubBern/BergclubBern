@@ -17,7 +17,7 @@ $functionaryRoles = [
             'rueckmeldungen_jugend_read' => true,
             'rueckmeldungen_jugend_edit' => true,
             'edit_touren_jugend' => true,
-            'touren_jugend_edit_published_posts' => true,
+            'edit_published_touren_jugend' => true,
         ],
     ],
     'tourenchef' => [
@@ -60,7 +60,10 @@ $functionaryRoles = [
             'edit_others_touren' => true,
             'edit_published_touren' => true,
             'edit_others_touren_jugend' => true,
-            'touren_jugend_edit_published_posts' => true,
+            'edit_published_touren_jugend' => true,
+            'edit_tourenberichte' => true,
+            'edit_others_tourenberichte' => true,
+            'edit_published_tourenberichte' => true,
         ],
     ],
     'sekretariat' => [

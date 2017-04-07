@@ -21,14 +21,14 @@ get_header() ?>
         </div>
 
         <img class="img-responsive header-logo"
-             src="<?php echo esc_url(get_template_directory_uri()); ?>/BergclubBernLogo.png" alt="Logo">
+             src="<?php echo esc_url(get_template_directory_uri()); ?>/img/logo<?php if(bcb_is_jugend()){ echo "-jugend"; } ?>.png" alt="Logo">
 
         <div class="row">
 
-            <div class="col-md-4 col-md-offset-8 newest-posts">
-                <div class="hidden-lg hidden-md mobile-placeholder">&nbsp;</div>
-                <div class="well well-sm">
-                    <h3>Tourenberichte</h3>
+            <div class="col-md-6 col-md-offset-6 col-lg-4 col-lg-offset-8 newest-posts">
+                <!--<div class="hidden-lg hidden-md mobile-placeholder">&nbsp;</div>-->
+                <div class="well">
+                    <h3>Neuste Tourenberichte <?php if(bcb_is_jugend()){ echo "Jugend"; } ?></h3>
                     <ul class="list-group">
                         <a class="list-group-item">Tour 1</a>
                         <a class="list-group-item">Tour 2</a>
@@ -38,12 +38,12 @@ get_header() ?>
                     </ul>
                 </div>
 
-                <div class="well well-sm">
-                    <h3>Mitteilungen</h3>
+                <div class="well">
+                    <h3>Neuste Mitteilungen</h3>
 
                     <ul class="list-group">
                         <?php
-                        $query = new WP_Query(array('category_name' => 'mitteilungen', 'posts_per_page' => 5));
+                        $query = new WP_Query(array('category_name' => 'mitteilungen', 'posts_per_page' => 3));
                         // Start the loop. Retriev Posts in Category "Mitteilungen"
                         while ($query->have_posts()) : $query->the_post(); ?>
                             <a class="list-group-item" href="<?php the_permalink(); ?>"><?php the_title() ?></a>
