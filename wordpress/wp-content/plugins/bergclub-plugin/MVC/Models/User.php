@@ -103,6 +103,33 @@ class User implements IModel
 
     private $allowWpUser = false;
 
+    private static $vorstandRoles = [
+        'bcb_praesident',
+        'bcb_tourenchef',
+        'bcb_tourenchef_jugend',
+        'kasse',
+        'mutationen',
+        'redaktion',
+        'sekretariat',
+    ];
+
+    private static $erweiterterVorstandRoles = [
+        'bcb_materialchef',
+        'bcb_materialchef_jugend',
+        'bcb_js_coach',
+        'bcb_versand',
+    ];
+
+    private static $leiter =[
+        'bcb_tourenchef',
+        'bcb_leiter',
+    ];
+
+    private static $leiterJugend =[
+        'bcb_tourenchef_jugend',
+        'bcb_leiter_jugend',
+    ];
+
     /**
      * User constructor.
      *
@@ -130,6 +157,65 @@ class User implements IModel
      */
     public static function findAll(){
         $result = get_users();
+        $users = [];
+        foreach($result as $item){
+            $user = self::find( $item ->ID );
+            if($user){
+                $users[] = $user;
+            }
+        }
+
+        usort($users, function($a, $b){
+            return strcmp($a->last_name.' '.$a->first_name, $b->last_name.' '.$b->first_name);
+        });
+        return $users;
+    }
+
+    public static function findVorstand(){
+        return self::findUsersAndRoleByArray(self::$vorstandRoles);
+    }
+
+    public static function findErweiterterVorstand(){
+        return self::findUsersAndRoleByArray(self::$erweiterterVorstandRoles);
+    }
+
+    public static function findLeiter(){
+        return self::findUsersAndRoleByArray(self::$leiter);
+    }
+
+    public static function findLeiterJugend(){
+        return self::findUsersAndRoleByArray(self::$leiterJugend);
+    }
+
+    private static function findUsersAndRoleByArray($roleList){
+        $membersByRole = [];
+        foreach($roleList as $itemRole){
+            $role = Role::find($itemRole);
+            if($role){
+                $item = ['title' => $role->getName(), 'users' => []];
+                $users = self::findByRole($itemRole);
+                foreach($users as $user){
+                    $data = [
+                        'name' => trim($user->last_name . ' ' . $user->first_name),
+                        'address' => $user->address,
+                        'phone_private' => $user->phone_private,
+                        'phone_work' => $user->phone_work,
+                        'phone_mobile' => $user->phone_mobile,
+                        'email' => $user->email,
+                    ];
+                    $item['users'][] = (object) $data;
+                }
+                if(count($item['users']) > 0) {
+                    $membersByRole[] = $item;
+                }
+            }
+        }
+        return $membersByRole;
+    }
+
+    public static function findByRole($role){
+        $role = Helpers::ensureKeyHasPrefix($role);
+        $result = get_users(['role' => $role]);
         $users = [];
         foreach($result as $item){
             $user = self::find( $item ->ID );
@@ -211,19 +297,20 @@ class User implements IModel
 
         $user = get_user_by('ID', $this->main['ID'] );
 
-        foreach( $this->roles as $role){
-            /* @var Role $role */
-            $role->save(); //ensure the role is saved (exists in WP) before added to the WP user.
-            $user->add_role($role->getKey());
+        if($user) {
+            foreach ($this->roles as $role) {
+                /* @var Role $role */
+                $role->save(); //ensure the role is saved (exists in WP) before added to the WP user.
+                $user->add_role($role->getKey());
+            }
+
+            foreach ($this->deletedRoles as $role) {
+                $user->remove_role($role->getKey());
+            }
+
+            //ensure that user does not have the WP default role
+            $user->remove_role('subscriber');
         }
-
-        foreach( $this->deletedRoles as $role){
-            $user->remove_role($role->getKey());
-        }
-
-        //ensure that user does not have the WP default role
-        $user->remove_role('subscriber');
-
         $this->deletedRoles = [];
 
     }
@@ -556,6 +643,20 @@ class User implements IModel
      */
     private function setGender($value){
         $this->_setByConstant('gender', $value);
+    }
+
+    private function getDisplayName(){
+        return trim($this->data['last_name'] . ' ' . $this->data['first_name']);
+    }
+
+    private function getAddress(){
+        $address = [];
+        if(!empty($this->data['address_addition'])) {
+            $address[] = $this->data['address_addition'];
+        }
+        $address[] = $this->data['street'];
+        $address[] = trim($this->data['zip'] . ' ' .$this->data['location']);
+        return $address;
     }
 
     /**

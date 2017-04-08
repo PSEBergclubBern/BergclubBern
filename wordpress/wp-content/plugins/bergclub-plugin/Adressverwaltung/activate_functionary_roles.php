@@ -1,27 +1,33 @@
 <?php
 $functionaryRoles = [
     'leiter' => [
-        'name' => 'Leiter',
+        'name' => 'Leiter/in',
         'capabilities' => [
             'read' => true,
             'rueckmeldungen_read' => true,
             'rueckmeldungen_edit' => true,
             'edit_touren' => true,
             'edit_published_touren' => true,
+            'delete_touren' => true,
+            'delete_published_touren' => true,
+            'read_touren' => true,
         ],
     ],
     'leiter_jugend' => [
-        'name' => 'Leiter Jugend',
+        'name' => 'Leiter/in Jugend',
         'capabilities' => [
             'read' => true,
             'rueckmeldungen_jugend_read' => true,
             'rueckmeldungen_jugend_edit' => true,
             'edit_touren_jugend' => true,
-            'touren_jugend_edit_published_posts' => true,
+            'edit_published_touren_jugend' => true,
+            'delete_touren_jugend' => true,
+            'delete_published_touren_jugend',
+            'read_touren_jugend' => true,
         ],
     ],
     'tourenchef' => [
-        'name' => 'Tourenchef',
+        'name' => 'Tourenchef/in',
         'capabilities' => [
             'read' => true,
             'rueckmeldungen_read_others' => true,
@@ -30,10 +36,14 @@ $functionaryRoles = [
             'edit_touren' => true,
             'edit_others_touren' => true,
             'publish_touren' => true,
+            'delete_touren' => true,
+            'delete_published_touren' => true,
+            'delete_others_touren' => true,
+            'read_touren' => true,
         ],
     ],
     'tourenchef_jugend' => [
-        'name' => 'Tourenchef Jugend',
+        'name' => 'Tourenchef/in Jugend',
         'capabilities' => [
             'read' => true,
             'rueckmeldungen_jugend_read_others' => true,
@@ -42,6 +52,10 @@ $functionaryRoles = [
             'edit_touren_jugend' => true,
             'edit_others_touren_jugend' => true,
             'publish_touren_jugend' => true,
+            'delete_touren_jugend' => true,
+            'delete_published_touren_jugend' => true,
+            'delete_others_touren_jugend' => true,
+            'read_touren_jugend' => true,
         ],
     ],
     'redaktion' => [
@@ -52,6 +66,9 @@ $functionaryRoles = [
             'rueckmeldungen_jugend_read_others' => true,
             'edit_posts' => true,
             'edit_others_posts' => true,
+            'delete_posts' => true,
+            'delete_others_posts' => true,
+            'delete_published_posts' => true,
             'publish_posts' => true,
             'edit_published_posts' => true,
             'edit_pages' => true,
@@ -60,7 +77,10 @@ $functionaryRoles = [
             'edit_others_touren' => true,
             'edit_published_touren' => true,
             'edit_others_touren_jugend' => true,
-            'touren_jugend_edit_published_posts' => true,
+            'edit_published_touren_jugend' => true,
+            'edit_tourenberichte' => true,
+            'edit_others_tourenberichte' => true,
+            'edit_published_tourenberichte' => true,
         ],
     ],
     'sekretariat' => [
@@ -92,7 +112,7 @@ $functionaryRoles = [
         ],
     ],
     'praesident' => [
-        'name' => 'Präsident',
+        'name' => 'Präsident/in',
         'capabilities' => [
             'read' => true,
             'adressen_read' => true,
@@ -101,13 +121,13 @@ $functionaryRoles = [
         ],
     ],
     'materialchef' => [
-        'name' => 'Materialchef',
+        'name' => 'Materialchef/in',
         'capabilities' => [
             'read' => false,
         ],
     ],
     'materialchef_jugend' => [
-        'name' => 'Materialchef Jugend',
+        'name' => 'Materialchef/in Jugend',
         'capabilities' => [
             'read' => false,
         ],
