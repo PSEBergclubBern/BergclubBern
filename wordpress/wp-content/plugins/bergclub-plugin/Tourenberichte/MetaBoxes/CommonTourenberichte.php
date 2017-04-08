@@ -12,11 +12,11 @@ namespace BergclubPlugin\Tourenberichte\MetaBoxes;
 use BergclubPlugin\FlashMessage;
 
 class CommonTourenberichte extends MetaBox {
-	const LEADER = '_leader';
+	const TOUREN = '_touren';
 
 	public function getUniqueFieldNames() {
 		return array(
-			self::LEADER,
+			self::TOUREN,
 		);
 	}
 
@@ -24,7 +24,7 @@ class CommonTourenberichte extends MetaBox {
 	protected function addAdditionalValuesForView() {
 
         $args = array(
-            'posts_per_page'   => 5,
+            'posts_per_page'   => 15,
             'offset'           => 0,
             'category'         => '',
             'category_name'    => '',
@@ -45,24 +45,22 @@ class CommonTourenberichte extends MetaBox {
         $posts_array = get_posts( $args );
 
 		return array(
-			'leiter'   => $posts_array,
-			'coLeiter' => get_users(),
-			'signUpTo' => get_users(),
+			'touren'   => $posts_array,
 		);
 	}
 
 	public function getUniqueMetaBoxName() {
-		return 'common';
+		return 'commontourenberichte';
 	}
 
 	public function getUniqueMetaBoxTitle() {
-		return 'Zusatzinformationen';
+		return 'Auf welche Tour bezieht sich dieser Tourenbericht? ';
 	}
 
 	public function isValid($values, $posttype) {
 		$errors = array();
-		if ( array_key_exists( self::LEADER, $values ) ) {
-            $chosenLeader = $values[self::LEADER];
+		if ( array_key_exists( self::TOUREN, $values ) ) {
+            $chosenLeader = $values[self::TOUREN];
 			if ( $chosenLeader == "" ) {
 				$errors[] = 'Tourenbericht muss sich auf eine publizierte Tour beziehen.';
 			}

@@ -1,14 +1,14 @@
 <table>
     <tbody>
         <tr>
-            <th align="left">Leiter</th>
+            <th align="left">Bisher publizierte Touren</th>
             <td>
-                <select name="{{ \BergclubPlugin\Tourenberichte\MetaBoxes\CommonTourenberichte::LEADER }}">
-                    @foreach($leiter as $user)
-                        @if($user->ID == $values[ \BergclubPlugin\Tourenberichte\MetaBoxes\CommonTourenberichte::LEADER])
-                            <option selected="selected" value="{{ $user->ID }}">{{ $user->post_title }}</option>
+                <select name="{{ \BergclubPlugin\Tourenberichte\MetaBoxes\CommonTourenberichte::TOUREN }}">
+                    @foreach($touren as $tour)
+                        @if($tour->ID == $values[ \BergclubPlugin\Tourenberichte\MetaBoxes\CommonTourenberichte::TOUREN])
+                            <option selected="selected" value="{{ $tour->ID }}">{{ $tour->post_title }}</option>
                         @else
-                            <option value="{{ $user->ID }}">{{ $user->post_title }} </option>
+                            <option value="{{ $tour->ID }}">{{ $tour->post_title }} </option>
                         @endif
 
                     @endforeach
