@@ -116,4 +116,15 @@ abstract class MetaBox
         );
 
     }
+
+	/**
+	 * @param $values
+	 *
+	 * @return bool
+	 */
+	public function isValidTime( $test ): bool {
+		$match_duration_format = preg_match( "/^([01]?[0-9]|2[0-3])\:+[0-5][0-9]$/", $test ) === 1;
+
+		return $match_duration_format;
+	}
 }
