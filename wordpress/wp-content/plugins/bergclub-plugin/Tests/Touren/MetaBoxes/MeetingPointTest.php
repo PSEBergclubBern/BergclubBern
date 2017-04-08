@@ -56,7 +56,7 @@ class MeetingPointTest extends TestCase
      * @test
      */
     public function treffpunktZeitIsNoValidTime() {
-        $this->assertFalse($this->meeting->isValid(array(MeetingPoint::TIME => 'test')));
+        $this->assertFalse($this->meeting->isValid(array(MeetingPoint::TIME => 'test'), "publish"));
         $this->assertNotEmpty(FlashMessage::show());
     }
 
@@ -64,7 +64,7 @@ class MeetingPointTest extends TestCase
      * @test
      */
     public function treffpunktZeitIsValidTime() {
-        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::TIME => '15:32')));
+        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::TIME => '15:32'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -72,7 +72,7 @@ class MeetingPointTest extends TestCase
      * @test
      */
     public function rückkehrIsNoValidTime() {
-        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::RETURNBACK => 'test')));
+        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::RETURNBACK => 'test'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -80,7 +80,7 @@ class MeetingPointTest extends TestCase
      * @test
      */
     public function rückkehrIsValidTime() {
-        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::RETURNBACK => '15:32')));
+        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::RETURNBACK => '15:32'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -88,7 +88,7 @@ class MeetingPointTest extends TestCase
      * @test
      */
     public function treffpunktAnderesNoAlternativTreffpunkt() {
-        $this->assertFalse($this->meeting->isValid(array(MeetingPoint::MEETPOINT => 'Anderes')));
+        $this->assertFalse($this->meeting->isValid(array(MeetingPoint::MEETPOINT => 'Anderes'), "publish"));
         $this->assertNotEmpty(FlashMessage::show());
     }
 
@@ -96,7 +96,7 @@ class MeetingPointTest extends TestCase
      * @test
      */
     public function treffpunktAnderesWithAlternativTreffpunkt() {
-        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::MEETPOINT => 'Anderes', MeetingPoint::MEETPOINT_DIFFERENT => 'Welle')));
+        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::MEETPOINT => 'Anderes', MeetingPoint::MEETPOINT_DIFFERENT => 'Welle'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -104,7 +104,7 @@ class MeetingPointTest extends TestCase
      * @test
      */
     public function treffpunktSet() {
-        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::MEETPOINT => 'Test')));
+        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::MEETPOINT => 'Test'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -112,7 +112,7 @@ class MeetingPointTest extends TestCase
 	 * @test
 	 */
 	public function alternativTreffpunktSetButNoTreffpunk() {
-		$this->assertFalse($this->meeting->isValid(array(MeetingPoint::MEETPOINT_DIFFERENT => 'Test')));
+		$this->assertFalse($this->meeting->isValid(array(MeetingPoint::MEETPOINT_DIFFERENT => 'Test'), "publish"));
 		$this->assertNotEmpty(FlashMessage::show());
 	}
 

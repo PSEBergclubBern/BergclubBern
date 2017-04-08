@@ -55,7 +55,7 @@ class TourTest extends TestCase
      * @test
      */
     public function durationIsNoValidTime() {
-        $this->assertFalse($this->tour->isValid(array(Tour::DURATION => 'test')));
+        $this->assertFalse($this->tour->isValid(array(Tour::DURATION => 'test'), "publish"));
         $this->assertNotEmpty(FlashMessage::show());
     }
 
@@ -63,7 +63,7 @@ class TourTest extends TestCase
      * @test
      */
     public function durationIsNoValidTime1() {
-        $this->assertFalse($this->tour->isValid(array(Tour::DURATION => '1 Stunde; 15 Minuten')));
+        $this->assertFalse($this->tour->isValid(array(Tour::DURATION => '1 Stunde; 15 Minuten'), "publish"));
         $this->assertNotEmpty(FlashMessage::show());
     }
 
@@ -71,7 +71,7 @@ class TourTest extends TestCase
      * @test
      */
     public function durationIsValidTime() {
-        $this->assertTrue($this->tour->isValid(array(Tour::DURATION => '15:32')));
+        $this->assertTrue($this->tour->isValid(array(Tour::DURATION => '15:32'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -79,7 +79,7 @@ class TourTest extends TestCase
      * @test
      */
     public function durationIsValidTime1() {
-        $this->assertTrue($this->tour->isValid(array(Tour::DURATION => '5:32')));
+        $this->assertTrue($this->tour->isValid(array(Tour::DURATION => '5:32'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -87,7 +87,7 @@ class TourTest extends TestCase
      * @test
      */
     public function durationIsValidTime2() {
-        $this->assertTrue($this->tour->isValid(array(Tour::DURATION => '0:00')));
+        $this->assertTrue($this->tour->isValid(array(Tour::DURATION => '0:00'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -95,7 +95,7 @@ class TourTest extends TestCase
      * @test
      */
     public function urlWithHttpsIsValid() {
-        $this->assertTrue($this->tour->isValid(array(Tour::ONLINEMAP => 'https://www.swisstopo.com')));
+        $this->assertTrue($this->tour->isValid(array(Tour::ONLINEMAP => 'https://www.swisstopo.com'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -103,7 +103,7 @@ class TourTest extends TestCase
      * @test
      */
     public function urlIsValid() {
-        $this->assertTrue($this->tour->isValid(array(Tour::ONLINEMAP => 'www.swisstopo.ch')));
+        $this->assertTrue($this->tour->isValid(array(Tour::ONLINEMAP => 'www.swisstopo.ch'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -111,7 +111,7 @@ class TourTest extends TestCase
      * @test
      */
     public function urlWithSuffixIsValid() {
-        $this->assertTrue($this->tour->isValid(array(Tour::ONLINEMAP => 'www.swisstopo.com/route1')));
+        $this->assertTrue($this->tour->isValid(array(Tour::ONLINEMAP => 'www.swisstopo.com/route1'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -119,7 +119,7 @@ class TourTest extends TestCase
      * @test
      */
     public function urlWithSuffixAndParameterIsValid() {
-        $this->assertTrue($this->tour->isValid(array(Tour::ONLINEMAP => 'www.swisstopo.com/route1?test=1')));
+        $this->assertTrue($this->tour->isValid(array(Tour::ONLINEMAP => 'www.swisstopo.com/route1?test=1'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -127,7 +127,7 @@ class TourTest extends TestCase
      * @test
      */
     public function urlWithoutWWWIsValid() {
-        $this->assertTrue($this->tour->isValid(array(Tour::ONLINEMAP => 'swisstopo.ch')));
+        $this->assertTrue($this->tour->isValid(array(Tour::ONLINEMAP => 'swisstopo.ch'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -135,7 +135,7 @@ class TourTest extends TestCase
      * @test
      */
     public function kostenIsInvalid() {
-        $this->assertFalse($this->tour->isValid(array(Tour::COSTS => 'test')));
+        $this->assertFalse($this->tour->isValid(array(Tour::COSTS => 'test'), "publish"));
         $this->assertNotEmpty(FlashMessage::show());
     }
 
@@ -143,7 +143,7 @@ class TourTest extends TestCase
      * @test
      */
     public function kostenWithDotIsValid() {
-        $this->assertTrue($this->tour->isValid(array(Tour::COSTS => '1.10')));
+        $this->assertTrue($this->tour->isValid(array(Tour::COSTS => '1.10'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -151,7 +151,7 @@ class TourTest extends TestCase
      * @test
      */
     public function kostenWithCommaIsValid() {
-        $this->assertTrue($this->tour->isValid(array(Tour::COSTS => '1,10')));
+        $this->assertTrue($this->tour->isValid(array(Tour::COSTS => '1,10'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -159,7 +159,7 @@ class TourTest extends TestCase
      * @test
      */
     public function kostenWithLargeAmountIsValid() {
-        $this->assertTrue($this->tour->isValid(array(Tour::COSTS => '100000,10')));
+        $this->assertTrue($this->tour->isValid(array(Tour::COSTS => '100000,10'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -167,7 +167,7 @@ class TourTest extends TestCase
      * @test
      */
     public function kostenWithoutFractionIsValid() {
-        $this->assertTrue($this->tour->isValid(array(Tour::COSTS => '1')));
+        $this->assertTrue($this->tour->isValid(array(Tour::COSTS => '1'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 

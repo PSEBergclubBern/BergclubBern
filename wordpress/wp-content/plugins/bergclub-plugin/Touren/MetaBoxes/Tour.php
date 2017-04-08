@@ -72,27 +72,29 @@ class Tour extends MetaBox {
 		return 'Tourdaten';
 	}
 
-	public function isValid( $values ) {
+	public function isValid($values, $posttype) {
 		$errors = array();
 
-		if ( array_key_exists( self::DURATION, $values ) ) {
-			$match_format = $this->isValidTime( $values[ self::DURATION ] );
-			if ( $match_format === false ) {
-				$errors[] = '"Dauer" muss in einem dieser Formate angegeben werden: HH:MM, H:MM';
-			}
-		}
+        if ($posttype != "draft") {
+            if (array_key_exists(self::DURATION, $values)) {
+                $match_format = $this->isValidTime($values[self::DURATION]);
+                if ($match_format === false) {
+                    $errors[] = '"Dauer" muss in einem dieser Formate angegeben werden: HH:MM, H:MM';
+                }
+            }
 
-		if ( array_key_exists( self::ONLINEMAP, $values ) ) {
-			if ( ! filter_var( $values[ self::ONLINEMAP ], FILTER_VALIDATE_URL ) && ! filter_var( "http://" . $values[ self::ONLINEMAP ], FILTER_VALIDATE_URL ) ) {
-				$errors[] = '"URL Online Route" muss eine gültige URL sein';
-			}
-		}
+            if (array_key_exists(self::ONLINEMAP, $values)) {
+                if (!filter_var($values[self::ONLINEMAP], FILTER_VALIDATE_URL) && !filter_var("http://" . $values[self::ONLINEMAP], FILTER_VALIDATE_URL)) {
+                    $errors[] = '"URL Online Route" muss eine gültige URL sein';
+                }
+            }
 
-		if ( array_key_exists( self::COSTS, $values ) ) {
-			if ( ! preg_match("/^-?[0-9]+(?:\.[0-9]{1,2})?$/", $values[ self::COSTS ]) && ! preg_match("/^-?[0-9]+(?:\,[0-9]{1,2})?$/", $values[ self::COSTS ]) ) {
-				$errors[] = '"Kosten (CHF)" muss das Format #(#*).## oder #(#*),## haben';
-			}
-		}
+            if (array_key_exists(self::COSTS, $values)) {
+                if (!preg_match("/^-?[0-9]+(?:\.[0-9]{1,2})?$/", $values[self::COSTS]) && !preg_match("/^-?[0-9]+(?:\,[0-9]{1,2})?$/", $values[self::COSTS])) {
+                    $errors[] = '"Kosten (CHF)" muss das Format #(#*).## oder #(#*),## haben';
+                }
+            }
+        }
 
 
 		foreach ( $errors as $errorMsg ) {
