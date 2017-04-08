@@ -72,8 +72,8 @@ class MeetingPointTest extends TestCase
      * @test
      */
     public function rückkehrIsNoValidTime() {
-        $this->assertFalse($this->meeting->isValid(array(MeetingPoint::RETURNBACK => 'test')));
-        $this->assertNotEmpty(FlashMessage::show());
+        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::RETURNBACK => 'test')));
+        $this->assertEmpty(FlashMessage::show());
     }
 
     /**
