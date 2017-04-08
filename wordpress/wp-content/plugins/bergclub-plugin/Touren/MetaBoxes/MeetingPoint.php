@@ -57,12 +57,6 @@ class MeetingPoint extends MetaBox {
 				$errors[] = '"Treffpunkt Zeit" muss in einem dieser Formate angegeben werden: HH:MM, H:MM';
 			}
 		}
-		if ( array_key_exists( self::RETURNBACK, $values ) ) {
-			$match_format = $this->isValidTime( $values[ self::RETURNBACK ] );
-			if ( $match_format === false ) {
-				$errors[] = '"Treffpunkt Rückkehr" muss in einem dieser Formate angegeben werden: HH:MM, H:MM';
-			}
-		}
 		if ( array_key_exists( self::MEETPOINT, $values ) ) {
 			$value = $values[ self::MEETPOINT ];
 			if ( strcmp( $value, "Anderes" ) === 0 ) {
