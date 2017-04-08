@@ -5,7 +5,6 @@ get_header(); ?>
 <div class="container">
 
     <?php
-    // Start the loop.
     $args = [
         'post_type'      => 'touren',
         'posts_per_page' => 10,

@@ -110,22 +110,23 @@ if ( ! function_exists( 'bcb_enqueue_scripts' ) ) {
         wp_deregister_script('jquery-core');
 
         wp_enqueue_style('bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
-        wp_enqueue_style('roboto', 'https://fonts.googleapis.com/css?family=Roboto:400,400i', ['bootstrap']);
+        wp_enqueue_style('font-roboto', 'https://fonts.googleapis.com/css?family=Roboto:400,400i', ['bootstrap']);
+        //wp_enqueue_style('font-touren',  get_template_directory_uri() . '/css/fonts/touren.css', ['bootstrap']);
         if (!bcb_is_jugend()) {
             wp_enqueue_style('default', get_template_directory_uri() . '/css/bergclub.css', ['bootstrap']);
         } else {
-            wp_enqueue_style('default', get_template_directory_uri() . '/css/jugend.css', ['bootstrap']);
+            wp_enqueue_style('default', bcb_add_jugend_to_url(get_template_directory_uri() . '/css/jugend.css'), ['bootstrap']);
         }
-        wp_enqueue_style('carousel', get_template_directory_uri() . '/css/carousel.css', ['bootstrap']);
+        wp_enqueue_style('carousel', bcb_add_jugend_to_url(get_template_directory_uri() . '/css/carousel.css', true), ['bootstrap']);
 
         wp_add_inline_style('carousel', bcb_carousel_images_css());
 
-        wp_enqueue_script('ielt9', get_template_directory_uri() . '/js/html5.js');
+        wp_enqueue_script('ielt9', bcb_add_jugend_to_url(get_template_directory_uri() . '/js/html5.js', true));
         wp_script_add_data('ielt9', 'conditional', 'lt IE 9');
 
         wp_enqueue_script('jquery-own', 'https://code.jquery.com/jquery-3.1.1.min.js', null, null, true);
         wp_enqueue_script('bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', ['jquery-own'], null, true);
-        wp_enqueue_script('bergclub', get_template_directory_uri() . '/js/bergclub.js', ['jquery-own'], null, true);
+        wp_enqueue_script('bergclub', bcb_add_jugend_to_url(get_template_directory_uri() . '/js/bergclub.js', true), ['jquery-own'], null, true);
     }
 }
 
@@ -147,10 +148,7 @@ if ( ! function_exists( 'bcb_carousel_images_css' ) ) {
         foreach ($files as $file) {
             if ($file != "." && $file != "..") {
                 $index++;
-                $carouselImages .= "
-                .item:nth-child(" . $index . ") {
-                    background: url(" . get_template_directory_uri() . "/img/carousel/" . $file . ") no-repeat top center fixed;
-                }";
+                $carouselImages .= ".item:nth-child(" . $index . "){background: url(" . bcb_add_jugend_to_url(get_template_directory_uri() . "/img/carousel/" . $file, true) . ") no-repeat top center fixed;}";
             }
         }
         return $carouselImages;
@@ -252,6 +250,14 @@ function bcb_register_custom_post_types() {
 
 add_action( 'init', 'bcb_register_custom_post_types' );
 
+
+function bcb_get_touren_type_by_slug($slug){
+    $tourenTypes = get_option('bcb_tourenarten');
+    if(isset($tourenTypes[$slug])) {
+        return $tourenTypes[$slug];
+    }
+    return "";
+}
 
 //include bootstrap navigation walker
 require_once('inc/wp_bootstrap_navwalker.php');

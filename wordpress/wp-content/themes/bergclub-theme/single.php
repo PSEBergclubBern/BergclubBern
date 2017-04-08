@@ -8,7 +8,6 @@
 
 get_header(); ?>
     <?php
-    // Start the loop.
     while (have_posts()) : the_post();
 
         /*
@@ -17,8 +16,6 @@ get_header(); ?>
          * (where ___ is the post format) and that will be used instead.
          */
         get_template_part('content', get_post_format());
-
-        // End the loop.
     endwhile;
     ?>
 

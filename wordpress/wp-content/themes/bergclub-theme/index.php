@@ -27,64 +27,71 @@ get_header() ?>
 
             <div class="col-md-6 col-md-offset-6 col-lg-4 col-lg-offset-8 newest-posts">
                 <!--<div class="hidden-lg hidden-md mobile-placeholder">&nbsp;</div>-->
-                <div class="well">
+                <div class="well well-home">
                     <h3>Nächste Touren <?php if(bcb_is_jugend()){ echo "Jugend"; } ?></h3>
-                    <ul class="list-group">
-                        <a class="list-group-item">Tour 1</a>
-                        <a class="list-group-item">Tour 2</a>
-                        <a class="list-group-item">Tour 3</a>
-                        <a class="list-group-item">Tour 4</a>
-                        <a class="list-group-item">Tour 5</a>
+                    <ul class="list-group hide-links">
+                        <?php
+                        $query =  new WP_Query( array(
+                            'post_type' => 'touren',
+                            'posts_per_page' => 5,
+                            'order' => 'ASC',
+                            'orderby' => 'dateFrom',
+                            'meta_query' => array (
+                                'key' => 'dateFrom',
+                                'value' => date('d.m.Y',strtotime("today")),
+                                'type' => 'DATE',
+                                'compare' => '>='
+                            )
+                        ));
+                        while ($query->have_posts()) : $query->the_post();
+                            $date_from = get_post_meta(get_the_ID(), "_dateFrom", true);
+                            $date_to =  get_post_meta(get_the_ID(), "_dateTo", true);
+                            $dateDisplay = date("d.m.", strtotime($date_from));
+                            if(!empty($date_to) && $date_to != $date_from){
+                                $dateDisplay .=" - " . date("d.m.", strtotime($date_to));
+                            }
+                            $type = get_post_meta(get_the_ID(), "_type", true);
+                            $reqTechnical = get_post_meta(get_the_ID(), "_requirementsTechnical", true);
+                            $typeDisplay = bcb_get_touren_type_by_slug($type) . ", " . $reqTechnical;
+                            $riseUpDisplay = get_post_meta(get_the_ID(), "_riseUpMeters", true);
+                            $riseDownDisplay = get_post_meta(get_the_ID(), "_riseDownMeters", true);
+                            $durationDisplay = get_post_meta(get_the_ID(), "_duration", true);
+
+                        ?>
+                            <li class="list-group-item add-link">
+                                <div class="row">
+                                    <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
+                                </div>
+                                <div class="row additional-info">
+                                    <div class="pull-left additional-info-item"><div class="icon icon-date"></div> <?= $dateDisplay ?></div>
+                                    <div class="pull-left additional-info-item"><div class="icon icon-type"></div> <?= $typeDisplay ?></div>
+                                    <div class="pull-left additional-info-item"><div class="icon icon-up"></div> <?= $riseUpDisplay ?></div>
+                                    <div class="pull-left additional-info-item"><div class="icon icon-down"></div> <?= $riseDownDisplay ?></div>
+                                    <div class="pull-left additional-info-item"><div class="icon icon-duration"></div> <?= $durationDisplay ?></div>
+                                </div>
+                            </li>
+                            <?php
+                        endwhile;
+                        wp_reset_postdata();
+                        ?>
                     </ul>
                 </div>
 
-                <div class="well">
+                <div class="well well-home">
                     <h3>Neueste Mitteilungen</h3>
 
                     <ul class="list-group">
                         <?php
                         $query = new WP_Query(array('category_name' => 'mitteilungen', 'posts_per_page' => 3));
-                        // Start the loop. Retriev Posts in Category "Mitteilungen"
                         while ($query->have_posts()) : $query->the_post(); ?>
-                            <a class="list-group-item" href="<?php the_permalink(); ?>"><?php the_title() ?></a>
+                            <li class="list-group-item"><a href="<?php the_permalink(); ?>"><?php the_title() ?></a></li>
                             <?php
-                            // End the loop.
                         endwhile;
                         wp_reset_postdata();
                         ?>
 
                     </ul>
                 </div>
-
-                <!--            <!-- Start the Loop. -->
-                <!--            --><?php //if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
-                <!--                <div class="post">-->
-                <!---->
-                <!--                    <!-- Display the Title as a link to the Post's permalink. -->
-                <!---->
-                <!--                    <h2>--><?php //the_title(); ?><!--</h2>-->
-                <!---->
-                <!---->
-                <!--                    <!-- Display the date (November 16th, 2009 format) and a link to other posts by this posts author. -->
-                <!---->
-                <!--                    <!-- <small>--><?php ////the_time('F jS, Y'); ?><!--<!-- by -->
-                <?php ////the_author_posts_link(); ?><!--<!--</small>-->
-                <!---->
-                <!---->
-                <!--                    <!-- Display the Post's content in a div box. -->
-                <!---->
-                <!--                    <div class="post-content">-->
-                <!--                        --><?php //the_content(); ?>
-                <!--                    </div>-->
-                <!---->
-                <!---->
-                <!--                    <!-- Display a comma separated list of the Post's Categories. -->
-                <!---->
-                <!--                    <p class="postmetadata">--><?php //_e( 'Posted in' ); ?><!-- -->
-                <?php //the_category( ', ' ); ?><!--</p>-->
-                <!--                </div> <!-- closes the first div box -->
-                <!--            --><?php //endwhile; endif; ?>
-
             </div>
 
         </div>

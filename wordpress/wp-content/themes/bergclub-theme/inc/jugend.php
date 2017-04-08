@@ -66,10 +66,11 @@ function bcb_is_jugend_url($url){
  * Checks if the given url is a jugend url.
  * If not it adds jugend as the first part of the hostname and returns the modified url.
  * @param string $url the url which should be cheanged to be a jugend url
+ * @param boolean $onlyIfJugend If set to true, the url will only be modified if the actual viewed page is a jugend page
  * @return string the modified url (if the given url is not already a jugend url)
  */
-function bcb_add_jugend_to_url($url){
-    if(!bcb_is_jugend_url($url)) {
+function bcb_add_jugend_to_url($url, $onlyIfJugend = false){
+    if(!bcb_is_jugend_url($url) && (!$onlyIfJugend || bcb_is_jugend())) {
         $parsedURL = parse_url($url);
         if (!empty($parsedURL)) {
             if (!isset($parsedURL['path'])) {
