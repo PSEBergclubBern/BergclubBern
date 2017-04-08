@@ -34,6 +34,28 @@ class CommonTourenberichte extends MetaBox {
 
 
 	protected function addAdditionalValuesForView() {
+
+        $args = array(
+            'posts_per_page'   => 5,
+            'offset'           => 0,
+            'category'         => '',
+            'category_name'    => '',
+            'orderby'          => 'date',
+            'order'            => 'DESC',
+            'include'          => '',
+            'exclude'          => '',
+            'meta_key'         => '',
+            'meta_value'       => '',
+            'post_type'        => 'touren',
+            'post_mime_type'   => '',
+            'post_parent'      => '',
+            'author'	   => '',
+            'author_name'	   => '',
+            'post_status'      => 'publish',
+            'suppress_filters' => true
+        );
+        $posts_array = get_posts( $args );
+
 		$roles = wp_get_current_user()->roles;
 		if ( in_array( 'bcb_leiter', $roles ) ) {
 			$leiter = array( wp_get_current_user() );
@@ -41,8 +63,14 @@ class CommonTourenberichte extends MetaBox {
 			$leiter = get_users( array( 'role' => 'bcb_leiter' ) );
 		}
 
-		return array(
+		/*return array(
 			'leiter'   => $leiter,
+			'coLeiter' => get_users(),
+			'signUpTo' => get_users(),
+		);*/
+
+		return array(
+			'leiter'   => $posts_array,
 			'coLeiter' => get_users(),
 			'signUpTo' => get_users(),
 		);
