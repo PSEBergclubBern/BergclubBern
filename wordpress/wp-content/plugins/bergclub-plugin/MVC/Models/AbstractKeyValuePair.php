@@ -20,7 +20,7 @@ abstract class AbstractKeyValuePair implements IModelSingle
     protected static $wpGetMethod;
 
     public function __construct($key, $value = null){
-        $this->key = Helpers::ensureKeyHasPrefix($key);
+        $this->key = self::getModifiedKey($key);
         $this->value = $value;
     }
 
@@ -38,13 +38,13 @@ abstract class AbstractKeyValuePair implements IModelSingle
     }
 
     public static function remove($key){
-        $key = Helpers::ensureKeyHasPrefix($key);
+        $key = self::getModifiedKey($key);
         $method = static::$wpDeleteMethod;
         $method($key);
     }
 
     public static function find($key){
-        $key = Helpers::ensureKeyHasPrefix($key);
+        $key = self::getModifiedKey($key);
         $method = static::$wpGetMethod;
         $value = $method($key);
         $class = get_called_class();
@@ -65,5 +65,14 @@ abstract class AbstractKeyValuePair implements IModelSingle
     public function setValue($value)
     {
         $this->value = $value;
+    }
+
+    private static function getModifiedKey($key){
+        $key = Helpers::ensureKeyHasNoPrefix($key);
+        $method = static::$wpGetMethod;
+        if(empty($method($key))){
+            $key = Helpers::ensureKeyHasPrefix($key);
+        }
+        return $key;
     }
 }

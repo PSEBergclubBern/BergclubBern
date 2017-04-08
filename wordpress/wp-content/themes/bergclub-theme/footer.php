@@ -5,48 +5,20 @@
  * Contains the closing of the "site-content" div and all content after.
  *
  * @package WordPress
- * @subpackage Twenty_Fifteen
- * @since Twenty Fifteen 1.0
+ * @subpackage Bergclub Bern
  */
 ?>
 
-	</div><!-- .site-content -->
+            </div><!-- .site-content -->
 
-    <nav class="navbar navbar-inverse navbar-fixed-bottom">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xs-offset-1">
-                    <div class="navbar-footer">
-                        <div class="footer-text" style="padding-top: 10px;padding-bottom: 10px;">
-                            <p class="text-muted"><span class="glyphicon glyphicon-copyright-mark" aria-hidden="true"></span> Bergclub Bern</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="footer navbar-fixed-bottom">
+                <p>&copy; Bergclub Bern 2017</p>
+                <p class="pull-right"><a href="#">Kontakt</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">Impressum</a></p>
             </div>
-        </div>
-    </nav>
 
-</div><!-- .site -->
+        </div><!-- .site -->
 
-<!-- Latest compiled and minified Bootstrap & jQuery JavaScript -->
-<!-- This is placed at the end for performance reasons -->
-<script
-        src="https://code.jquery.com/jquery-3.1.1.min.js"
-        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <?php wp_footer(); ?>
 
-
-<?php
-if($post->post_name == "kontakt" || $post->post_name == "mitgliedschaft"){
-    ?>
-    <script src="<?=get_theme_root_uri();?>/bergclub-theme/js/contact-form-functions.js"></script>
-    <?php
-}
-?>
-
-<?php wp_footer(); ?>
-
-</body>
+    </body>
 </html>

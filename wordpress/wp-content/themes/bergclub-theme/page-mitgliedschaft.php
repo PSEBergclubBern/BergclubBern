@@ -1,5 +1,1 @@
-<?php
-
-include 'page-kontakt.php';
-
-?>
+<?php include 'page-kontakt.php'; ?>
