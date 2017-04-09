@@ -225,6 +225,12 @@ article h1 {
   margin-bottom: 0.8em;
 }
 
+ul.article-content-list .list-group-item{
+  border-style: none;
+  border-bottom-style: solid;
+  border-bottom-color: $primary-dark-color;
+}
+
 /* Navigation */
 .navbar-inverse .navbar-brand {
   color: $primary-lightest-color !important;

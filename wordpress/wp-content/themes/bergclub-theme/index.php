@@ -46,7 +46,7 @@ get_header() ?>
                         while ($query->have_posts()) : $query->the_post();
                             $date_from = get_post_meta(get_the_ID(), "_dateFrom", true);
                             $date_to =  get_post_meta(get_the_ID(), "_dateTo", true);
-                            $dateDisplay = date("d.m.", strtotime($date_from));
+                            $dateDisplay = date("d.m.y", strtotime($date_from));
                             if(!empty($date_to) && $date_to != $date_from){
                                 $dateDisplay .=" - " . date("d.m.", strtotime($date_to));
                             }
