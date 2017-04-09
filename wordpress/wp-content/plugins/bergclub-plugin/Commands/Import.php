@@ -60,6 +60,13 @@ class Import extends Init
         } else {
             $this->importMitteilungen($mitteilungen);
         }
+
+        // Check for toueren
+        if (!isset($touren)) {
+            \WP_CLI::warning('Input file has no touren, skipping');
+        } else {
+            $this->importTouren($touren);
+        }
     }
 
     function importMitteilungen($mitteilungen)
@@ -85,19 +92,25 @@ class Import extends Init
         mkdir ($tempDirectory);
         \WP_CLI::log('Using temp directory "' . $tempDirectory . '" for post processing');
 
-        foreach ($list as $mitteilung) {
+        foreach ($list as $mit) {
             /** @var $mitteilung Entities\Mitteilung */
             touch($tempDirectory . '/' . $mit->id);
             file_put_contents($tempDirectory . '/' . $mit->id, $mit->text);
 
             \WP_CLI::runcommand("bergclub mitteilung create " . $tempDirectory . "/" . $mit->id . " " .
-                    "--title='" . $mitteilung->titel . "' " .
-                    "--date='" . $mitteilung->datum . "'
+                    "--title='" . $mit->titel . "' " .
+                    "--date='" . $mit->datum . "'
                 ");
 
 
 
         }
+    }
+
+    function importTouren($touren) {
+        \WP_CLI::log('Begin processing of mitteilungen');
+        \WP_CLI::log('It has ' . count($touren) . ' Touren');
+
 
     }
 }
