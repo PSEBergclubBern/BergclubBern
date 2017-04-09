@@ -250,6 +250,16 @@ function bcb_register_custom_post_types() {
 
 add_action( 'init', 'bcb_register_custom_post_types' );
 
+add_action('admin_menu', 'my_plugin_menu');
+
+function my_plugin_menu() {
+    add_theme_page( 'Hintergrundbilder', 'Hintergrundbilder', 'read', 'bcb_theme_background', 'bcb_theme_background' );
+}
+
+function bcb_theme_background(){
+    echo "Hello World!";
+}
+
 
 function bcb_get_touren_type_by_slug($slug){
     $tourenTypes = get_option('bcb_tourenarten');

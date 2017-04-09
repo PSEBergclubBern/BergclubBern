@@ -146,3 +146,7 @@ function bcb_change_post_object() {
 
 add_action( 'admin_menu', 'bcb_change_post_label' );
 add_action( 'init', 'bcb_change_post_object' );
+
+
+add_action('admin_menu', 'my_plugin_menu');
+
