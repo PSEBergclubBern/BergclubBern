@@ -25,4 +25,5 @@ If you are finished with your work, you can commit your changes (bear in mind ou
 Vagrant can't change the hosts file on Windows. To ensure that the environment works, you have to add following lines to the hosts file (it's in the path C:\Windows\system32\drivers\etc)
 
 `192.168.33.12  vccm-all.local`
+
 `192.168.33.12  jugend.vccm-all.local`
