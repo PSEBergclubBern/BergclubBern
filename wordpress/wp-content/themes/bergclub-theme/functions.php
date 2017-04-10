@@ -281,3 +281,26 @@ add_filter( 'get_the_archive_title', function ( $title ) {
 
 //disable admin bar in frontend
 add_filter('show_admin_bar', '__return_false');
+
+//adds Training and JS to the Title
+function add_additional_info_to_title( $title, $id = null ) {
+    if ( "touren" == get_post_type(get_post($id)) ) {
+        $training = get_post_meta($id, "_training", true);
+        $jsEvent = get_post_meta($id, "_jsEvent", true);
+        if(!empty($training) || !empty($jsEvent)) {
+            $title .= " (";
+            if(!empty($training)){
+                $title .= "Training";
+                if(!empty($jsEvent))
+                    $title .= ", JS-Event";
+            } else {
+                $title .= "JS-Event";
+            }
+            $title .= ")";
+        }
+    }
+
+    return $title;
+}
+//adds the filter for the title
+add_filter( 'the_title', 'add_additional_info_to_title', 10, 2 );

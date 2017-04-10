@@ -173,6 +173,16 @@ h3 {
 article h1 {
   margin-bottom: 0.8em; }
 
+.article-block {
+  margin-left: 2vw;
+  margin-bottom: 7vh; }
+  .article-block h3 {
+    color: #000452;
+    margin-bottom: 0.8em; }
+  .article-block .article-line {
+    padding: 5px 0px;
+    border-bottom: 1px solid rgba(0, 4, 82, 0.25); }
+
 /* Navigation */
 .navbar-inverse .navbar-brand {
   color: white !important;
