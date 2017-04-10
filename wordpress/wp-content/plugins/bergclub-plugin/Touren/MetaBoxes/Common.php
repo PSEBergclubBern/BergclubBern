@@ -56,7 +56,7 @@ class Common extends MetaBox {
 		return 'Zusatzinformationen';
 	}
 
-	public function isValid( $values ) {
+	public function isValid($values, $posttype) {
 		$errors = array();
 		if ( array_key_exists( self::DATE_FROM_IDENTIFIER, $values ) ) {
 			$date_from = \DateTime::createFromFormat( "d.m.Y", $values[ self::DATE_FROM_IDENTIFIER ] );
@@ -65,42 +65,44 @@ class Common extends MetaBox {
 			}
 		}
 
-		if ( array_key_exists( self::DATE_TO_IDENTIFIER, $values ) && ! empty( $values[ self::DATE_TO_IDENTIFIER ] ) ) {
-			$date_to = \DateTime::createFromFormat( "d.m.Y", $values[ self::DATE_TO_IDENTIFIER ] );
-			if ( $date_to === false ) {
-				$errors[] = '"Datum bis" ist ungültig';
-			} else {
-				if ( array_key_exists( self::DATE_FROM_IDENTIFIER, $values ) ) {
-					$date_from = \DateTime::createFromFormat( "d.m.Y", $values[ self::DATE_FROM_IDENTIFIER ] );
-					if ( $date_to < $date_from ) {
-						$errors[] = '"Datum bis" muss nach "Datum von" sein.';
-					} elseif ( $date_to > $date_from ) {
-						if ( ! array_key_exists( self::SLEEPOVER, $values) || $values[ self::SLEEPOVER ] != "Ja"  ) {
-							$errors[] = 'Mehrtägige Touren müssen eine Übernachtung beinhalten';
-						}
-					} elseif($date_to = $date_from){
-						if ( ! array_key_exists( self::SLEEPOVER, $values ) || $values[ self::SLEEPOVER ] != "Nein"  ) {
-							$errors[] = 'Eintägige Touren dürfen keine Übernachtung beinhalten';
-						}
-					}
-				}
-			}
-		}
+        if ($posttype != "draft") {
+            if (array_key_exists(self::DATE_TO_IDENTIFIER, $values) && !empty($values[self::DATE_TO_IDENTIFIER])) {
+                $date_to = \DateTime::createFromFormat("d.m.Y", $values[self::DATE_TO_IDENTIFIER]);
+                if ($date_to === false) {
+                    $errors[] = '"Datum bis" ist ungültig';
+                } else {
+                    if (array_key_exists(self::DATE_FROM_IDENTIFIER, $values)) {
+                        $date_from = \DateTime::createFromFormat("d.m.Y", $values[self::DATE_FROM_IDENTIFIER]);
+                        if ($date_to < $date_from) {
+                            $errors[] = '"Datum bis" muss nach "Datum von" sein.';
+                        } elseif ($date_to > $date_from) {
+                            if (!array_key_exists(self::SLEEPOVER, $values) || $values[self::SLEEPOVER] != "Ja") {
+                                $errors[] = 'Mehrtägige Touren müssen eine Übernachtung beinhalten';
+                            }
+                        } elseif ($date_to = $date_from) {
+                            if (!array_key_exists(self::SLEEPOVER, $values) || $values[self::SLEEPOVER] != "Nein") {
+                                $errors[] = 'Eintägige Touren dürfen keine Übernachtung beinhalten';
+                            }
+                        }
+                    }
+                }
+            }
 
-		//Test SIGNUP_UNTIL valid
-		if ( array_key_exists( self::SIGNUP_UNTIL, $values ) && ! empty( $values[ self::SIGNUP_UNTIL ] ) ) {
-			$date_signup = \DateTime::createFromFormat( "d.m.Y", $values[ self::SIGNUP_UNTIL ] );
-			if ( $date_signup === false ) {
-				$errors[] = '"Anmelden bis" ist kein gültiges Datum';
-			} else {
-				if ( array_key_exists( self::DATE_FROM_IDENTIFIER, $values ) ) {
-					$date_from = \DateTime::createFromFormat( "d.m.Y", $values[ self::DATE_FROM_IDENTIFIER ] );
-					if ( $date_from < $date_signup ) {
-						$errors[] = 'Die Anmeldefrist muss vor dem Start der Tour beendet sein.';
-					}
-				}
-			}
-		}
+            //Test SIGNUP_UNTIL valid
+            if (array_key_exists(self::SIGNUP_UNTIL, $values) && !empty($values[self::SIGNUP_UNTIL])) {
+                $date_signup = \DateTime::createFromFormat("d.m.Y", $values[self::SIGNUP_UNTIL]);
+                if ($date_signup === false) {
+                    $errors[] = '"Anmelden bis" ist kein gültiges Datum';
+                } else {
+                    if (array_key_exists(self::DATE_FROM_IDENTIFIER, $values)) {
+                        $date_from = \DateTime::createFromFormat("d.m.Y", $values[self::DATE_FROM_IDENTIFIER]);
+                        if ($date_from < $date_signup) {
+                            $errors[] = 'Die Anmeldefrist muss vor dem Start der Tour beendet sein.';
+                        }
+                    }
+                }
+            }
+        }
 
 
 		foreach ( $errors as $errorMsg ) {
