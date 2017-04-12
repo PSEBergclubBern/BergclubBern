@@ -157,6 +157,18 @@ class User implements IModel
         return self::find(get_current_user_id(), true);
     }
 
+    public static function findAllWithoutSpouse(){
+        $users = User::findAll();
+        foreach($users as $key => $user){
+            /* @var User user */
+            if($user->spouse && !$user->main_address){
+                unset($users[$key]);
+            }
+        }
+
+        return array_values($users);
+    }
+
     /**
      * Finds all User. uses {@link [Role::find][Role::find]} to generate the Role objects.
      *
@@ -176,6 +188,18 @@ class User implements IModel
             return strcmp($a->last_name.' '.$a->first_name, $b->last_name.' '.$b->first_name);
         });
         return $users;
+    }
+
+    public static function findMitgliederWithoutSpouse(){
+        $users = User::findMitglieder();
+        foreach($users as $key => $user){
+            /* @var User user */
+            if($user->spouse && !$user->main_address){
+                unset($users[$key]);
+            }
+        }
+
+        return array_values($users);
     }
 
     public static function findMitglieder(){
