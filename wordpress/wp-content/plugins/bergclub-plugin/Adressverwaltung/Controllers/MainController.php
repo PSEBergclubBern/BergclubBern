@@ -34,11 +34,13 @@ class MainController extends AbstractController
             if($user) {
                 if($this->view == 'pages.detail') {
                     $this->data['title'] = $user->last_name . ' ' . $user->first_name;
+                    $this->data['spouse'] = $user->spouse;
                 }else{
                     $this->data['title'] = "Neuer Eintrag";
                 }
                 if(($this->data['tab'] == 'data' && $this->data['edit']) || $this->view == 'pages.new'){
                     $this->data['address_roles'] = Role::findByType(Role::TYPE_ADDRESS);
+                    $this->data['spouse'] = $user->spouse;
 
                     $this->data['required'] = [
                         'bcb_all' => [
@@ -58,6 +60,7 @@ class MainController extends AbstractController
                             'phone_mobile' => 'Telefon M',
                             'email' => 'Email',
                             'birthdate' => 'Geburtstag',
+                            'spouse' => 'Ehepartner/in',
                             'comments' => 'Bemerkungen',
                         ],
                         'bcb_unset' => [
@@ -132,14 +135,31 @@ class MainController extends AbstractController
                             'first_name' => 'Vorname',
                             'last_name' => 'Nachname',
                         ],
+                        'bcb_freimitglied' => [
+                            'gender' => 'Anrede',
+                            'first_name' => 'Vorname',
+                            'last_name' => 'Nachname',
+                            'street' => 'Strasse',
+                            'zip' => 'PLZ',
+                            'location' => 'Ort',
+                            'birthdate' => 'Geburtstag',
+                        ],
                     ];
 
                 }elseif($this->data['tab'] == 'functions' && $this->data['edit']) {
                     $this->data['user_functionary_roles'] = $this->data['user']->functionary_roles;
                     $this->data['functionary_roles'] = Role::findByType(Role::TYPE_FUNCTIONARY);
+                } elseif($this->data['tab'] == 'spouse' && $this->data['edit']){
+                    $users = User::findAll();
+
+                    foreach( $users as $eventualSpouse ){
+                        if ( $user == $eventualSpouse || ( $eventualSpouse->address_role_key != 'bcb_aktivmitglied' && $eventualSpouse->address_role_key != 'bcb_aktivmitglied_jugend' ) ) {
+                            $key = array_search($eventualSpouse, $users);
+                            unset($users[$key]);
+                        }
+                    }
+                    $this->data['users'] = $users;
                 }
-
-
 
             }else{
                 FlashMessage::add(FlashMessage::TYPE_ERROR, 'Der gewünschte Datensatz existiert nicht.');
@@ -302,7 +322,32 @@ class MainController extends AbstractController
         Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
     }
 
+    private function postSpouse(){
 
+        $spouseId = null;
+        if ( isset($_POST['spouse']) ){
+            $spouseId = $_POST['spouse'];
+        }
+
+        if ( !$spouseId ){
+            FlashMessage::add(FlashMessage::TYPE_ERROR, 'Bitte einen Ehepartner/in auswählen!');
+        } else{
+            $user = $this->data['user'];
+            $spouse = User::find($spouseId);
+
+            $user->spouse = $spouse ;
+
+            $this->data['user'] = $user;
+            $user->save();
+
+            $spouse->spouse = $user;
+            $spouse->save();
+
+            FlashMessage::add(Flashmessage::TYPE_SUCCESS, 'Ehepartner/in erfolgreich gespeichert.');
+            Helpers::redirect( '?page=' . $_GET['page'] . '&view=detail&tab=data&id=' . $_GET['id'] . '&edit=1' );
+        }
+
+    }
 
     private function prepareInclude()
     {
