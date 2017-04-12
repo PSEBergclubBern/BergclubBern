@@ -37,4 +37,9 @@ class Tour
     public function getImages() {
         return $this->images;
     }
+
+    public function __toString()
+    {
+        return $this->id . ' ' . $this->title . ' ' . $this->dateFrom;
+    }
 }

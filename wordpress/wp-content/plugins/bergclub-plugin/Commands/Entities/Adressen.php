@@ -13,12 +13,24 @@ use BergclubPlugin\MVC\Models\User;
 
 class Adressen
 {
+    const CATEGORY_INSTITUTION = 2;
+    const CATEGORY_INSERENT = 3;
+    const CATEGORY_EHEPAAR = 4;
+    const CATEGORY_INTERESTING_YOUTH = 5;
+    const CATEGORY_INTERESTING = 6;
+    const CATEGORY_ACTIVE_YOUTH = 7;
+    const CATEGORY_ACTIVE = 8;
+    const CATEGORY_FREE = 9;
+    const CATEGORY_HONOR = 10;
+    const CATEGORY_EXIT = 0;
+    const CATEGORY_DIED = 1;
+
     public $id;
+    public $category;
     public $firstName;
     public $lastName;
     public $salutation;
     public $number;
-    public $category;
     public $street;
     public $plz;
     public $place;
@@ -28,10 +40,51 @@ class Adressen
     public $email;
     public $birthday;
     public $ahv;
+    public $comment;
+    public $sendProgram = false;
+    public $addition;
+    public $spouseId;
+
+    public $leader = false;
+    public $leaderDescription;
+    public $leaderFrom;
+    public $leaderTo;
+
+    public $leaderYouth = false;
+    public $leaderYouthDescription;
+    public $leaderYouthYear;
+    public $leaderYouthFrom;
+    public $leaderYouthTo;
+    public $leaderYouthPersonNr;
+
+    public $vorstand = false;
+    public $vorstandDescription;
+    public $vorstandFrom;
+    public $vorstandTo;
+
+    public $support = false;
+    public $supportDescription;
+    public $supportFrom;
+    public $supportTo;
+
+    public $freeMemberDate;
+    public $freeMemberReason;
+    public $honorMemberDate;
+    public $honorMemberReason;
+    public $exitDate;
+    public $exitReason;
+    public $diedDate;
+    public $diedReason;
+
 
     public function __toString()
     {
         return 'ID: ' . $this->id . ' (' . $this->salutation . ' ' . $this->firstName . ' ' . $this->lastName . ')';
+    }
+
+    public function isCompany()
+    {
+        return self::CATEGORY_INSTITUTION == $this->category;
     }
 
     /**
@@ -44,6 +97,7 @@ class Adressen
         return array(
             'first_name'        => $this->firstName,
             'last_name'         => $this->lastName,
+            'company'           => $this->isCompany() ? $this->lastName : '',
             'street'            => $this->street,
             'zip'               => $this->plz,
             'location'          => $this->place,
@@ -52,26 +106,50 @@ class Adressen
             'phone_mobile'      => $this->phoneMobile,
             'email'             => $this->email,
             'birthdate'         => $this->birthday,
-            'comments'          => $this->__toString(),
+            'comments'          => $this->comment,
+            'program_shipment'  => $this->sendProgram ? 1 : 0,
+            'gender'            => $this->salutation == 'Frau' ? 'F' : 'M',
+            'address_addition'  => $this->addition,
         );
     }
 
     /**
-     *         'leaving_reason' => null,
-    'program_shipment' => 1,
-    'company' => null,
-    'gender' => '',
-    'first_name' => null,
-    'last_name' => null,
-    'address_addition' => null,
-    'street' => null,
-    'zip' => null,
-    'location' => null,
-    'phone_private' => null,
-    'phone_work' => null,
-    'phone_mobile' => null,
-    'email' => null,
-    'birthdate' => null,
-    'comments' => null,
+     * determinate the role from the user
+     *
+     * @return string
      */
+    public function determinateRole() {
+        switch($this->category) {
+            case Adressen::CATEGORY_INSTITUTION:
+                return 'bcb_institution';
+            case Adressen::CATEGORY_ACTIVE_YOUTH:
+                return 'bcb_aktivmitglied_jugend';
+            case Adressen::CATEGORY_DIED:
+            case Adressen::CATEGORY_EXIT:
+                return 'bcb_ehemalig';
+            case Adressen::CATEGORY_EHEPAAR:
+            case Adressen::CATEGORY_FREE:
+                // TODO: What to do?
+                return 'bcb_aktivmitglied';
+            case Adressen::CATEGORY_HONOR:
+                return 'bcb_ehrenmitglied';
+            case Adressen::CATEGORY_INSERENT:
+                return 'bcb_inserent';
+            case Adressen::CATEGORY_INTERESTING:
+                return 'bcb_interessent';
+            case Adressen::CATEGORY_INTERESTING_YOUTH:
+                return 'bcb_interessent_jugend';
+            default:
+                return 'bcb_aktivmitglied';
+        }
+    }
+
+    /**
+     * get the spouse id or null if no spouse
+     * @return mixed
+     */
+    public function getSpouseId()
+    {
+        return $this->spouseId;
+    }
 }
