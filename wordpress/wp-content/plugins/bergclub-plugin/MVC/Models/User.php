@@ -113,6 +113,13 @@ class User implements IModel
         'sekretariat',
     ];
 
+    private static $mitgliederRoles = [
+        'bcb_aktivmitglied',
+        'bcb_aktivmitglied_jugend',
+        'bcb_ehrenmitglied',
+        'bcb_freimitglied',
+    ];
+
     private static $erweiterterVorstandRoles = [
         'bcb_materialchef',
         'bcb_materialchef_jugend',
@@ -169,6 +176,10 @@ class User implements IModel
             return strcmp($a->last_name.' '.$a->first_name, $b->last_name.' '.$b->first_name);
         });
         return $users;
+    }
+
+    public static function findMitglieder(){
+        return self::findUsersAndRoleByArray(self::$mitgliederRoles);
     }
 
     public static function findVorstand(){
