@@ -57,13 +57,6 @@ class Import extends Init
         // read input file
         require $filename;
 
-        // Check for users
-        if (!isset($user)) {
-            \WP_CLI::warning('Input file has no users, skipping');
-        } else {
-            $this->importUsers($user);
-        }
-
         // Check for mitteilungen
         if (!isset($mitteilungen)) {
             \WP_CLI::warning('Input file has no mitteilungen, skipping');
@@ -128,64 +121,6 @@ class Import extends Init
             $tourEntity->dateFrom = $tour['von'];
             $tourEntity->dateTo = $tour['bis'];
             $tourEntity->title = $tour['titel'];
-        }
-    }
-
-    private $importedUsers = array();
-
-    /**
-     * Method to import Users
-     *
-     * @param $users Array of users to import
-     */
-    function importUsers($users) {
-        \WP_CLI::log('Begin processing of users');
-        \WP_CLI::log('It has ' . count($users) . ' Users');
-
-        return;
-
-        $userEntities = array();
-        foreach ($users as $user) {
-            $userEntity = new User();
-            $userEntity->id = $user['id'];
-            $userEntity->login = $user['login'];
-            $userEntity->email = $user['login'] . '@bergclub.ch';
-            $userEntity->password = $user['id'];
-            $userEntity->firstName = current(mb_split(' ', $user['name']));
-            $userEntity->lastName = last(mb_split(' ', $user['name']));
-            $userEntity->displayName = $user['login'];
-
-            $userEntities[] = $userEntity;
-        }
-
-        foreach ($userEntities as $userEntity) {
-            /** @var User $userEntity */
-
-            if ($userEntity->login == 'admin') {
-                \WP_CLI::log('Skipping user admin because this user exists already');
-                continue;
-            }
-
-            \WP_CLI::runcommand("user create " . $userEntity->login . " " . $userEntity->email . " " .
-                "--user_pass='" . $userEntity->password . "' " .
-                "--display_name='" . $userEntity->displayName . "' " .
-                "--first_name='" . $userEntity->firstName . "' " .
-                "--last_name='" . $userEntity->lastName . "'"
-            );
-
-            $options = array(
-                'return'        => true,
-                'parse'         => 'json',
-                'launch'        => false,
-                'exit_error'    => false,
-            );
-
-            $userList = \WP_CLI::runcommand("user list --format=json", $options);
-            foreach ($userList as $user) {
-                if ($user['user_login'] == $userEntity->login) {
-                    $this->importedUsers[$userEntity->id] = $user['ID'];
-                }
-            }
         }
     }
 
