@@ -61,14 +61,20 @@ class Import extends Init
         if (!isset($mitteilungen)) {
             \WP_CLI::warning('Input file has no mitteilungen, skipping');
         } else {
-            $this->importMitteilungen($mitteilungen);
+            //$this->importMitteilungen($mitteilungen);
+        }
+
+        if (!isset($adressen)) {
+            \WP_CLI::warning('Input file has no adressen, skipping');
+        } else {
+            $this->importAddress($adressen);
         }
 
         // Check for toueren
         if (!isset($touren) || !isset($galerie) || !isset($bilder)) {
             \WP_CLI::warning('Input file has no touren, galeries or images... skipping');
         } else {
-            $this->importTouren($touren, $galerie, $bilder);
+            //$this->importTouren($touren, $galerie, $bilder);
         }
     }
 
@@ -136,13 +142,28 @@ class Import extends Init
         $addressEntities = array();
         foreach ($address as $a) {
             $addressEntity = new Adressen();
+            $addressEntity->id = $a['id'];
+            $addressEntity->firstName = trim($a['vorname']);
+            $addressEntity->lastName = trim($a['name']);
+            $addressEntity->email = $a['email'];
+            $addressEntity->ahv = $a['ahv'];
+            $addressEntity->birthday = $a['geburtsdatum'];
+            $addressEntity->category = $a['kategorie'];
+            $addressEntity->number = $a['nr'];
+            $addressEntity->phoneBusiness = $a['tel_g'];
+            $addressEntity->phoneMobile = $a['natel'];
+            $addressEntity->phonePrivate = $a['tel_p'];
+            $addressEntity->place = $a['ort'];
+            $addressEntity->plz = $a['plz'];
+            $addressEntity->salutation = $a['anrede'];
+            $addressEntity->street = $a['strasse'];
 
             $addressEntities[] = $addressEntity;
         }
 
         foreach ($addressEntities as $addressEntity) {
             /** @var Adressen $addressEntity */
-
+            \WP_CLI::log($addressEntity);
         }
     }
 }

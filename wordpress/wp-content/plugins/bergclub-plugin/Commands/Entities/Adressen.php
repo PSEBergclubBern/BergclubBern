@@ -26,4 +26,9 @@ class Adressen
     public $email;
     public $birthday;
     public $ahv;
+
+    public function __toString()
+    {
+        return 'ID: ' . $this->id . '(' . $this->firstName . '/' . $this->lastName . ')';
+    }
 }
