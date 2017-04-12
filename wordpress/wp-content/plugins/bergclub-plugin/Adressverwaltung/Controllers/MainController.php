@@ -150,15 +150,14 @@ class MainController extends AbstractController
                     $this->data['user_functionary_roles'] = $this->data['user']->functionary_roles;
                     $this->data['functionary_roles'] = Role::findByType(Role::TYPE_FUNCTIONARY);
                 } elseif($this->data['tab'] == 'spouse' && $this->data['edit']){
-                    $users = User::findAll();
+                    $users = User::findMitglieder();
 
-                    foreach( $users as $eventualSpouse ){
-                        if ( $user == $eventualSpouse || ( $eventualSpouse->address_role_key != 'bcb_aktivmitglied' && $eventualSpouse->address_role_key != 'bcb_aktivmitglied_jugend' ) ) {
-                            $key = array_search($eventualSpouse, $users);
+                    foreach( $users as $key => $eventualSpouse ){
+                        if ( $user == $eventualSpouse ) {
                             unset($users[$key]);
                         }
                     }
-                    $this->data['users'] = $users;
+                    $this->data['users'] = array_values($users);
                 }
 
             }else{
