@@ -76,11 +76,11 @@ class Common extends MetaBox {
                         if ($date_to < $date_from) {
                             $errors[] = '"Datum bis" muss nach "Datum von" sein.';
                         } elseif ($date_to > $date_from) {
-                            if (!array_key_exists(self::SLEEPOVER, $values) || $values[self::SLEEPOVER] != "Ja") {
+                            if (!array_key_exists(self::SLEEPOVER, $values) || empty($values[self::SLEEPOVER])) {
                                 $errors[] = 'Mehrtägige Touren müssen eine Übernachtung beinhalten';
                             }
                         } elseif ($date_to = $date_from) {
-                            if (!array_key_exists(self::SLEEPOVER, $values) || $values[self::SLEEPOVER] != "Nein") {
+                            if (!array_key_exists(self::SLEEPOVER, $values) || !empty($values[self::SLEEPOVER])) {
                                 $errors[] = 'Eintägige Touren dürfen keine Übernachtung beinhalten';
                             }
                         }
