@@ -96,7 +96,7 @@ class CommonTest extends TestCase
     public function dateToIsEqualDateFrom() {
         $this->assertTrue($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
             Common::DATE_TO_IDENTIFIER => '01.01.2000',
-            Common::SLEEPOVER => "Nein"), "publish"));
+            Common::SLEEPOVER => ""), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -106,7 +106,7 @@ class CommonTest extends TestCase
     public function dateToIsEqualDateFromButSleepoverJa() {
         $this->assertFalse($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
             Common::DATE_TO_IDENTIFIER => '01.01.2000',
-            Common::SLEEPOVER => "Ja"), "publish"));
+            Common::SLEEPOVER => "Something"), "publish"));
         $this->assertNotEmpty(FlashMessage::show());
     }
 
@@ -116,17 +116,17 @@ class CommonTest extends TestCase
     public function dateToIsAfterDateFromAndSleepoverIsSet() {
         $this->assertTrue($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
             Common::DATE_TO_IDENTIFIER => '01.02.2000',
-            Common::SLEEPOVER => "Ja"), "publish"));
+            Common::SLEEPOVER => "Test"), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
     /**
      * @test
      */
-    public function dateToIsAfterDateFromAndSleepoverIsNein() {
+    public function dateToIsAfterDateFromAndSleepoverIsEmpty() {
         $this->assertFalse($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
             Common::DATE_TO_IDENTIFIER => '01.02.2000',
-            Common::SLEEPOVER => "Nein"), "publish"));
+            Common::SLEEPOVER => ""), "publish"));
         $this->assertNotEmpty(FlashMessage::show());
     }
 
