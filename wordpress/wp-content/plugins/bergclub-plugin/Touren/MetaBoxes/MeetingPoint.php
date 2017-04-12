@@ -60,8 +60,9 @@ class MeetingPoint extends MetaBox {
             }
             if (array_key_exists(self::MEETPOINT, $values)) {
                 $value = $values[self::MEETPOINT];
-                if (strcmp($value, "Anderes") === 0) {
-                    if (!array_key_exists(self::MEETPOINT_DIFFERENT, $values)) {
+
+                if ($value == 99) {
+                    if (!array_key_exists(self::MEETPOINT_DIFFERENT, $values) || empty($values[self::MEETPOINT_DIFFERENT])) {
                         $errors[] = 'Wenn als Treffpunkt "Anderes" ausgewählt wurde, muss auch ein alternativer Treffpunkt angegeben werden';
                     }
                 }
@@ -72,6 +73,14 @@ class MeetingPoint extends MetaBox {
                 } elseif ( ! strcmp( $values[ self::MEETPOINT ], "Anderes" ) === 0 ) {
                     $errors[] = 'Ein alternativer Treffpunkt kann nur ausgewählt werden, wenn als Treffpunkt "Anderes" ausgewählt wurde';
                 }
+            }
+
+            if (array_key_exists(self::MEETPOINT, $values) && empty($values[self::MEETPOINT])) {
+                $errors[] = '"Treffpunkt" darf nicht leer sein';
+            }
+
+            if (array_key_exists(self::RETURNBACK, $values) && empty($values[self::RETURNBACK])) {
+                $errors[] = '"Rückkehr (Bern an)" darf nicht leer sein';
             }
         }
 

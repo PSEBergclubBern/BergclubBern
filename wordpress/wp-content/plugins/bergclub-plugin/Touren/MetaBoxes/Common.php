@@ -65,6 +65,12 @@ class Common extends MetaBox {
 			}
 		}
 
+        if ( array_key_exists( self::LEADER, $values ) ) {
+            if ( empty($values[ self::LEADER ]) ) {
+                $errors[] = 'Kein Leiter wurde ausgewählt';
+            }
+        }
+
         if ($posttype != "draft") {
             if (array_key_exists(self::DATE_TO_IDENTIFIER, $values) && !empty($values[self::DATE_TO_IDENTIFIER])) {
                 $date_to = \DateTime::createFromFormat("d.m.Y", $values[self::DATE_TO_IDENTIFIER]);
@@ -76,11 +82,11 @@ class Common extends MetaBox {
                         if ($date_to < $date_from) {
                             $errors[] = '"Datum bis" muss nach "Datum von" sein.';
                         } elseif ($date_to > $date_from) {
-                            if (!array_key_exists(self::SLEEPOVER, $values) || $values[self::SLEEPOVER] != "Ja") {
+                            if (!array_key_exists(self::SLEEPOVER, $values) || empty($values[self::SLEEPOVER])) {
                                 $errors[] = 'Mehrtägige Touren müssen eine Übernachtung beinhalten';
                             }
                         } elseif ($date_to = $date_from) {
-                            if (!array_key_exists(self::SLEEPOVER, $values) || $values[self::SLEEPOVER] != "Nein") {
+                            if (!array_key_exists(self::SLEEPOVER, $values) || !empty($values[self::SLEEPOVER])) {
                                 $errors[] = 'Eintägige Touren dürfen keine Übernachtung beinhalten';
                             }
                         }
@@ -101,6 +107,14 @@ class Common extends MetaBox {
                         }
                     }
                 }
+            }
+
+            if (array_key_exists(self::SIGNUP_UNTIL, $values) && empty($values[self::SIGNUP_UNTIL])) {
+                $errors[] = '"Anmelden bis" muss angegeben werden';
+            }
+
+            if (array_key_exists(self::SIGNUP_TO, $values) && empty($values[self::SIGNUP_TO])) {
+                $errors[] = '"Anmelden an" muss angegeben werden';
             }
         }
 
