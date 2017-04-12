@@ -72,7 +72,7 @@ class User implements IModel
     private $deletedRoles = [];
 
     /**
-     * @var User $spouse
+     * @var int $spouse
      */
     private $spouse;
 
@@ -245,7 +245,11 @@ class User implements IModel
                 if($key == 'history') {
                     $arr[0] = unserialize($arr[0]);
                 }
-                $user->__set($key, $arr[0]);
+                if($key == 'spouse'){
+                    $user->__set('spouseId', $arr[0]);
+                }else {
+                    $user->__set($key, $arr[0]);
+                }
             }
 
             foreach($item->roles as $wpRole){
@@ -293,6 +297,10 @@ class User implements IModel
             update_user_meta($this->main['ID'], $key, $value);
         }
 
+        if($this->spouse) {
+            update_user_meta($this->main['ID'], 'spouse', $this->spouse);
+        }
+
         update_user_meta($this->main['ID'], 'history', $this->historie);
 
         $user = get_user_by('ID', $this->main['ID'] );
@@ -326,6 +334,7 @@ class User implements IModel
         $this->main = [];
         $this->data = [];
         $this->roles = [];
+        $this->spouse = null;
     }
 
     /**
@@ -539,7 +548,14 @@ class User implements IModel
      */
     private function getSpouse()
     {
-        return $this->spouse;
+        if(!empty($this->spouse)){
+            $spouse = User::find($this->spouse);
+            if($spouse){
+                return $spouse;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -550,8 +566,9 @@ class User implements IModel
      */
     private function getSpouseName()
     {
-        if($this->spouse) {
-            return $this->spouse->last_name . ' ' . $this->spouse->first_name;
+        $spouse = $this->getSpouse();
+        if($spouse) {
+            return $spouse->last_name . ' ' . $spouse->first_name;
         }
 
         return '';
@@ -567,7 +584,14 @@ class User implements IModel
     private function setSpouse(User $spouse)
     {
         if($this != $spouse) {
-            $this->spouse = $spouse;
+            $this->spouse = $spouse->ID;
+        }
+    }
+
+    private function setSpouseId($spouseId)
+    {
+        if(is_numeric($spouseId)) {
+            $this->spouse = $spouseId;
         }
     }
 
