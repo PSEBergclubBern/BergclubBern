@@ -179,7 +179,7 @@ class User implements IModel
     }
 
     public static function findMitglieder(){
-        return self::findUsersAndRoleByArray(self::$mitgliederRoles);
+        return self::findByRoles(self::$mitgliederRoles);
     }
 
     public static function findVorstand(){
@@ -222,6 +222,23 @@ class User implements IModel
             }
         }
         return $membersByRole;
+    }
+
+    private static function findByRoles(array $roleList){
+        $result = [];
+        $membersByRole = [];
+        foreach($roleList as $itemRole){
+            $role = Role::find($itemRole);
+            if($role){
+                $item = ['title' => $role->getName(), 'users' => []];
+                $users = self::findByRole($itemRole);
+                foreach($users as $user){
+                    /* @var User $user */
+                    $result[$user->ID] = $user;
+                }
+            }
+        }
+        return array_values($result);
     }
 
     public static function findByRole($role){
