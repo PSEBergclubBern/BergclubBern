@@ -189,4 +189,54 @@ class CommonTest extends TestCase
 	    $this->assertFalse($this->common->isValid($values, "publish"));
         $this->assertNotEmpty(FlashMessage::show());
     }
+
+    /**
+     * @test
+     */
+    public function dateFromIsRequired() {
+        $values = array( Common::DATE_FROM_IDENTIFIER => '' );
+        $this->assertFalse($this->common->isValid($values, "publish"));
+        $this->assertFalse($this->common->isValid($values, "draft"));
+    }
+
+    /**
+     * @test
+     */
+    public function leaderIsRequired() {
+        $values = array( Common::LEADER => '' );
+        $this->assertFalse($this->common->isValid($values, "publish"));
+        $this->assertFalse($this->common->isValid($values, "draft"));
+    }
+
+    /**
+     * @test
+     */
+    public function signUpToIsRequiredForPublish() {
+        $values = array( Common::SIGNUP_TO => '' );
+        $this->assertFalse($this->common->isValid($values, "publish"));
+    }
+
+    /**
+     * @test
+     */
+    public function signUpToIsOptionalForDraft() {
+        $values = array( Common::SIGNUP_TO => '' );
+        $this->assertTrue($this->common->isValid($values, "draft"));
+    }
+
+    /**
+     * @test
+     */
+    public function signUpUntilIsRequiredForPublish() {
+        $values = array( Common::SIGNUP_UNTIL => '' );
+        $this->assertFalse($this->common->isValid($values, "publish"));
+    }
+
+    /**
+     * @test
+     */
+    public function signUpUntilIsOptionalForDraft() {
+        $values = array( Common::SIGNUP_UNTIL => '' );
+        $this->assertTrue($this->common->isValid($values, "draft"));
+    }
 }
