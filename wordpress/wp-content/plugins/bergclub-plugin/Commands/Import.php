@@ -13,6 +13,8 @@ use BergclubPlugin\Commands\Entities\Adressen;
 use BergclubPlugin\Commands\Entities\Meldung;
 use BergclubPlugin\Commands\Entities\Tour;
 use BergclubPlugin\Commands\Entities\User;
+use BergclubPlugin\MVC\Models\Role;
+use BergclubPlugin\MVC\Models\User as ModelUser;
 
 class Import extends Init
 {
@@ -163,7 +165,15 @@ class Import extends Init
 
         foreach ($addressEntities as $addressEntity) {
             /** @var Adressen $addressEntity */
-            \WP_CLI::log($addressEntity);
+            \WP_CLI::log('Processing ' . $addressEntity);
+            $model = new ModelUser($addressEntity->toArray());
+            $model->addRole(Role::find($this->findRoleKey($addressEntity)));
+            //$model->save();
+
         }
+    }
+
+    private function findRoleKey(Adressen $addressEntity) {
+        return 'bcb_aktivmitglied';
     }
 }
