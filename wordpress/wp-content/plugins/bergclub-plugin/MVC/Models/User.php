@@ -58,6 +58,7 @@ class User implements IModel
         'email' => null,
         'birthdate' => null,
         'comments' => null,
+        'main_address' => null,
     ];
 
     /**
