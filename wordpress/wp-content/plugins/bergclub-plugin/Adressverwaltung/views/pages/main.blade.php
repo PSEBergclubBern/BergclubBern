@@ -1,30 +1,6 @@
 @extends('template')
 
 @section('content')
-    <?php
-
-    $posts = get_posts([
-        'post_type' => 'touren',
-        'posts_per_page' => - 1,
-        'order' => 'DESC',
-        'orderby' => 'dateTo',
-        'meta_query' => [
-            [
-                'key' => 'dateTo',
-                'value' => date("Y-m-d"),
-                'compare' => '<=',
-                'type' => 'DATE'
-            ],
-        ],
-    ]);
-    print "<pre>" . print_r($posts, true) . "</pre>";
-    foreach($posts as $post){
-        $meta = get_post_meta($post->ID);
-        print "<pre>" . print_r($meta, true) . "</pre>";
-    }
-
-
-    ?>
     @if($showEdit)
         <p><a class="button-primary" href="?page={{ $_GET['page'] }}&view=new">Neuer Eintrag</a></p>
     @endif
