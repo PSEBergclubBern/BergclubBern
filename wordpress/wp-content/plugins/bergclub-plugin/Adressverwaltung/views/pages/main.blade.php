@@ -2,7 +2,7 @@
 
 @section('content')
     @if($showEdit)
-    <p><a class="button-primary" href="?page={{ $_GET['page'] }}&view=new">Neuer Eintrag</a></p>
+        <p><a class="button-primary" href="?page={{ $_GET['page'] }}&view=new">Neuer Eintrag</a></p>
     @endif
     <table id="mitglieder" class="row-border stripe responsive no-link-underline" cellspacing="0" width="100%">
         <thead>
@@ -35,35 +35,35 @@
             </tr>
         @endforeach
         </tbody>
-@endsection
+        @endsection
 
-@section('scripts')
-    <script type="text/javascript">
-        jQuery(document).ready(function() {
-            jQuery('#mitglieder').DataTable({
-                language: {
-                    url: "//cdn.datatables.net/plug-ins/1.10.13/i18n/German.json"
-                },
-                columnDefs: [
-                    { targets: 'no-sort', orderable: false }
-                ]
-            });
+        @section('scripts')
+            <script type="text/javascript">
+                jQuery(document).ready(function() {
+                    jQuery('#mitglieder').DataTable({
+                        language: {
+                            url: "//cdn.datatables.net/plug-ins/1.10.13/i18n/German.json"
+                        },
+                        columnDefs: [
+                            { targets: 'no-sort', orderable: false }
+                        ]
+                    });
 
-            jQuery('.delete').click(function(){
-                var id = jQuery(this).data('id');
-                swal({
-                    title: 'Sind Sie sicher?',
-                    text: "Der Löschvorgang kann nicht Rückgängig gemacht werden",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ja, Löschen',
-                    cancelButtonText: 'Abbrechen',
-                }).then(function () {
-                        document.location.href = document.location.href + '&action=delete&id=' + id;
-                })
-            });
-        } );
-    </script>
+                    jQuery('.delete').click(function(){
+                        var id = jQuery(this).data('id');
+                        swal({
+                            title: 'Sind Sie sicher?',
+                            text: "Der Löschvorgang kann nicht Rückgängig gemacht werden",
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ja, Löschen',
+                            cancelButtonText: 'Abbrechen',
+                        }).then(function () {
+                            document.location.href = document.location.href + '&action=delete&id=' + id;
+                        })
+                    });
+                } );
+            </script>
 @endsection
