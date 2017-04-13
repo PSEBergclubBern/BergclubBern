@@ -1,5 +1,5 @@
 local:
-  vhost: "http://vccw.dev"
+  vhost: "http://vccm-all.local"
   wordpress_path: "/var/www/html" # use an absolute path here
 
   database:
@@ -18,16 +18,14 @@ local:
   #   languages: "wp-content/languages"
 
 production:
-  vhost: "http://example.com"
-  wordpress_path: "/var/www/your_site" # use an absolute path here
+  vhost: "http://bergclub.ch.paragon.sui-inter.net"
+  wordpress_path: "/httpdocs" # use an absolute path here
 
   database:
-    name: "database_name"
-    user: "user"
-    password: "password"
-    host: "host"
-    port: "3308" # Use just in case you have exotic server config
-    mysqldump_options: "--max_allowed_packet=50MB" # Only available if using SSH
+    name: "bergclub-wp"
+    user: "bergclub-wp-user"
+    password: "fGkq0_40"
+    host: "127.0.0.1"
 
   exclude:
     - ".git/"
@@ -39,9 +37,9 @@ production:
     - "Movefile"
     - "wp-config.php"
     - "wp-content/*.sql"
+    - "provision"
 
   ssh:
-    host: "host"
-    user: "user"
-    port: 22
-    rsync_options: --verbose
+    host: "paragon.sui-inter.net"
+    user: "bergclub"
+    port: "2121"

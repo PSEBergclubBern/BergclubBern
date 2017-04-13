@@ -88,7 +88,7 @@ class MeetingPointTest extends TestCase
      * @test
      */
     public function treffpunktAnderesNoAlternativTreffpunkt() {
-        $this->assertFalse($this->meeting->isValid(array(MeetingPoint::MEETPOINT => 'Anderes'), "publish"));
+        $this->assertFalse($this->meeting->isValid(array(MeetingPoint::MEETPOINT => 99), "publish"));
         $this->assertNotEmpty(FlashMessage::show());
     }
 
@@ -96,7 +96,7 @@ class MeetingPointTest extends TestCase
      * @test
      */
     public function treffpunktAnderesWithAlternativTreffpunkt() {
-        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::MEETPOINT => 'Anderes', MeetingPoint::MEETPOINT_DIFFERENT => 'Welle'), "publish"));
+        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::MEETPOINT => 99, MeetingPoint::MEETPOINT_DIFFERENT => 'Welle'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
@@ -116,4 +116,29 @@ class MeetingPointTest extends TestCase
 		$this->assertNotEmpty(FlashMessage::show());
 	}
 
+    /**
+     * @test
+     */
+    public function meetingPointIsOptionalForDraftButNotForPublish() {
+        $this->assertTrue($this->meeting->isValid(array(MeetingPoint::MEETPOINT => ''), "draft"));
+        $this->assertFalse($this->meeting->isValid(array(MeetingPoint::MEETPOINT => ''), "publish"));
+    }
+
+    /**
+     * @test
+     */
+    public function meetingPointOtherIsOptionalForDraftButNotForPublish() {
+        $values = array(MeetingPoint::MEETPOINT => 99, MeetingPoint::MEETPOINT_DIFFERENT => '');
+        $this->assertTrue($this->meeting->isValid($values, "draft"));
+        $this->assertFalse($this->meeting->isValid($values, "publish"));
+    }
+
+    /**
+     * @test
+     */
+    public function returnBackIsOptionalForDraftButNotForPublish() {
+        $values = array(MeetingPoint::RETURNBACK => '');
+        $this->assertTrue($this->meeting->isValid($values, "draft"));
+        $this->assertFalse($this->meeting->isValid($values, "publish"));
+    }
 }
