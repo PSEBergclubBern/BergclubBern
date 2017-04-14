@@ -289,6 +289,7 @@ class Import extends Init
                         TourMetaBox::TYPE                       => $tourEntity->type,
                         TourMetaBox::REQUIREMENTS_TECHNICAL     => $tourEntity->requirementsTechnical,
                         TourMetaBox::REQUIREMENTS_CONDITIONAL   => $tourEntity->requirementsConditional,
+                        TourMetaBox::JSEVENT                    => $tourEntity->jsEvent,
                     );
 
                     foreach ($customFields as $key => $value) {

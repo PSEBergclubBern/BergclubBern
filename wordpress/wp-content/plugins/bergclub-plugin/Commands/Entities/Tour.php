@@ -34,6 +34,7 @@ class Tour
     public $requirementsConditional;
     public $leader;
     public $coLeader;
+    public $jsEvent;
 
 
     /**
@@ -67,6 +68,7 @@ class Tour
         $this->requirementsConditional = $array['anf_k'];
         $this->leader = $array['leiter_a'];
         $this->coLeader = $array['leiter_b'];
+        $this->jsEvent = $array['js'] * 1;
     }
 
     public function __toString()
