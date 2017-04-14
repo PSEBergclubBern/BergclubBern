@@ -35,13 +35,13 @@ get_header() ?>
                             'post_type' => 'touren',
                             'posts_per_page' => 5,
                             'order' => 'ASC',
-                            'orderby' => 'dateFrom',
-                            'meta_query' => array (
-                                'key' => 'dateFrom',
-                                'value' => date('d.m.Y',strtotime("today")),
+                            'orderby' => '_dateFromDB',
+                            'meta_query' => [[
+                                'key' => '_dateFromDB',
+                                'value' => date('Y-m-d'),
                                 'type' => 'DATE',
                                 'compare' => '>='
-                            )
+                            ]]
                         ));
 
                         while ($query->have_posts()) : $query->the_post();
