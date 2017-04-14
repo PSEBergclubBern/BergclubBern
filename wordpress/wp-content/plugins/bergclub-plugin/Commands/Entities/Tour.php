@@ -28,14 +28,35 @@ class Tour
     public $costs;
     public $costsFor;
     public $special;
-    private $images = array();
+    public $date;
 
-    public function addImage(Image $img) {
-        $this->images[] = $img;
-    }
 
-    public function getImages() {
-        return $this->images;
+    /**
+     * @var TourBericht
+     */
+    public $tourBericht;
+
+    public function __construct($array)
+    {
+        $this->id = $array['id'];
+        $this->userId = $array['user_id'];
+        $this->dateFrom = $array['von'];
+        $this->dateTo = $array['bis'];
+        $this->title = $array['titel'];
+        $this->master = $array['leiter_a'];
+        $this->coMaster = $array['leiter_b'];
+        $this->up = $array['auf'];
+        $this->down = $array['ab'];
+        $this->map = $array['karte'];
+        //$this->meetingPoint = $array['treff_o'];
+        $this->program = $array['prog'];
+        $this->return = $array['rueck_o'];
+        $this->equiptment = $array['ausr'];
+        $this->food = $array['verpf'];
+        $this->costs = $array['kosten'];
+        $this->costsFor = $array['fuer'];
+        $this->special = $array['besonderes'];
+        $this->date = $array['p_date'];
     }
 
     public function __toString()
