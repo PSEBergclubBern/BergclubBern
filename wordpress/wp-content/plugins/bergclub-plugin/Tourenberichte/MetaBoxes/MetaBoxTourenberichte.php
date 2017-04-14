@@ -11,7 +11,7 @@ namespace BergclubPlugin\Tourenberichte\MetaBoxes;
 use BergclubPlugin\FlashMessage;
 use duncan3dc\Laravel\BladeInstance;
 
-abstract class MetaBox
+abstract class MetaBoxTourenberichte
 {
     private static $saveActionRegistered = false;
     private static $alreadyValidated = false;
@@ -108,7 +108,6 @@ abstract class MetaBox
 
                 //get the status of the post (the one intended to save)
                 $status = get_post_status($postId);
-                $title = get_the_title($postId);
                 $originalStatus = $_POST['original_post_status'];
 
                 if($originalStatus == "auto-draft"){
@@ -116,31 +115,27 @@ abstract class MetaBox
                 }
 
                 $valid = true;
-                if($title == ""){
-                    $valid = false;
-                    FlashMessage::add(FlashMessage::TYPE_ERROR, "Bitte geben sie einen Titel für diese Tour an.");
-                } else {
-                    foreach (self::$registeredBoxes as $box) {
-                        /* @var MetaBox $box */
-                        foreach ($box->getUniqueFieldNames() as $fieldId) {
-                            if (array_key_exists($fieldId, $_POST)) {
-                                \update_post_meta(
-                                    $postId,
-                                    $fieldId,
-                                    $_POST[$fieldId]
-                                );
-                            }
-                        }
-                        //we don't want to validate a freshly created post (status: 'auto-draft')
-                        if ($status != 'auto-draft') {
-                            //IRGENDWO HIER MÜSST IHR EINE LÖSUNG FINDEN UM GEWISSE FELDER NUR ZU VALIDIEREN, WENN $status = 'pending' ODER 'publish'
-                            if (!$box->isValid($_POST, $status) ) {
-                                $valid = false;
-                            }
+
+                foreach (self::$registeredBoxes as $box) {
+                    /* @var MetaBox $box */
+                    foreach ($box->getUniqueFieldNames() as $fieldId) {
+                        if (array_key_exists($fieldId, $_POST)) {
+                            \update_post_meta(
+                                $postId,
+                                $fieldId,
+                                $_POST[$fieldId]
+                            );
                         }
                     }
-
+                    //we don't want to validate a freshly created post (status: 'auto-draft')
+                    if ($status != 'auto-draft') {
+                        if (!$box->isValid($_POST, $status) ) {
+                            $valid = false;
+                        }
+                    }
                 }
+
+
 
                 if (!$valid) {
                     file_put_contents($postId . "_" . uniqid(), "");
@@ -151,11 +146,20 @@ abstract class MetaBox
 
                     //ensure that the post will have the same state before saving
                     if ($status == "draft" || $status == "pending" || $status == "publish") {
-                        wp_update_post(array('ID' => $postId, 'post_status' => $originalStatus));
+                        wp_update_post(array(
+                            'ID' => $postId,
+                            'post_status' => $originalStatus,
+                            'post_title'   => 'Dieser Tourenbericht konnte nicht validiert werden.',
+                            ));
                         FlashMessage::add(FlashMessage::TYPE_WARNING, "Die Validierung ist aus den oben genannten Gründen gescheitert. Bitte beheben Sie die Fehler, wenn Sie diese Tour auf 'Ausstehender Review' oder 'Veröffentlichung' setzen wollen. Die gemachten Änderungen wurden dennoch gespeichert.");
                     }
 
                 } elseif ($status != "auto-draft") {
+                    $tour = get_the_title(get_post_meta($postId, "_touren", true));
+                    wp_update_post(array(
+                        'ID' => $postId,
+                        'post_title'   => "Bericht für Tour: ".$tour,
+                    ));
                     //add a success message when the post fields where valid.
                     FlashMessage::add(FlashMessage::TYPE_SUCCESS, "Änderungen gespeichert.");
                 }
