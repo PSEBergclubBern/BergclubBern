@@ -23,25 +23,27 @@ class TourenHelper
     }
 
     public static function getDateTo($postId){
-        return self::getDate(self::getMeta($postId, 'dateTo'));
+        $dateFrom = self::getDate(self::getMeta($postId, 'dateFrom'));
+        $dateTo = self::getDate(self::getMeta($postId, 'dateTo'));
+        return $dateFrom != $dateTo ? $dateFrom : null;
     }
 
     public static function getDateDisplayShort($postId){
-        if(self::isSeveralDays($postId)){
+        if(self::getIsSeveralDays($postId)){
             return self::getDate(self::getMeta($postId, 'dateFrom'), 'd.m.') . ' - ' . self::getDate(self::getMeta($postId, 'dateTo'), 'd.m.');
         }
         return self::getDate(self::getMeta($postId, 'dateFrom'), 'd.m.');
     }
 
     public static function getDateDisplayFull($postId){
-        if(self::isSeveralDays($postId)){
+        if(self::getIsSeveralDays($postId)){
             return self::getDate(self::getMeta($postId, 'dateFrom'), 'd.m.Y') . ' - ' . self::getDate(self::getMeta($postId, 'dateTo'), 'd.m.Y');
         }
 
         return self::getDate(self::getMeta($postId, 'dateFrom'), 'd.m.Y');
     }
 
-    private static function isSeveralDays($postId){
+    public static function getIsSeveralDays($postId){
         $dateFrom = self::getDateFrom($postId);
         $dateTo = self::getDateTo($postId);
         return !empty($dateTo) && $dateTo != $dateFrom;

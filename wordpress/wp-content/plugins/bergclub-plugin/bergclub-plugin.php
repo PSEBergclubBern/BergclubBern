@@ -111,6 +111,12 @@ function bcb_content_filter($content){
         }else{
             $content = str_replace('[' . $key . ']', '', $content);
         }
+
+        if(strstr($content, '[/' . $key . ']')){
+            $content = str_replace('[/' . $key . ']', \BergclubPlugin\TagHelper::getTag($key . "_end"), $content);
+        }else{
+            $content = str_replace('[/' . $key . ']', '', $content);
+        }
     }
     return $content;
 }
