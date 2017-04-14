@@ -83,20 +83,35 @@ class Tour extends MetaBox {
                 }
             }
 
-            if (array_key_exists(self::ONLINEMAP, $values)) {
+            if (array_key_exists(self::ONLINEMAP, $values) && !empty($values[self::ONLINEMAP])) {
                 if (!filter_var($values[self::ONLINEMAP], FILTER_VALIDATE_URL) && !filter_var("http://" . $values[self::ONLINEMAP], FILTER_VALIDATE_URL)) {
                     $errors[] = '"URL Online Route" muss eine gültige URL sein';
                 }
             }
 
             if (array_key_exists(self::COSTS, $values)) {
-                if (!preg_match("/^-?[0-9]+(?:\.[0-9]{1,2})?$/", $values[self::COSTS]) && !preg_match("/^-?[0-9]+(?:\,[0-9]{1,2})?$/", $values[self::COSTS])) {
+                if (!preg_match('/^-?[0-9]+(?:\.[0-9]{1,2})?$/', $values[self::COSTS]) && !preg_match('/^-?[0-9]+(?:\,[0-9]{1,2})?$/', $values[self::COSTS])) {
                     $errors[] = '"Kosten (CHF)" muss das Format #(#*).## oder #(#*),## haben';
                 }
             }
+
+            if (array_key_exists(self::RISE_UP_METERS, $values) && empty($values[self::RISE_UP_METERS])) {
+                $errors[] = '"Aufstieg Höhenmeter" darf nicht leer sein';
+            }
+
+            if (array_key_exists(self::RISE_DOWN_METERS, $values) && empty($values[self::RISE_DOWN_METERS])) {
+                $errors[] = '"Abstieg Höhenmeter" darf nicht leer sein';
+            }
+
+            if (array_key_exists(self::EQUIPMENT, $values) && empty($values[self::EQUIPMENT])) {
+                $errors[] = '"Ausrüstung" darf nicht leer sein';
+            }
+
+            if (array_key_exists(self::PROGRAM, $values) && empty($values[self::PROGRAM])) {
+                $errors[] = '"Programm" darf nicht leer sein';
+            }
+
         }
-
-
 		foreach ( $errors as $errorMsg ) {
 			FlashMessage::add( FlashMessage::TYPE_ERROR, $errorMsg );
 		}

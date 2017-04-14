@@ -25,3 +25,6 @@ Option::set('default_category', 1);
 
 //delete category 'mitteilungen'
 wp_delete_category(get_category_by_slug('mitteilungen')->term_id);
+
+//remove the background images information (WP Option)
+Option::remove('background_images');
