@@ -112,6 +112,9 @@ foreach($roles as $role){
     }
 }
 
+//add capability theme_images
+$roleInternet->addCapability('theme_images', true);
+
 $roleAdministrator = Role::find('administrator');
 foreach($roleAdministrator->getCapabilities() as $capability => $grant){
     if(substr($capability, -6) != "_users") {

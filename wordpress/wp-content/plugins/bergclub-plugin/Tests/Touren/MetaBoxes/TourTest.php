@@ -171,4 +171,59 @@ class TourTest extends TestCase
         $this->assertEmpty(FlashMessage::show());
     }
 
+    /**
+     * @test
+     */
+    public function riseUpIsOptionalForDraftButNotForPublish() {
+        $this->assertTrue($this->tour->isValid(array(Tour::RISE_UP_METERS => ''), "draft"));
+        $this->assertFalse($this->tour->isValid(array(Tour::RISE_UP_METERS => ''), "publish"));
+    }
+
+    /**
+     * @test
+     */
+    public function riseDownIsOptionalForDraftButNotForPublish() {
+        $this->assertTrue($this->tour->isValid(array(Tour::RISE_DOWN_METERS => ''), "draft"));
+        $this->assertFalse($this->tour->isValid(array(Tour::RISE_DOWN_METERS => ''), "publish"));
+    }
+
+    /**
+     * @test
+     */
+    public function durationIsOptionalForDraftButNotForPublish() {
+        $this->assertTrue($this->tour->isValid(array(Tour::DURATION => ''), "draft"));
+        $this->assertFalse($this->tour->isValid(array(Tour::DURATION => ''), "publish"));
+    }
+
+    /**
+     * @test
+     */
+    public function programIsOptionalForDraftButNotForPublish() {
+        $this->assertTrue($this->tour->isValid(array(Tour::PROGRAM => ''), "draft"));
+        $this->assertFalse($this->tour->isValid(array(Tour::PROGRAM => ''), "publish"));
+    }
+
+    /**
+     * @test
+     */
+    public function equipmentIsOptionalForDraftButNotForPublish() {
+        $this->assertTrue($this->tour->isValid(array(Tour::EQUIPMENT => ''), "draft"));
+        $this->assertFalse($this->tour->isValid(array(Tour::EQUIPMENT => ''), "publish"));
+    }
+
+    /**
+     * @test
+     */
+    public function costsIsOptionalForDraftButNotForPublish() {
+        $this->assertTrue($this->tour->isValid(array(Tour::COSTS => ''), "draft"));
+        $this->assertFalse($this->tour->isValid(array(Tour::COSTS => ''), "publish"));
+    }
+
+    /**
+     * @test
+     */
+    public function onlineMapIsOptional() {
+        $this->assertTrue($this->tour->isValid(array(Tour::ONLINEMAP => ''), "draft"));
+        $this->assertTrue($this->tour->isValid(array(Tour::ONLINEMAP => ''), "publish"));
+    }
 }

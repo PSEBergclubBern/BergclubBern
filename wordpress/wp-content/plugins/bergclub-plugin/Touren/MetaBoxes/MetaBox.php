@@ -24,7 +24,9 @@ abstract class MetaBox
         if (!self::$saveActionRegistered){
             self::$saveActionRegistered = true;
             //we create a hook only for this specific post type
-            add_action('save_post_' . BCB_CUSTOM_POST_TYPE_TOUREN, [$this, 'save']);
+            if (function_exists('\add_action')) {
+                add_action('save_post_' . BCB_CUSTOM_POST_TYPE_TOUREN, [$this, 'save']);
+            }
         }
     }
 

@@ -141,14 +141,14 @@ if ( ! function_exists( 'bcb_carousel_images_css' ) ) {
      */
     function bcb_carousel_images_css()
     {
-        $files = scandir(__DIR__ . '/img/carousel');
-        shuffle($files);
+        $images = get_option('bcb_background_images');
+        shuffle($images);
         $carouselImages = "";
         $index = 0;
-        foreach ($files as $file) {
-            if ($file != "." && $file != "..") {
+        foreach ($images as $image) {
+            if ($image['active']) {
                 $index++;
-                $carouselImages .= ".item:nth-child(" . $index . "){background: url(" . bcb_add_jugend_to_url(get_template_directory_uri() . "/img/carousel/" . $file, true) . ") no-repeat top center fixed;}";
+                $carouselImages .= ".item:nth-child(" . $index . "){background: url(" . bcb_add_jugend_to_url(get_template_directory_uri() . $image['filename'], true) . ") no-repeat " . $image['vertical'] . " ". $image['horizontal'] . " fixed;}";
             }
         }
         return $carouselImages;
@@ -273,6 +273,9 @@ require_once __DIR__ . '/inc/notice.php';
 
 //including simple math captcha functionality
 require_once __DIR__ . '/inc/captcha.php';
+
+//including background images functionality
+require_once __DIR__ . '/inc/background-images.php';
 
 //Ensures that only the category name is shown as title in archive
 add_filter( 'get_the_archive_title', function ( $title ) {
