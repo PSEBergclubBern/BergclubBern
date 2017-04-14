@@ -336,6 +336,9 @@ class User implements IModel
 
         if(!$this->main['ID']) {
             $main = $this->main;
+            if($this->hasFunctionaryRole()) {
+                $main['user_email'] = $this->data['email'];
+            }
             array_map('sanitize_text_field', $main);
             $this->main['ID'] = wp_insert_user($main);
         }
@@ -343,7 +346,12 @@ class User implements IModel
         foreach($this->data as $key => $value){
             if($key == 'email'){
                 $value = sanitize_email($value);
-                wp_update_user(['ID' => $this->main['ID'], 'user_email' => $value]);
+                if($this->hasFunctionaryRole()) {
+                    wp_update_user(['ID' => $this->main['ID'], 'user_email' => $value]);
+
+                }else{
+                    wp_update_user(['ID' => $this->main['ID'], 'user_email' => null]);
+                }
             }else{
                 $value = sanitize_text_field($value);
             }
