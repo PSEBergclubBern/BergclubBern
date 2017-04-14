@@ -39,54 +39,6 @@ add_action('admin_enqueue_scripts', function() {
 });
 
 
-
-function bcb_register_my_tourenberichteverwaltung() {
-
-    /**
-     * Post Type: Touren.
-     */
-
-    $labels = array(
-        "name" => __( 'Tourenberichte', '' ),
-        "singular_name" => __( 'Tourenbericht', '' ),
-        "menu_name" => __( 'Tourenberichte', '' ),
-        "all_items" => __( 'Tourenberichte', '' ),
-        "add_new" => __( 'Tourenbericht erfassen', '' ),
-        "add_new_item" => __( 'Neue Tourenbericht erfassen', '' ),
-        "edit_item" => __( 'Tourenbericht anpassen', '' ),
-        "new_item" => __( 'Neue Tourenbericht', '' ),
-        "view_item" => __( 'Tourenbericht ansehen', '' ),
-        "view_items" => __( 'Tourenberichte ansehen', '' ),
-        "search_items" => __( 'Tourenbericht suchen', '' ),
-    );
-
-    $args = array(
-        "label" => __( 'Tourenberichte', '' ),
-        "labels" => $labels,
-        "description" => "Tourenberichte des Bergclubs Bern",
-        "public" => true,
-        "publicly_queryable" => true,
-        "show_ui" => true,
-        "show_in_rest" => false,
-        "rest_base" => "",
-        "has_archive" => false,
-        "show_in_menu" => true,
-        "exclude_from_search" => false,
-        "capability_type" => ['tourenbericht', 'tourenberichte'],
-        "map_meta_cap" => true,
-        "hierarchical" => false,
-        "rewrite" => array( "slug" => "tourenberichteverwaltung", "with_front" => true ),
-        "query_var" => true,
-        "supports" => array( "title", "editor", "thumbnail", "custom-fields" ),
-        "menu_position" => 5, //below Posts according to https://codex.wordpress.org/Function_Reference/register_post_type,
-    );
-
-    register_post_type( BCB_CUSTOM_POST_TYPE_TOURENBERICHTE, $args );
-}
-
-add_action( 'init', 'bcb_register_my_tourenberichteverwaltung' );
-
-
 function bcb_create_new_metabox_context_tourenberichte( $post ) {
     do_meta_boxes( null, 'bcb-metabox-holder-tourenberichte', $post );
 }
