@@ -10,6 +10,7 @@ namespace BergclubPlugin\Touren\MetaBoxes;
 
 
 use BergclubPlugin\FlashMessage;
+use BergclubPlugin\MVC\Models\User;
 
 class Common extends MetaBox {
 	const DATE_FROM_IDENTIFIER = '_dateFrom';
@@ -70,16 +71,21 @@ class Common extends MetaBox {
 
     protected function addAdditionalValuesForView() {
 		$roles = wp_get_current_user()->roles;
-		if ( in_array( 'bcb_leiter', $roles ) ) {
+		if ( in_array( 'bcb_leiter', $roles ) && !in_array('bcb_tourenchef', $roles) && !in_array('bcb_redaktion', $roles) ) {
 			$leiter = array( wp_get_current_user() );
 		} else {
 			$leiter = get_users( array( 'role' => 'bcb_leiter' ) );
 		}
 
-		return array(
+        $object = new \stdClass();
+        $object->ID = 0;
+        $object->first_name = '';
+        $object->last_name = '';
+
+        return array(
 			'leiter'   => $leiter,
-			'coLeiter' => get_users(),
-			'signUpTo' => get_users(),
+			'coLeiter' => array_merge(array($object), User::findMitglieder()),
+			'signUpTo' => array_merge(get_users( array( 'role' => 'bcb_leiter' ) ), User::findMitglieder()),
 		);
 	}
 
@@ -118,7 +124,7 @@ class Common extends MetaBox {
                             $errors[] = '"Datum bis" muss nach "Datum von" sein.';
                         } elseif ($date_to > $date_from) {
                             if (!array_key_exists(self::SLEEPOVER, $values) || empty($values[self::SLEEPOVER])) {
-                                $errors[] = 'Mehrtägige Touren müssen eine Übernachtung beinhalten';
+                                $errors[] = 'Bei mehrtägigen Touren muss das Feld "Übernachtung" ausgefüllt werden.';
                             }
                         } elseif ($date_to = $date_from) {
                             if (!array_key_exists(self::SLEEPOVER, $values) || !empty($values[self::SLEEPOVER])) {

@@ -82,6 +82,10 @@ class MeetingPoint extends MetaBox {
             if (array_key_exists(self::RETURNBACK, $values) && empty($values[self::RETURNBACK])) {
                 $errors[] = '"Rückkehr (Bern an)" darf nicht leer sein';
             }
+
+            if (array_key_exists(self::FOOD, $values) && empty($values[self::FOOD])) {
+                $errors[] = '"Verpflegung" darf nicht leer sein';
+            }
         }
 
 		foreach ( $errors as $errorMsg ) {
