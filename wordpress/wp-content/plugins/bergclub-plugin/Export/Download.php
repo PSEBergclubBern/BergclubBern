@@ -45,8 +45,10 @@ class Download
     }
 
     private function downloadTouren(){
-        echo "downloadTouren";
-        exit;
+        $status = $_GET['status'];
+        $from = date("Y-m-d", strtotime($_GET['from']));
+        $to = date("Y-m-d", strtotime($_GET['to']));
+
     }
 
     private function downloadCalendar(){
@@ -112,6 +114,43 @@ class Download
         $this->createPDFDownload($pdf, 'Kalender');
     }
 
+    private function getTourenData($status, $from, $to){
+        $data = [];
+
+        //TODO: from/to filtern
+        $posts = get_posts([
+            'posts_per_page' => -1,
+            'post_status' => $status,
+            'post_type' => 'touren',
+        ]);
+
+        foreach($posts as $post){
+            $title = get_the_title($post);
+            $date_from = bcb_touren_meta($post->ID, "dateFrom");
+            $date_to =  bcb_touren_meta($post->ID, "dateTo");
+            $type = bcb_touren_meta($post->ID, "type");
+            $reqTechnical = bcb_touren_meta($post->ID, "requirementsTechnical");
+
+            if(!empty($date_from)) {
+                $item = [];
+                if (!empty($type)) {
+                    $item['type'] = $type;
+                    if (!empty($reqTechnical)) {
+                        $item['req_technical'] = $reqTechnical;
+                    }
+                }
+
+                if (bcb_touren_meta($post->ID, "isSeveralDays")) {
+                    $item['date_to'] = "bis " . date("d.m.", strtotime($date_to));
+                }
+
+                $data[date('Y-m-d', strtotime($date_from))][] = $title . " (" . join(', ', $item) .")";
+            }
+        }
+
+        return $data;
+    }
+
     private function getCalendarData($year){
         $data = [];
 
@@ -123,23 +162,21 @@ class Download
 
         foreach($posts as $post){
             $title = get_the_title($post);
-            $date_from = get_post_meta($post->ID, "_dateFrom", true);
-            $date_to =  get_post_meta($post->ID, "_dateTo", true);
-            $type = get_post_meta($post->ID, "_type", true);
-            $reqTechnical = get_post_meta($post->ID, "_requirementsTechnical", true);
+            $date_from = bcb_touren_meta($post->ID, "dateFrom");
+            $date_to =  bcb_touren_meta($post->ID, "dateTo");
+            $type = bcb_touren_meta($post->ID, "type");
+            $reqTechnical = bcb_touren_meta($post->ID, "requirementsTechnical");
 
             if(!empty($date_from)) {
                 $item = [];
                 if (!empty($type)) {
-                    $type = bcb_get_touren_type_by_slug($type);
                     $item['type'] = $type;
+                    if (!empty($reqTechnical)) {
+                        $item['req_technical'] = $reqTechnical;
+                    }
                 }
 
-                if (!empty($reqTechnical)) {
-                    $item['req_technical'] = $reqTechnical;
-                }
-
-                if (!empty($date_to) && $date_to != $date_from) {
+                if (bcb_touren_meta($post->ID, "isSeveralDays")) {
                     $item['date_to'] = "bis " . date("d.m.", strtotime($date_to));
                 }
 
