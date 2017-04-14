@@ -273,8 +273,8 @@ class Import extends Init
 
                     \WP_CLI::debug('generated tour with id ' . $generatedId);
                     $customFields = array(
-                        Common::DATE_FROM_IDENTIFIER            => $tourEntity->dateFrom,
-                        Common::DATE_TO_IDENTIFIER              => $tourEntity->dateTo,
+                        Common::DATE_FROM_IDENTIFIER            => date('d.m.Y', strtotime($tourEntity->dateFrom)),
+                        Common::DATE_TO_IDENTIFIER              => date('d.m.Y', strtotime($tourEntity->dateTo)),
                         Common::DATE_FROM_DB                    => date('Y-m-d', strtotime($tourEntity->dateFrom)),
                         Common::DATE_TO_DB                      => date('Y-m-d', strtotime($tourEntity->dateTo)),
                         Common::LEADER                          => $tourEntity->leader,
