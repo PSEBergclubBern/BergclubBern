@@ -26,6 +26,7 @@ class Download
             if($_GET['download'] == "calendar" || $this->checkRights()) {
                 $method = "download" . Helpers::snakeToCamelCase($_GET['download'], true);
                 if (method_exists($this, $method)) {
+                    set_time_limit (0);
                     $this->$method();
                 }
             }
