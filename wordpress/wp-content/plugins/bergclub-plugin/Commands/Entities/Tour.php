@@ -29,6 +29,9 @@ class Tour
     public $costsFor;
     public $special;
     public $date;
+    public $type;
+    public $requirementsTechnical;
+    public $requirementsConditional;
 
 
     /**
@@ -57,6 +60,9 @@ class Tour
         $this->costsFor = $array['fuer'];
         $this->special = $array['besonderes'];
         $this->date = $array['p_date'];
+        $this->type = $array['art_id'];
+        $this->requirementsTechnical = $array['anf_t'];
+        $this->requirementsConditional = $array['anf_k'];
     }
 
     public function __toString()

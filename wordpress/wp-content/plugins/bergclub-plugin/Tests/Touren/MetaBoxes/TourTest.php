@@ -174,6 +174,14 @@ class TourTest extends TestCase
     /**
      * @test
      */
+    public function kostenWithoutTwoDecimalFractionIsValid() {
+        $this->assertTrue($this->tour->isValid(array(Tour::COSTS => '1.2'), "publish"));
+        $this->assertEmpty(FlashMessage::show());
+    }
+
+    /**
+     * @test
+     */
     public function riseUpIsOptionalForDraftButNotForPublish() {
         $this->assertTrue($this->tour->isValid(array(Tour::RISE_UP_METERS => ''), "draft"));
         $this->assertFalse($this->tour->isValid(array(Tour::RISE_UP_METERS => ''), "publish"));

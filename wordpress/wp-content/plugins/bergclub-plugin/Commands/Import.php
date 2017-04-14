@@ -14,6 +14,7 @@ use BergclubPlugin\Commands\Entities\Meldung;
 use BergclubPlugin\Commands\Entities\Tour;
 use BergclubPlugin\Commands\Entities\TourBericht;
 use BergclubPlugin\Commands\Entities\User;
+use BergclubPlugin\MVC\Models\Option;
 use BergclubPlugin\MVC\Models\Role;
 use BergclubPlugin\MVC\Models\User as ModelUser;
 use BergclubPlugin\Touren\MetaBoxes\Common;
@@ -86,10 +87,10 @@ class Import extends Init
         }
 
         // Check for touren
-        if (!isset($touren) || !isset($berichte)) {
-            \WP_CLI::warning('Input file has no touren, berichte... skipping');
+        if (!isset($touren) || !isset($berichte) || !isset($art) || !isset($schwierigkeit)) {
+            \WP_CLI::warning('Input file has no touren, berichte, art, schwierigkeit... skipping');
         } else {
-            $this->importTouren($touren, $berichte);
+            $this->importTouren($touren, $berichte, $art, $schwierigkeit);
         }
     }
 
@@ -129,7 +130,39 @@ class Import extends Init
         }
     }
 
-    function importTouren($touren, $berichte) {
+    private function prepareArt($art){
+        $tourenTypes = Option::get('tourenarten');
+        $result = [];
+        foreach($art as $item){
+            if(isset($item['id']) && isset($item['besch'])){
+                $bcbSlug = array_search($item['besch'], $tourenTypes);
+                if($bcbSlug) {
+                    $result[$item['id']] = $bcbSlug;
+                }
+            }
+        }
+        return $result;
+    }
+
+    private function prepareSchwierigkeit($schwierigkeit){
+        $result = [];
+        foreach($schwierigkeit as $item){
+            if(isset($item['id']) && isset($item['schwierigkeit'])){
+                if($item['schwierigkeit'] == 'keine Angaben'){
+                    $item['schwierigkeit'] = '';
+                }
+                $result[$item['id']] = $item['schwierigkeit'];
+            }
+        }
+        return $result;
+    }
+
+    function importTouren($touren, $berichte, $art, $schwierigkeit) {
+        $art = $this->prepareArt($art);
+        $schwierigkeit = $this->prepareSchwierigkeit($schwierigkeit);
+        $konditionell = ['', 'Leicht', 'Mittel', 'Schwierig'];
+
+
         \WP_CLI::log('Begin processing of touren');
         \WP_CLI::log('It has ' . count($touren) . ' Touren');
 
@@ -167,7 +200,7 @@ class Import extends Init
                         'post_status'       => 'publish',
                         'post_content'      => '-',
                         'post_type'         => 'touren',
-                        'post_date'         => $tourEntity->dateFrom,
+                        'post_date'         => date('Y-01-01', strtotime($tourEntity->dateFrom)),
                     ),
                     true
                 );
@@ -175,17 +208,42 @@ class Import extends Init
                     /** @var \WP_Error $generatedId */
                     \WP_CLI::warning('While creating tour ' . $tourEntity . ': ERROR: ' . $generatedId->get_error_message());
                 } else {
+                    if(isset($art[$tourEntity->type])){
+                        $tourEntity->type = $art[$tourEntity->type];
+                    }else{
+                        $tourEntity->type = '';
+                    }
+
+                    if(isset($schwierigkeit[$tourEntity->requirementsTechnical])){
+                        $tourEntity->requirementsTechnical = $schwierigkeit[$tourEntity->requirementsTechnical];
+                    }else{
+                        $tourEntity->requirementsTechnical = '';
+                    }
+
+                    if(isset($konditionell[$tourEntity->requirementsConditional])){
+                        $tourEntity->requirementConditional = $konditionell[$tourEntity->requirementsConditional];
+                    }else{
+                        $tourEntity->requirementsConditional = '';
+                    }
+
+
+
                     \WP_CLI::debug('generated tour with id ' . $generatedId);
                     $customFields = array(
-                        Common::DATE_FROM_IDENTIFIER    => $tourEntity->dateFrom,
-                        Common::DATE_TO_IDENTIFIER      => $tourEntity->dateTo,
-                        TourMetaBox::PROGRAM            => $tourEntity->program,
-                        TourMetaBox::COSTS              => $tourEntity->costs,
-                        TourMetaBox::COSTS_FOR          => $tourEntity->costsFor,
-                        TourMetaBox::EQUIPMENT          => $tourEntity->equiptment,
-                        TourMetaBox::RISE_UP_METERS     => $tourEntity->up,
-                        TourMetaBox::RISE_DOWN_METERS   => $tourEntity->down,
-                        TourMetaBox::ADDITIONAL_INFO    => $tourEntity->special,
+                        Common::DATE_FROM_IDENTIFIER            => $tourEntity->dateFrom,
+                        Common::DATE_TO_IDENTIFIER              => $tourEntity->dateTo,
+                        Common::DATE_FROM_DB                    => date('Y-m-d', strtotime($tourEntity->dateFrom)),
+                        Common::DATE_TO_DB                      => date('Y-m-d', strtotime($tourEntity->dateTo)),
+                        TourMetaBox::PROGRAM                    => $tourEntity->program,
+                        TourMetaBox::COSTS                      => $tourEntity->costs,
+                        TourMetaBox::COSTS_FOR                  => $tourEntity->costsFor,
+                        TourMetaBox::EQUIPMENT                  => $tourEntity->equiptment,
+                        TourMetaBox::RISE_UP_METERS             => $tourEntity->up,
+                        TourMetaBox::RISE_DOWN_METERS           => $tourEntity->down,
+                        TourMetaBox::ADDITIONAL_INFO            => $tourEntity->special,
+                        TourMetaBox::TYPE                       => $tourEntity->type,
+                        TourMetaBox::REQUIREMENTS_TECHNICAL     => $tourEntity->requirementsTechnical,
+                        TourMetaBox::REQUIREMENTS_CONDITIONAL   => $tourEntity->requirementsConditional,
                     );
 
                     foreach ($customFields as $key => $value) {
@@ -283,6 +341,7 @@ class Import extends Init
             if ($spouseId1 && $spouseId2) {
                 \WP_CLI::log("Marry " . $processedAddresses[$spouseId1]['entity'] . " and " . $processedAddresses[$spouseId2]['entity']);
                 $processedAddresses[$spouseId1]['model']->spouse = $processedAddresses[$spouseId2]['model'];
+                $processedAddresses[$spouseId1]['model']->main_address = true;
                 $processedAddresses[$spouseId2]['model']->spouse = $processedAddresses[$spouseId1]['model'];
                 if (!$this->noop) {
                     $processedAddresses[$spouseId1]['model']->save();

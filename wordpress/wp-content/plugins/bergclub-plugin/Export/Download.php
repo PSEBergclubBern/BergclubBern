@@ -45,10 +45,8 @@ class Download
     }
 
     private function downloadTouren(){
-        $status = $_GET['status'];
-        $from = date("Y-m-d", strtotime($_GET['from']));
-        $to = date("Y-m-d", strtotime($_GET['to']));
-
+        $data = $this->getTourenData($_GET['status'], $_GET['from'], $_GET['to']);
+        $this->downloadExcel('Touren', $data);
     }
 
     private function downloadCalendar(){
@@ -117,35 +115,45 @@ class Download
     private function getTourenData($status, $from, $to){
         $data = [];
 
-        //TODO: from/to filtern
         $posts = get_posts([
             'posts_per_page' => -1,
             'post_status' => $status,
             'post_type' => 'touren',
+            'order' => 'ASC',
+            'orderby' => '_dateFromDB',
+            'meta_query' => [
+                'relation' => 'AND',
+                [
+                    'key' => '_dateFromDB',
+                    'value' => date('Y-m-d', strtotime($from)),
+                    'type' => 'DATE',
+                    'compare' => '>='
+                ],
+                [
+                    'key' => '_dateFromDB',
+                    'value' => date('Y-m-d', strtotime($to)),
+                    'type' => 'DATE',
+                    'compare' => '<='
+                ],
+            ],
         ]);
 
         foreach($posts as $post){
-            $title = get_the_title($post);
-            $date_from = bcb_touren_meta($post->ID, "dateFrom");
-            $date_to =  bcb_touren_meta($post->ID, "dateTo");
-            $type = bcb_touren_meta($post->ID, "type");
-            $reqTechnical = bcb_touren_meta($post->ID, "requirementsTechnical");
-
-            if(!empty($date_from)) {
-                $item = [];
-                if (!empty($type)) {
-                    $item['type'] = $type;
-                    if (!empty($reqTechnical)) {
-                        $item['req_technical'] = $reqTechnical;
-                    }
-                }
-
-                if (bcb_touren_meta($post->ID, "isSeveralDays")) {
-                    $item['date_to'] = "bis " . date("d.m.", strtotime($date_to));
-                }
-
-                $data[date('Y-m-d', strtotime($date_from))][] = $title . " (" . join(', ', $item) .")";
-            }
+            $data[] = [
+                'Datum von' => bcb_touren_meta($post->ID, "dateFrom"),
+                'Datum bis' => bcb_touren_meta($post->ID, "dateTo"),
+                'Titel' => get_the_title($post),
+                'Art' => bcb_touren_meta($post->ID, "type"),
+                'Schwierigkeit' => bcb_touren_meta($post->ID, "requirementsTechnical"),
+                'Konditionell' => bcb_touren_meta($post->ID, "requirementsConditional"),
+                'Training' => bcb_touren_meta($post->ID, 'training'),
+                'J+S Event' => bcb_touren_meta($post->ID, 'jsEvent'),
+                'Aufstieg' => bcb_touren_meta($post->ID, 'riseUpMeters'),
+                'Abstieg' => bcb_touren_meta($post->ID, 'riseDownMeters'),
+                'Dauer' => bcb_touren_meta($post->ID, 'duration'),
+                'Leiter' => bcb_touren_meta($post->ID, 'leader'),
+                'Co-Leiter' => bcb_touren_meta($post->ID, 'coLeader'),
+            ];
         }
 
         return $data;
@@ -158,6 +166,23 @@ class Download
             'posts_per_page' => -1,
             'post_status' => 'publish',
             'post_type' => 'touren',
+            'order' => 'ASC',
+            'orderby' => '_dateFromDB',
+            'meta_query' => [
+                'relation' => 'AND',
+                [
+                    'key' => '_dateFromDB',
+                    'value' => $year . '-01-01',
+                    'type' => 'DATE',
+                    'compare' => '>='
+                ],
+                [
+                    'key' => '_dateToDB',
+                    'value' => $year . '-12-31',
+                    'type' => 'DATE',
+                    'compare' => '<='
+                ],
+            ],
         ]);
 
         foreach($posts as $post){
@@ -365,7 +390,7 @@ class Download
             $keys = array_keys($data[0]);
             foreach($keys as $index => $key){
                 $currentCol = chr($index + 65);
-                $excel->getActiveSheet()->setCellValue($currentCol.$currentRow, $key);
+                $excel->getActiveSheet()->setCellValue($currentCol.$currentRow, html_entity_decode($key));
             }
 
             $maxCol = $currentCol;
@@ -375,7 +400,7 @@ class Download
                 $currentRow++;
                 foreach($keys as $index => $key){
                     $currentCol = chr($index + 65);
-                    $excel->getActiveSheet()->setCellValue($currentCol.$currentRow, $row[$key]);
+                    $excel->getActiveSheet()->setCellValue($currentCol.$currentRow, html_entity_decode($row[$key]));
                 }
             }
 

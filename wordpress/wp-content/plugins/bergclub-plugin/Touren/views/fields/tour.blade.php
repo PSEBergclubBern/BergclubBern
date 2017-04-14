@@ -75,7 +75,7 @@
         </tr>
 
         <tr>
-            <th align="left">Dauer</th>
+            <th align="left">Dauer (ohne Pause)</th>
             <td>
                 <input type="text"
                        id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::DURATION }}"
