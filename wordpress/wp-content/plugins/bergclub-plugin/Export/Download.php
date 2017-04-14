@@ -144,6 +144,8 @@ class Download
                 'Datum von' => bcb_touren_meta($post->ID, "dateFrom"),
                 'Datum bis' => bcb_touren_meta($post->ID, "dateTo"),
                 'Titel' => get_the_title($post),
+                'Leiter' => bcb_touren_meta($post->ID, 'leader'),
+                'Co-Leiter' => bcb_touren_meta($post->ID, 'coLeader'),
                 'Art' => bcb_touren_meta($post->ID, "type"),
                 'Schwierigkeit' => bcb_touren_meta($post->ID, "requirementsTechnical"),
                 'Konditionell' => bcb_touren_meta($post->ID, "requirementsConditional"),
@@ -152,8 +154,9 @@ class Download
                 'Aufstieg' => bcb_touren_meta($post->ID, 'riseUpMeters'),
                 'Abstieg' => bcb_touren_meta($post->ID, 'riseDownMeters'),
                 'Dauer' => bcb_touren_meta($post->ID, 'duration'),
-                'Leiter' => bcb_touren_meta($post->ID, 'leader'),
-                'Co-Leiter' => bcb_touren_meta($post->ID, 'coLeader'),
+                'Treffpunkt' => bcb_touren_meta($post->ID, 'meetpoint'),
+                'Zeit' => bcb_touren_meta($post->ID, 'meetingpointTime'),
+                'Rückkehr' => bcb_touren_meta($post->ID, 'returnBack'),
             ];
         }
 
