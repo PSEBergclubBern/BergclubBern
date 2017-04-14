@@ -157,6 +157,10 @@ class Download
                 'Treffpunkt' => bcb_touren_meta($post->ID, 'meetpoint'),
                 'Zeit' => bcb_touren_meta($post->ID, 'meetingpointTime'),
                 'Rückkehr' => bcb_touren_meta($post->ID, 'returnBack'),
+                'Kosten' => bcb_touren_meta($post->ID, 'oosts'),
+                'Kosten für' => bcb_touren_meta($post->ID, 'costsFor'),
+                'Anmeldung bis' => bcb_touren_meta($post->ID, 'signupUntil'),
+                'Anmeldung an' => bcb_touren_meta($post->ID, 'signupTo'),
             ];
         }
 
@@ -393,7 +397,7 @@ class Download
             $currentCol = "A";
             $keys = array_keys($data[0]);
             foreach($keys as $index => $key){
-                $currentCol = chr($index + 65);
+                $currentCol = $this->getExcelColFromIndex($index);
                 $excel->getActiveSheet()->setCellValue($currentCol.$currentRow, html_entity_decode($key));
             }
 
@@ -403,7 +407,7 @@ class Download
             foreach($data as $row){
                 $currentRow++;
                 foreach($keys as $index => $key){
-                    $currentCol = chr($index + 65);
+                    $currentCol = $this->getExcelColFromIndex($index);
                     $excel->getActiveSheet()->setCellValue($currentCol.$currentRow, html_entity_decode($row[$key]));
                 }
             }
@@ -416,6 +420,16 @@ class Download
         $excel->getActiveSheet()->setTitle($name);
 
         $this->createExcelDownload($excel, $name);
+    }
+
+    private function getExcelColFromIndex($index){
+        $col = "";
+        if($index > 25){
+            $col = "A";
+            $index -= 26;
+        }
+        $col .= chr($index + 65);
+        return $col;
     }
 
     private function createExcelDownload(\PHPExcel $excel, $name){
