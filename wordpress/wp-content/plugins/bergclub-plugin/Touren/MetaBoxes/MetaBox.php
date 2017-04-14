@@ -78,6 +78,17 @@ abstract class MetaBox
         return array();
     }
 
+    /**
+     * this function will be called before the save function
+     * it has to return all values which are processed / filtered
+     *
+     * @param $values array of transmitted values
+     * @return array
+     */
+    protected function preSave($values) {
+        return $values;
+    }
+
     public function add()
     {
         $screens = [ BCB_CUSTOM_POST_TYPE_TOUREN ];
@@ -123,20 +134,21 @@ abstract class MetaBox
                     FlashMessage::add(FlashMessage::TYPE_ERROR, "Bitte geben sie einen Titel für diese Tour an.");
                 } else {
                     foreach (self::$registeredBoxes as $box) {
+                        $filteredValues = $this->preSave($_POST);
                         /* @var MetaBox $box */
                         foreach ($box->getUniqueFieldNames() as $fieldId) {
-                            if (array_key_exists($fieldId, $_POST)) {
+                            if (array_key_exists($fieldId, $filteredValues)) {
                                 \update_post_meta(
                                     $postId,
                                     $fieldId,
-                                    $_POST[$fieldId]
+                                    $filteredValues[$fieldId]
                                 );
                             }
                         }
                         //we don't want to validate a freshly created post (status: 'auto-draft')
                         if ($status != 'auto-draft') {
                             //IRGENDWO HIER MÜSST IHR EINE LÖSUNG FINDEN UM GEWISSE FELDER NUR ZU VALIDIEREN, WENN $status = 'pending' ODER 'publish'
-                            if (!$box->isValid($_POST, $status) ) {
+                            if (!$box->isValid($filteredValues, $status) ) {
                                 $valid = false;
                             }
                         }
@@ -201,14 +213,14 @@ abstract class MetaBox
 
     }
 
-	/**
-	 * @param $values
-	 *
+    /**
+     * Returns true if its a valid time
+     * @param $test
 	 * @return bool
-	 */
-	public function isValidTime( $test ): bool {
-		$match_duration_format = preg_match( "/^([01]?[0-9]|2[0-3])\:+[0-5][0-9]$/", $test ) === 1;
+     */
+    public function isValidTime( $test ): bool {
+        $match_duration_format = preg_match( "/^([01]?[0-9]|2[0-3])\:+[0-5][0-9]$/", $test ) === 1;
 
-		return $match_duration_format;
-	}
+        return $match_duration_format;
+    }
 }

@@ -14,6 +14,8 @@ use BergclubPlugin\FlashMessage;
 class Common extends MetaBox {
 	const DATE_FROM_IDENTIFIER = '_dateFrom';
 	const DATE_TO_IDENTIFIER = '_dateTo';
+	const DATE_FROM_DB = '_dateFromDB';
+	const DATE_TO_DB = '_dateToDB';
 	const LEADER = '_leader';
 	const CO_LEADER = '_coLeader';
 	const SIGNUP_UNTIL = '_signupUntil';
@@ -24,6 +26,8 @@ class Common extends MetaBox {
 		return array(
 			self::DATE_FROM_IDENTIFIER,
 			self::DATE_TO_IDENTIFIER,
+			self::DATE_FROM_DB,
+			self::DATE_TO_DB,
 			self::LEADER,
 			self::CO_LEADER,
 			self::SIGNUP_UNTIL,
@@ -32,8 +36,39 @@ class Common extends MetaBox {
 		);
 	}
 
+    /**
+     * Logic for saving the date in an sortable manner
+     *
+     * @param $values
+     * @return array
+     */
+    protected function preSave($values)
+    {
+        $values = parent::preSave($values);
 
-	protected function addAdditionalValuesForView() {
+        $values[self::DATE_FROM_DB] = null;
+        $values[self::DATE_TO_DB] = null;
+
+        if (array_key_exists(self::DATE_FROM_IDENTIFIER, $values) && !empty($values[self::DATE_FROM_IDENTIFIER])) {
+            $date_from = \DateTime::createFromFormat( "d.m.Y", $values[ self::DATE_FROM_IDENTIFIER ] );
+            if ($date_from !== false) {
+                $values[self::DATE_FROM_DB] = $date_from->format('Y-m-d');
+            }
+        }
+
+        $values[self::DATE_TO_DB] = null;
+        if (array_key_exists(self::DATE_TO_IDENTIFIER, $values) && !empty($values[self::DATE_TO_IDENTIFIER])) {
+            $date_to = \DateTime::createFromFormat( "d.m.Y", $values[ self::DATE_TO_IDENTIFIER ] );
+            if ($date_to !== false) {
+                $values[self::DATE_TO_DB] = $date_to->format('Y-m-d');
+            }
+        }
+
+        return $values;
+    }
+
+
+    protected function addAdditionalValuesForView() {
 		$roles = wp_get_current_user()->roles;
 		if ( in_array( 'bcb_leiter', $roles ) ) {
 			$leiter = array( wp_get_current_user() );
