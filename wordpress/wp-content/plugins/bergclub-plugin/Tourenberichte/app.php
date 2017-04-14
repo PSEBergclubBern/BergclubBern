@@ -89,7 +89,7 @@ add_action( 'init', 'bcb_register_my_tourenberichteverwaltung' );
 
 
 function bcb_create_new_metabox_context_tourenberichte( $post ) {
-    do_meta_boxes( null, 'bcb-metabox-holder', $post );
+    do_meta_boxes( null, 'bcb-metabox-holder-tourenberichte', $post );
 }
 
 add_action( 'edit_form_after_title', 'bcb_create_new_metabox_context_tourenberichte' );

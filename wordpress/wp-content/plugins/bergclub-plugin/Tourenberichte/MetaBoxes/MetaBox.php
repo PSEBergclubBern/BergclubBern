@@ -85,7 +85,7 @@ abstract class MetaBox
                 $this->getUniqueMetaBoxTitle(),
                 [$this, 'html'],
                 $screen,
-                'bcb-metabox-holder'
+                'bcb-metabox-holder-tourenberichte'
             );
         }
     }
