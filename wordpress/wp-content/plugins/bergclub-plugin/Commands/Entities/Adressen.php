@@ -128,6 +128,7 @@ class Adressen
             case Adressen::CATEGORY_EXIT:
                 return 'bcb_ehemalig';
             case Adressen::CATEGORY_EHEPAAR:
+                return null;
             case Adressen::CATEGORY_FREE:
                 // TODO: What to do?
                 return 'bcb_aktivmitglied';
