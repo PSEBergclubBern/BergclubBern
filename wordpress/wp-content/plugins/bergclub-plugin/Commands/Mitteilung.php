@@ -70,8 +70,6 @@ class Mitteilung extends Init
                 "--post_status='publish'"
             );
         }
-
-
     }
 
     /**

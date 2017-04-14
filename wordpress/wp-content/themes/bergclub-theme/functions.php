@@ -250,15 +250,6 @@ function bcb_register_custom_post_types() {
 
 add_action( 'init', 'bcb_register_custom_post_types' );
 
-
-function bcb_get_touren_type_by_slug($slug){
-    $tourenTypes = get_option('bcb_tourenarten');
-    if(isset($tourenTypes[$slug])) {
-        return $tourenTypes[$slug];
-    }
-    return "";
-}
-
 //include bootstrap navigation walker
 require_once('inc/wp_bootstrap_navwalker.php');
 

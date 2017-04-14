@@ -1,4 +1,6 @@
 <?php
+use BergclubPlugin\MVC\Models\Option;
+
 $mitgliederBeitraege = [
     'bcb' => [
         'name' => 'Mitgliederbeitrag BCB',
@@ -14,37 +16,47 @@ $mitgliederBeitraege = [
     ],
 ];
 
-add_option('bcb_mitgliederbeitraege', $mitgliederBeitraege, '', 'no');
-
-$keyBergtour = sanitize_title_with_dashes('bcb_bergtour');
-$keySkitour = sanitize_title_with_dashes('bcb_skitour');
-$keyWanderung = sanitize_title_with_dashes('bcb_wanderung');
+Option::set('mitgliederbeitraege', $mitgliederBeitraege);
 
 $tourenarten = [
-    $keyBergtour => 'Bergtour',
-    $keySkitour => 'Skitour',
-    $keyWanderung => 'Wanderung'
+    'bcb_bergtour' => 'Bergtour',
+    'bcb_skitour' => 'Skitour',
+    'bcb_langlauf' => 'Langlauf',
+    'bcb_klettertraining' => 'Klettertraining',
+    'bcb_velotour' => 'Velotour',
+    'bcb_hochtour' => 'Hochtour',
+    'bcb_pistenfahren' => 'Pistenfahren',
+    'bcb_schneeschuhwanderung' => 'Schneeschuhw.',
+    'bcb_klettertour' => 'Klettertour',
+    'bcb_diverses' => 'Diverses',
+    'bcb_wanderung' => 'Wanderung',
+    'bcb_klettersteig' => 'Klettersteig',
+    'bcb_hoehlentour' => 'Höhlentour',
+    'bcb_abendwanderung' => 'Abendwanderung',
 ];
 
-$schwierigkeitenBergtour = [
-    'Leicht',
-    'Mittel',
-    'Schwer'
+$schwierigkeiten = [
+    '',
+    'T1 (Wanderung)',
+    'T2 (Bergwandern)',
+    'T3 (Ansp. Bergwandern)',
+    'T4 (Alpinwanderung)',
+    'T5 (Ansp. Alpinwandern)',
+    'T6 (Schw. Alpinwandern)',
+    'K1 (sehr einfach)',
+    'K2 (einfach)',
+    'K3 (mässig schwierig)',
+    'K4 (schwierig)',
+    'K5 (sehr schwierig)',
+    'K6 (äusserst schwierig)',
+    'L (leicht)',
+    'WS (wenig schwierig)',
+    'ZS (ziemlich schwierig)',
+    'S (schwierig)',
 ];
 
-$schwierigkeitenSkitour = [
-    'Leicht',
-    'Mittel',
-    'Schwer'
-];
+Option::set('tourenarten', $tourenarten);
 
-$schwierigkeitenWandern = [
-    'Leicht',
-    'Mittel',
-    'Schwer'
-];
-
-add_option('bcb_tourenarten', $tourenarten, '', 'no');
-add_option($keyBergtour, $schwierigkeitenBergtour, '','no');
-add_option($keySkitour, $schwierigkeitenSkitour, '', 'no');
-add_option($keyWanderung, $schwierigkeitenWandern, '', 'no');
+foreach($tourenarten as $key => $tourenart){
+    Option::set($key, $schwierigkeiten);
+}

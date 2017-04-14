@@ -18,19 +18,12 @@ jQuery(document).ready(function($){
         updateMeetpoint();
     });
 
-    updateSignUpTo();
-    $('#_leader').change(function () {
-        updateSignUpTo();
-    });
-    $('#_coLeader').change(function () {
-        updateSignUpTo();
-    });
-
 
 });
 
 function updateMeetpoint() {
     var meetpointValue = jQuery('#_meetpoint').val();
+    console.log(meetpointValue);
     if (meetpointValue == 99) {
         jQuery('#_meetpointDifferent').parent().parent().show();
     } else {
@@ -53,32 +46,4 @@ function updateDifficultiesByTypes() {
             jQuery('#' + optGroupIds[i]).hide();
         }
     }
-}
-
-function updateSignUpTo() {
-    var leaderId = jQuery('#_leader').val();
-    var coLeaderId = jQuery('#_coLeader').val();
-
-    var leaderText = jQuery('#_leader option:selected').text();
-    var coLeaderText = jQuery('#_coLeader option:selected').text();
-
-    var selectedId =  jQuery('#_signupTo').val();
-
-    jQuery('#_signupTo')
-        .find('option')
-        .remove()
-        .end()
-    ;
-    jQuery('#_signupTo').append(jQuery('<option>', {
-        value: leaderId,
-        text: leaderText
-    }));
-    jQuery('#_signupTo').append(jQuery('<option>', {
-        value: coLeaderId,
-        text: coLeaderText
-    }));
-
-    jQuery('#_signupTo option').filter(function(){
-        return this.value === selectedId
-    }).prop('selected', true);
 }
