@@ -43,20 +43,15 @@ get_header() ?>
                                 'compare' => '>='
                             )
                         ));
-                        while ($query->have_posts()) : $query->the_post();
-                            $date_from = get_post_meta(get_the_ID(), "_dateFrom", true);
-                            $date_to =  get_post_meta(get_the_ID(), "_dateTo", true);
-                            $dateDisplay = date("d.m.", strtotime($date_from));
-                            if(!empty($date_to) && $date_to != $date_from){
-                                $dateDisplay .=" - " . date("d.m.", strtotime($date_to));
-                            }
-                            $type = get_post_meta(get_the_ID(), "_type", true);
-                            $reqTechnical = get_post_meta(get_the_ID(), "_requirementsTechnical", true);
-                            $typeDisplay = bcb_get_touren_type_by_slug($type) . ", " . $reqTechnical;
-                            $riseUpDisplay = get_post_meta(get_the_ID(), "_riseUpMeters", true);
-                            $riseDownDisplay = get_post_meta(get_the_ID(), "_riseDownMeters", true);
-                            $durationDisplay = get_post_meta(get_the_ID(), "_duration", true);
 
+                        while ($query->have_posts()) : $query->the_post();
+                            $dateDisplay = bcb_touren_meta(get_the_ID(), 'dateDisplayShort');
+                            $type = bcb_touren_meta(get_the_ID(), 'type');
+                            $reqTechnical = bcb_touren_meta(get_the_ID(), 'requirementsTechnical');
+                            $typeDisplay = bcb_touren_meta(get_the_ID(), 'type') . ", " . $reqTechnical;
+                            $riseUpDisplay = bcb_touren_meta(get_the_ID(), "riseUpMeters");
+                            $riseDownDisplay = bcb_touren_meta(get_the_ID(), "riseDownMeters");
+                            $durationDisplay = bcb_touren_meta(get_the_ID(), "duration");
                         ?>
                             <li class="list-group-item add-link">
                                 <div class="row">

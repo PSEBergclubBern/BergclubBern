@@ -8,6 +8,7 @@ bergclub-plugin
 ├── Tests
 ├── vendor
 ├── AssetHelper.php
+├── TourenHelper.php
 ├── bergclub-plugin.php
 ├── composer.json
 ├── FlashMessage.php
@@ -53,6 +54,52 @@ Wird der zweite Parameter nicht verwendet, muss die URL relativ zum `plugins` Ve
 ***Hinweis:** Bei Verwendung des MVC Pattern bitte den AssetHelper nur verwenden um Assets hinzuzufügen die auf allen
 Seiten verwendet werden sollen.*
 
+**TourenHelper.php**
+
+Die statischen methoden des TourenHelper werden über die Funktion `bcb_touren_meta` (in `bergclub-plugin.php`) zur
+Verfügung gestellt.
+
+Als Parameter wird die Post ID und der Meta Key (ohne führendes `_`) benötigt.
+
+Beispiel:
+```
+while ($query->have_posts()) : $query->the_post();
+    $dateFrom = bcb_touren_meta(get_the_ID(), 'dateFrom');
+    [...]
+}
+```
+
+Folgende Meta Keys stehen momentan zur Verfügung (Falls Eintrag nicht gefunden oder keine Zuordnung (id) vorgenommen werden kann, wird `null` zurückgeliefert)
+
+* `dateFrom`: Liefert das "Von" Datum im Format "d.m.Y"
+* `dateTo`: Liefert das "Bis" Datum im Format "d.m.Y" (falls vorhanden)
+* `dateDisplayShort`: Liefert das Datum im Format "d.m." (Eintägig) resp. "d.m. - d.m." (Mehrtägig)
+* `dateDisplayLong`: Liefert das Datum im Format "d.m.Y" (Eintägig) resp. "d.m.Y - d.m.Y" (Mehrtägig)
+* `isSeveralDays`: Liefert true, falls Mehrtägig, ansonsten false
+* `leader`: Liefert Name des Leiters (in DB ist user id gespeichert)
+* `coLeader`: Liefert Name des Co-Leiters (in DB ist user id gespeichert)
+* `signupUntil`: Liefert die Anmeldefrist im Format "d.m.Y"
+* `signupTo`: Liefert den "Anmeldung an" Wert mit Name, E-Mail und Telefonnummern als kommaseparierten String (in DB ist user id gespeichert)
+* `sleepOver`: Liefert die Angaben zur Übernachtung
+* `meetpoint`: Liefert den vordefinierten Treffpunkt (in DB ist id gespeichert), liefert "Anderer Treffpunkt" falls festgelegt.
+* `meetingPointTime`: Liefert die Zeit für den Treffpunkt im Format "G:i"
+* `returnBack`: Liefert die Informationen zur Rückkehr (Freies Textfeld: Zeit, "abends", etc.)
+* `food`: Liefert die Informationen zur Verpflegung.
+* `type`: Liefert die Tourenart (in DB ist slug gespeichert)
+* `requirementsTechnical`: Liefert die technischen Anforderungen (Abhängig von Tourenart)
+* `requirementsConditionsl`: Liefert die konditionellen Anforderungen (in DB ist id gespeichert)
+* `riseUpMeters`: Liefert die Höhenmeter (Aufstieg)
+* `riseDownMeters`: Liefert die Höhenmeter (Abstieg)
+* `duration`: Liefert die Gesamtzeit der Tour (ohne Pausen)
+* `additionalInfo`: Liefert das zusätzliche Informationen (Ersetzt `\n` durch `<br>`) 
+* `training`: Liefert Training (Ja/Nein)
+* `jsEvent`: Liefert J+S-Event (Ja/Nein)
+* `program`: Liefert das Programm (Ersetzt `\n` durch `<br>`)
+* `equipment`: Liefert die Angaben zur Ausrüstung (Ersetzt `\n` durch `<br>`)
+* `mapMaterial`: Liefert die Angaben zum benötigten Kartenmaterial
+* `onlineMap`: Liefert die URL zur Online-Karte
+* `costs`: Liefert die Kosten (Betrag ohne Währung)
+* `costsFor`: Liefert die Angaben wofür die Kosten sind
 
 **bergclub-plugin.php**
 
