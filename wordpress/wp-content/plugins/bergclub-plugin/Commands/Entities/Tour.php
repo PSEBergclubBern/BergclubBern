@@ -32,6 +32,8 @@ class Tour
     public $type;
     public $requirementsTechnical;
     public $requirementsConditional;
+    public $leader;
+    public $coLeader;
 
 
     /**
@@ -63,6 +65,8 @@ class Tour
         $this->type = $array['art_id'];
         $this->requirementsTechnical = $array['anf_t'];
         $this->requirementsConditional = $array['anf_k'];
+        $this->leader = $array['leiter_a'];
+        $this->coLeader = $array['leiter_b'];
     }
 
     public function __toString()
