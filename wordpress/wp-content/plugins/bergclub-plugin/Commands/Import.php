@@ -246,8 +246,6 @@ class Import extends Init
             \WP_CLI::log('Processing ' . $addressEntity);
             $model = new ModelUser($addressEntity->toArray());
             $model->addRole(Role::find($addressEntity->determinateRole()));
-            // generate history
-            $model->history = $this->generateHistories($addressEntity);
             if (!$this->noop) {
                 $model->save();
             }
@@ -357,91 +355,5 @@ class Import extends Init
         $addressEntity->sendProgram = empty($a['versenden']) || $a['versenden'] == 0 ? false : true;
 
         return $addressEntity;
-    }
-
-    /**
-     * generate history entry for user
-     *
-     * Example:
-     * <code>
-     * $history = [
-     *   'bcb_intressent' => [
-     *     'date_from' => '2016-10-04',
-     *     'date_to' => '2016-11-13',
-     *   ],
-     *   'bcb_aktivmitglied' => [
-     *     'date_from' => '2016-11-13',
-     *     'date_to' => null,
-     *   ],
-     *   'bcb_leiter' => [
-     *      'date_from' => '2017-03-26',
-     *      'date_to' => null,
-     *   ],
-     * ];
-     * @return array
-     */
-    private function generateHistories(Adressen $addressEntity) {
-        $histories = array();
-        if ($addressEntity->leaderFrom != null) {
-            $histories = array(
-                'bcb_leiter' => array(
-                    'date_from' => $addressEntity->leaderFrom
-                )
-            );
-            if (!$addressEntity->leader && $addressEntity->leaderTo != null) {
-                $histories['bcb_leiter']['date_to'] = $addressEntity->leaderTo;
-            }
-        }
-
-        if ($addressEntity->leaderYouthFrom != null) {
-            $histories = array(
-                'bcb_leiter_jugend' => array(
-                    'date_from' => $addressEntity->leaderYouthFrom
-                )
-            );
-            if (!$addressEntity->leaderYouth && $addressEntity->leaderYouthTo != null) {
-                $histories['bcb_leiter_jugend']['date_to'] = $addressEntity->leaderYouthTo;
-            }
-        }
-
-        if ($addressEntity->vorstandFrom != null) {
-            // try to find role
-            switch($addressEntity->vorstandDescription) {
-                case 'Sekretariat':
-                    $role = 'bcb_sekretariat';
-                    break;
-                case 'Tourenchef BCB':
-                    $role = 'bcb_tourenchef';
-                    break;
-                case 'Präsident':
-                    $role = 'bcb_praesident';
-                    break;
-                case 'Kasse':
-                    $role = 'bcb_kasse';
-                    break;
-                case 'Mutationen':
-                    $role = 'bcb_mutationen';
-                    break;
-                default:
-                    \WP_CLI::warning('Didnt find role ' . $addressEntity->vorstandDescription);
-            }
-            if (isset($role) && $role != null) {
-                $histories = array(
-                    $role => array(
-                        'date_from' => $addressEntity->vorstandFrom
-                    )
-                );
-                if (!$addressEntity->vorstand && $addressEntity->vorstandTo != null) {
-                    $histories[$role]['date_to'] = $addressEntity->vorstandTo;
-                }
-            }
-
-        }
-
-        if (count($histories) > 1) {
-            \WP_CLI::warning('History entry for user ' . $addressEntity . ' could have wrong ordering');
-        }
-
-        return $histories;
     }
 }
