@@ -146,3 +146,8 @@ function bcb_change_post_object() {
 
 add_action( 'admin_menu', 'bcb_change_post_label' );
 add_action( 'init', 'bcb_change_post_object' );
+
+function bcb_touren_meta($postId, $metaKey){
+    $method = "get" . strtoupper(substr($metaKey, 0, 1)) . substr($metaKey, 1);
+    return \BergclubPlugin\TourenHelper::$method($postId);
+}
