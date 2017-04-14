@@ -23,7 +23,7 @@ ip: 192.168.33.12
 #
 version: latest
 lang: de_CH
-title: Welcome to the VCCW
+title: Bergclub Bern
 multisite: false
 rewrite_structure: /archives/%post_id%
 
