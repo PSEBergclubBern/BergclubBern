@@ -408,19 +408,19 @@ class Import extends Init
             // try to find role
             switch($addressEntity->vorstandDescription) {
                 case 'Sekretariat':
-                    $role = 'sekretariat';
+                    $role = 'bcb_sekretariat';
                     break;
                 case 'Tourenchef BCB':
                     $role = 'bcb_tourenchef';
                     break;
                 case 'Präsident':
-                    $role = 'präsident';
+                    $role = 'bcb_praesident';
                     break;
                 case 'Kasse':
-                    $role = 'kasse';
+                    $role = 'bcb_kasse';
                     break;
                 case 'Mutationen':
-                    $role = 'mutationen';
+                    $role = 'bcb_mutationen';
                     break;
                 default:
                     \WP_CLI::warning('Didnt find role ' . $addressEntity->vorstandDescription);
