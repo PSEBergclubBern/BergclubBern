@@ -11,7 +11,7 @@ namespace BergclubPlugin\Tourenberichte\MetaBoxes;
 
 use BergclubPlugin\FlashMessage;
 
-class CommonTourenberichte extends MetaBoxTourenberichte {
+class Common extends MetaBox {
 	const TOUREN = '_touren';
 
 	public function getUniqueFieldNames() {
@@ -95,8 +95,8 @@ class CommonTourenberichte extends MetaBoxTourenberichte {
 	public function isValid($values, $posttype) {
 		$errors = array();
 		if ( array_key_exists( self::TOUREN, $values ) ) {
-            $chosenLeader = $values[self::TOUREN];
-			if ( $chosenLeader == "" ) {
+            $tour = $values[self::TOUREN];
+			if ( $tour == "" ) {
 				$errors[] = 'Tourenbericht muss sich auf eine publizierte Tour beziehen.';
 			}
 		}

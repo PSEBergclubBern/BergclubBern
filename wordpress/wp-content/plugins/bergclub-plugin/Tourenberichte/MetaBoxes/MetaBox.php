@@ -11,7 +11,7 @@ namespace BergclubPlugin\Tourenberichte\MetaBoxes;
 use BergclubPlugin\FlashMessage;
 use duncan3dc\Laravel\BladeInstance;
 
-abstract class MetaBoxTourenberichte
+abstract class MetaBox
 {
     private static $saveActionRegistered = false;
     private static $alreadyValidated = false;
@@ -24,7 +24,9 @@ abstract class MetaBoxTourenberichte
         if (!self::$saveActionRegistered){
             self::$saveActionRegistered = true;
             //we create a hook only for this specific post type
-            add_action('save_post_' . BCB_CUSTOM_POST_TYPE_Tourenberichte, [$this, 'save']);
+            if (function_exists('\add_action')) {
+                add_action('save_post_' . BCB_CUSTOM_POST_TYPE_TOURENBERICHTE, [$this, 'save']);
+            }
         }
     }
 
@@ -78,7 +80,7 @@ abstract class MetaBoxTourenberichte
 
     public function add()
     {
-        $screens = [ BCB_CUSTOM_POST_TYPE_Tourenberichte ];
+        $screens = [ BCB_CUSTOM_POST_TYPE_TOURENBERICHTE ];
         foreach ($screens as $screen) {
             \add_meta_box(
                 $this->getUniqueMetaBoxName(),
@@ -101,7 +103,7 @@ abstract class MetaBoxTourenberichte
                 self::$alreadyValidated = true;
 
                 //remove the save_post hook, otherwise we will get an endless loop when why update the post
-                remove_action('save_post_' . BCB_CUSTOM_POST_TYPE_Tourenberichte, [$this, 'save']);
+                remove_action('save_post_' . BCB_CUSTOM_POST_TYPE_TOURENBERICHTE, [$this, 'save']);
 
                 //register the redirect hook, which WP calls after this function
                 add_filter('redirect_post_location', [$this, 'redirectPostLocation'], 10, 2);
@@ -166,7 +168,7 @@ abstract class MetaBoxTourenberichte
             }
 
             // re-hook this function again
-            add_action('save_post_' . BCB_CUSTOM_POST_TYPE_Tourenberichte, [$this, 'save']);
+            add_action('save_post_' . BCB_CUSTOM_POST_TYPE_TOURENBERICHTE, [$this, 'save']);
         }
     }
 
@@ -178,7 +180,7 @@ abstract class MetaBoxTourenberichte
 
         //forward to touren overview when publish button was clicked and state really is 'publish'.
         if(isset($_POST['publish']) && $status == 'publish'){
-            $location = admin_url( "edit.php?post_type=" . BCB_CUSTOM_POST_TYPE_Tourenberichte );
+            $location = admin_url( "edit.php?post_type=" . BCB_CUSTOM_POST_TYPE_TOURENBERICHTE );
         }
 
         return $location;

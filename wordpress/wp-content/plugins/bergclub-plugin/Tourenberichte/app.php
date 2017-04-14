@@ -6,15 +6,14 @@
  * Time: 10:09
  */
 
-define("BCB_CUSTOM_POST_TYPE_Tourenberichte", "tourenberichte");
+define("BCB_CUSTOM_POST_TYPE_TOURENBERICHTE", "tourenberichte");
 
 $metaBoxes = array(
-    new \BergclubPlugin\Tourenberichte\MetaBoxes\CommonTourenberichte(),
+    new \BergclubPlugin\Tourenberichte\MetaBoxes\Common(),
 );
 
 foreach ($metaBoxes as $metaBox) {
     add_action('add_meta_boxes', [$metaBox, 'add']);
-    add_action('save_post', [$metaBox, 'save']);
 }
 
 add_action('admin_notices', function() { echo \BergclubPlugin\FlashMessage::show(); } );
@@ -82,7 +81,7 @@ function bcb_register_my_tourenberichteverwaltung() {
         "menu_position" => 5, //below Posts according to https://codex.wordpress.org/Function_Reference/register_post_type,
     );
 
-    register_post_type( BCB_CUSTOM_POST_TYPE_Tourenberichte, $args );
+    register_post_type( BCB_CUSTOM_POST_TYPE_TOURENBERICHTE, $args );
 }
 
 add_action( 'init', 'bcb_register_my_tourenberichteverwaltung' );
