@@ -10,7 +10,6 @@ $metaBoxes = array(
 
 foreach ($metaBoxes as $metaBox) {
     add_action('add_meta_boxes', [$metaBox, 'add']);
-    add_action('save_post', [$metaBox, 'save']);
 }
 
 add_action('admin_notices', function() { echo \BergclubPlugin\FlashMessage::show(); } );
