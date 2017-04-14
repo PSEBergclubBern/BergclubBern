@@ -72,7 +72,21 @@ class Tour extends MetaBox {
 		return 'Tourdaten';
 	}
 
-	public function isValid($values, $posttype) {
+    protected function preSave($values)
+    {
+        $values = parent::preSave($values);
+
+        if (array_key_exists(self::COSTS, $values) && !empty($values[self::COSTS])) {
+            if (is_numeric($values[self::COSTS])) {
+                $values[self::COSTS] = number_format($values[self::COSTS], 2, '.', '');
+            }
+        }
+
+        return $values;
+    }
+
+
+    public function isValid($values, $posttype) {
 		$errors = array();
 
         if ($posttype != "draft") {
@@ -90,8 +104,8 @@ class Tour extends MetaBox {
             }
 
             if (array_key_exists(self::COSTS, $values)) {
-                if (!preg_match('/^-?[0-9]+(?:\.[0-9]{1,2})?$/', $values[self::COSTS]) && !preg_match('/^-?[0-9]+(?:\,[0-9]{1,2})?$/', $values[self::COSTS])) {
-                    $errors[] = '"Kosten (CHF)" muss das Format #(#*).## oder #(#*),## haben';
+                if (!is_numeric($values[self::COSTS])) {
+                    $errors[] = '"Kosten CHF" muss im Format 0.00 angegeben werden.';
                 }
             }
 
