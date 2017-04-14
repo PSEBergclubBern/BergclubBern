@@ -343,6 +343,7 @@ class User implements IModel
         foreach($this->data as $key => $value){
             if($key == 'email'){
                 $value = sanitize_email($value);
+                wp_update_user(['ID' => $this->main['ID'], 'user_email' => $value]);
             }else{
                 $value = sanitize_text_field($value);
             }
