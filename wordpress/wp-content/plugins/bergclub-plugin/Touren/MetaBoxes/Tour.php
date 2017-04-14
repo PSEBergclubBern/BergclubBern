@@ -77,6 +77,8 @@ class Tour extends MetaBox {
         $values = parent::preSave($values);
 
         if (array_key_exists(self::COSTS, $values) && !empty($values[self::COSTS])) {
+            // replace all commas with dots
+            $values[self::COSTS] = str_replace(',', '.', $values[self::COSTS]);
             if (is_numeric($values[self::COSTS])) {
                 $values[self::COSTS] = number_format($values[self::COSTS], 2, '.', '');
             }
@@ -104,6 +106,8 @@ class Tour extends MetaBox {
             }
 
             if (array_key_exists(self::COSTS, $values)) {
+                // replace all commas with dots
+                $values[self::COSTS] = str_replace(',', '.', $values[self::COSTS]);
                 if (!is_numeric($values[self::COSTS])) {
                     $errors[] = '"Kosten CHF" muss im Format 0.00 angegeben werden.';
                 }
