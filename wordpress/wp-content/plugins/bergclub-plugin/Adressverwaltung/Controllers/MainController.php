@@ -32,6 +32,7 @@ class MainController extends AbstractController
             }
 
             if($user) {
+
                 if($this->view == 'pages.detail') {
                     $this->data['title'] = $user->last_name . ' ' . $user->first_name;
                     $this->data['spouse'] = $user->spouse;
@@ -39,6 +40,30 @@ class MainController extends AbstractController
                     $this->data['title'] = "Neuer Eintrag";
                 }
                 if(($this->data['tab'] == 'data' && $this->data['edit']) || $this->view == 'pages.new'){
+
+                    /** delete spouse */
+                    $action = $this->getGet('action', '');
+                    if ( $action == 'deleteSpouse' ){
+                        $spouse = $user->spouse;
+
+                        if ( $spouse != null ){
+
+                            $user->unsetSpouse();
+
+                            $spouse->unsetSpouse();
+
+                            FlashMessage::add(Flashmessage::TYPE_SUCCESS, 'Ehepartner/in erfolgreich gelöscht.');
+                            Helpers::redirect( '?page=' . $_GET['page'] . '&view=detail&tab=data&id=' . $_GET['id'] . '&edit=1' );
+
+                        } else {
+
+                            FlashMessage::add(Flashmessage::TYPE_ERROR, 'Für diesen Benutzer ist kein/e Ehepartner/in erfasst.');
+                            Helpers::redirect( '?page=' . $_GET['page'] . '&view=detail&tab=data&id=' . $_GET['id'] . '&edit=1' );
+
+                        }
+
+                    }
+
                     $this->data['address_roles'] = Role::findByType(Role::TYPE_ADDRESS);
                     $this->data['spouse'] = $user->spouse;
 
@@ -334,12 +359,14 @@ class MainController extends AbstractController
             $user = $this->data['user'];
             $spouse = User::find($spouseId);
 
-            $user->spouse = $spouse ;
+            $user->spouse = $spouse;
+            $user->main_address = true;
 
             $this->data['user'] = $user;
             $user->save();
 
             $spouse->spouse = $user;
+            $user->main_address = false;
             $spouse->save();
 
             FlashMessage::add(Flashmessage::TYPE_SUCCESS, 'Ehepartner/in erfolgreich gespeichert.');
