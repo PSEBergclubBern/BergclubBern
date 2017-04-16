@@ -2,9 +2,10 @@
 
 @section('content')
     <h2 class="nav-tab-wrapper">
-            <a href="?page={{ $_GET['page'] }}&view=main&tab=tab1" class="nav-tab @if($tab=='tab1') nav-tab-active @endif ">Tab1</a>
-            <a href="?page={{ $_GET['page'] }}&view=main&tab=tab2" class="nav-tab @if($tab=='tab2') nav-tab-active @endif ">Tab2</a>
-            <a href="?page={{ $_GET['page'] }}&view=detail&tab=tab3" class="nav-tab @if($tab=='tab3') nav-tab-active @endif ">Tab3</a>
+            <a href="?page={{ $_GET['page'] }}&view=main&tab=nofeedback" class="nav-tab @if($tab=='nofeedback') nav-tab-active @endif ">Keine Rückmeldung</a>
+            <a href="?page={{ $_GET['page'] }}&view=main&tab=feedback" class="nav-tab @if($tab=='feedback') nav-tab-active @endif ">Erfasst</a>
+            <a href="?page={{ $_GET['page'] }}&view=detail&tab=approved" class="nav-tab @if($tab=='approved') nav-tab-active @endif ">Freigegeben</a>
+            <a href="?page={{ $_GET['page'] }}&view=detail&tab=paid" class="nav-tab @if($tab=='paid') nav-tab-active @endif ">Ausbezahlt</a>
     </h2>
     <div class="container">
         @include($tab_file)
