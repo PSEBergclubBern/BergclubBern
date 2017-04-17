@@ -86,7 +86,7 @@ class MainController extends AbstractController
             $toursToDisplay = null;
 
             foreach ($this->tours as $tour) {
-                if (!($tour['hasFeedback'] || $tour['approved'] || $tour['paid'] || $tour['deleted'])) {
+                if ( !( $tour['hasFeedback'] ) && !( $tour['approved'] ) && !( $tour['paid'] ) && !( $tour['deleted'] ) ) {
                     $tour['dateFrom'] = bcb_touren_meta($tour['id'], 'dateFrom');
                     $toursToDisplay[] = $tour;
                 }
