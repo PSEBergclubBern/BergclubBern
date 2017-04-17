@@ -48,6 +48,10 @@ class MainController extends AbstractController
 
     protected function post(){
 
+        if($method = $this->getTabMethod('post')) {
+            $this->$method();
+        }
+
     }
 
     protected function last(){
@@ -105,6 +109,25 @@ class MainController extends AbstractController
 
 
     }
+
+    private function postNofeedback(){
+
+        if ( isset( $_GET[ 'id' ] ) ) {
+            $id = $_GET['id'];
+            $tour = $this->getTour( $id );
+
+            $tour['coLeader'] = $_POST['coLeader'];
+            $tour['hasFeedback'] = true;
+
+
+            $this->updateTour( $tour );
+
+            Helpers::redirect( '?page=' . $_GET['page'] . '&tab=nofeedback' );
+
+        }
+
+    }
+
 
     private function updateTourList( $tourList ){
 
@@ -184,6 +207,15 @@ class MainController extends AbstractController
                 return $tour;
             }
             return null;
+        }
+    }
+
+    private function updateTour( $updatedTour ){
+        foreach( $this->tours as $tour ){
+            if ( $tour['id'] == $updatedTour['id'] ){
+                array_splice( $this->tours, $tour, 1 );
+                $this->tours[] = $updatedTour;
+            }
         }
     }
 

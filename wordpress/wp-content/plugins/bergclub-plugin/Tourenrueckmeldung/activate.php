@@ -35,6 +35,7 @@ foreach ( $posts as $post ){
         'shortReport' => null,
         'flatCharge' => null,
         'tour' => null,
+        'isSeveralDays' => bcb_touren_meta( $post->ID, 'isSeveralDays' ),
         'sleepOver' => null,
         'payment' => null,
         'inFavor' => null,
