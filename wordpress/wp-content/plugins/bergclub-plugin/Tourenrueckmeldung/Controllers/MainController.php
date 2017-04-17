@@ -131,6 +131,10 @@ class MainController extends AbstractController
 
     private function updateTourList( $tourList ){
 
+        if(!is_array($tourList)){
+            $tourList = [];
+        }
+
         $allTours = get_posts([
             'posts_per_page' => -1,
             'post_status' => 'publish',
@@ -151,14 +155,9 @@ class MainController extends AbstractController
 
             $id = $tour->ID;
 
-            $isInArray = false;
-            foreach( $tourList as $existingTour )
-                if( $id == $existingTour['id'] ) {
-                    $isInArray = true;
-                }
-
-            $tourList[] = $this->addElementToTourList( $tour );
-
+            if(!isset($tourList[$id])) {
+                $tourList[$id] = $this->addElementToTourList($tour);
+            }
         }
 
         return $tourList;
@@ -169,6 +168,7 @@ class MainController extends AbstractController
             'id' => $post->ID,
             'leader' => bcb_touren_meta( $post->ID, 'leader' ),
             'title' => get_the_title( $post ),
+            'isSeveralDays' => bcb_touren_meta( $post->ID, 'isSeveralDays'),
             'coLeader' => null,
             'externLeader' => null,
             'participants' => null,
@@ -202,21 +202,15 @@ class MainController extends AbstractController
     }
 
     private function getTour( $id ){
-        foreach( $this->tours as $tour ){
-            if ( $tour['id'] == $id ){
-                return $tour;
-            }
-            return null;
+        if(isset($this->tours[$id])){
+            return $this->tours[$id];
         }
+        return null;
     }
 
     private function updateTour( $updatedTour ){
-        foreach( $this->tours as $tour ){
-            if ( $tour['id'] == $updatedTour['id'] ){
-                array_splice( $this->tours, $tour, 1 );
-                $this->tours[] = $updatedTour;
-            }
-        }
+        $this->tours[$updatedTour['id']] = $updatedTour;
+        Option::set('bcb_tourenrueckmeldung', $this->tours);
     }
 
 }
