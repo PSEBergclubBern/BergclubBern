@@ -1,4 +1,4 @@
-<table id="tours">
+<table id="tours" class="stripe responsive no-link-underline">
 
     <thead>
     <tr>

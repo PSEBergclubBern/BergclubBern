@@ -5,7 +5,6 @@ namespace BergclubPlugin\Tourenrueckmeldung\Controllers;
 use BergclubPlugin\FlashMessage;
 use BergclubPlugin\MVC\AbstractController;
 use BergclubPlugin\MVC\Helpers;
-use BergclubPlugin\MVC\Models\Role;
 use BergclubPlugin\MVC\Models\User;
 use BergclubPlugin\MVC\Models\Option;
 
@@ -117,17 +116,6 @@ class MainController extends AbstractController
             $this->data[ 'edit' ] = true;
             $tour = $this->getTour( $id );
 
-            if ( $tour ){
-
-                // prepare multiline fields
-                $tour['externLeader'] = $this->splitMultilineStringInArray( $tour['externLeader'] );
-                $tour['participants'] = $this->splitMultilineStringInArray( $tour['participants'] );
-                $tour['externParticipants'] = $this->splitMultilineStringInArray( $tour['externParticipants'] );
-
-                // same for all other multiline fields? => adapt blade
-
-            }
-
             $this->data[ 'tour' ] = $tour;
 
         } else {
@@ -154,50 +142,33 @@ class MainController extends AbstractController
             $id = $_GET['id'];
             $tour = $this->getTour( $id );
 
-            $tour['coLeader'] = $_POST['coLeader'];
-            $tour['externLeader'] = $_POST['externLeader'];
-            $tour['participants'] = $_POST['participants'];
-            $tour['externParticipants'] = $_POST['externParticipants'];
-            $tour['executed'] = $this->translateStringToBoolean( $_POST['executed'] );
+            if ( $tour ){
 
-            $tour['programDivergence'] = $_POST['programDivergence'];
-            $tour['shortReport'] = $_POST['shortReport'];
-            $tour['flatCharge'] = $_POST['flatCharge'];
-            $tour['tour'] = $_POST['tour'];
+                $tour = $this->updateRueckmeldungFromPost( $tour, $_POST );
 
-            if ( $tour['isSeveralDays'] ) {
-                $tour['sleepOver'] = $_POST['sleepOver'];
-            }
+                $tour['hasFeedback'] = true;
 
-            $tour['payment'] = $_POST['payment'];
-            $tour['inFavor'] = $_POST['inFavor'];
-            $tour['iban'] = $_POST['iban'];
-            $tour['hasFeedback'] = true;
+                $this->updateTour( $tour );
 
-            // calculate number of participants
-            $tour['numberOfParticipants'] = 1;
-
-            if ( $tour['coLeader'] ){
-                $tour['numberOfParticipants']++;
-            }
-
-            $tour['numberOfParticipants'] = $tour['numberOfParticipants'] + count(explode("\n", $tour['externLeader']));
-            $tour['numberOfParticipants'] = $tour['numberOfParticipants'] + count(explode("\n", $tour['participants']));
-            $tour['numberOfParticipants'] = $tour['numberOfParticipants'] + count(explode("\n", $tour['externParticipants']));
-
-            $this->updateTour( $tour );
-
-            // send email
-            $tourenchefs = User::findByRole( 'bcb_tourenchef' );
-            foreach( $tourenchefs as $tourenchef ){
-                $email = $tourenchef->email;
-                $message = 'Es wurde eine neue Tourenrückmeldung erfasst zur Tour "' . $tour['title'] . '"!';
-                if ( $email ){
-                    wp_mail( $email, 'Es wurde eine neue Tourenrückmeldung erfasst', $message, '', null );
+                // send email
+                $tourenchefs = User::findByRole( 'bcb_tourenchef' );
+                foreach( $tourenchefs as $tourenchef ){
+                    $email = $tourenchef->email;
+                    $message = 'Es wurde eine neue Tourenrückmeldung erfasst zur Tour "' . $tour['title'] . '"!';
+                    if ( $email ){
+                        wp_mail( $email, 'Es wurde eine neue Tourenrückmeldung erfasst', $message, '', null );
+                    }
                 }
+
+                FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Tourrückmeldung erfolgreich erfasst.');
+
+
+            } else {
+
+                FlashMessage::add(FlashMessage::TYPE_ERROR, 'Die Tour mit der Id "' . $id . '" konnte nicht gefunden werden. Speichern fehlgeschlagen!');
+
             }
 
-            FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Tourrückmeldung erfolgreich erfasst.');
             Helpers::redirect( '?page=' . $_GET['page'] . '&tab=nofeedback' );
 
         }
@@ -206,55 +177,36 @@ class MainController extends AbstractController
 
     private function postFeedback(){
 
-        //check if tour exists
-
         if ( isset( $_GET[ 'id' ] ) ) {
             $id = $_GET['id'];
             $tour = $this->getTour( $id );
 
-            $tour['coLeader'] = $_POST['coLeader'];
-            $tour['externLeader'] = $_POST['externLeader'];
-            $tour['participants'] = $_POST['participants'];
-            $tour['externParticipants'] = $_POST['externParticipants'];
-            $tour['executed'] = $this->translateStringToBoolean( $_POST['executed'] );
-            $tour['programDivergence'] = $_POST['programDivergence'];
-            $tour['shortReport'] = $_POST['shortReport'];
-            $tour['flatCharge'] = $_POST['flatCharge'];
-            $tour['tour'] = $_POST['tour'];
+            if ( $tour ){
 
-            if ( $tour['isSeveralDays'] ) {
-                $tour['sleepOver'] = $_POST['sleepOver'];
-            }
+                $tour = $this->updateRueckmeldungFromPost( $tour, $_POST );
 
-            $tour['payment'] = $_POST['payment'];
-            $tour['inFavor'] = $_POST['inFavor'];
-            $tour['iban'] = $_POST['iban'];
-            $tour['approved'] = true;
+                $tour['approved'] = true;
 
-            // calculate number of participants
-            $tour['numberOfParticipants'] = 1;
+                $this->updateTour( $tour );
 
-            if ( $tour['coLeader'] ){
-                $tour['numberOfParticipants']++;
-            }
-
-            $tour['numberOfParticipants'] = $tour['numberOfParticipants'] + count(explode("\n", $tour['externLeader']));
-            $tour['numberOfParticipants'] = $tour['numberOfParticipants'] + count(explode("\n", $tour['participants']));
-            $tour['numberOfParticipants'] = $tour['numberOfParticipants'] + count(explode("\n", $tour['externParticipants']));
-
-            $this->updateTour( $tour );
-
-            // send email
-            $kassiers = User::findByRole( 'bcb_kasse' );
-            foreach( $kassiers as $kassier ){
-                $email = $kassier->email;
-                $message = 'Es wurde eine neue Tourenrückmeldung freigegeben zur Tour "' . $tour['title'] . '"!';
-                if ( $email ){
-                    wp_mail( $email, 'Es wurde eine neue Tourenrückmeldung freigegeben', $message, '', null );
+                // send email
+                $kassiers = User::findByRole( 'bcb_kasse' );
+                foreach( $kassiers as $kassier ){
+                    $email = $kassier->email;
+                    $message = 'Es wurde eine neue Tourenrückmeldung freigegeben zur Tour "' . $tour['title'] . '"!';
+                    if ( $email ){
+                        wp_mail( $email, 'Es wurde eine neue Tourenrückmeldung freigegeben', $message, '', null );
+                    }
                 }
+
+                FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Tourrückmeldung erfolgreich freigegeben.');
+
+            } else {
+
+                FlashMessage::add(FlashMessage::TYPE_ERROR, 'Die Tour mit der Id "' . $id . '" konnte nicht gefunden werden. Speichern fehlgeschlagen!');
+
             }
 
-            FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Tourrückmeldung erfolgreich freigegeben.');
             Helpers::redirect( '?page=' . $_GET['page'] . '&tab=feedback' );
 
         }
@@ -378,9 +330,39 @@ class MainController extends AbstractController
         return false;
     }
 
-    private function splitMultilineStringInArray( $string ){
-        return explode( "\n", $string );
-    }
+    private function updateRueckmeldungFromPost( $tour, $postVars ){
 
+        $tour['coLeader'] = $postVars['coLeader'];
+        $tour['externLeader'] = $postVars['externLeader'];
+        $tour['participants'] = $postVars['participants'];
+        $tour['externParticipants'] = $postVars['externParticipants'];
+        $tour['executed'] = $this->translateStringToBoolean( $postVars['executed'] );
+        $tour['programDivergence'] = $postVars['programDivergence'];
+        $tour['shortReport'] = $postVars['shortReport'];
+        $tour['flatCharge'] = $postVars['flatCharge'];
+        $tour['tour'] = $postVars['tour'];
+
+        if ( $tour['isSeveralDays'] ) {
+            $tour['sleepOver'] = $postVars['sleepOver'];
+        }
+
+        $tour['payment'] = $postVars['payment'];
+        $tour['inFavor'] = $postVars['inFavor'];
+        $tour['iban'] = $postVars['iban'];
+
+
+        // calculate number of participants
+        $tour['numberOfParticipants'] = 1;
+
+        if ( $tour['coLeader'] ){
+            $tour['numberOfParticipants']++;
+        }
+
+        $tour['numberOfParticipants'] = $tour['numberOfParticipants'] + count(explode("\n", $tour['externLeader']));
+        $tour['numberOfParticipants'] = $tour['numberOfParticipants'] + count(explode("\n", $tour['participants']));
+        $tour['numberOfParticipants'] = $tour['numberOfParticipants'] + count(explode("\n", $tour['externParticipants']));
+
+        return $tour;
+    }
 
 }
