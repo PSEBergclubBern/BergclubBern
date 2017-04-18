@@ -25,7 +25,7 @@ class TourenHelper
     public static function getDateTo($postId){
         $dateFrom = self::getDate(self::getMeta($postId, 'dateFrom'));
         $dateTo = self::getDate(self::getMeta($postId, 'dateTo'));
-        return $dateFrom != $dateTo ? $dateFrom : null;
+        return $dateFrom != $dateTo ? $dateTo : null;
     }
 
     public static function getDateDisplayShort($postId){
