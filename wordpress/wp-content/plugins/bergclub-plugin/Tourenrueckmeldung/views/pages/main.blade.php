@@ -5,7 +5,6 @@
             <a href="?page={{ $_GET['page'] }}&view=main&tab=nofeedback" class="nav-tab @if($tab=='nofeedback') nav-tab-active @endif ">Keine Rückmeldung</a>
             <a href="?page={{ $_GET['page'] }}&view=main&tab=feedback" class="nav-tab @if($tab=='feedback') nav-tab-active @endif ">Erfasst</a>
             <a href="?page={{ $_GET['page'] }}&view=detail&tab=approved" class="nav-tab @if($tab=='approved') nav-tab-active @endif ">Freigegeben</a>
-            <a href="?page={{ $_GET['page'] }}&view=detail&tab=paid" class="nav-tab @if($tab=='paid') nav-tab-active @endif ">Ausbezahlt</a>
     </h2>
     <div class="container">
         @include($tab_file)

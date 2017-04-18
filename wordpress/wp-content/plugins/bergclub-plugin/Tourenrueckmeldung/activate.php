@@ -44,7 +44,6 @@ foreach ( $posts as $post ){
         'hasFeedback' => false,
         'approved' => false,
         'paid' => false,
-        'deleted' => false,
     ];
 
 }

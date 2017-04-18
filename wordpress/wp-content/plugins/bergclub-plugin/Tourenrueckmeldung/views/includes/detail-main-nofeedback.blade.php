@@ -9,7 +9,7 @@
                 <tr><td>Co-Leiter</td><td><input type="text" id="coLeader" name="coLeader" /></td></tr>
                 <tr><td>Externe Tourenleiter</td><td><textarea id="externLeader" name="externLeader" cols="40" rows="4"></textarea></td></tr>
                 <tr><td>Teilnehmer BCB</td><td><textarea id="participants" name="participants" cols="40" rows="4"></textarea></td></tr>
-                <tr><td>Externe Tourenleiter</td><td><textarea id="externParticipants" name="externParticipants" cols="40" rows="4"></textarea></td></tr>
+                <tr><td>Externe Teilnehmer</td><td><textarea id="externParticipants" name="externParticipants" cols="40" rows="4"></textarea></td></tr>
 
                 <tr>
                     <td>Durchgeführt:</td>
