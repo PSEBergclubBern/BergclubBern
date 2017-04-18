@@ -118,19 +118,14 @@ class MainController extends AbstractController
             $tour = $this->getTour( $id );
 
             if ( $tour ){
-                $externLeaders = $tour['externLeader'];
-                $externLeaders = explode( "\n", $externLeaders );
-                $tour['externLeader'] = $externLeaders;
 
-                $participants = $tour['participants'];
-                $participants = explode( "\n", $participants );
-                $tour['participants'] = $participants;
+                // prepare multiline fields
+                $tour['externLeader'] = $this->splitMultilineStringInArray( $tour['externLeader'] );
+                $tour['participants'] = $this->splitMultilineStringInArray( $tour['participants'] );
+                $tour['externParticipants'] = $this->splitMultilineStringInArray( $tour['externParticipants'] );
 
-                $externParticipants = $tour['externParticipants'];
-                $externParticipants = explode( "\n", $externParticipants );
-                $tour['externParticipants'] = $externParticipants;
+                // same for all other multiline fields? => adapt blade
 
-                // same for Einzahlung für und Zugunsten von
             }
 
             $this->data[ 'tour' ] = $tour;
@@ -163,7 +158,8 @@ class MainController extends AbstractController
             $tour['externLeader'] = $_POST['externLeader'];
             $tour['participants'] = $_POST['participants'];
             $tour['externParticipants'] = $_POST['externParticipants'];
-            $tour['executed'] = $_POST['executed'];
+            $tour['executed'] = $this->translateStringToBoolean( $_POST['executed'] );
+
             $tour['programDivergence'] = $_POST['programDivergence'];
             $tour['shortReport'] = $_POST['shortReport'];
             $tour['flatCharge'] = $_POST['flatCharge'];
@@ -220,7 +216,7 @@ class MainController extends AbstractController
             $tour['externLeader'] = $_POST['externLeader'];
             $tour['participants'] = $_POST['participants'];
             $tour['externParticipants'] = $_POST['externParticipants'];
-            $tour['executed'] = $_POST['executed'];
+            $tour['executed'] = $this->translateStringToBoolean( $_POST['executed'] );
             $tour['programDivergence'] = $_POST['programDivergence'];
             $tour['shortReport'] = $_POST['shortReport'];
             $tour['flatCharge'] = $_POST['flatCharge'];
@@ -272,11 +268,20 @@ class MainController extends AbstractController
             $id = $_GET['id'];
             $tour = $this->getTour($id);
 
-            $tour['paid'] = true;
+            if ( $tour ){
 
-            $this->updateTour( $tour );
+                $tour['paid'] = true;
 
-            FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Tourrückmeldung erfolgreich bezahlt.');
+                $this->updateTour( $tour );
+
+                FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Tourrückmeldung erfolgreich bezahlt.');
+
+            } else {
+
+                FlashMessage::add(FlashMessage::TYPE_ERROR, 'Die Tourenrückmeldung konnte nicht auf bezahlt gesetzt werden, weil die Tour mit der ID "' . $id . '" nicht gefunden werden konnte."');
+
+            }
+
             Helpers::redirect( '?page=' . $_GET['page'] . '&tab=approved' );
 
         }
@@ -365,5 +370,17 @@ class MainController extends AbstractController
         $this->tours[$updatedTour['id']] = $updatedTour;
         Option::set('bcb_tourenrueckmeldung', $this->tours);
     }
+
+    private function translateStringToBoolean( $value ){
+        if ( $value == 'true' ){
+            return true;
+        }
+        return false;
+    }
+
+    private function splitMultilineStringInArray( $string ){
+        return explode( "\n", $string );
+    }
+
 
 }
