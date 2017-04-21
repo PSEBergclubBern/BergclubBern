@@ -14,13 +14,20 @@
                 @if($tab=='history' || !$edit)
                     <a href="?page={{ $_GET['page'] }}&view=detail&tab=history&id={{ $_GET['id'] }}" class="nav-tab @if($tab=='history') nav-tab-active @endif ">Historie</a>
                 @endif
+                @if($tab=='spouse' )
+                        <a href="?page={{ $_GET['page'] }}&view=detail&tab=spouse&id={{ $_GET['id'] }}" class="nav-tab @if($tab=='spouse') nav-tab-active @endif ">Ehepartner zuweisen</a>
+                @endif
             </h2>
             <div class="container">
                 @include($tab_file)
                 <div class="action-buttons">
                     @if($edit)
                         <input type="submit" class="button-primary" value="Speichern"/>
-                        <a class="button-secondary" href="?page={{ $_GET['page'] }}&view={{ $_GET['view'] }}&tab={{ $tab }}&id={{ $_GET['id'] }}">Abbrechen</a>
+                        @if ( $tab=='spouse')
+                            <a class="button-secondary" href="?page={{ $_GET['page'] }}&view={{ $_GET['view'] }}&tab=data&id={{ $_GET['id'] }}&edit=1">Abbrechen</a>
+                        @else
+                            <a class="button-secondary" href="?page={{ $_GET['page'] }}&view={{ $_GET['view'] }}&tab={{ $tab }}&id={{ $_GET['id'] }}">Abbrechen</a>
+                        @endif
                     @elseif($showEdit)
                         <a class="button-primary" href="?page={{ $_GET['page'] }}&view={{ $_GET['view'] }}&tab={{ $tab }}&id={{ $_GET['id'] }}&edit=1">Bearbeiten</a>
                     @endif

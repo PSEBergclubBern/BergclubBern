@@ -34,6 +34,10 @@ $role = new Role(Role::TYPE_ADDRESS, 'ehemalig', 'Ehemalig');
 $role->addCapability('read', false);
 $role->save();
 
+$role = new Role(Role::TYPE_ADDRESS, 'freimitglied', 'Freimitglied');
+$role->addCapability('read', false);
+$role->save();
+
 /**
  * Load array with Functionary roles and assigned capabilities.
  */
