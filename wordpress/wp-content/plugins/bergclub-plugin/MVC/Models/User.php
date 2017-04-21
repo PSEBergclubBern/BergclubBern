@@ -58,6 +58,7 @@ class User implements IModel
         'email' => null,
         'birthdate' => null,
         'comments' => null,
+        'main_address' => null,
     ];
 
     /**
@@ -72,7 +73,7 @@ class User implements IModel
     private $deletedRoles = [];
 
     /**
-     * @var User $spouse
+     * @var int $spouse
      */
     private $spouse;
 
@@ -113,6 +114,13 @@ class User implements IModel
         'sekretariat',
     ];
 
+    private static $mitgliederRoles = [
+        'bcb_aktivmitglied',
+        'bcb_aktivmitglied_jugend',
+        'bcb_ehrenmitglied',
+        'bcb_freimitglied',
+    ];
+
     private static $erweiterterVorstandRoles = [
         'bcb_materialchef',
         'bcb_materialchef_jugend',
@@ -150,6 +158,18 @@ class User implements IModel
         return self::find(get_current_user_id(), true);
     }
 
+    public static function findAllWithoutSpouse(){
+        $users = User::findAll();
+        foreach($users as $key => $user){
+            /* @var User user */
+            if($user->spouse && !$user->main_address){
+                unset($users[$key]);
+            }
+        }
+
+        return array_values($users);
+    }
+
     /**
      * Finds all User. uses {@link [Role::find][Role::find]} to generate the Role objects.
      *
@@ -169,6 +189,22 @@ class User implements IModel
             return strcmp($a->last_name.' '.$a->first_name, $b->last_name.' '.$b->first_name);
         });
         return $users;
+    }
+
+    public static function findMitgliederWithoutSpouse(){
+        $users = User::findMitglieder();
+        foreach($users as $key => $user){
+            /* @var User user */
+            if($user->spouse && !$user->main_address){
+                unset($users[$key]);
+            }
+        }
+
+        return array_values($users);
+    }
+
+    public static function findMitglieder(){
+        return self::findByRoles(self::$mitgliederRoles);
     }
 
     public static function findVorstand(){
@@ -213,6 +249,23 @@ class User implements IModel
         return $membersByRole;
     }
 
+    private static function findByRoles(array $roleList){
+        $result = [];
+        $membersByRole = [];
+        foreach($roleList as $itemRole){
+            $role = Role::find($itemRole);
+            if($role){
+                $item = ['title' => $role->getName(), 'users' => []];
+                $users = self::findByRole($itemRole);
+                foreach($users as $user){
+                    /* @var User $user */
+                    $result[$user->ID] = $user;
+                }
+            }
+        }
+        return array_values($result);
+    }
+
     public static function findByRole($role){
         $role = Helpers::ensureKeyHasPrefix($role);
         $result = get_users(['role' => $role]);
@@ -245,7 +298,11 @@ class User implements IModel
                 if($key == 'history') {
                     $arr[0] = unserialize($arr[0]);
                 }
-                $user->__set($key, $arr[0]);
+                if($key == 'spouse'){
+                    $user->__set('spouseId', $arr[0]);
+                }else {
+                    $user->__set($key, $arr[0]);
+                }
             }
 
             foreach($item->roles as $wpRole){
@@ -280,6 +337,9 @@ class User implements IModel
 
         if(!$this->main['ID']) {
             $main = $this->main;
+            if($this->hasFunctionaryRole()) {
+                $main['user_email'] = $this->data['email'];
+            }
             array_map('sanitize_text_field', $main);
             $this->main['ID'] = wp_insert_user($main);
         }
@@ -287,10 +347,20 @@ class User implements IModel
         foreach($this->data as $key => $value){
             if($key == 'email'){
                 $value = sanitize_email($value);
+                if($this->hasFunctionaryRole()) {
+                    wp_update_user(['ID' => $this->main['ID'], 'user_email' => $value]);
+
+                }else{
+                    wp_update_user(['ID' => $this->main['ID'], 'user_email' => null]);
+                }
             }else{
                 $value = sanitize_text_field($value);
             }
             update_user_meta($this->main['ID'], $key, $value);
+        }
+
+        if($this->spouse) {
+            update_user_meta($this->main['ID'], 'spouse', $this->spouse);
         }
 
         update_user_meta($this->main['ID'], 'history', $this->historie);
@@ -326,6 +396,7 @@ class User implements IModel
         $this->main = [];
         $this->data = [];
         $this->roles = [];
+        $this->spouse = null;
     }
 
     /**
@@ -539,7 +610,14 @@ class User implements IModel
      */
     private function getSpouse()
     {
-        return $this->spouse;
+        if(!empty($this->spouse)){
+            $spouse = User::find($this->spouse);
+            if($spouse){
+                return $spouse;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -550,8 +628,9 @@ class User implements IModel
      */
     private function getSpouseName()
     {
-        if($this->spouse) {
-            return $this->spouse->last_name . ' ' . $this->spouse->first_name;
+        $spouse = $this->getSpouse();
+        if($spouse) {
+            return $spouse->last_name . ' ' . $spouse->first_name;
         }
 
         return '';
@@ -567,8 +646,21 @@ class User implements IModel
     private function setSpouse(User $spouse)
     {
         if($this != $spouse) {
-            $this->spouse = $spouse;
+            $this->spouse = $spouse->ID;
         }
+    }
+
+    private function setSpouseId($spouseId)
+    {
+        if(is_numeric($spouseId)) {
+            $this->spouse = $spouseId;
+        }
+    }
+
+    public function unsetSpouse(){
+        $this->spouse = null;
+        $this->data['main_address'] = null;
+        update_user_meta($this->main['ID'], 'spouse', $this->spouse);
     }
 
     /**

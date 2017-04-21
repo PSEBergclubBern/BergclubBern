@@ -27,7 +27,10 @@ if (!$category) {
 //set 'mitteilungen' as default category
 Option::set('default_category', get_category_by_slug('mitteilungen')->term_id);
 
-//creates WP pages from given array
+/**
+ * Creates the pages from the given array
+ * @param $pages (json decoded array from data/pages.json)
+ */
 function bcb_create_pages($pages)
 {
     foreach ($pages as $slug => $page) {
@@ -48,6 +51,17 @@ function bcb_create_pages($pages)
 $pages = json_decode(file_get_contents(__DIR__ . '/data/pages.json'), true);
 bcb_create_pages($pages);
 
+/**
+ * Creates a front-end menu entry from the given values.
+ * @param int $menuId id of the menu place in theme.
+ * @param int $parentId id of the parent menu. If greater than zero it will be a sub entry for the given parent otherwise
+ * it will be a main menu entry
+ * @param string $slug the slug for the menu entry, will become a style sheet class
+ * @param string $title the title (display name) for the menu entry
+ * @param int $position a position value (used for ordering the menu entries)
+ * @param array $itemArgs needed arguments (see bcb_menu_args and bcb_create_menu)
+ * @return int|WP_Error
+ */
 function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, array $itemArgs){
     $page = $itemArgs['page'];
     $category = $itemArgs['category'];
@@ -88,7 +102,12 @@ function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, arra
     return wp_update_nav_menu_item($menuId, 0, $args);
 }
 
-function bcb_menu_args($menuItem){
+/**
+ * Creates the array needed for $itemArgs parameter of bcb_create_menu_item
+ * @param array $menuItem the menu item which is extracted from data/menu.json
+ * @return array An array which can be used as $itemArgs parameter for bcb_create_menu_item
+ */
+function bcb_menu_args(array $menuItem){
     $page = null;
     $category = null;
     $type = null;
@@ -104,7 +123,11 @@ function bcb_menu_args($menuItem){
     return ['page' => $page, 'category' => $category, 'type' => $type];
 }
 
-function bcb_create_menu($menu){
+/**
+ * Creates the front-end menu
+ * @param array $menu the array which is extracted and json decoded from data/menu.json
+ */
+function bcb_create_menu(array $menu){
     //delete menu if exists
     wp_delete_nav_menu('header-navigation');
 
@@ -126,5 +149,10 @@ function bcb_create_menu($menu){
     }
 }
 
+//creating the front-end menu
 $menu = json_decode(file_get_contents(__DIR__ . '/data/menu.json'), true);
 bcb_create_menu($menu);
+
+//load background images information from data/background-images.json and set the WP Option.
+$backgroundImages = json_decode(file_get_contents(__DIR__ . '/data/background-images.json'), true);
+Option::set('background_images', $backgroundImages);

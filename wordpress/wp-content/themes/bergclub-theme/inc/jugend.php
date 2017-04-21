@@ -89,7 +89,11 @@ function bcb_add_jugend_to_url($url, $onlyIfJugend = false){
     return $url;
 }
 
-add_filter( 'the_permalink', 'bcb_add_jugend_to_url', 10, 1 );
+function bcb_permalink($url){
+    return bcb_add_jugend_to_url($url, true);
+}
+
+add_filter( 'the_permalink', 'bcb_permalink', 10, 1 );
 
 /**
  * Ensures that the menu has jugend urls if the current visited page is a jugend page.

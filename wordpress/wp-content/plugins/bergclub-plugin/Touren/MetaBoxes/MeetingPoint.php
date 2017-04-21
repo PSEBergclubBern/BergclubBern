@@ -48,30 +48,45 @@ class MeetingPoint extends MetaBox {
 		return 'Treffpunkt';
 	}
 
-	public function isValid( $values ) {
+	public function isValid($values, $posttype) {
 		$errors = array();
 
-		if ( array_key_exists( self::TIME, $values ) ) {
-			$match_format = $this->isValidTime( $values[ self::TIME ] );
-			if ( $match_format === false ) {
-				$errors[] = '"Treffpunkt Zeit" muss in einem dieser Formate angegeben werden: HH:MM, H:MM';
-			}
-		}
-		if ( array_key_exists( self::MEETPOINT, $values ) ) {
-			$value = $values[ self::MEETPOINT ];
-			if ( strcmp( $value, "Anderes" ) === 0 ) {
-				if ( ! array_key_exists( self::MEETPOINT_DIFFERENT, $values ) ) {
-					$errors[] = 'Wenn als Treffpunkt "Anderes" ausgewählt wurde, muss auch ein alternativer Treffpunkt angegeben werden';
-				}
-			}
-		}
-		if ( array_key_exists( self::MEETPOINT_DIFFERENT, $values ) ) {
-			if ( ! array_key_exists( self::MEETPOINT, $values ) ) {
-				$errors[] = 'Ein alternativer Treffpunkt kann nur ausgewählt werden, wenn als Treffpunkt "Anderes" ausgewählt wurde';
-			} elseif ( ! strcmp( $values[ self::MEETPOINT ], "Anderes" ) === 0 ) {
-				$errors[] = 'Ein alternativer Treffpunkt kann nur ausgewählt werden, wenn als Treffpunkt "Anderes" ausgewählt wurde';
-			}
-		}
+        if ($posttype != "draft") {
+            if (array_key_exists(self::TIME, $values)) {
+                $match_format = $this->isValidTime($values[self::TIME]);
+                if ($match_format === false) {
+                    $errors[] = '"Treffpunkt Zeit" muss in einem dieser Formate angegeben werden: HH:MM, H:MM';
+                }
+            }
+            if (array_key_exists(self::MEETPOINT, $values)) {
+                $value = $values[self::MEETPOINT];
+
+                if ($value == 99) {
+                    if (!array_key_exists(self::MEETPOINT_DIFFERENT, $values) || empty($values[self::MEETPOINT_DIFFERENT])) {
+                        $errors[] = 'Wenn als Treffpunkt "Anderes" ausgewählt wurde, muss auch ein alternativer Treffpunkt angegeben werden';
+                    }
+                }
+            }
+            if (array_key_exists(self::MEETPOINT_DIFFERENT, $values)) {
+                if (!array_key_exists(self::MEETPOINT, $values)) {
+                    $errors[] = 'Ein alternativer Treffpunkt kann nur ausgewählt werden, wenn als Treffpunkt "Anderes" ausgewählt wurde';
+                } elseif ( ! strcmp( $values[ self::MEETPOINT ], "Anderes" ) === 0 ) {
+                    $errors[] = 'Ein alternativer Treffpunkt kann nur ausgewählt werden, wenn als Treffpunkt "Anderes" ausgewählt wurde';
+                }
+            }
+
+            if (array_key_exists(self::MEETPOINT, $values) && empty($values[self::MEETPOINT])) {
+                $errors[] = '"Treffpunkt" darf nicht leer sein';
+            }
+
+            if (array_key_exists(self::RETURNBACK, $values) && empty($values[self::RETURNBACK])) {
+                $errors[] = '"Rückkehr (Bern an)" darf nicht leer sein';
+            }
+
+            if (array_key_exists(self::FOOD, $values) && empty($values[self::FOOD])) {
+                $errors[] = '"Verpflegung" darf nicht leer sein';
+            }
+        }
 
 		foreach ( $errors as $errorMsg ) {
 			FlashMessage::add( FlashMessage::TYPE_ERROR, $errorMsg );
