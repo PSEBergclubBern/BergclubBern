@@ -17,6 +17,7 @@ class Common extends MetaBox {
 	const DATE_TO_IDENTIFIER = '_dateTo';
 	const DATE_FROM_DB = '_dateFromDB';
 	const DATE_TO_DB = '_dateToDB';
+	const IS_ADULT_OR_YOUTH = '_isYouth';
 	const LEADER = '_leader';
 	const CO_LEADER = '_coLeader';
 	const SIGNUP_UNTIL = '_signupUntil';
@@ -29,6 +30,7 @@ class Common extends MetaBox {
 			self::DATE_TO_IDENTIFIER,
 			self::DATE_FROM_DB,
 			self::DATE_TO_DB,
+            self::IS_ADULT_OR_YOUTH,
 			self::LEADER,
 			self::CO_LEADER,
 			self::SIGNUP_UNTIL,
@@ -86,6 +88,7 @@ class Common extends MetaBox {
 			'leiter'   => $leiter,
 			'coLeiter' => array_merge(array($object), User::findMitglieder()),
 			'signUpTo' => array_merge(get_users( array( 'role' => 'bcb_leiter' ) ), User::findMitglieder()),
+            'events'   => array(0 => 'BCB', 1 => 'BCB Jugend', 2 => 'Beides'),
 		);
 	}
 

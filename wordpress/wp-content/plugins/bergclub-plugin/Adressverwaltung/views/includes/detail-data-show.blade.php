@@ -100,8 +100,8 @@
     </tr>
     @if($user->spouse)
         <tr>
-            <td>Geburtsdatum:</td>
-            <td>{{ $user->spouse_display }}</td>
+            <td>Ehepartner:</td>
+            <td>{{ $user->spouse->first_name }} {{ $user->spouse->last_name }}</td>
         </tr>
     @endif
     @if($user->comments)

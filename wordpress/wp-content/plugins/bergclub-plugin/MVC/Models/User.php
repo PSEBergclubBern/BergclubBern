@@ -657,6 +657,12 @@ class User implements IModel
         }
     }
 
+    public function unsetSpouse(){
+        $this->spouse = null;
+        $this->data['main_address'] = null;
+        update_user_meta($this->main['ID'], 'spouse', $this->spouse);
+    }
+
     /**
      * Returns the leaving reason according to the constant value (LEAVING_REASON_X, where X is the saved value for
      * leaving reason).
