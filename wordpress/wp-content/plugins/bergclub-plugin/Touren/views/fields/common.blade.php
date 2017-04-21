@@ -21,6 +21,21 @@
             </td>
         </tr>
         <tr>
+            <th align="left">BCB / BCB Jugend Tour</th>
+            <td>
+                <select id="{{ \BergclubPlugin\Touren\MetaBoxes\Common::IS_ADULT_OR_YOUTH }}"
+                        name="{{ \BergclubPlugin\Touren\MetaBoxes\Common::IS_ADULT_OR_YOUTH }}">
+                    @foreach($events as $key => $event)
+                        @if($key == $values[\BergclubPlugin\Touren\MetaBoxes\Common::IS_ADULT_OR_YOUTH])
+                            <option selected="selected" value="{{ $key }}">{{ $event }}</option>
+                        @else
+                            <option value="{{ $key }}">{{ $event }}</option>
+                        @endif
+                    @endforeach
+                </select>
+            </td>
+        </tr>
+        <tr>
             <th align="left">Leiter</th>
             <td>
                 <select id="{{ \BergclubPlugin\Touren\MetaBoxes\Common::LEADER }}"
