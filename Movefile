@@ -18,7 +18,7 @@ local:
   #   languages: "wp-content/languages"
 
 production:
-  vhost: "http://bergclub.ch.paragon.sui-inter.net"
+  vhost: "http://bergclub-test.ch"
   wordpress_path: "/httpdocs" # use an absolute path here
 
   database:

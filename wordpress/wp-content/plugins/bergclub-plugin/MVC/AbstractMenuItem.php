@@ -87,4 +87,9 @@ abstract class AbstractMenuItem
     {
         return $this->assets;
     }
+
+    public function getUrl()
+    {
+        return get_admin_url() . '?page=' . Helpers::getSlug($this->controller);
+    }
 }

@@ -10,10 +10,14 @@ namespace BergclubPlugin\Touren\MetaBoxes;
 
 
 use BergclubPlugin\FlashMessage;
+use BergclubPlugin\MVC\Models\User;
 
 class Common extends MetaBox {
 	const DATE_FROM_IDENTIFIER = '_dateFrom';
 	const DATE_TO_IDENTIFIER = '_dateTo';
+	const DATE_FROM_DB = '_dateFromDB';
+	const DATE_TO_DB = '_dateToDB';
+	const IS_ADULT_OR_YOUTH = '_isYouth';
 	const LEADER = '_leader';
 	const CO_LEADER = '_coLeader';
 	const SIGNUP_UNTIL = '_signupUntil';
@@ -24,6 +28,9 @@ class Common extends MetaBox {
 		return array(
 			self::DATE_FROM_IDENTIFIER,
 			self::DATE_TO_IDENTIFIER,
+			self::DATE_FROM_DB,
+			self::DATE_TO_DB,
+            self::IS_ADULT_OR_YOUTH,
 			self::LEADER,
 			self::CO_LEADER,
 			self::SIGNUP_UNTIL,
@@ -32,19 +39,56 @@ class Common extends MetaBox {
 		);
 	}
 
+    /**
+     * Logic for saving the date in an sortable manner
+     *
+     * @param $values
+     * @return array
+     */
+    protected function preSave($values)
+    {
+        $values = parent::preSave($values);
 
-	protected function addAdditionalValuesForView() {
+        $values[self::DATE_FROM_DB] = null;
+        $values[self::DATE_TO_DB] = null;
+
+        if (array_key_exists(self::DATE_FROM_IDENTIFIER, $values) && !empty($values[self::DATE_FROM_IDENTIFIER])) {
+            $date_from = \DateTime::createFromFormat( "d.m.Y", $values[ self::DATE_FROM_IDENTIFIER ] );
+            if ($date_from !== false) {
+                $values[self::DATE_FROM_DB] = $date_from->format('Y-m-d');
+            }
+        }
+
+        $values[self::DATE_TO_DB] = null;
+        if (array_key_exists(self::DATE_TO_IDENTIFIER, $values) && !empty($values[self::DATE_TO_IDENTIFIER])) {
+            $date_to = \DateTime::createFromFormat( "d.m.Y", $values[ self::DATE_TO_IDENTIFIER ] );
+            if ($date_to !== false) {
+                $values[self::DATE_TO_DB] = $date_to->format('Y-m-d');
+            }
+        }
+
+        return $values;
+    }
+
+
+    protected function addAdditionalValuesForView() {
 		$roles = wp_get_current_user()->roles;
-		if ( in_array( 'bcb_leiter', $roles ) ) {
+		if ( in_array( 'bcb_leiter', $roles ) && !in_array('bcb_tourenchef', $roles) && !in_array('bcb_redaktion', $roles) ) {
 			$leiter = array( wp_get_current_user() );
 		} else {
 			$leiter = get_users( array( 'role' => 'bcb_leiter' ) );
 		}
 
-		return array(
+        $object = new \stdClass();
+        $object->ID = 0;
+        $object->first_name = '';
+        $object->last_name = '';
+
+        return array(
 			'leiter'   => $leiter,
-			'coLeiter' => get_users(),
-			'signUpTo' => get_users(),
+			'coLeiter' => array_merge(array($object), User::findMitglieder()),
+			'signUpTo' => array_merge(get_users( array( 'role' => 'bcb_leiter' ) ), User::findMitglieder()),
+            'events'   => array(0 => 'BCB', 1 => 'BCB Jugend', 2 => 'Beides'),
 		);
 	}
 
@@ -83,7 +127,7 @@ class Common extends MetaBox {
                             $errors[] = '"Datum bis" muss nach "Datum von" sein.';
                         } elseif ($date_to > $date_from) {
                             if (!array_key_exists(self::SLEEPOVER, $values) || empty($values[self::SLEEPOVER])) {
-                                $errors[] = 'Mehrtägige Touren müssen eine Übernachtung beinhalten';
+                                $errors[] = 'Bei mehrtägigen Touren muss das Feld "Übernachtung" ausgefüllt werden.';
                             }
                         } elseif ($date_to = $date_from) {
                             if (!array_key_exists(self::SLEEPOVER, $values) || !empty($values[self::SLEEPOVER])) {

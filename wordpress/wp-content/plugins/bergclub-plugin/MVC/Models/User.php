@@ -158,6 +158,18 @@ class User implements IModel
         return self::find(get_current_user_id(), true);
     }
 
+    public static function findAllWithoutSpouse(){
+        $users = User::findAll();
+        foreach($users as $key => $user){
+            /* @var User user */
+            if($user->spouse && !$user->main_address){
+                unset($users[$key]);
+            }
+        }
+
+        return array_values($users);
+    }
+
     /**
      * Finds all User. uses {@link [Role::find][Role::find]} to generate the Role objects.
      *
@@ -177,6 +189,18 @@ class User implements IModel
             return strcmp($a->last_name.' '.$a->first_name, $b->last_name.' '.$b->first_name);
         });
         return $users;
+    }
+
+    public static function findMitgliederWithoutSpouse(){
+        $users = User::findMitglieder();
+        foreach($users as $key => $user){
+            /* @var User user */
+            if($user->spouse && !$user->main_address){
+                unset($users[$key]);
+            }
+        }
+
+        return array_values($users);
     }
 
     public static function findMitglieder(){
@@ -313,6 +337,9 @@ class User implements IModel
 
         if(!$this->main['ID']) {
             $main = $this->main;
+            if($this->hasFunctionaryRole()) {
+                $main['user_email'] = $this->data['email'];
+            }
             array_map('sanitize_text_field', $main);
             $this->main['ID'] = wp_insert_user($main);
         }
@@ -320,6 +347,12 @@ class User implements IModel
         foreach($this->data as $key => $value){
             if($key == 'email'){
                 $value = sanitize_email($value);
+                if($this->hasFunctionaryRole()) {
+                    wp_update_user(['ID' => $this->main['ID'], 'user_email' => $value]);
+
+                }else{
+                    wp_update_user(['ID' => $this->main['ID'], 'user_email' => null]);
+                }
             }else{
                 $value = sanitize_text_field($value);
             }

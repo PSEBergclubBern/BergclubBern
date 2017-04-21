@@ -1,11 +1,15 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: PC
+ * Date: 17.03.2017
+ * Time: 10:09
+ */
 
-define("BCB_CUSTOM_POST_TYPE_TOUREN", "touren");
+define("BCB_CUSTOM_POST_TYPE_TOURENBERICHTE", "tourenberichte");
 
 $metaBoxes = array(
-    new \BergclubPlugin\Touren\MetaBoxes\Common(),
-    new \BergclubPlugin\Touren\MetaBoxes\MeetingPoint(),
-    new \BergclubPlugin\Touren\MetaBoxes\Tour(),
+    new \BergclubPlugin\Tourenberichte\MetaBoxes\Common(),
 );
 
 foreach ($metaBoxes as $metaBox) {
@@ -35,8 +39,8 @@ add_action('admin_enqueue_scripts', function() {
 });
 
 
-function bcb_create_new_metabox_context( $post ) {
-    do_meta_boxes( null, 'bcb-metabox-holder', $post );
+function bcb_create_new_metabox_context_tourenberichte( $post ) {
+    do_meta_boxes( null, 'bcb-metabox-holder-tourenberichte', $post );
 }
 
-add_action( 'edit_form_after_title', 'bcb_create_new_metabox_context' );
+add_action( 'edit_form_after_title', 'bcb_create_new_metabox_context_tourenberichte' );
