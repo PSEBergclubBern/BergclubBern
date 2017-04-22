@@ -123,6 +123,10 @@ class Tour extends MetaBox {
                 $errors[] = '"Abstieg Höhenmeter" darf nicht leer sein';
             }
 
+            if (array_key_exists(self::DISTANCE, $values) && empty($values[self::DISTANCE])) {
+                $errors[] = '"Distanz (km)" darf nicht leer sein';
+            }
+
             if (array_key_exists(self::EQUIPMENT, $values) && empty($values[self::EQUIPMENT])) {
                 $errors[] = '"Ausrüstung" darf nicht leer sein';
             }
