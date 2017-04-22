@@ -206,3 +206,10 @@ function add_additional_info_to_title( $title, $id = null ) {
 }
 //adds the filter for the title
 add_filter( 'the_title', 'add_additional_info_to_title', 10, 2 );
+
+function bcb_get_user_full_name($id) {
+    $firstName = get_user_meta($id, "first_name", true);
+    $lastName = get_user_meta($id, "last_name", true);
+    $fullName = $firstName . " " . $lastName;
+    return $fullName;
+}

@@ -8,10 +8,10 @@ get_header(); ?>
         <?php if ( have_posts() ){ ?>
             <div class="container-fluid grid-table hide-links row-hover">
                 <div class="row row-header hidden-xs">
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         Datum
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         Art
                     </div>
                     <div class="col-sm-1">
@@ -19,9 +19,6 @@ get_header(); ?>
                     </div>
                     <div class="col-sm-6">
                         Titel
-                    </div>
-                    <div class="col-sm-2">
-                        Autor
                     </div>
                 </div>
                 <?php
@@ -40,20 +37,22 @@ get_header(); ?>
                     $date_from = get_post_meta(get_the_ID(), "_dateFrom", true);
                     $date_to =  get_post_meta(get_the_ID(), "_dateTo", true);
                     if(!empty($date_to) && $date_to != $date_from){
-                        $dateDisplay = date("d.m.", strtotime($date_from)) . " - " . date("d.m.y", strtotime($date_to));
+                        $dateDisplay = date("d.m.", strtotime($date_from)) . "-" . date("d.m.y", strtotime($date_to));
                     } else {
                         $dateDisplay = date("d.m.y", strtotime($date_from));
                     }
-                    $type = get_post_meta(get_the_ID(), "_type", true);
+                    $typeDisplay = bcb_touren_meta(get_the_ID(), "type");
                     $reqTechnical = get_post_meta(get_the_ID(), "_requirementsTechnical", true);
-                    $typeDisplay = bcb_get_touren_type_by_slug($type) . ", " . $reqTechnical;
+                    if(!empty($reqTechnical)) {
+                        $typeDisplay .= ", " . $reqTechnical;
+                    }
                     $durationDisplay = get_post_meta(get_the_ID(), "_duration", true);
                     ?>
                     <div class="row add-link">
-                        <div class="col-sm-1 italic-sm">
+                        <div class="col-sm-2 italic-sm">
                             <?= $dateDisplay; ?>
                         </div>
-                        <div class="col-sm-2 italic-sm">
+                        <div class="col-sm-3 italic-sm">
                             <?= $typeDisplay; ?>
                         </div>
                         <div class="col-sm-1 italic-sm">
@@ -61,9 +60,6 @@ get_header(); ?>
                         </div>
                         <div class="col-sm-6">
                             <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
-                        </div>
-                        <div class="col-sm-2 italic-sm">
-                            <?php the_author(); ?>
                         </div>
                     </div>
                 <?php endwhile; ?>

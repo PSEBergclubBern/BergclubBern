@@ -5,26 +5,47 @@ get_header(); ?>
     while (have_posts()) : the_post();
         $date_from = get_post_meta(get_the_ID(), "_dateFrom", true);
         $date_to =  get_post_meta(get_the_ID(), "_dateTo", true);
-        $dateDisplay = date("d.m.y", strtotime($date_from));
         if(!empty($date_to) && $date_to != $date_from){
-            $dateDisplay .=" - " . date("d.m.", strtotime($date_to));
+            $dateDisplay = date("d.m.", strtotime($date_from)) . " - " . date("d.m.y", strtotime($date_to));
+        } else {
+            $dateDisplay = date("d.m.y", strtotime($date_from));
         }
         $type = get_post_meta(get_the_ID(), "_type", true);
         $reqTechnical = get_post_meta(get_the_ID(), "_requirementsTechnical", true);
-        $typeDisplay = bcb_get_touren_type_by_slug($type) . ", " . $reqTechnical;
-        $leaderDisplay = get_post_meta(get_the_ID(), "_leader", true);
-        $coLeader = get_post_meta(get_the_ID(), "_coLeader", true);
-        if(!empty($coLeader)){
-            $leaderDisplay .= ", " . $coLeader . " (Co-Leiter)";
+        $typeDisplay = bcb_touren_meta(get_the_ID(), 'type') . ", " . $reqTechnical;
+        $leaderId = get_post_meta(get_the_ID(), "_leader", true);
+        $leaderDisplay = "";
+        if(!empty($leaderId)){
+            $leaderDisplay = bcb_get_user_full_name($leaderId);
+        }
+        $coLeaderId = get_post_meta(get_the_ID(), "_coLeader", true);
+        if(!empty($coLeaderId)){
+            $coLeaderFullName = bcb_get_user_full_name($coLeaderId);
+            $leaderDisplay .= ", " . $coLeaderFullName . " (Co-Leiter)";
         }
         $programDisplay = get_post_meta(get_the_ID(), "_program", true);
 
 
-        $reqConditionalDisplay = get_post_meta(get_the_ID(), "_requirementsConditional", true);
+        $reqConditionalId = get_post_meta(get_the_ID(), "_requirementsConditional", true);
+        $reqConditionalDisplay = "";
+        if($reqConditionalId == 1){
+            $reqConditionalDisplay = "Leicht";
+        }elseif($reqConditionalId == 2){
+            $reqConditionalDisplay = "Mittel";
+        }elseif($reqConditionalId == 3){
+            $reqConditionalDisplay = "Schwer";
+        };
         $riseUp = get_post_meta(get_the_ID(), "_riseUpMeters", true);
         $riseDown = get_post_meta(get_the_ID(), "_riseDownMeters", true);
-        $riseDisplay = "<div class=\"icon icon-up\" title=\"Hinauf\"></div>" . $riseUp . " <div class=\"icon icon-down\" title=\"Hinab\"></div>" . $riseDown;
+        if(empty($riseUp) && empty($riseDown)){
+            $riseDisplay = "";
+        } else {
+            $riseDisplay = "<div class=\"icon icon-up\" title=\"Hinauf\"></div>" . $riseUp . " <div class=\"icon icon-down\" title=\"Hinab\"></div>" . $riseDown;
+        }
         $durationDisplay = get_post_meta(get_the_ID(), "_duration", true);
+        if(!empty($durationDisplay)){
+            $durationDisplay .= " Stunden";
+        }
         $equipmentDisplay = get_post_meta(get_the_ID(), "_equipment", true);
         $sleepOverDisplay = get_post_meta(get_the_ID(), "_sleepOver", true);
         $mapMaterialDisplay = get_post_meta(get_the_ID(), "_mapMaterial", true);
@@ -33,15 +54,15 @@ get_header(); ?>
 
 
         $costsDisplay = get_post_meta(get_the_ID(), "_costs", true) . " Franken";
-        $costsFor = get_post_meta(get_the_ID(), "_costsFor", true);
-        if(!empty($costsFor)){
-            $costsDisplay .= ", " . $costsFor;
-        }
+        $costsForDisplay = get_post_meta(get_the_ID(), "_costsFor", true);
 
         $signupUntil = get_post_meta(get_the_ID(), "_signupUntil", true);
-        $signupUntilDisplay = date("d.m.y", strtotime($signupUntil));
-        $signupToDisplay = get_post_meta(get_the_ID(), "_signupTo", true);
-
+        $signupUntilDisplay = empty($signupUntil) ? "" : date("d.m.y", strtotime($signupUntil));
+        $signupToId = get_post_meta(get_the_ID(), "_signupTo", true);
+        $signupToDisplay = "";
+        if(!empty($signupToId)) {
+            $signupToDisplay = bcb_get_user_full_name($signupToId);
+        }
 
         $generalInfo = array(
             "Datum" => $dateDisplay,
@@ -51,18 +72,19 @@ get_header(); ?>
         );
 
         $tourInfo = array(
-            "Konditionelle Schwierigkeit" => $reqConditionalDisplay,
+            "Konditionelle Anforderungen" => $reqConditionalDisplay,
             "Steigung" => $riseDisplay,
-            "Dauer" => $durationDisplay . " Stunden",
+            "Dauer" => $durationDisplay,
             "Ausrüstung" => $equipmentDisplay,
             "Übernachtung" => $sleepOverDisplay,
             "Kartenmaterial" => $mapMaterialDisplay,
             "Online Route" => "<a href=\"" . $onlineMapDisplay . "\">" . $onlineMapDisplay . "</a>",
-            "Zusätzliche Informationen" => $additionalInfoDisplay,
+            "Besonderes" => $additionalInfoDisplay,
         );
 
         $signupInfo = array(
             "Kosten" => $costsDisplay,
+            "Kostengrund" => $costsForDisplay,
             "Anmeldung bis" => $signupUntilDisplay,
             "Anmeldung bei" => $signupToDisplay
         );
@@ -70,7 +92,7 @@ get_header(); ?>
         $rows = array(
             "Allgemeine Informationen" => $generalInfo,
             "Tourendetails" => $tourInfo,
-            "Anmeldung" => $signupInfo
+            "Kosten/Anmeldung" => $signupInfo
         );
 
         ?>
