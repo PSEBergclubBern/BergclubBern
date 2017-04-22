@@ -12,6 +12,10 @@
       template:
         src: templates/.bash_profile
         dest: "{{ ansible_env.HOME }}/.bash_profile"
+    - name: Replace line endings bash_profile
+      replace:
+        path: "{{ ansible_env.HOME }}/.bash_profile"
+        regexp: "\r"
     - name: Place a ~/.bash.d/
       become: no
       file:
@@ -22,6 +26,10 @@
       template:
         src: templates/vccw.sh
         dest: "{{ ansible_env.HOME }}/.bash.d/vccw.sh"
+    - name: Replace line endings vccw.sh
+      replace:
+        path: "{{ ansible_env.HOME }}/.bash.d/vccw.sh"
+        regexp: "\r"
 
     # Install Composer libraries
     - name: Download the Composer
