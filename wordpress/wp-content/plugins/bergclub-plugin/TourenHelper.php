@@ -170,6 +170,6 @@ class TourenHelper
     }
 
     private static function getMeta($postId, $key){
-        return get_post_meta($postId, '_' . $key, true);
+        return trim(get_post_meta($postId, '_' . $key, true));
     }
 }

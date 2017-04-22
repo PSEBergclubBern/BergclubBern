@@ -168,22 +168,26 @@ class Download
             }
 
             $data[] = [
-                'dateDisplayShort' => bcb_touren_meta($post->ID, "dateDisplayShort"),
-                'dateDisplayWeekday' => $dateDisplayWeekday,
-                'title' => get_the_title($post),
-                'type' => bcb_touren_meta($post->ID, "type"),
-                'requirementsTechnical' => bcb_touren_meta($post->ID, "requirementsTechnical"),
-                'requirementsConditional' => bcb_touren_meta($post->ID, "requirementsConditional"),
-                'riseUpMeters' => bcb_touren_meta($post->ID, 'riseUpMeters'),
-                'riseDownMeters' => bcb_touren_meta($post->ID, 'riseDownMeters'),
-                'duration' => bcb_touren_meta($post->ID, 'duration'),
-                'meetpoint' => bcb_touren_meta($post->ID, 'meetpoint'),
-                'meetingPointTime' => bcb_touren_meta($post->ID, 'meetingPointTime'),
-                'returnBack' => bcb_touren_meta($post->ID, 'returnBack'),
-                'costs' => bcb_touren_meta($post->ID, 'oosts'),
-                'costsFor' => bcb_touren_meta($post->ID, 'costsFor'),
-                'signupUntil' => bcb_touren_meta($post->ID, 'signupUntil'),
-                'signUpTo' => bcb_touren_meta($post->ID, 'signupTo'),
+                'dateDisplayShort' => $this->oneLine(bcb_touren_meta($post->ID, "dateDisplayShort")),
+                'dateDisplayWeekday' => $this->oneLine($dateDisplayWeekday),
+                'title' => $this->oneLine(get_the_title($post)),
+                'type' => $this->oneLine(bcb_touren_meta($post->ID, "type")),
+                'requirementsTechnical' => $this->oneLine(bcb_touren_meta($post->ID, "requirementsTechnical")),
+                'requirementsConditional' => $this->oneLine(bcb_touren_meta($post->ID, "requirementsConditional")),
+                'riseUpMeters' => $this->oneLine(bcb_touren_meta($post->ID, 'riseUpMeters')),
+                'riseDownMeters' => $this->oneLine(bcb_touren_meta($post->ID, 'riseDownMeters')),
+                'duration' => $this->oneLine(bcb_touren_meta($post->ID, 'duration')),
+                'meetpoint' => $this->oneLine(bcb_touren_meta($post->ID, 'meetpoint')),
+                'meetingPointTime' => $this->oneLine(bcb_touren_meta($post->ID, 'meetingPointTime')),
+                'returnBack' => $this->oneLine(bcb_touren_meta($post->ID, 'returnBack')),
+                'costs' => $this->oneLine(bcb_touren_meta($post->ID, 'oosts')),
+                'costsFor' => $this->oneLine(bcb_touren_meta($post->ID, 'costsFor')),
+                'signupUntil' => $this->oneLine(bcb_touren_meta($post->ID, 'signupUntil')),
+                'signUpTo' => $this->oneLine(bcb_touren_meta($post->ID, 'signupTo')),
+                'additionalInfo' => $this->multiLine(bcb_touren_meta($post->ID, 'additionalInfo')),
+                'equipment' => $this->multiLine(bcb_touren_meta($post->ID, 'equipment')),
+                'food' => $this->oneLine(bcb_touren_meta($post->ID, 'food')),
+                'mapMaterial' => $this->oneLine(bcb_touren_meta($post->ID, 'mapMaterial')),
             ];
         }
 
@@ -280,16 +284,118 @@ class Download
                     $subTable->addCell(1500)->addText('Abstieg:', $contentSmallItalic);
                     $subTable->addCell(5500)->addText($entry['riseDownMeters'], $contentSmall);
                 }
+
+
             }
 
+            if(!empty($entry['additionalInfo'])) {
+                if($entry["title"] == "Sommerlager Bergclub Jugend"){
+                    print_r($entry['additionalInfo']);
+                    exit;
+                }
+                $lines = $entry['additionalInfo'];
+                $table->addRow();
+                $table->addCell(2100)->addText('Besonderes', $contentSmallItalic);
+                $textrun = $table->addCell(7000)->addTextRun();
+                $textrun->addText(array_shift($lines), $contentSmall);
+                foreach($lines as $line){
+                    $textrun->addTextBreak();
+                    $textrun->addText($line, $contentSmall);
+                }
+            }
+
+            if(!empty($entry['equipment'])) {
+                $lines = $entry['equipment'];
+                $table->addRow();
+                $table->addCell(2100)->addText('Ausrüstung', $contentSmallItalic);
+                $textrun = $table->addCell(7000)->addTextRun();
+                $textrun->addText(array_shift($lines), $contentSmall);
+                foreach($lines as $line){
+                    $textrun->addTextBreak();
+                    $textrun->addText($line, $contentSmall);
+                }
+            }
+
+            if(!empty($entry['mapMaterial'])) {
+                $table->addRow();
+                $table->addCell(2100)->addText('Kartenmaterial', $contentSmallItalic);
+                $table->addCell(7000)->addText($entry['mapMaterial'], $contentSmall);
+            }
+
+            if(!empty($entry['food'])) {
+                $table->addRow();
+                $table->addCell(2100)->addText('Verpflegung', $contentSmallItalic);
+                $table->addCell(7000)->addText($entry['food'], $contentSmall);
+            }
+
+            if(!empty($entry['costs'])) {
+                $costs = "CHF " . $entry['costs'];
+                if(!empty($entry['costsFor'])){
+                    $costs .= " für " . $entry['costsFor'];
+                }
+                $table->addRow();
+                $table->addCell(2100)->addText('Kosten', $contentSmallItalic);
+                $table->addCell(7000)->addText($costs, $contentSmall);
+            }
+
+            if(!empty($entry['returnBack'])) {
+                $table->addRow();
+                $table->addCell(2100)->addText('Rückkehr', $contentSmallItalic);
+                $table->addCell(7000)->addText($entry['returnBack'], $contentSmall);
+            }
+
+            if(!empty($entry['signupUntil'])) {
+                $signup = "bis " . $entry['signupUntil'];
+                if(!empty($entry['signupTo'])){
+                    $signup .= " an " . $entry['signupTo'];
+                }
+                $table->addRow();
+                $table->addCell(2100)->addText('Anmeldung', $contentSmallItalic);
+                $table->addCell(7000)->addText($signup, $contentSmall);
+            }
 
             $table->addRow();
-            $table->addCell(2100)->addText('', $content);
-            $table->addCell(7000)->addText('', $content);
+            $table->addCell(2100)->addText('', $contentSmall);
+            $table->addCell(7000)->addText('', $contentSmall);
         }
 
         $word->save('Quartalsprogramm '.date("Y-m-d_H-i-s").'.docx', 'Word2007', true);
         exit;
+    }
+
+    private function oneLine($string){
+        return trim(str_replace("\n", "", str_replace("<br />", " ", $this->removeCarriageReturn($string))));
+    }
+
+    private function multiLine($string){
+        $lines = explode("<br />", str_replace("\n", "", $this->removeCarriageReturn($string)));
+        if(count($lines) == 1 && empty($lines[0])){
+            return [];
+        }
+        return $lines;
+    }
+
+    private function removeCarriageReturn($string){
+        return str_replace("\r", "", $string);
+    }
+
+    private function ordutf8($string, &$offset) {
+        $code = ord(substr($string, $offset,1));
+        if ($code >= 128) {        //otherwise 0xxxxxxx
+            if ($code < 224) $bytesnumber = 2;                //110xxxxx
+            else if ($code < 240) $bytesnumber = 3;        //1110xxxx
+            else if ($code < 248) $bytesnumber = 4;    //11110xxx
+            $codetemp = $code - 192 - ($bytesnumber > 2 ? 32 : 0) - ($bytesnumber > 3 ? 16 : 0);
+            for ($i = 2; $i <= $bytesnumber; $i++) {
+                $offset ++;
+                $code2 = ord(substr($string, $offset, 1)) - 128;        //10xxxxxx
+                $codetemp = $codetemp*64 + $code2;
+            }
+            $code = $codetemp;
+        }
+        $offset += 1;
+        if ($offset >= strlen($string)) $offset = -1;
+        return $code;
     }
 
     private function getPfarrblattDate($from, $to){
