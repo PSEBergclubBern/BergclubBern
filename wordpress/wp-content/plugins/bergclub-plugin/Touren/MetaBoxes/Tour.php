@@ -18,6 +18,7 @@ class Tour extends MetaBox {
 	const REQUIREMENTS_CONDITIONAL = '_requirementsConditional';
 	const RISE_UP_METERS = '_riseUpMeters';
 	const RISE_DOWN_METERS = '_riseDownMeters';
+	const DISTANCE = '_distance';
 	const DURATION = '_duration';
 	const ADDITIONAL_INFO = '_additionalInfo';
 	const TRAINING = '_training';
@@ -37,6 +38,7 @@ class Tour extends MetaBox {
 			self::REQUIREMENTS_CONDITIONAL,
 			self::RISE_UP_METERS,
 			self::RISE_DOWN_METERS,
+			self::DISTANCE,
 			self::DURATION,
 			self::ADDITIONAL_INFO,
 			self::TRAINING,
