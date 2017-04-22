@@ -21,63 +21,38 @@ class Common extends MetaBox {
 	}
 
 
-	protected function addAdditionalValuesForView() {
-
+	protected function addAdditionalValuesForView(\WP_Post $post) {
         $args = array(
-            'posts_per_page'   => 15,
-            'offset'           => 0,
-            'category'         => '',
-            'category_name'    => '',
-            'orderby'          => 'date',
-            'order'            => 'DESC',
-            'include'          => '',
-            'exclude'          => '',
-            'meta_key'         => '',
-            'meta_value'       => '',
-            'post_type'        => 'touren',
-            'post_mime_type'   => '',
-            'post_parent'      => '',
-            'author'	   => '',
-            'author_name'	   => '',
-            'post_status'      => 'publish',
-            'suppress_filters' => true
+            'post_type'         => BCB_CUSTOM_POST_TYPE_TOUREN,
+            'post_status'       => 'publish',
+            'meta_key'          => \BergclubPlugin\Touren\MetaBoxes\Common::DATE_FROM_DB,
+            'orderby'			=> 'meta_value',
+            'order'				=> 'DESC'
         );
-        $posts_array = get_posts( $args );
-
+        $posts_array = get_posts($args);
 
         $args1 = array(
-            'posts_per_page'   => 15,
-            'offset'           => 0,
-            'category'         => '',
-            'category_name'    => '',
             'orderby'          => 'date',
             'order'            => 'DESC',
-            'include'          => '',
-            'exclude'          => '',
-            'meta_key'         => '',
-            'meta_value'       => '',
-            'post_type'        => 'tourenberichte',
-            'post_mime_type'   => '',
-            'post_parent'      => '',
-            'author'	   => '',
-            'author_name'	   => '',
-            'post_status'      => 'draft',// oder lieber publish? --- Ich gehe davon aus, dass in der Drop-Down Liste Touren für die es schon einen Draft Tourenbericht gibt hier nicht auftauchen sollen
-            'suppress_filters' => true
+            'post_type'        => BCB_CUSTOM_POST_TYPE_TOURENBERICHTE,
+            'post_status'      => 'autodraft',
         );
-        $posts_array_tourenberichte = get_posts( $args1 );
+        $posts_array_tourenberichte = get_posts($args1);
 
-        foreach ($posts_array_tourenberichte as &$post_tourenberichte) {
-            $values = get_post_meta($post_tourenberichte->ID, "_touren", true);
-            foreach ( $posts_array as &$post_tour ){
-                $id = $post_tour->ID;
-                if ($values == $id){
+        foreach ($posts_array_tourenberichte as $post_tourenberichte) {
+            $tourId = get_post_meta($post_tourenberichte->ID, self::TOUREN, true);
+            if (empty($tourId)) {
+                continue;
+            }
+            foreach ($posts_array as $key => $post_tour) {
+                if ($tourId == $post_tour->ID && $tourId != get_post_meta($post->ID, self::TOUREN, true)) {
                     //remove this entry from array
-                    foreach (array_keys($posts_array, $post_tour) as $key) {
-                        unset($posts_array[$key]);
-                    }
+                    unset($posts_array[$key]);
                 }
             }
         }
+
+        //die();
 
 		return array(
 			'touren'   => $posts_array,
