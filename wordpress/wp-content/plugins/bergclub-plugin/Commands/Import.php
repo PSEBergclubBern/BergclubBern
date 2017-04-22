@@ -18,6 +18,7 @@ use BergclubPlugin\MVC\Models\Option;
 use BergclubPlugin\MVC\Models\Role;
 use BergclubPlugin\MVC\Models\User as ModelUser;
 use BergclubPlugin\Touren\MetaBoxes\Common;
+use BergclubPlugin\Touren\MetaBoxes\MeetingPoint;
 use \BergclubPlugin\Touren\MetaBoxes\Tour as TourMetaBox;
 
 class Import extends Init
@@ -290,6 +291,8 @@ class Import extends Init
                         TourMetaBox::REQUIREMENTS_TECHNICAL     => $tourEntity->requirementsTechnical,
                         TourMetaBox::REQUIREMENTS_CONDITIONAL   => $tourEntity->requirementsConditional,
                         TourMetaBox::JSEVENT                    => $tourEntity->jsEvent,
+                        MeetingPoint::FOOD                      => $tourEntity->food,
+                        MeetingPoint::RETURNBACK                => $tourEntity->returnBack,
                     );
 
                     foreach ($customFields as $key => $value) {
