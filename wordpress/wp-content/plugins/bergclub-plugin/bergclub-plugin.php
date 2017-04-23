@@ -57,10 +57,15 @@ function bcb_register_session(){
     }
 }
 
-add_action( 'admin_menu', 'stop_access_profile' );
-function stop_access_profile() {
-    remove_menu_page( 'profile.php' );
-    remove_submenu_page( 'users.php', 'profile.php' );
+add_action( 'admin_menu', 'bcb_remove_admin_pages' );
+function bcb_remove_admin_pages() {
+    $user = wp_get_current_user();
+    if(!in_array('administrator', (array) $user->roles)) {
+        remove_menu_page('profile.php');
+        remove_submenu_page('users.php', 'profile.php');
+        remove_menu_page('edit-comments.php');
+        remove_menu_page('tools.php');
+    }
 }
 
 /**

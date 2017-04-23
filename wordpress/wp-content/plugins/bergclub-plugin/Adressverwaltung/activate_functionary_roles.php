@@ -184,6 +184,17 @@ $functionaryRoles = [
             'read_private_posts' => true,
             'read_post' => true,
 
+            'edit_pages' => true,
+            'publish_pages' => true,
+            'edit_others_pages' => true,
+            'edit_published_pages' => true,
+            'delete_pages' => false,
+            'delete_others_pages' => false,
+            'delete_published_pages' => false,
+            'delete_private_pages' => false,
+            'edit_private_pages' => true,
+            'read_private_pages' => true,
+
             'create_tour' => true,
             'publish_tour' => true,
             'edit_tour' => true,
