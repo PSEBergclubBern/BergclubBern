@@ -3,53 +3,24 @@
 get_header(); ?>
     <?php
     while (have_posts()) : the_post();
-        $date_from = get_post_meta(get_the_ID(), "_dateFrom", true);
-        $date_to =  get_post_meta(get_the_ID(), "_dateTo", true);
-        if(!empty($date_to) && $date_to != $date_from){
-            $dateDisplay = date("d.m.", strtotime($date_from)) . " - " . date("d.m.y", strtotime($date_to));
-        } else {
-            $dateDisplay = date("d.m.y", strtotime($date_from));
-        }
-        $type = get_post_meta(get_the_ID(), "_type", true);
-        $reqTechnical = get_post_meta(get_the_ID(), "_requirementsTechnical", true);
-        $typeDisplay = bcb_touren_meta(get_the_ID(), 'type') . ", " . $reqTechnical;
-        $leaderId = get_post_meta(get_the_ID(), "_leader", true);
-        $leaderDisplay = "";
-        if(!empty($leaderId)){
-            $leaderDisplay = bcb_get_user_full_name($leaderId);
-        }
-        $coLeaderId = get_post_meta(get_the_ID(), "_coLeader", true);
-        if(!empty($coLeaderId)){
-            $coLeaderFullName = bcb_get_user_full_name($coLeaderId);
-            $leaderDisplay .= ", " . $coLeaderFullName . " (Co-Leiter)";
-        }
+        $typeWithTechnicalRequirementsDisplay = bcb_touren_meta(get_the_ID(), 'typeWithTechnicalRequirements');
+        $dateDisplay = bcb_touren_meta(get_the_ID(), "dateDisplayFull");
+        $meetpointWithTimeDisplay = bcb_touren_meta(get_the_ID(), "meetpointWithTime");
+        $returnBackDisplay = bcb_touren_meta(get_the_ID(), "returnBack");
+        $leaderAndCoLeaderDisplay = bcb_touren_meta(get_the_ID(), "leaderAndCoLeader");
         $programDisplay = get_post_meta(get_the_ID(), "_program", true);
 
 
-        $reqConditionalId = get_post_meta(get_the_ID(), "_requirementsConditional", true);
-        $reqConditionalDisplay = "";
-        if($reqConditionalId == 1){
-            $reqConditionalDisplay = "Leicht";
-        }elseif($reqConditionalId == 2){
-            $reqConditionalDisplay = "Mittel";
-        }elseif($reqConditionalId == 3){
-            $reqConditionalDisplay = "Schwer";
-        };
-        $riseUp = get_post_meta(get_the_ID(), "_riseUpMeters", true);
-        $riseDown = get_post_meta(get_the_ID(), "_riseDownMeters", true);
-        if(empty($riseUp) && empty($riseDown)){
-            $riseDisplay = "";
-        } else {
-            $riseDisplay = "<div class=\"icon icon-up\" title=\"Hinauf\"></div>" . $riseUp . " <div class=\"icon icon-down\" title=\"Hinab\"></div>" . $riseDown;
-        }
-        $durationDisplay = get_post_meta(get_the_ID(), "_duration", true);
-        if(!empty($durationDisplay)){
-            $durationDisplay .= " Stunden";
-        }
+        $distanceDisplay = bcb_touren_meta(get_the_ID(), "distance");
+        $riseDisplay = bcb_touren_meta(get_the_ID(), "riseUpAndDown");
+        $durationDisplay = bcb_touren_meta(get_the_ID(), "duration");
+        $reqConditionalDisplay = bcb_touren_meta(get_the_ID(), "requirementsConditional");
         $equipmentDisplay = get_post_meta(get_the_ID(), "_equipment", true);
         $sleepOverDisplay = get_post_meta(get_the_ID(), "_sleepOver", true);
+        $foodDisplay = get_post_meta(get_the_ID(), "_food", true);
         $mapMaterialDisplay = get_post_meta(get_the_ID(), "_mapMaterial", true);
-        $onlineMapDisplay = get_post_meta(get_the_ID(), "_onlineMap", true);
+        $onlineMap = get_post_meta(get_the_ID(), "_onlineMap", true);
+        $onlineMapDisplay = empty($onlineMap) ? $onlineMap : "<a href=\"" . $onlineMapDisplay . "\">" . $onlineMapDisplay . "</a>";
         $additionalInfoDisplay = get_post_meta(get_the_ID(), "_additionalInfo", true);
 
 
@@ -58,27 +29,27 @@ get_header(); ?>
 
         $signupUntil = get_post_meta(get_the_ID(), "_signupUntil", true);
         $signupUntilDisplay = empty($signupUntil) ? "" : date("d.m.y", strtotime($signupUntil));
-        $signupToId = get_post_meta(get_the_ID(), "_signupTo", true);
-        $signupToDisplay = "";
-        if(!empty($signupToId)) {
-            $signupToDisplay = bcb_get_user_full_name($signupToId);
-        }
+        $signupToDisplay = bcb_touren_meta(get_the_ID(), "signupToWithEmail");
 
         $generalInfo = array(
+            "Typ" => $typeWithTechnicalRequirementsDisplay,
             "Datum" => $dateDisplay,
-            "Typ" => $typeDisplay,
-            "Tourenleiter" => $leaderDisplay,
+            "Treffpunkt" => $meetpointWithTimeDisplay,
+            "Rückkehr" => $returnBackDisplay,
+            "Tourenleiter" => $leaderAndCoLeaderDisplay,
             "Program" => $programDisplay,
         );
 
         $tourInfo = array(
-            "Konditionelle Anforderungen" => $reqConditionalDisplay,
+            "Distanz" => $distanceDisplay,
             "Steigung" => $riseDisplay,
             "Dauer" => $durationDisplay,
+            "Konditionelle Anforderungen" => $reqConditionalDisplay,
             "Ausrüstung" => $equipmentDisplay,
             "Übernachtung" => $sleepOverDisplay,
+            "Verplfegung" => $foodDisplay,
             "Kartenmaterial" => $mapMaterialDisplay,
-            "Online Route" => "<a href=\"" . $onlineMapDisplay . "\">" . $onlineMapDisplay . "</a>",
+            "Online Route" => $onlineMapDisplay,
             "Besonderes" => $additionalInfoDisplay,
         );
 
