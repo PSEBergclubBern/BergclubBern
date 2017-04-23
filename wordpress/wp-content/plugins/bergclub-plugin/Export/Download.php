@@ -18,7 +18,14 @@ class Download
     private function hasDownload(){
         return
             isset($_GET['page']) && $_GET['page'] == 'bergclubplugin-export-controllers-maincontroller' && isset($_GET['download'])
-            && ($_GET['download'] == 'addresses' || $_GET['download'] == 'shipping' || $_GET['download'] == 'members' || $_GET['download'] == 'contributions' || $_GET['download'] == 'touren' || $_GET['download'] == 'calendar');
+            && ($_GET['download'] == 'addresses'
+                || $_GET['download'] == 'shipping'
+                || $_GET['download'] == 'members'
+                || $_GET['download'] == 'contributions'
+                || $_GET['download'] == 'touren'
+                || $_GET['download'] == 'calendar'
+                || $_GET['download'] == 'pfarrblatt'
+                || $_GET['download'] == 'program');
     }
 
     public function detectDownload(){
@@ -111,6 +118,365 @@ class Download
         }
 
         $this->createPDFDownload($pdf, 'Kalender');
+    }
+
+    private function downloadPfarrblatt(){
+        $data = $this->getPfarrblattData($_GET['from'], $_GET['to']);
+        $word = new \PhpOffice\PhpWord\PhpWord();
+        $section = $word->addSection();
+        $section->addText(
+            $data,
+            ['name' => 'Courier New', 'size' => 11]
+        );
+
+        $word->save('Pfarrblatt '.date("Y-m-d_H-i-s").'.docx', 'Word2007', true);
+        exit;
+    }
+
+    private function downloadProgram(){
+        $data = [];
+        $posts = get_posts([
+            'posts_per_page' => -1,
+            'post_status' => 'publish',
+            'post_type' => 'touren',
+            'order' => 'ASC',
+            'orderby' => '_dateFromDB',
+            'meta_query' => [
+                'relation' => 'AND',
+                [
+                    'key' => '_dateFromDB',
+                    'value' => date('Y-m-d', strtotime($_GET['touren-from'])),
+                    'type' => 'DATE',
+                    'compare' => '>='
+                ],
+                [
+                    'key' => '_dateFromDB',
+                    'value' => date('Y-m-d', strtotime($_GET['touren-to'])),
+                    'type' => 'DATE',
+                    'compare' => '<='
+                ],
+            ],
+        ]);
+
+        foreach($posts as $post){
+            $dateFrom = bcb_touren_meta($post->ID, 'dateFrom');
+            $dateTo = bcb_touren_meta($post->ID, 'dateTo');
+
+            $dateDisplayWeekday = $this->getDayOfWeek($dateFrom);
+            if(!empty($dateTo) && $dateTo != $dateFrom){
+                $dateDisplayWeekday .= " - " . $this->getDayOfWeek($dateTo);
+            }
+
+            $data[] = [
+                'dateDisplayShort' => $this->oneLine(bcb_touren_meta($post->ID, "dateDisplayShort")),
+                'dateDisplayWeekday' => $this->oneLine($dateDisplayWeekday),
+                'title' => $this->oneLine(get_the_title($post)),
+                'type' => $this->oneLine(bcb_touren_meta($post->ID, "type")),
+                'requirementsTechnical' => $this->oneLine(bcb_touren_meta($post->ID, "requirementsTechnical")),
+                'requirementsConditional' => $this->oneLine(bcb_touren_meta($post->ID, "requirementsConditional")),
+                'riseUpMeters' => $this->oneLine(bcb_touren_meta($post->ID, 'riseUpMeters')),
+                'riseDownMeters' => $this->oneLine(bcb_touren_meta($post->ID, 'riseDownMeters')),
+                'duration' => $this->oneLine(bcb_touren_meta($post->ID, 'duration')),
+                'meetpoint' => $this->oneLine(bcb_touren_meta($post->ID, 'meetpoint')),
+                'meetingPointTime' => $this->oneLine(bcb_touren_meta($post->ID, 'meetingPointTime')),
+                'returnBack' => $this->oneLine(bcb_touren_meta($post->ID, 'returnBack')),
+                'costs' => $this->oneLine(bcb_touren_meta($post->ID, 'oosts')),
+                'costsFor' => $this->oneLine(bcb_touren_meta($post->ID, 'costsFor')),
+                'signupUntil' => $this->oneLine(bcb_touren_meta($post->ID, 'signupUntil')),
+                'signUpTo' => $this->oneLine(bcb_touren_meta($post->ID, 'signupTo')),
+                'additionalInfo' => $this->multiLine(bcb_touren_meta($post->ID, 'additionalInfo')),
+                'equipment' => $this->multiLine(bcb_touren_meta($post->ID, 'equipment')),
+                'food' => $this->oneLine(bcb_touren_meta($post->ID, 'food')),
+                'mapMaterial' => $this->oneLine(bcb_touren_meta($post->ID, 'mapMaterial')),
+            ];
+        }
+
+        $anmeldeTermine = [];
+        foreach($data as $entry) {
+            if(!empty($entry['signupUntil'])){
+                $anmeldeTermine[date('Y-m-d', strtotime($entry['signupUntil']))][] = [
+                    'signupUntil' => date('d.m.', strtotime($entry['signupUntil'])),
+                    'info' => $entry['title'] . ' (' . $entry['type'] . ', ' . $entry['dateDisplayShort'] . ')',
+                ];
+            }
+        }
+        ksort($anmeldeTermine);
+
+        $word = new \PhpOffice\PhpWord\PhpWord();
+        $header = array('name' => 'Arial', 'size' => 16, 'bold' => true);
+        $content = array('name' => 'Arial', 'size' => 14, 'bold' => false);
+        $contentBold = array('name' => 'Arial', 'size' => 14, 'bold' => true);
+        $contentSmall = array('name' => 'Arial', 'size' => 12, 'bold' => false);
+        $contentSmallItalic = array('name' => 'Arial', 'size' => 12, 'bold' => false, 'italic' => true);
+
+        $section = $word->addSection();
+        $section->addText('Bergclub Bern', $header);
+        $section->addText('Anmeldetermine', $header);
+
+        $table = $section->addTable();
+
+        foreach($anmeldeTermine as $arr){
+            foreach($arr as $entry) {
+                $table->addRow();
+                $table->addCell(1000)->addText($entry['signupUntil'], $content);
+                $table->addCell(600)->addText('für', $content);
+                $table->addCell(7500)->addText($entry['info'], $content);
+            }
+        }
+
+        $section->addText('', $header);
+        $section->addText('Tourenübersicht', $header);
+
+        $table = $section->addTable();
+        foreach($data as $entry){
+            $table->addRow();
+            $table->addCell(2100)->addText($entry['dateDisplayShort'], $content);
+            $textRun = $table->addCell(7000)->addTextRun();
+            $textRun->addText($entry['title'], $contentBold);
+            if(!empty($entry['type'])) {
+                $textRun->addText(' (' . $entry['type'] . ')', $contentSmall);
+            }
+        }
+
+        $section->addText('', $header);
+        $section->addText('Tourendetails', $header);
+
+        $table = $section->addTable();
+        foreach($data as $entry){
+            $table->addRow();
+            $table->addCell(2100)->addText($entry['dateDisplayShort'], $contentBold);
+            $table->addCell(7000)->addText($entry['title'], $contentBold);
+            $table->addRow();
+            $table->addCell(2100)->addText($entry['dateDisplayWeekday'], $content);
+            $table->addCell(7000)->addText($entry['type'], $content);
+            if(!empty($entry['meetpoint'])){
+                $table->addRow();
+                $table->addCell(2100)->addText('Treffpunkt', $contentSmallItalic);
+                $meetpoint = $entry['meetpoint'];
+                if(!empty($entry['meetingPointTime'])){
+                    $meetpoint .= ', ' . $entry['meetingPointTime'] . ' Uhr';
+                }
+                $table->addCell(7000)->addText($meetpoint, $contentSmall);
+            }
+
+            if(!empty($entry['requirementsTechnical']) || !empty($entry['requirementsConditional']) || !empty($entry['riseUpMeters']) || !empty($entry['riseDownMeters']) || !empty($entry['duration'])){
+                $table->addRow();
+                $table->addCell(2100)->addText('Anforderungen', $contentSmallItalic);
+                $cell = $table->addCell(7000);
+                $subTable = $cell->addTable();
+                if(!empty($entry['requirementsTechnical'])) {
+                    $subTable->addRow();
+                    $subTable->addCell(1500)->addText('technisch:', $contentSmallItalic);
+                    $subTable->addCell(5500)->addText($entry['requirementsTechnical'], $contentSmall);
+                }
+                if(!empty($entry['requirementsConditional'])) {
+                    $subTable->addRow();
+                    $subTable->addCell(1500)->addText('konditionell:', $contentSmallItalic);
+                    $subTable->addCell(5500)->addText($entry['requirementsConditional'], $contentSmall);
+                }
+                if(!empty($entry['riseUpMeters'])) {
+                    $subTable->addRow();
+                    $subTable->addCell(1500)->addText('Aufstieg:', $contentSmallItalic);
+                    $subTable->addCell(5500)->addText($entry['riseUpMeters'], $contentSmall);
+                }
+                if(!empty($entry['riseDownMeters'])) {
+                    $subTable->addRow();
+                    $subTable->addCell(1500)->addText('Abstieg:', $contentSmallItalic);
+                    $subTable->addCell(5500)->addText($entry['riseDownMeters'], $contentSmall);
+                }
+
+
+            }
+
+            if(!empty($entry['additionalInfo'])) {
+                if($entry["title"] == "Sommerlager Bergclub Jugend"){
+                    print_r($entry['additionalInfo']);
+                    exit;
+                }
+                $lines = $entry['additionalInfo'];
+                $table->addRow();
+                $table->addCell(2100)->addText('Besonderes', $contentSmallItalic);
+                $textrun = $table->addCell(7000)->addTextRun();
+                $textrun->addText(array_shift($lines), $contentSmall);
+                foreach($lines as $line){
+                    $textrun->addTextBreak();
+                    $textrun->addText($line, $contentSmall);
+                }
+            }
+
+            if(!empty($entry['equipment'])) {
+                $lines = $entry['equipment'];
+                $table->addRow();
+                $table->addCell(2100)->addText('Ausrüstung', $contentSmallItalic);
+                $textrun = $table->addCell(7000)->addTextRun();
+                $textrun->addText(array_shift($lines), $contentSmall);
+                foreach($lines as $line){
+                    $textrun->addTextBreak();
+                    $textrun->addText($line, $contentSmall);
+                }
+            }
+
+            if(!empty($entry['mapMaterial'])) {
+                $table->addRow();
+                $table->addCell(2100)->addText('Kartenmaterial', $contentSmallItalic);
+                $table->addCell(7000)->addText($entry['mapMaterial'], $contentSmall);
+            }
+
+            if(!empty($entry['food'])) {
+                $table->addRow();
+                $table->addCell(2100)->addText('Verpflegung', $contentSmallItalic);
+                $table->addCell(7000)->addText($entry['food'], $contentSmall);
+            }
+
+            if(!empty($entry['costs'])) {
+                $costs = "CHF " . $entry['costs'];
+                if(!empty($entry['costsFor'])){
+                    $costs .= " für " . $entry['costsFor'];
+                }
+                $table->addRow();
+                $table->addCell(2100)->addText('Kosten', $contentSmallItalic);
+                $table->addCell(7000)->addText($costs, $contentSmall);
+            }
+
+            if(!empty($entry['returnBack'])) {
+                $table->addRow();
+                $table->addCell(2100)->addText('Rückkehr', $contentSmallItalic);
+                $table->addCell(7000)->addText($entry['returnBack'], $contentSmall);
+            }
+
+            if(!empty($entry['signupUntil'])) {
+                $signup = "bis " . $entry['signupUntil'];
+                if(!empty($entry['signupTo'])){
+                    $signup .= " an " . $entry['signupTo'];
+                }
+                $table->addRow();
+                $table->addCell(2100)->addText('Anmeldung', $contentSmallItalic);
+                $table->addCell(7000)->addText($signup, $contentSmall);
+            }
+
+            $table->addRow();
+            $table->addCell(2100)->addText('', $contentSmall);
+            $table->addCell(7000)->addText('', $contentSmall);
+        }
+
+        $word->save('Quartalsprogramm '.date("Y-m-d_H-i-s").'.docx', 'Word2007', true);
+        exit;
+    }
+
+    private function oneLine($string){
+        return trim(str_replace("\n", "", str_replace("<br />", " ", $this->removeCarriageReturn($string))));
+    }
+
+    private function multiLine($string){
+        $lines = explode("<br />", str_replace("\n", "", $this->removeCarriageReturn($string)));
+        if(count($lines) == 1 && empty($lines[0])){
+            return [];
+        }
+        return $lines;
+    }
+
+    private function removeCarriageReturn($string){
+        return str_replace("\r", "", $string);
+    }
+
+    private function ordutf8($string, &$offset) {
+        $code = ord(substr($string, $offset,1));
+        if ($code >= 128) {        //otherwise 0xxxxxxx
+            if ($code < 224) $bytesnumber = 2;                //110xxxxx
+            else if ($code < 240) $bytesnumber = 3;        //1110xxxx
+            else if ($code < 248) $bytesnumber = 4;    //11110xxx
+            $codetemp = $code - 192 - ($bytesnumber > 2 ? 32 : 0) - ($bytesnumber > 3 ? 16 : 0);
+            for ($i = 2; $i <= $bytesnumber; $i++) {
+                $offset ++;
+                $code2 = ord(substr($string, $offset, 1)) - 128;        //10xxxxxx
+                $codetemp = $codetemp*64 + $code2;
+            }
+            $code = $codetemp;
+        }
+        $offset += 1;
+        if ($offset >= strlen($string)) $offset = -1;
+        return $code;
+    }
+
+    private function getPfarrblattDate($from, $to){
+        $weekday = [
+            'Sonntag',
+            'Montag',
+            'Dienstag',
+            'Mittwoch',
+            'Donnerstag',
+            'Freitag',
+            'Samstag',
+        ];
+
+        $month = [
+            'Januar',
+            'Februar',
+            'März',
+            'April',
+            'Mai',
+            'Juni',
+            'Juli',
+            'August',
+            'September',
+            'Oktober',
+            'November',
+            'Dezember',
+        ];
+
+        $tmFrom = strtotime($from);
+
+        if(empty($to) || $to == $from){
+            return $weekday[date('w', $tmFrom)] . ', ' . date('j', $tmFrom) . '. ' . $month[date('n', $tmFrom) - 1];
+        }else{
+            $tmTo = strtotime($to);
+            $result = $weekday[date('w', $tmFrom)] . '/' . $weekday[date('w', $tmTo)] . ", ";
+            $monthFrom = $month[date('n', $tmFrom) - 1];
+            $monthTo = $month[date('n', $tmTo) - 1];
+            if($monthFrom == $monthTo){
+                $result .= date('j', $tmFrom) . './' . date('j', $tmTo) . '. ' . $monthFrom;
+            }else{
+                $result .= date('j', $tmFrom) . '. ' . $monthFrom . '/' . date('j', $tmTo) . '. ' . $monthTo;
+            }
+
+            return $result;
+        }
+    }
+
+    private function getPfarrblattData($from, $to){
+        $data = [];
+
+        $posts = get_posts([
+            'posts_per_page' => -1,
+            'post_status' => 'publish',
+            'post_type' => 'touren',
+            'order' => 'ASC',
+            'orderby' => '_dateFromDB',
+            'meta_query' => [
+                'relation' => 'AND',
+                [
+                    'key' => '_dateFromDB',
+                    'value' => date('Y-m-d', strtotime($from)),
+                    'type' => 'DATE',
+                    'compare' => '>='
+                ],
+                [
+                    'key' => '_dateFromDB',
+                    'value' => date('Y-m-d', strtotime($to)),
+                    'type' => 'DATE',
+                    'compare' => '<='
+                ],
+            ],
+        ]);
+
+        foreach($posts as $post){
+            $item = $this->getPfarrblattDate(bcb_touren_meta($post->ID, "dateFrom"), bcb_touren_meta($post->ID, "dateTo")). ": ";
+            $item .= bcb_touren_meta($post->ID, "type") . ", ";
+            $item .= get_the_title($post). ", Anmeldung an: " . bcb_touren_meta($post->ID, "signUpTo");
+            $data[] = $item;
+        }
+
+        return join('. ', $data);
     }
 
     private function getTourenData($status, $from, $to){

@@ -22,7 +22,7 @@ class Tour
     public $map;
     public $meetingPoint;
     public $program;
-    public $return;
+    public $returnBack;
     public $equiptment;
     public $food;
     public $costs;
@@ -56,7 +56,7 @@ class Tour
         $this->map = $array['karte'];
         //$this->meetingPoint = $array['treff_o'];
         $this->program = $array['prog'];
-        $this->return = $array['rueck_o'];
+        $this->returnBack = $array['rueck_o'];
         $this->equiptment = $array['ausr'];
         $this->food = $array['verpf'];
         $this->costs = $array['kosten'];
