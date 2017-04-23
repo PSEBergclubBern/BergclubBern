@@ -57,6 +57,12 @@ function bcb_register_session(){
     }
 }
 
+add_action( 'admin_menu', 'stop_access_profile' );
+function stop_access_profile() {
+    remove_menu_page( 'profile.php' );
+    remove_submenu_page( 'users.php', 'profile.php' );
+}
+
 /**
  * Looks trough all first level folders in plugins sub folder and includes the given file name if found.
  * @param string $fileName the file name to look for.
