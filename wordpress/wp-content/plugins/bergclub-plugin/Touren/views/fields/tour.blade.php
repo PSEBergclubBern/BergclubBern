@@ -75,6 +75,17 @@
         </tr>
 
         <tr>
+            <th align="left">Distanz (km)</th>
+            <td>
+                <input type="text"
+                       id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::DISTANCE }}"
+                       name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::DISTANCE }}"
+                       value="{{ $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::DISTANCE ] }}"
+                />
+            </td>
+        </tr>
+
+        <tr>
             <th align="left">Dauer (ohne Pause)</th>
             <td>
                 <input type="text"

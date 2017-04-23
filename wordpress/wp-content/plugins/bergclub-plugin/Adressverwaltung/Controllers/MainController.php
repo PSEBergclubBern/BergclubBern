@@ -278,11 +278,7 @@ class MainController extends AbstractController
                 /* save user */
                 $user->save();
                 FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Benutzerdaten wurden erfolgreich gespeichert.');
-                if($this->view == "page.new") {
-                    Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
-                }else{
-                    Helpers::redirect('?page=' . $_GET['page']);
-                }
+                Helpers::redirect("?page=" . $_GET['page'] . "&view=detail&id=" . $user->ID);
             }
 
         }

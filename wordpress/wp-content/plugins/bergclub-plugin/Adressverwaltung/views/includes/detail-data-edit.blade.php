@@ -61,8 +61,8 @@
                 <td><textarea name="{{ $key  }}" id="{{ $key }}">{{  $user->comments }}</textarea></td>
             </tr>
 
-        @elseif( $key == 'spouse' )
-
+        @elseif( $key == 'spouse')
+            @if( $_GET['view']!='new' )
             <tr>
                 <td class="td-{{ $key }}"><label id="label-{{ $key }}" for="{{ $key }}">{{ $value }}</label></td>
 
@@ -73,7 +73,7 @@
                 @endif
 
             </tr>
-
+            @endif
         @else
 
             <tr>
