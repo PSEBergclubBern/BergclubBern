@@ -2,6 +2,7 @@
 
 @section('content')
     <table border="0" cellspacing="0" cellpadding="10">
+        @if(in_array('adressen', $allowed))
         <tr><td colspan="4"><h2>Adressen</h2></td></tr>
         <tr>
             <td colspan="3"><b>Mitgliederliste (Excel)</b></td>
@@ -16,6 +17,8 @@
             <td colspan="3"><b>Beitragsliste (Excel)</b></td>
             <td><button class="button button-primary button-download" data-href="?page={{ $_GET['page'] }}&download=contributions">Herunterladen</button></td>
         </tr>
+        @endif
+        @if(in_array('touren', $allowed))
         <tr><td colspan="4"><h2>Touren</h2></td></tr>
         <tr>
             <td><b>Übersicht (Excel)</b></td>
@@ -27,6 +30,8 @@
             <td colspan="2"><label for="download-calendar">Jahr:</label> <input type="number" id="download-calendar" min="2006" max="{{ date("Y") }}" value="{{ date("Y") }}"></td>
             <td><button id="button-calendar" class="button button-primary button-download" data-href="?page={{ $_GET['page'] }}&download=calendar">Herunterladen</button></td>
         </tr>
+        @endif
+        @if(in_array('druck', $allowed))
         <tr><td colspan="4"><h2>Druck</h2></td></tr>
         <tr>
             <td><b>Pfarrblatt (Word)</b></td>
@@ -40,6 +45,7 @@
         <tr>
             <td valign="bottom">Rückblick:</td><td><label for="download-program-review-from">Von:</label> <input type="text" class="datepicker program-data" id="download-program-review-from" value="{{ date('d.m.Y', strtotime($quarterRueckblick['from'])) }}" size="8"/> <label for="download-program-review-to">Bis:</label> <input type="text" class="datepicker program-data" id="download-program-review-to" value="{{ date('d.m.Y', strtotime($quarterRueckblick['to'])) }}" size="8"/></td>
         </tr>
+        @endif
     </table>
     <script type="text/javascript">
         jQuery('.download-address').click(function(){

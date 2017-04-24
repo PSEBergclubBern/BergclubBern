@@ -30,7 +30,7 @@ class Download
 
     public function detectDownload(){
         if($this->hasDownload()){
-            if($_GET['download'] == "calendar" || $this->checkRights()) {
+            if($this->checkRights()) {
                 $method = "download" . Helpers::snakeToCamelCase($_GET['download'], true);
                 if (method_exists($this, $method)) {
                     set_time_limit (0);
@@ -819,8 +819,22 @@ class Download
 
     private function checkRights(){
         $currentUser = User::findCurrent();
-        if(!$currentUser || !$currentUser->hasCapability('export')){
-            return false;
+        if($_GET['download'] != "calendar") {
+            if (!$currentUser || !$currentUser->hasCapability('export')) {
+                return false;
+            }
+
+            if(!$currentUser->hasCapability('export_adressen') && ($_GET['download'] == 'shipping' || $_GET['download'] == 'members' || $_GET['download'] == 'contributions')){
+                return false;
+            }
+
+            if(!$currentUser->hasCapability('export_touren') && $_GET['download'] == 'touren'){
+                return false;
+            }
+
+            if(!$currentUser->hasCapability('export_druck') && ($_GET['download'] == 'pfarrblatt' || $_GET['download'] == 'program')){
+                return false;
+            }
         }
         return true;
     }

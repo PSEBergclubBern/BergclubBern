@@ -32,10 +32,24 @@ function bcb_register_custom_post_types() {
         "show_in_rest" => false,
         "rest_base" => "",
         "has_archive" => true,
+        "show_in_nav_menu" => true,
         "show_in_menu" => true,
+        "show_in_admin_bar" => true,
         "exclude_from_search" => false,
-        "capability_type" => ['tour', 'touren'],
-        "map_meta_cap" => true,
+        "capability_type" => "tour",
+        "capabilities" => [
+            "create_posts" => "create_tour",
+            "publish_posts" => "publish_tour",
+            "edit_posts" => "edit_tour",
+            "edit_others_posts" => "edit_others_tour",
+            "delete_posts" => "delete_tour",
+            "delete_others_posts" => "delete_others_tour",
+            "read_private_posts" => "read_private_tour",
+            "edit_post" => "edit_tour",
+            "delete_post" => "delete_tour",
+            "read_post" => "read_tour",
+        ],
+        "map_meta_cap" => false,
         "hierarchical" => false,
         "query_var" => true,
         "supports" => array( "title", "editor", "thumbnail" ),
@@ -79,11 +93,23 @@ function bcb_register_custom_post_types() {
         "has_archive" => true,
         "show_in_menu" => true,
         "exclude_from_search" => false,
-        "capability_type" => ['tourenbericht', 'tourenberichte'],
-        "map_meta_cap" => true,
+        "capability_type" => "tourenbericht",
+        "capabilities" => [
+            "create_posts" => "create_tourenbericht",
+            "publish_posts" => "publish_tourenbericht",
+            "edit_posts" => "edit_tourenbericht",
+            "edit_others_posts" => "edit_others_tourenbericht",
+            "delete_posts" => "delete_tourenbericht",
+            "delete_others_posts" => "delete_others_tourenbericht",
+            "read_private_posts" => "read_private_tourenbericht",
+            "edit_post" => "edit_tourenbericht",
+            "delete_post" => "delete_tourenbericht",
+            "read_post" => "read_tourenbericht",
+        ],
+        "map_meta_cap" => false,
         "hierarchical" => false,
         "query_var" => true,
-        "supports" => array( "title", "editor", "thumbnail" ),
+        "supports" => array( "title", "editor" ),
         "menu_position" => 6,
     );
 
@@ -93,6 +119,63 @@ function bcb_register_custom_post_types() {
 }
 
 add_action( 'init', 'bcb_register_custom_post_types' );
+
+/**
+ * Maps the custom capabilites for the custom post list in admin
+ * @param $caps
+ * @param $cap
+ * @param $user_id
+ * @param $args
+ * @return array
+ */
+function bcb_map_meta_cap( $caps, $cap, $user_id, $args ) {
+    $post = null;
+    $post_type = null;
+
+    $checkCaps = [
+        'tour',
+        'tourenbericht',
+    ];
+
+    $capArr = explode("_", $cap);
+
+    /* If editing, deleting, or reading a tour, get the post and post type object. */
+    if (isset($args[0]) && count($capArr) == 2 && in_array($capArr[1], $checkCaps) && ($capArr[0] == 'edit' || $capArr[0] = 'delete' || $capArr[0] = 'read') ) {
+        $post = get_post( $args[0] );
+        $post_type = get_post_type_object( $post->post_type );
+        $caps = array();
+    }
+
+    if($post) {
+        /* If editing a tour, assign the required capability. */
+        if ($capArr[0] == 'edit') {
+            if ($user_id == $post->post_author)
+                $caps[] = $post_type->cap->edit_posts;
+            else
+                $caps[] = $post_type->cap->edit_others_posts;
+        } /* If deleting a tour, assign the required capability. */
+        elseif ($capArr[0] == 'delete') {
+            if ($user_id == $post->post_author)
+                $caps[] = $post_type->cap->delete_posts;
+            else
+                $caps[] = $post_type->cap->delete_others_posts;
+        } /* If reading a private tour, assign the required capability. */
+        elseif ($capArr[0] == 'read') {
+
+            if ('private' != $post->post_status)
+                $caps[] = 'read';
+            elseif ($user_id == $post->post_author)
+                $caps[] = 'read';
+            else
+                $caps[] = $post_type->cap->read_private_posts;
+        }
+    }
+
+    /* Return the capabilities required by the user. */
+    return $caps;
+}
+
+add_filter( 'map_meta_cap', 'bcb_map_meta_cap', 10, 4 );
 
 function bcb_touren_columns($columns) {
     return array_merge( $columns,
