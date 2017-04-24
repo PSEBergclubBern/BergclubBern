@@ -48,7 +48,8 @@ html {
 
 body {
   padding-top: 50px;
-  font-family: 'Roboto', sans-serif; }
+  font-family: 'Roboto', sans-serif;
+  padding-bottom: 30px; }
 
 h1 {
   color: #000452; }
@@ -91,6 +92,14 @@ h1 {
 
 h3 {
   margin: 5px 5px; }
+
+.title-right {
+  font-size: 0.5em;
+  margin-top: 11px;
+  margin-left: 20px; }
+
+.title-right.type-select {
+  margin-top: 10px; }
 
 .hide-links a {
   color: black;
@@ -172,6 +181,23 @@ h3 {
 /* Article */
 article h1 {
   margin-bottom: 0.8em; }
+
+.article-block {
+  margin-left: 2vw;
+  margin-bottom: 7vh; }
+  .article-block h3 {
+    color: #000452;
+    margin-bottom: 0.8em;
+    margin-left: -20px; }
+  .article-block .article-line {
+    padding: 5px 0px;
+    border-bottom: 1px solid rgba(0, 4, 82, 0.25); }
+
+.bericht-block {
+  margin-top: -3vh; }
+  .bericht-block h2 {
+    color: #000452;
+    margin-bottom: 0.8em; }
 
 /* Navigation */
 .navbar-inverse .navbar-brand {
