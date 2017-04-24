@@ -280,6 +280,7 @@ class Import extends Init
                         Common::DATE_TO_DB                      => date('Y-m-d', strtotime($tourEntity->dateTo)),
                         Common::LEADER                          => $tourEntity->leader,
                         Common::CO_LEADER                       => $tourEntity->coLeader,
+                        Common::IS_ADULT_OR_YOUTH               => $tourEntity->isYouth,
                         TourMetaBox::PROGRAM                    => $tourEntity->program,
                         TourMetaBox::COSTS                      => $tourEntity->costs,
                         TourMetaBox::COSTS_FOR                  => $tourEntity->costsFor,

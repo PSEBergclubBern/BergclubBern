@@ -35,6 +35,7 @@ class Tour
     public $leader;
     public $coLeader;
     public $jsEvent;
+    public $isYouth;
 
 
     /**
@@ -69,6 +70,15 @@ class Tour
         $this->leader = $array['leiter_a'];
         $this->coLeader = $array['leiter_b'];
         $this->jsEvent = $array['js'] * 1;
+
+        $isYouth = 0;
+        if($array['bcbj'] == 1){
+            $isYouth = 1;
+            if($array['bcb'] == 1){
+                $isYouth = 2;
+            }
+        }
+        $this->isYouth = $isYouth;
     }
 
     public function __toString()

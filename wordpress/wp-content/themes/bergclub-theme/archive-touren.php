@@ -8,8 +8,6 @@ if(isset($_GET['type'])){
     $currentTourenart = $_GET['type'];
 }
 ?>
-
-
     <div class="container">
         <h1>
             <div class="pull-right title-right type-select">
@@ -38,32 +36,7 @@ if(isset($_GET['type'])){
                     </div>
                 </div>
                 <?php
-                $metaQuery = [
-                    'relation' => 'AND',
-                    [
-                        'key' => '_dateFromDB',
-                        'value' => date('Y-m-d'),
-                        'type' => 'DATE',
-                        'compare' => '>='
-                    ]
-                ];
-
-                if(!empty($currentTourenart)){
-                    $metaQuery[] = [
-                            'key' => '_type',
-                            'value' => $currentTourenart,
-                            'compare' => '='
-                        ];
-                }
-
-                $query =  new WP_Query( array(
-                    'posts_per_page' => -1,
-                    'post_type' => 'touren',
-                    'order' => 'ASC',
-                    'orderby' => '_dateFromDB',
-                    'meta_query' => $metaQuery,
-                ));
-                while ($query->have_posts()) : $query->the_post();
+                while (have_posts()) : the_post();
                     $typeDisplay = bcb_touren_meta(get_the_ID(), "type");
                     $typeWithTechnicalRequirementsDisplay = bcb_touren_meta(get_the_ID(), 'typeWithTechnicalRequirements');
                     ?>
@@ -79,6 +52,9 @@ if(isset($_GET['type'])){
                         </div>
                     </div>
                 <?php endwhile; ?>
+            </div>
+            <div class="container">
+                <?php bcb_pagination(); ?>
             </div>
         <?php }else{ ?>
             <div class="container">

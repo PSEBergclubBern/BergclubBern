@@ -28,7 +28,17 @@ while (have_posts()) : the_post();
     ?>
     <div class="container">
         <div class="row">
-            <h1><?php the_title(); ?></h1>
+            <h1>
+                <?php
+                $isYouth = bcb_touren_meta(get_the_ID(), 'isYouth');
+                if($isYouth == 1 || $isYouth == 2){
+                    ?>
+                    <img class="pull-right" src="<?= get_template_directory_uri() ?>/img/bergclub-jugend-sm.png" style="margin-left:20px">
+                <?php }if($isYouth == 0 || $isYouth == 2){ ?>
+                    <img class="pull-right" src="<?= get_template_directory_uri() ?>/img/bergclub-sm.png" style="margin-left:20px">
+                <?php } ?>
+                <?php the_title(); ?>
+            </h1>
         </div>
         <div class="row article-block">
             <h3>Toureninfo</h3>

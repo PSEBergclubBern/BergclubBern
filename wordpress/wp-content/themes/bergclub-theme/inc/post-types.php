@@ -194,7 +194,7 @@ function bcb_touren_custom_columns($column, $postId){
 }
 
 function bcb_pre_get_posts(WP_Query $query){
-    if ( $query->is_main_query() && ( $orderby = $query->get( 'orderby' ) ) ) {
+    if (is_admin() && $query->is_main_query() && ( $orderby = $query->get( 'orderby' ) ) ) {
 
         switch( $orderby ) {
             case 'type':
@@ -210,8 +210,166 @@ function bcb_pre_get_posts(WP_Query $query){
                 $query->set( 'orderby', 'meta_value' );
                 break;
         }
-
     }
+
+    if(!is_admin() && isset($query->query['post_type']) && ($query->query['post_type'] == 'touren' || $query->query['post_type'] == 'tourenberichte')){
+        $currentTourenart = '';
+        if(isset($_GET['type'])){
+            $currentTourenart = $_GET['type'];
+        }
+
+        if(bcb_is_jugend()) {
+            if($query->query['post_type'] == 'tourenberichte') {
+                $query->set('meta_query', [
+                    'relation' => 'OR',
+                    [
+                        'key' => '_isYouth',
+                        'value' => '1',
+                        'compare' => '='
+                    ],
+                    [
+                        'key' => '_isYouth',
+                        'value' => '2',
+                        'compare' => '='
+                    ],
+                ]);
+            }else{
+                $query->set('order', 'ASC');
+                $query->set('orderby', '_dateFromDB');
+
+                if(empty($currentTourenart)) {
+                    $query->set('meta_query', [
+                        'relation' => 'AND',
+                        [
+                            'key' => '_dateFromDB',
+                            'value' => date('Y-m-d'),
+                            'type' => 'DATE',
+                            'compare' => '>='
+                        ],
+                        [
+                            'relation' => 'OR',
+                            [
+                                'key' => '_isYouth',
+                                'value' => '1',
+                                'compare' => '='
+                            ],
+                            [
+                                'key' => '_isYouth',
+                                'value' => '2',
+                                'compare' => '='
+                            ],
+                        ],
+                    ]);
+                }else{
+                    $query->set('meta_query', [
+                        'relation' => 'AND',
+                        [
+                            'key' => '_dateFromDB',
+                            'value' => date('Y-m-d'),
+                            'type' => 'DATE',
+                            'compare' => '>='
+                        ],
+                        [
+                            'key' => '_type',
+                            'value' => $currentTourenart,
+                            'compare' => '='
+                        ],
+                        [
+                            'relation' => 'OR',
+                            [
+                                'key' => '_isYouth',
+                                'value' => '1',
+                                'compare' => '='
+                            ],
+                            [
+                                'key' => '_isYouth',
+                                'value' => '2',
+                                'compare' => '='
+                            ],
+                        ],
+                    ]);
+                }
+            }
+        }else{
+            if($query->query['post_type'] == 'tourenberichte') {
+                $query->set('meta_query', [
+                    'relation' => 'OR',
+                    [
+                        'key' => '_isYouth',
+                        'compare' => 'NOT EXISTS'
+                    ],
+                    [
+                        'key' => '_isYouth',
+                        'value' => '0',
+                        'compare' => '='
+                    ],
+                    [
+                        'key' => '_isYouth',
+                        'value' => '2',
+                        'compare' => '='
+                    ],
+                ]);
+            }else{
+                $query->set('order', 'ASC');
+                $query->set('orderby', '_dateFromDB');
+
+                if(empty($currentTourenart)) {
+                    $query->set('meta_query', [
+                        'relation' => 'AND',
+                        [
+                            'key' => '_dateFromDB',
+                            'value' => date('Y-m-d'),
+                            'type' => 'DATE',
+                            'compare' => '>='
+                        ],
+                        [
+                            'relation' => 'OR',
+                            [
+                                'key' => '_isYouth',
+                                'value' => '0',
+                                'compare' => '='
+                            ],
+                            [
+                                'key' => '_isYouth',
+                                'value' => '2',
+                                'compare' => '='
+                            ],
+                        ],
+                    ]);
+                }else{
+                    $query->set('meta_query', [
+                        'relation' => 'AND',
+                        [
+                            'key' => '_dateFromDB',
+                            'value' => date('Y-m-d'),
+                            'type' => 'DATE',
+                            'compare' => '>='
+                        ],
+                        [
+                            'key' => '_type',
+                            'value' => $currentTourenart,
+                            'compare' => '='
+                        ],
+                        [
+                            'relation' => 'OR',
+                            [
+                                'key' => '_isYouth',
+                                'value' => '0',
+                                'compare' => '='
+                            ],
+                            [
+                                'key' => '_isYouth',
+                                'value' => '2',
+                                'compare' => '='
+                            ],
+                        ],
+                    ]);
+                }
+            }
+        }
+    }
+
+    return $query;
 }
 
 add_filter('manage_touren_posts_columns' , 'bcb_touren_columns');

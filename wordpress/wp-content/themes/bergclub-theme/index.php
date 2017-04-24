@@ -31,17 +31,12 @@ get_header() ?>
                     <h3>Nächste Touren <?php if(bcb_is_jugend()){ echo "Jugend"; } ?></h3>
                     <ul class="list-group hide-links">
                         <?php
+
                         $query =  new WP_Query( array(
                             'post_type' => 'touren',
                             'posts_per_page' => 5,
                             'order' => 'ASC',
                             'orderby' => '_dateFromDB',
-                            'meta_query' => [[
-                                'key' => '_dateFromDB',
-                                'value' => date('Y-m-d'),
-                                'type' => 'DATE',
-                                'compare' => '>='
-                            ]]
                         ));
                         while ($query->have_posts()) : $query->the_post();
                             $dateDisplay = bcb_touren_meta(get_the_ID(), 'dateDisplayShort');
