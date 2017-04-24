@@ -21,9 +21,9 @@
                     <tr><td>Übernachtung</td><td>{{ $tour['sleepOver'] }}</td></tr>
                 @endif
 
-                <tr><td>Einzahlung für:</td><td>{!! nl2br( $tour['payment'] ); !!}</td></tr>
-                <tr><td>Zugunsten von:</td><td>{!! nl2br( $tour['inFavor'] ); !!}</td></tr>
-                <tr><td>IBAN</td><td>{{ $tour['iban'] }}</td></tr>
+                <tr><td>Anzahl Teilnehmer:</td><td>{{ $tour['numberOfParticipants'] }}</td></tr>
+
+                <tr><td>Auszahlung für:</td><td>@if( $tour['paymentIsForLeader'] ) Leiter @Else Co-Leiter @Endif </td></tr>
 
             </table>
 
