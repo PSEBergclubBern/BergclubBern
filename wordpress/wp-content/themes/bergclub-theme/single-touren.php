@@ -20,7 +20,7 @@ get_header(); ?>
         $foodDisplay = get_post_meta(get_the_ID(), "_food", true);
         $mapMaterialDisplay = get_post_meta(get_the_ID(), "_mapMaterial", true);
         $onlineMap = get_post_meta(get_the_ID(), "_onlineMap", true);
-        $onlineMapDisplay = empty($onlineMap) ? $onlineMap : "<a href=\"" . $onlineMapDisplay . "\">" . $onlineMapDisplay . "</a>";
+        $onlineMapDisplay = empty($onlineMap) ? $onlineMap : "<a target=\"_blank\" href=\"" . $onlineMap . "\">" . $onlineMap . "</a>";
         $additionalInfoDisplay = get_post_meta(get_the_ID(), "_additionalInfo", true);
 
 
@@ -41,7 +41,7 @@ get_header(); ?>
             "Treffpunkt" => $meetpointWithTimeDisplay,
             "Rückkehr" => $returnBackDisplay,
             "Tourenleiter" => $leaderAndCoLeaderDisplay,
-            "Program" => $programDisplay,
+            "Programm" => $programDisplay,
         );
 
         $tourInfo = array(

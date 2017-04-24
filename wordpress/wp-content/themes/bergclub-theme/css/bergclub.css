@@ -48,7 +48,8 @@ html {
 
 body {
   padding-top: 50px;
-  font-family: 'Roboto', sans-serif; }
+  font-family: 'Roboto', sans-serif;
+  padding-bottom: 30px; }
 
 h1 {
   color: #000452; }
@@ -183,6 +184,12 @@ article h1 {
   .article-block .article-line {
     padding: 5px 0px;
     border-bottom: 1px solid rgba(0, 4, 82, 0.25); }
+
+.bericht-block {
+  margin-top: -3vh; }
+  .bericht-block h2 {
+    color: #000452;
+    margin-bottom: 0.8em; }
 
 /* Navigation */
 .navbar-inverse .navbar-brand {

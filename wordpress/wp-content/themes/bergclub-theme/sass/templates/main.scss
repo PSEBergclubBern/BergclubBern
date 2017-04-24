@@ -61,6 +61,7 @@ html {
 body {
   padding-top: 50px;
   font-family: 'Roboto', sans-serif;
+  padding-bottom: 30px;
 }
 
 h1{
@@ -238,6 +239,14 @@ article h1 {
   .article-line {
     padding: 5px 0px;
     border-bottom: 1px solid $transparentized-primary-dark-color;
+  }
+}
+
+.bericht-block{
+  margin-top: -3vh;
+  h2{
+    color: $primary-dark-color;
+    margin-bottom: 0.8em;
   }
 }
 
