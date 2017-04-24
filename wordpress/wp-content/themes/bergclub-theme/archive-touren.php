@@ -61,25 +61,16 @@ if(isset($_GET['type'])){
                     'meta_query' => $metaQuery,
                 ));
                 while ($query->have_posts()) : $query->the_post();
-                    $date_from = get_post_meta(get_the_ID(), "_dateFrom", true);
-                    $date_to =  get_post_meta(get_the_ID(), "_dateTo", true);
-                    if(!empty($date_to) && $date_to != $date_from){
-                        $dateDisplay = date("d.m.", strtotime($date_from)) . "-" . date("d.m.y", strtotime($date_to));
-                    } else {
-                        $dateDisplay = date("d.m.y", strtotime($date_from));
-                    }
+                    $dateDisplay = bcb_touren_meta(get_the_ID(), "dateDisplayFull");
                     $typeDisplay = bcb_touren_meta(get_the_ID(), "type");
-                    $reqTechnical = get_post_meta(get_the_ID(), "_requirementsTechnical", true);
-                    if(!empty($reqTechnical)) {
-                        $typeDisplay .= ", " . $reqTechnical;
-                    }
+                    $typeWithTechnicalRequirementsDisplay = bcb_touren_meta(get_the_ID(), 'typeWithTechnicalRequirements');
                     ?>
                     <div class="row add-link">
                         <div class="col-sm-2 italic-sm">
                             <?= bcb_touren_meta(get_the_ID(), 'dateDisplayFull'); ?>
                         </div>
                         <div class="col-sm-3 italic-sm">
-                            <?= $typeDisplay; ?>
+                            <?= $typeWithTechnicalRequirementsDisplay; ?>
                         </div>
                         <div class="col-sm-7">
                             <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>

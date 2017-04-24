@@ -45,9 +45,7 @@ get_header() ?>
                         ));
                         while ($query->have_posts()) : $query->the_post();
                             $dateDisplay = bcb_touren_meta(get_the_ID(), 'dateDisplayShort');
-                            $type = bcb_touren_meta(get_the_ID(), 'type');
-                            $reqTechnical = bcb_touren_meta(get_the_ID(), 'requirementsTechnical');
-                            $typeDisplay = bcb_touren_meta(get_the_ID(), 'type') . ", " . $reqTechnical;
+                            $typeWithTechnicalRequirementsDisplay = bcb_touren_meta(get_the_ID(), 'typeWithTechnicalRequirements');
                             $riseUpDisplay = bcb_touren_meta(get_the_ID(), "riseUpMeters");
                             $riseDownDisplay = bcb_touren_meta(get_the_ID(), "riseDownMeters");
                             $durationDisplay = bcb_touren_meta(get_the_ID(), "duration");
@@ -58,7 +56,7 @@ get_header() ?>
                                 </div>
                                 <div class="row additional-info">
                                     <div class="pull-left additional-info-item"><div class="icon icon-date"></div> <?= $dateDisplay ?></div>
-                                    <div class="pull-left additional-info-item"><div class="icon icon-type"></div> <?= $typeDisplay ?></div>
+                                    <div class="pull-left additional-info-item"><div class="icon icon-type"></div> <?= $typeWithTechnicalRequirementsDisplay ?></div>
                                     <div class="pull-left additional-info-item"><div class="icon icon-up"></div> <?= $riseUpDisplay ?></div>
                                     <div class="pull-left additional-info-item"><div class="icon icon-down"></div> <?= $riseDownDisplay ?></div>
                                     <div class="pull-left additional-info-item"><div class="icon icon-duration"></div> <?= $durationDisplay ?></div>
