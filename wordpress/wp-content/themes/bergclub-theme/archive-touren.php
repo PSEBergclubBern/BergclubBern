@@ -61,7 +61,6 @@ if(isset($_GET['type'])){
                     'meta_query' => $metaQuery,
                 ));
                 while ($query->have_posts()) : $query->the_post();
-                    $dateDisplay = bcb_touren_meta(get_the_ID(), "dateDisplayFull");
                     $typeDisplay = bcb_touren_meta(get_the_ID(), "type");
                     $typeWithTechnicalRequirementsDisplay = bcb_touren_meta(get_the_ID(), 'typeWithTechnicalRequirements');
                     ?>
@@ -77,9 +76,6 @@ if(isset($_GET['type'])){
                         </div>
                     </div>
                 <?php endwhile; ?>
-            </div>
-            <div class="container">
-                <?php //bcb_pagination(); ?>
             </div>
         <?php }else{ ?>
             <div class="container">

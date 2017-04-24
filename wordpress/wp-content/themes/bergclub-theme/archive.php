@@ -21,11 +21,8 @@ get_header(); ?>
                     <div class="col-sm-3">
                         Datum
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-9">
                         Titel
-                    </div>
-                    <div class="col-sm-3">
-                        Author
                     </div>
                 </div>
                 <?php while (have_posts()) : the_post(); ?>
@@ -33,11 +30,8 @@ get_header(); ?>
                         <div class="col-sm-3 italic-sm">
                             <?php echo get_the_date(); ?>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-9">
                             <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
-                        </div>
-                        <div class="col-sm-3 italic-sm">
-                            <?php the_author(); ?>
                         </div>
                     </div>
                 <?php endwhile; ?>

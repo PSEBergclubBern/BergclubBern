@@ -49,7 +49,7 @@ get_header() ?>
                             $riseUpDisplay = bcb_touren_meta(get_the_ID(), "riseUpMeters");
                             $riseDownDisplay = bcb_touren_meta(get_the_ID(), "riseDownMeters");
                             $durationDisplay = bcb_touren_meta(get_the_ID(), "duration");
-                        ?>
+                            ?>
                             <li class="list-group-item add-link">
                                 <div class="row">
                                     <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
@@ -57,9 +57,15 @@ get_header() ?>
                                 <div class="row additional-info">
                                     <div class="pull-left additional-info-item"><div class="icon icon-date"></div> <?= $dateDisplay ?></div>
                                     <div class="pull-left additional-info-item"><div class="icon icon-type"></div> <?= $typeWithTechnicalRequirementsDisplay ?></div>
-                                    <div class="pull-left additional-info-item"><div class="icon icon-up"></div> <?= $riseUpDisplay ?></div>
-                                    <div class="pull-left additional-info-item"><div class="icon icon-down"></div> <?= $riseDownDisplay ?></div>
-                                    <div class="pull-left additional-info-item"><div class="icon icon-duration"></div> <?= $durationDisplay ?></div>
+                                    <?php if(!empty($riseUpDisplay)){ ?>
+                                        <div class="pull-left additional-info-item"><div class="icon icon-up"></div> <?= $riseUpDisplay ?></div>
+                                    <?php } ?>
+                                    <?php if(!empty($riseDownDisplay)){ ?>
+                                        <div class="pull-left additional-info-item"><div class="icon icon-down"></div> <?= $riseDownDisplay ?></div>
+                                    <?php } ?>
+                                    <?php if(!empty($durationDisplay)){ ?>
+                                        <div class="pull-left additional-info-item"><div class="icon icon-duration"></div> <?= $durationDisplay ?></div>
+                                    <?php } ?>
                                 </div>
                             </li>
                             <?php
