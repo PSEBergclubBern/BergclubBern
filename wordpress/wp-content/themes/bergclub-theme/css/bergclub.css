@@ -178,7 +178,8 @@ article h1 {
   margin-bottom: 7vh; }
   .article-block h3 {
     color: #000452;
-    margin-bottom: 0.8em; }
+    margin-bottom: 0.8em;
+    margin-left: -20px; }
   .article-block .article-line {
     padding: 5px 0px;
     border-bottom: 1px solid rgba(0, 4, 82, 0.25); }

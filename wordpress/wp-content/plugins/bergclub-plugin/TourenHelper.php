@@ -77,8 +77,12 @@ class TourenHelper
 
     public static function getSignupToWithEmail($postId){
         $signupTo = self::getMeta($postId, "signupTo");
-        $name = self::getFullName($signupTo);
-        return $name . " (<a href=\"mailto:" . get_user_meta($signupTo, "email", true) . "\">Mail</a>)";
+        if($signupTo) {
+            $name = self::getFullName($signupTo);
+            return $name . " (<a href=\"mailto:" . get_user_meta($signupTo, "email", true) . "\">Mail</a>)";
+        }
+
+        return null;
     }
 
     public static function getFullName($userId){
@@ -120,14 +124,6 @@ class TourenHelper
         $time = self::getMeta($postId, "meetingPointTime");
         if(!empty($meetpoint) && !empty($time)){
             return $meetpoint . ", " . $time . " Uhr";
-        }
-        return null;
-    }
-
-    public static function getReturnBack($postId){
-        $returnBack = self::getMeta($postId, "returnBack");
-        if(!empty($returnBack)){
-            return $returnBack . " Uhr";
         }
         return null;
     }

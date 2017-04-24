@@ -24,7 +24,11 @@ get_header(); ?>
         $additionalInfoDisplay = get_post_meta(get_the_ID(), "_additionalInfo", true);
 
 
-        $costsDisplay = get_post_meta(get_the_ID(), "_costs", true) . " Franken";
+        $costs = get_post_meta(get_the_ID(), "_costs", true);
+        $costsDisplay = "Keine Angabe";
+        if(is_numeric($costs) && $costs > 0){
+            $costsDisplay = "CHF " . number_format($costs, 2, '.', '');
+        }
         $costsForDisplay = get_post_meta(get_the_ID(), "_costsFor", true);
 
         $signupUntil = get_post_meta(get_the_ID(), "_signupUntil", true);
