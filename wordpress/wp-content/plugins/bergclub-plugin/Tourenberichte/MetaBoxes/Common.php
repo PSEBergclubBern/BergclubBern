@@ -25,9 +25,18 @@ class Common extends MetaBox {
         $args = array(
             'post_type'         => BCB_CUSTOM_POST_TYPE_TOUREN,
             'post_status'       => 'publish',
+            'posts_per_page'    => -1,
             'meta_key'          => \BergclubPlugin\Touren\MetaBoxes\Common::DATE_FROM_DB,
             'orderby'			=> 'meta_value',
-            'order'				=> 'DESC'
+            'order'				=> 'DESC',
+            'meta_query'        => [
+                  [
+                      'key' => '_dateToDB',
+                      'value' => date('Y-m-d'),
+                      'type' => 'DATE',
+                      'compare' => '<='
+                  ],
+            ],
         );
         $posts_array = get_posts($args);
 
@@ -54,8 +63,14 @@ class Common extends MetaBox {
 
         //die();
 
+        $posts = [];
+        $tourId = get_post_meta($post->ID, '_touren', true);
+        if(!empty($tourId)){
+            $posts[] = get_post($tourId);
+        }
+
 		return array(
-			'touren'   => $posts_array,
+			'touren'   => array_merge($posts, $posts_array),
 		);
 	}
 

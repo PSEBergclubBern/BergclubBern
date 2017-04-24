@@ -1,7 +1,7 @@
 <table>
     <tbody>
         <tr>
-            <th align="left">Bisher publizierte Touren (gehört zu Tour mit ID {{$values[ \BergclubPlugin\Tourenberichte\MetaBoxes\Common::TOUREN]}})</th>
+            <th align="left">Tour auswählen:</th>
             <td>
                 <select name="{{ \BergclubPlugin\Tourenberichte\MetaBoxes\Common::TOUREN }}">
                     @foreach($touren as $tour)
