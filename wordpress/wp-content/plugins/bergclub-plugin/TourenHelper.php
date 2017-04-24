@@ -75,16 +75,6 @@ class TourenHelper
         return $leaderName;
     }
 
-    public static function getSignupToWithEmail($postId){
-        $signupTo = self::getMeta($postId, "signupTo");
-        if($signupTo) {
-            $name = self::getFullName($signupTo);
-            return $name . " (<a href=\"mailto:" . get_user_meta($signupTo, "email", true) . "\">Mail</a>)";
-        }
-
-        return null;
-    }
-
     public static function getFullName($userId){
         $firstName = get_user_meta($userId, "first_name", true);
         $lastName = get_user_meta($userId, "last_name", true);

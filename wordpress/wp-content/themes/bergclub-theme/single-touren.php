@@ -33,7 +33,7 @@ while (have_posts()) : the_post();
 
     $signupUntil = get_post_meta(get_the_ID(), "_signupUntil", true);
     $signupUntilDisplay = empty($signupUntil) ? "" : date("d.m.y", strtotime($signupUntil));
-    $signupToDisplay = bcb_touren_meta(get_the_ID(), "signupToWithEmail");
+    $signupToDisplay = bcb_touren_meta(get_the_ID(), "signupTo");
 
     $generalInfo = array(
         "Typ" => $typeWithTechnicalRequirementsDisplay,
