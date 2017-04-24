@@ -12,14 +12,14 @@ if(isset($_GET['type'])){
 
     <div class="container">
         <h1>
-            <div class="pull-right" style="font-size:0.5em;margin-top:10px;margin-left:20px">
+            <div class="pull-right title-right type-select">
                 Art: <select id="tourenart"><option value="">Alle</option>
                     <?php foreach($tourenarten as $key => $tourenart){ ?>
                     <option value="<?= $key ?>"<?php if($key == $currentTourenart){ ?> selected<?php } ?>><?= $tourenart ?></option>
                     <?php } ?>
                 </select>
             </div>
-            <div class="pull-right" style="font-size:0.5em;margin-top:11px;margin-left:20px">
+            <div class="pull-right title-right download">
                 <a target="_blank" href="<?= BCB_CALENDAR_URL ?>"><span class="glyphicon glyphicon-download-alt"></span> Kalender <?= date('Y') ?> herunterladen</a>
             </div>
             <?php the_archive_title(); ?>
