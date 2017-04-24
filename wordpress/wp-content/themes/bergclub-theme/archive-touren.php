@@ -36,6 +36,7 @@ if(isset($_GET['type'])){
                 </div>
                 <?php
                 $metaQuery = [
+                    'relation' => 'AND',
                     [
                         'key' => '_dateFromDB',
                         'value' => date('Y-m-d'),
