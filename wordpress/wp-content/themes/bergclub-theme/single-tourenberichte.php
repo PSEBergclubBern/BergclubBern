@@ -53,10 +53,21 @@ while (have_posts()) : the_post();
         </div>
         <div class="row bericht-block">
             <h2>Tourenbericht</h2>
+            <div class="report-images row">
+                <?php if(get_post_gallery()):
+                    $gallery = get_post_gallery(get_the_ID(), false);
+                    $gallery_attachments_ids = explode(",", $gallery["ids"]);
+                    foreach($gallery_attachments_ids as $id): ?>
+                        <a href="<?=wp_get_attachment_url($id)?>" data-lightbox="report-galary">
+                            <img alt="Berichtbild" src="<?=wp_get_attachment_thumb_url($id)?>" class="report-image">
+                        </a>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
             <?php the_content('<p>', '</p>'); ?>
         </div>
     </div>
-<?php
+    <?php
 endwhile;
 ?>
 

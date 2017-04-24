@@ -299,5 +299,11 @@ label.error {
 @media only screen and (max-width: 768px) {
   .italic-sm {
     font-style: italic; } }
+/* lightbox images */
+.gallery {
+  display: none; }
+
+.report-images {
+  margin-bottom: 25px; }
 
 /*# sourceMappingURL=bergclub.css.map */
