@@ -74,7 +74,7 @@ Folgende Meta Keys stehen momentan zur Verfügung (Falls Eintrag nicht gefunden 
 * `dateFrom`: Liefert das "Von" Datum im Format "d.m.Y"
 * `dateTo`: Liefert das "Bis" Datum im Format "d.m.Y" (falls vorhanden)
 * `dateDisplayShort`: Liefert das Datum im Format "d.m." (Eintägig) resp. "d.m. - d.m." (Mehrtägig)
-* `dateDisplayLong`: Liefert das Datum im Format "d.m.Y" (Eintägig) resp. "d.m.Y - d.m.Y" (Mehrtägig)
+* `dateDisplayFull`: Liefert das Datum im Format "d.m.Y" (Eintägig) resp. "d.m.Y - d.m.Y" (Mehrtägig)
 * `isSeveralDays`: Liefert true, falls Mehrtägig, ansonsten false
 * `leader`: Liefert Name des Leiters (in DB ist user id gespeichert)
 * `coLeader`: Liefert Name des Co-Leiters (in DB ist user id gespeichert)

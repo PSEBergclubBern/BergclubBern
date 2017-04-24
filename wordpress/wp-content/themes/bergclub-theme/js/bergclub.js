@@ -12,3 +12,11 @@ $(document).ready(function(){
         $(this).html(email);
     });
 });
+
+$('#tourenart').change(function(){
+    var url = '//' + window.location.hostname + window.location.pathname;
+    if($(this).val() != ''){
+        url += '?type=' + $(this).val();
+    }
+    document.location.href = url;
+});
