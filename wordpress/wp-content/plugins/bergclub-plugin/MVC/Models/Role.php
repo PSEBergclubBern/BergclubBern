@@ -152,8 +152,8 @@ class Role implements IModel
      */
     public function save()
     {
-        if($this->key=="bcb_administrator"){
-            $this->key="administrator";
+        if($this->type == self::TYPE_SYSTEM){
+            $this->key = Helpers::ensureKeyHasNoPrefix($this->key);
         }
         $wpRole = get_role($this->key);
         if(!$wpRole){

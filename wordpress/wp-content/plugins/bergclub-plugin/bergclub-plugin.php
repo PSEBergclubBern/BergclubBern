@@ -57,6 +57,17 @@ function bcb_register_session(){
     }
 }
 
+add_action( 'admin_menu', 'bcb_remove_admin_pages' );
+function bcb_remove_admin_pages() {
+    $user = wp_get_current_user();
+    if(!in_array('administrator', (array) $user->roles)) {
+        remove_menu_page('profile.php');
+        remove_submenu_page('users.php', 'profile.php');
+        remove_menu_page('edit-comments.php');
+        remove_menu_page('tools.php');
+    }
+}
+
 /**
  * Looks trough all first level folders in plugins sub folder and includes the given file name if found.
  * @param string $fileName the file name to look for.

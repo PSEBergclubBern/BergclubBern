@@ -132,6 +132,8 @@ if ( ! function_exists( 'bcb_enqueue_scripts' ) ) {
 
 add_action( 'wp_enqueue_scripts', 'bcb_enqueue_scripts' );
 
+add_editor_style(  get_template_directory_uri() . '/css/bergclub.css' );
+
 if ( ! function_exists( 'bcb_carousel_images_css' ) ) {
     /**
      * Creates inline css for the background images located in folder img/carousel.
