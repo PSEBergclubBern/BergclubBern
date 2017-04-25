@@ -26,6 +26,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 if( defined( 'WP_CLI' ) && WP_CLI ) {
     WP_CLI::add_command( 'bergclub import', 'BergclubPlugin\Commands\Import' );
     WP_CLI::add_command( 'bergclub mitteilung', 'BergclubPlugin\Commands\Mitteilung' );
+    WP_CLI::add_command( 'bergclub pseudo-users', 'BergclubPlugin\Commands\PseudoUser' );
 }
 
 /*
