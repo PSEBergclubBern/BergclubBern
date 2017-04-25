@@ -565,9 +565,14 @@ class Download
             $date_to =  bcb_touren_meta($post->ID, "dateTo");
             $type = bcb_touren_meta($post->ID, "type");
             $reqTechnical = bcb_touren_meta($post->ID, "requirementsTechnical");
+            $isYouth = bcb_touren_meta($post->ID, "isYouth");
 
             if(!empty($date_from)) {
                 $item = [];
+
+                if($isYouth == 1){
+                    $item['isYouth'] = 'Jugend';
+                }
                 if (!empty($type)) {
                     $item['type'] = $type;
                     if (!empty($reqTechnical)) {
