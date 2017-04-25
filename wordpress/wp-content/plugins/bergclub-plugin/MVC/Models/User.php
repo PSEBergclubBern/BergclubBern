@@ -191,6 +191,14 @@ class User implements IModel
         return $users;
     }
 
+    public static function findByLogin($login){
+        $wpUser = get_user_by('login', $login);
+        if(!$wpUser){
+            return null;
+        }
+        return self::find($wpUser->ID);
+    }
+
     public static function findMitgliederWithoutSpouse(){
         $users = User::findMitglieder();
         foreach($users as $key => $user){
@@ -655,6 +663,12 @@ class User implements IModel
         if(is_numeric($spouseId)) {
             $this->spouse = $spouseId;
         }
+    }
+
+    public function unsetSpouse(){
+        $this->spouse = null;
+        $this->data['main_address'] = null;
+        update_user_meta($this->main['ID'], 'spouse', $this->spouse);
     }
 
     /**

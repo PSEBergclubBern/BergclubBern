@@ -4,11 +4,12 @@
 
 To see the concept, click [here.](CONCEPT.md)
 
-## HowTo Code
+## HowTo
 
-This project has an Vagrant configuration File in the root. The general procedure is:
+This project has a Vagrant configuration File in the root. The general procedure is:
 
-1. Install Vagrant (https://www.vagrantup.com/) and VirtualBox (https://www.virtualbox.org/)
+1. Install Vagrant (https://www.vagrantup.com/) and VirtualBox (https://www.virtualbox.org/). If you run into problems,
+   uninstall VirtualBox and install a previous version of VirtualBox. 
 2. Install the vagrant plugin (`vagrant plugin install vagrant-hostsupdater`) for automatically adding host entries (only Linux / Mac).
 3. Clone this repository in a directory
 4. Navigate to that directory in a terminal and run the command `vagrant up`

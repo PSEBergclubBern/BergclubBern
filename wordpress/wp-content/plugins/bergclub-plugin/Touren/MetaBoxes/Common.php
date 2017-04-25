@@ -17,6 +17,7 @@ class Common extends MetaBox {
 	const DATE_TO_IDENTIFIER = '_dateTo';
 	const DATE_FROM_DB = '_dateFromDB';
 	const DATE_TO_DB = '_dateToDB';
+	const IS_ADULT_OR_YOUTH = '_isYouth';
 	const LEADER = '_leader';
 	const CO_LEADER = '_coLeader';
 	const SIGNUP_UNTIL = '_signupUntil';
@@ -29,6 +30,7 @@ class Common extends MetaBox {
 			self::DATE_TO_IDENTIFIER,
 			self::DATE_FROM_DB,
 			self::DATE_TO_DB,
+            self::IS_ADULT_OR_YOUTH,
 			self::LEADER,
 			self::CO_LEADER,
 			self::SIGNUP_UNTIL,
@@ -70,22 +72,52 @@ class Common extends MetaBox {
 
 
     protected function addAdditionalValuesForView() {
-		$roles = wp_get_current_user()->roles;
-		if ( in_array( 'bcb_leiter', $roles ) && !in_array('bcb_tourenchef', $roles) && !in_array('bcb_redaktion', $roles) ) {
-			$leiter = array( wp_get_current_user() );
-		} else {
-			$leiter = get_users( array( 'role' => 'bcb_leiter' ) );
-		}
+        global $post;
+
+        $leiter = [];
+
+        $coLeiter = [];
 
         $object = new \stdClass();
         $object->ID = 0;
         $object->first_name = '';
         $object->last_name = '';
 
+        $coLeiter[] = $object;
+
+        $events = [];
+
+        if($post){
+            $leader = get_post_meta($post->ID, '_leader', true);
+            if(!empty($leader)){
+                $leader = User::find($leader);
+                if(!empty($leader)) {
+                    $leiter[] = $leader;
+                }
+            }
+
+            $coLeader = get_post_meta($post->ID, '_coLeader', true);
+            if(!empty($coLeader)){
+                $coLeader = User::find($coLeader);
+                if(!empty($coLeader)) {
+                    $coLeiter[] = $coLeader;
+                }
+            }
+        }
+
+		$roles = wp_get_current_user()->roles;
+		if ( (in_array( 'bcb_leiter', $roles ) || in_array( 'bcb_leiter_jugend', $roles )) && !in_array('bcb_tourenchef', $roles) && !in_array('bcb_tourenchef_jugend', $roles) && !in_array('bcb_redaktion', $roles) ) {
+			$leiter = array_merge($leiter, array(User::findCurrent()));
+		} else {
+			$leiter = array_merge($leiter, User::findByRole('bcb_leiter'));
+		}
+
+
         return array(
 			'leiter'   => $leiter,
-			'coLeiter' => array_merge(array($object), User::findMitglieder()),
+			'coLeiter' => array_merge($coLeiter, User::findMitglieder()),
 			'signUpTo' => array_merge(get_users( array( 'role' => 'bcb_leiter' ) ), User::findMitglieder()),
+            'events'   => array(0 => 'BCB', 1 => 'BCB Jugend', 2 => 'Beides'),
 		);
 	}
 

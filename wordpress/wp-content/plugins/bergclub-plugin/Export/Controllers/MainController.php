@@ -14,9 +14,67 @@ class MainController extends AbstractController
     protected $view = 'pages.main';
 
     protected function first(){
+
+        $quarterTouren = [
+            [
+                'from' => date('Y') . '-04-01',
+                'to' => date('Y') . '-06-30',
+            ],
+            [
+                'from' => date('Y') . '-07-01',
+                'to' => date('Y') . '-09-30',
+            ],
+            [
+                'from' => date('Y') . '-07-01',
+                'to' => date('Y') . '-12-31',
+            ],
+            [
+                'from' => (date('Y') + 1) . '-01-01',
+                'to' => (date('Y') + 1) . '-03-31',
+            ],
+        ];
+
+        $quarterRueckblick = [
+            [
+                'from' => date('Y') . '-01-01',
+                'to' => date('Y') . '-03-31',
+            ],
+            [
+                'from' => date('Y') . '-04-01',
+                'to' => date('Y') . '-06-30',
+            ],
+            [
+                'from' => date('Y') . '-07-01',
+                'to' => date('Y') . '-09-30',
+            ],
+            [
+                'from' => date('Y') . '-07-01',
+                'to' => date('Y') . '-12-31',
+            ],
+        ];
+
+        $this->checkRights();
+
         $this->view = 'pages.export';
         $this->data['title'] = "Export";
-        $this->checkRights();
+
+        $this->data['quarterTouren'] = $quarterTouren[(int)(ceil(date('n') / 3) - 1)];
+        $this->data['quarterRueckblick'] = $quarterRueckblick[(int)(ceil(date('n') / 3) - 1)];
+
+        $this->data['allowed'] = [];
+
+        $user = User::findCurrent();
+        if($user->hasCapability('export_adressen')){
+            $this->data['allowed'][] = "adressen";
+        }
+
+        if($user->hasCapability('export_touren')){
+            $this->data['allowed'][] = "touren";
+        }
+
+        if($user->hasCapability('export_druck')){
+            $this->data['allowed'][] = "druck";
+        }
     }
 
     protected function get(){

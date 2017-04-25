@@ -22,7 +22,7 @@ class Tour
     public $map;
     public $meetingPoint;
     public $program;
-    public $return;
+    public $returnBack;
     public $equiptment;
     public $food;
     public $costs;
@@ -35,6 +35,7 @@ class Tour
     public $leader;
     public $coLeader;
     public $jsEvent;
+    public $isYouth;
 
 
     /**
@@ -56,7 +57,7 @@ class Tour
         $this->map = $array['karte'];
         //$this->meetingPoint = $array['treff_o'];
         $this->program = $array['prog'];
-        $this->return = $array['rueck_o'];
+        $this->returnBack = $array['rueck_o'];
         $this->equiptment = $array['ausr'];
         $this->food = $array['verpf'];
         $this->costs = $array['kosten'];
@@ -69,6 +70,15 @@ class Tour
         $this->leader = $array['leiter_a'];
         $this->coLeader = $array['leiter_b'];
         $this->jsEvent = $array['js'] * 1;
+
+        $isYouth = 0;
+        if($array['bcbj'] == 1){
+            $isYouth = 1;
+            if($array['bcb'] == 1){
+                $isYouth = 2;
+            }
+        }
+        $this->isYouth = $isYouth;
     }
 
     public function __toString()

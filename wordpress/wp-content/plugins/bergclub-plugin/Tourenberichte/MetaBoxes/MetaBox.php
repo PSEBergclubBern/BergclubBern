@@ -72,9 +72,10 @@ abstract class MetaBox
     /**
      * adds an array as additional data for the view
      *
+     * @param \WP_Post $post
      * @return array
      */
-    protected function addAdditionalValuesForView() {
+    protected function addAdditionalValuesForView(\WP_Post $post) {
         return array();
     }
 
@@ -196,7 +197,7 @@ abstract class MetaBox
         if(!file_exists(__DIR__ . '/cache')){
             mkdir(__DIR__ . '/cache');
         }
-        $arguments = array_merge(array('values' => $values), $this->addAdditionalValuesForView());
+        $arguments = array_merge(array('values' => $values), $this->addAdditionalValuesForView($post));
         $blade = new BladeInstance(__DIR__ . '/../views', __DIR__ . '/../cache');
         echo $blade->render(
             $this->getViewName(),

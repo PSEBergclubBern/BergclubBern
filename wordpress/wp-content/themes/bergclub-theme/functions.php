@@ -132,6 +132,8 @@ if ( ! function_exists( 'bcb_enqueue_scripts' ) ) {
 
 add_action( 'wp_enqueue_scripts', 'bcb_enqueue_scripts' );
 
+add_editor_style(  get_template_directory_uri() . '/css/bergclub.css' );
+
 if ( ! function_exists( 'bcb_carousel_images_css' ) ) {
     /**
      * Creates inline css for the background images located in folder img/carousel.
@@ -183,3 +185,26 @@ add_filter( 'get_the_archive_title', function ( $title ) {
 
 //disable admin bar in frontend
 add_filter('show_admin_bar', '__return_false');
+
+//adds Training and JS to the Title
+function add_additional_info_to_title( $title, $id = null ) {
+    if ( "touren" == get_post_type(get_post($id)) ) {
+        $training = get_post_meta($id, "_training", true);
+        $jsEvent = get_post_meta($id, "_jsEvent", true);
+        if(!empty($training) || !empty($jsEvent)) {
+            $title .= " (";
+            if(!empty($training)){
+                $title .= "Training";
+                if(!empty($jsEvent))
+                    $title .= ", JS-Event";
+            } else {
+                $title .= "JS-Event";
+            }
+            $title .= ")";
+        }
+    }
+
+    return $title;
+}
+//adds the filter for the title
+add_filter( 'the_title', 'add_additional_info_to_title', 10, 2 );
