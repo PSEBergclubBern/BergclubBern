@@ -35,8 +35,11 @@ $functionaryRoles = [
             'read_private_tourenbericht' => false,
             'read_tourenbericht' => true,
 
+            'rueckmeldungen' => true,
             'rueckmeldungen_read' => true,
             'rueckmeldungen_edit' => true,
+            'rueckmeldungen_tab_nofeedback' => true,
+            'rueckmeldungen_tab_all' => true,
         ],
     ],
 
@@ -75,8 +78,11 @@ $functionaryRoles = [
             'read_private_tourenbericht' => false,
             'read_tourenbericht' => true,
 
-            'rueckmeldungen_read' => true,
-            'rueckmeldungen_edit' => true,
+            'rueckmeldungen' => true,
+            'rueckmeldungen_jugend_read' => true,
+            'rueckmeldungen_jugend_edit' => true,
+            'rueckmeldungen_tab_nofeedback' => true,
+            'rueckmeldungen_tab_all' => true,
         ],
     ],
     'bcb_tourenchef' => [
@@ -114,10 +120,14 @@ $functionaryRoles = [
             'read_private_tourenbericht' => true,
             'read_tourenbericht' => true,
 
+            'rueckmeldungen' => true,
             'rueckmeldungen_read' => true,
+            'rueckmeldungen_read_others' => true,
             'rueckmeldungen_edit' => true,
             'rueckmeldungen_edit_others' => true,
             'rueckmeldungen_publish' => true,
+            'rueckmeldungen_tab_feedback' => true,
+            'rueckmeldungen_tab_all' => true,
 
             'export' => true,
             'export_touren' => true,
@@ -158,10 +168,14 @@ $functionaryRoles = [
             'read_private_tourenbericht' => true,
             'read_tourenbericht' => true,
 
-            'rueckmeldungen_read' => true,
-            'rueckmeldungen_edit' => true,
-            'rueckmeldungen_edit_others' => true,
-            'rueckmeldungen_publish' => true,
+            'rueckmeldungen' => true,
+            'rueckmeldungen_jugend_read' => true,
+            'rueckmeldungen_jugend_read_others' => true,
+            'rueckmeldungen_jugend_edit' => true,
+            'rueckmeldungen_jugend_edit_others' => true,
+            'rueckmeldungen_jugend_publish' => true,
+            'rueckmeldungen_tab_feedback' => true,
+            'rueckmeldungen_tab_all' => true,
 
             'export' => true,
             'export_touren' => true,
@@ -213,10 +227,18 @@ $functionaryRoles = [
             'read_private_tourenbericht' => true,
             'read_tourenbericht' => true,
 
+            'rueckmeldungen' => true,
             'rueckmeldungen_read' => true,
+            'rueckmeldungen_read_others' => true,
             'rueckmeldungen_edit' => true,
             'rueckmeldungen_edit_others' => true,
             'rueckmeldungen_publish' => true,
+            'rueckmeldungen_jugend_read' => true,
+            'rueckmeldungen_jugend_read_others' => true,
+            'rueckmeldungen_jugend_edit' => true,
+            'rueckmeldungen_jugend_edit_others' => true,
+            'rueckmeldungen_jugend_publish' => true,
+            'rueckmeldungen_tab_all' => true,
 
             'export' => true,
             'export_touren' => true,
@@ -244,7 +266,10 @@ $functionaryRoles = [
 
             'adressen_read' => true,
 
+            'rueckmeldungen' => true,
             'rueckmeldungen_read' => true,
+            'rueckmeldungen_read_others' => true,
+            'rueckmeldungen_tab_all' => true,
         ],
     ],
     'bcb_mutationen' => [
@@ -291,8 +316,13 @@ $functionaryRoles = [
             'adressen_read' => true,
             'export' => true,
             'export_adressen' => true,
+            'rueckmeldungen' => true,
             'rueckmeldungen_read' => true,
+            'rueckmeldungen_read_others' => true,
+            'rueckmeldungen_jugend_read' => true,
+            'rueckmeldungen_jugend_read_others' => true,
             'rueckmeldungen_pay' => true,
+            'rueckmeldungen_tab_approved' => true,
         ],
     ],
     'bcb_praesident' => [
@@ -329,7 +359,12 @@ $functionaryRoles = [
             'read_tourenbericht' => true,
 
             'adressen_read' => true,
+
+            'rueckmeldungen' => true,
             'rueckmeldungen_read' => true,
+            'rueckmeldungen_read_others' => true,
+            'rueckmeldungen_jugend_read' => true,
+            'rueckmeldungen_jugend_read_others' => true,
 
             'export' => true,
             'export_adressen' => true,

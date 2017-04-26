@@ -257,7 +257,7 @@ class User implements IModel
         return $membersByRole;
     }
 
-    private static function findByRoles(array $roleList){
+    public static function findByRoles(array $roleList){
         $result = [];
         $membersByRole = [];
         foreach($roleList as $itemRole){
@@ -267,10 +267,11 @@ class User implements IModel
                 $users = self::findByRole($itemRole);
                 foreach($users as $user){
                     /* @var User $user */
-                    $result[$user->ID] = $user;
+                    $result[$user->last_name . ' ' . $user->first_name . ' ' . $user->ID] = $user;
                 }
             }
         }
+        ksort($result);
         return array_values($result);
     }
 
@@ -878,6 +879,19 @@ class User implements IModel
         foreach($this->roles as $role){
             /* @var Role $role */
             if($role->getType() == $type){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasRole($roleSlug){
+        $roleSlug = Helpers::ensureKeyHasNoPrefix($roleSlug);
+        $roleSlugPrefix = Helpers::ensureKeyHasPrefix($roleSlug);
+
+        foreach($this->roles as $role){
+            /* @var Role $role */
+            if($role->getKey() == $roleSlug || $role->getKey() == $roleSlugPrefix){
                 return true;
             }
         }
