@@ -14,40 +14,20 @@ td .dashicons{
     margin-bottom:25px;
 }
 
-.action-buttons{
-    margin-top:25px;
-}
-
-table.user-detail tr td{
-    font-weight: bold;
-    vertical-align: bottom;
-}
-
-table.user-detail tr td:first-child{
-    font-size: 90%;
-    font-weight: normal;
-    text-align: right;
-    padding-right: 20px;
-}
-
-.edit-list{
-    border-spacing: 0;
-    font-size: 1.2em;
-}
-
-.edit-list th{
-    text-align: left;
-    padding: 5px 10px;
-}
-
-.edit-list td{
-    padding: 10px;
-}
-
-.edit-list tbody tr:nth-child(odd){
-    background-color: #f9f9f9;
-}
-
 .required {
     font-weight: bold;
+}
+
+#tours{
+    border-spacing: 0;
+}
+
+#tours td{
+    padding:5px;
+    padding-right:20px;
+    margin:0;
+}
+
+#tours tr:nth-child(even) {
+    background-color: #eeeeee;
 }

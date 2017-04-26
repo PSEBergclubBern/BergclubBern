@@ -61,7 +61,6 @@ abstract class AbstractController
 
     protected function render(){
         echo View::render($this->viewDirectory, $this->view, $this->data);
-        exit;
     }
 
     /**

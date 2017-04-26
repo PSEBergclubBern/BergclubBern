@@ -2,11 +2,15 @@
 
 @section('content')
     <h2 class="nav-tab-wrapper">
-            <a href="?page={{ $_GET['page'] }}&view=main&tab=nofeedback" class="nav-tab @if($tab=='nofeedback') nav-tab-active @endif ">Keine Rückmeldung</a>
-            <a href="?page={{ $_GET['page'] }}&view=main&tab=feedback" class="nav-tab @if($tab=='feedback') nav-tab-active @endif ">Erfasst</a>
-            <a href="?page={{ $_GET['page'] }}&view=detail&tab=approved" class="nav-tab @if($tab=='approved') nav-tab-active @endif ">Freigegeben</a>
+        @foreach($tabs as $key => $tabName)
+            <a href="?page={{ $_GET['page'] }}&view=main&tab={{ $key }}" class="nav-tab @if($tab==$key) nav-tab-active @endif ">{{ $tabName }}</a>
+        @endforeach
     </h2>
     <div class="container">
         @include($tab_file)
+        @if(isset($edit) && $edit)
+            <p><a class="button button-primary" href="?page={{ $_GET['page'] }}&tab={{ $_GET['tab'] }}">Zurück</a></p>
+        @endif
     </div>
+
 @endsection

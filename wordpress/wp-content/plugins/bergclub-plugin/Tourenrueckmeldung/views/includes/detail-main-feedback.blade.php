@@ -1,17 +1,17 @@
 @if( $edit )
 
-    @if( $tour != null )
+    @if( $rueckmeldung != null )
 
         <form method="post">
 
             @include('includes.tourenrueckmeldung-form')
 
-            <input type="submit" value="Freigeben!" />
+            <p><input type="submit" class="button button-primary" value="Freigeben" /></p>
 
         </form>
 
     @else
-        <p>Die ausgewählte Tour konnte nicht gefunden werden.</p>
+        <p>Die Rückmeldung konnte nicht gefunden werden.</p>
     @endif
 
 @else

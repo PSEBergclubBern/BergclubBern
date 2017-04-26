@@ -19,7 +19,11 @@
                 <tr><td>Anzahl Teilnehmer:</td><td>{{ $rueckmeldung['numberOfParticipants'] }}</td></tr>
                 <tr><td colspan="2">&nbsp;</td></tr>
                 <tr><td>Abweichungen vom Programm</td><td>{!! nl2br( $rueckmeldung['programDivergence'] ); !!}</td></tr>
-                <tr><td>Kurzbericht</td><td>{!! nl2br( $rueckmeldung['shortReport'] ); !!}</td></tr>
+                @if($allowEdit)
+                    <tr><td>Kurzbericht</td><td><textarea id="shortReport" name="shortReport" cols="40" rows="4">{{ $rueckmeldung['shortReport'] }}</textarea></td></tr>
+                @else
+                    <tr><td>Kurzbericht</td><td>{!! nl2br( $rueckmeldung['shortReport'] ); !!}</td></tr>
+                @endif
                 <tr><td colspan="2">&nbsp;</td></tr>
                 <tr><td>Pauschale</td><td>{{ $rueckmeldung['flatCharge'] }}</td></tr>
                 <tr><td>Reise</td><td>{{ $rueckmeldung['journey'] }}</td></tr>
@@ -32,7 +36,9 @@
 
             </table>
 
-            <p><input type="submit" class="button button-primary" value="Ausbezahlt" /></p>
+            @if($allowEdit)
+                <p><input type="submit" class="button button-primary" value="Speichern" /></p>
+            @endif
 
         </form>
 

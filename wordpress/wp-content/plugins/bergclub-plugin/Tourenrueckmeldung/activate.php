@@ -1,5 +1,6 @@
 <?php
 
+/*
 use BergclubPlugin\MVC\Models\Option;
 
 $posts = get_posts([
@@ -47,3 +48,4 @@ foreach ( $posts as $post ){
 }
 
 Option::set('tourenrueckmeldung', $rueckmeldungen);
+*/

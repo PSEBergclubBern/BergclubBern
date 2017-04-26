@@ -1,11 +1,11 @@
 @if( $edit )
 
-    @if( $tour != null )
+    @if( $rueckmeldung != null )
         <form method="post">
 
             @include('includes.tourenrueckmeldung-form')
 
-            <input type="submit" value="Speichern!" />
+            <p><input type="submit" class="button button-primary" value="Freigabe beantragen" /></p>
 
         </form>
 
