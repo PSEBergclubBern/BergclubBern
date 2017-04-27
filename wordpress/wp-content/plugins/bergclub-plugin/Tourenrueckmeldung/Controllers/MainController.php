@@ -542,10 +542,18 @@ class MainController extends AbstractController
         $this->addNumberOfParticipants($rueckmeldung);
         $rueckmeldung['flatCharge'] = number_format($rueckmeldung['flatCharge']*1, 2, '.', '');
         $rueckmeldung['journey'] = number_format($rueckmeldung['journey']*1, 2, '.', '');
+        if(!isset($rueckmeldung['sleepOver'])){
+            $rueckmeldung['sleepOver'] = 0;
+        }
         $rueckmeldung['sleepOver'] = number_format($rueckmeldung['sleepOver']*1, 2, '.', '');
 
-        if($rueckmeldung['executed'] && $this->countLines($rueckmeldung['participants'])+$this->countLines($rueckmeldung['externParticipants']) == 0){
-            $errors[] = "Teilnehmer BCB/Externe Teilnehmer (es muss mindestens ein Teilnehmer erfasst sein)";
+        if($rueckmeldung['executed']) {
+            if ($this->countLines($rueckmeldung['participants']) + $this->countLines($rueckmeldung['externParticipants']) == 0) {
+                $errors[] = "Teilnehmer BCB/Externe Teilnehmer (es muss mindestens ein Teilnehmer erfasst sein)";
+            }
+            if(empty($rueckmeldung['shortReport'])){
+                $errors[] = "Kurzbericht muss erfasst sein";
+            }
         }
 
         if($rueckmeldung['flatCharge'] == 0){
