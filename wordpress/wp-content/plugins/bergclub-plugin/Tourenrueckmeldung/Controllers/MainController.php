@@ -579,18 +579,20 @@ class MainController extends AbstractController
     }
 
     private function addNumberOfParticipants( &$rueckmeldung ){
+        if(!$rueckmeldung['executed']){
+            $numberOfParticipants = 0;
+        }else {
+            // every tour has a leader
+            $numberOfParticipants = 1;
 
-        // every tour has a leader
-        $numberOfParticipants = 1;
+            if (!empty($rueckmeldung['coLeader'])) {
+                $numberOfParticipants++;
+            }
 
-        if (!empty($rueckmeldung['coLeader'])){
-            $numberOfParticipants++;
+            $numberOfParticipants += $this->countLines($rueckmeldung['externLeader']);
+            $numberOfParticipants += $this->countLines($rueckmeldung['participants']);
+            $numberOfParticipants += $this->countLines($rueckmeldung['externParticipants']);
         }
-
-        $numberOfParticipants += $this->countLines($rueckmeldung['externLeader']);
-        $numberOfParticipants += $this->countLines($rueckmeldung['participants']);
-        $numberOfParticipants += $this->countLines($rueckmeldung['externParticipants']);
-
         $rueckmeldung['numberOfParticipants'] = $numberOfParticipants;
     }
 

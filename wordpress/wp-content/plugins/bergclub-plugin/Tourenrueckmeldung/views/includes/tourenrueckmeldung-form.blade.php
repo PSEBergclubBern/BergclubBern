@@ -34,9 +34,11 @@
     @if( $rueckmeldung['isSeveralDays'] )
         <tr><td id="td-sleepOver">Übernachtung</td><td><input type="text" id="sleepOver" name="sleepOver" value="{{ $rueckmeldung['sleepOver'] }}" /></td></tr>
     @endif
-
     <tr>
-        <td id="td-paymentIsForLeader" class="required">Auszahlung für:</td>
+        <td colspan="2"><i>Hinweis: Der Erfasser ist verantwortlich dafür, dass der Kassier die benötigten Angaben erhält (Post-/Bankverbindung)</i></td>
+    </tr>
+    <tr>
+        <td id="td-paymentIsForLeader" class="required">Auszahlung für</td>
         <td>
             <select name="paymentIsForLeader">
                 <option value="1" @if( $rueckmeldung['paymentIsForLeader'] )selected @endif >Leiter</option>
@@ -45,10 +47,6 @@
                 @endif
             </select>
         </td>
-    </tr>
-    <tr><td colspan="2">&nbsp;</td></tr>
-    <tr>
-        <td colspan="2"><i>Hinweis: Der Erfasser ist verantwortlich dafür, dass der Kassier die benötigten Angaben erhält (Post-/Bankverbindung)</i></td>
     </tr>
 
 </table>
