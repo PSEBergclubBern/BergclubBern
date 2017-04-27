@@ -300,10 +300,8 @@ label.error {
   .italic-sm {
     font-style: italic; } }
 /* lightbox images */
-.gallery {
-  display: none; }
-
 .report-images {
-  margin-bottom: 25px; }
+  margin-bottom: 25px;
+  padding: 0px 20px; }
 
 /*# sourceMappingURL=jugend.css.map */

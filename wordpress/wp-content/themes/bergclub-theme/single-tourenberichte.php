@@ -64,7 +64,13 @@ while (have_posts()) : the_post();
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
-            <?php the_content('<p>', '</p>'); ?>
+            <?php
+            $content = get_the_content();
+            $content = apply_filters('the_content', $content);
+            $content = preg_replace("/<img[^>]+\>/i", " ", $content);
+            $content = str_replace(']]>', ']]>', $content);
+            echo '<p>'.$content.'</p>';
+            ?>
         </div>
     </div>
     <?php
