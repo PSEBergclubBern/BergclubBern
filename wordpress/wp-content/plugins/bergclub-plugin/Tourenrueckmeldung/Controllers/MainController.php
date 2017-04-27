@@ -542,10 +542,18 @@ class MainController extends AbstractController
         $this->addNumberOfParticipants($rueckmeldung);
         $rueckmeldung['flatCharge'] = number_format($rueckmeldung['flatCharge']*1, 2, '.', '');
         $rueckmeldung['journey'] = number_format($rueckmeldung['journey']*1, 2, '.', '');
+        if(!isset($rueckmeldung['sleepOver'])){
+            $rueckmeldung['sleepOver'] = 0;
+        }
         $rueckmeldung['sleepOver'] = number_format($rueckmeldung['sleepOver']*1, 2, '.', '');
 
-        if($rueckmeldung['executed'] && $this->countLines($rueckmeldung['participants'])+$this->countLines($rueckmeldung['externParticipants']) == 0){
-            $errors[] = "Teilnehmer BCB/Externe Teilnehmer (es muss mindestens ein Teilnehmer erfasst sein)";
+        if($rueckmeldung['executed']) {
+            if ($this->countLines($rueckmeldung['participants']) + $this->countLines($rueckmeldung['externParticipants']) == 0) {
+                $errors[] = "Teilnehmer BCB/Externe Teilnehmer (es muss mindestens ein Teilnehmer erfasst sein)";
+            }
+            if(empty($rueckmeldung['shortReport'])){
+                $errors[] = "Kurzbericht muss erfasst sein";
+            }
         }
 
         if($rueckmeldung['flatCharge'] == 0){
@@ -571,18 +579,20 @@ class MainController extends AbstractController
     }
 
     private function addNumberOfParticipants( &$rueckmeldung ){
+        if(!$rueckmeldung['executed']){
+            $numberOfParticipants = 0;
+        }else {
+            // every tour has a leader
+            $numberOfParticipants = 1;
 
-        // every tour has a leader
-        $numberOfParticipants = 1;
+            if (!empty($rueckmeldung['coLeader'])) {
+                $numberOfParticipants++;
+            }
 
-        if (!empty($rueckmeldung['coLeader'])){
-            $numberOfParticipants++;
+            $numberOfParticipants += $this->countLines($rueckmeldung['externLeader']);
+            $numberOfParticipants += $this->countLines($rueckmeldung['participants']);
+            $numberOfParticipants += $this->countLines($rueckmeldung['externParticipants']);
         }
-
-        $numberOfParticipants += $this->countLines($rueckmeldung['externLeader']);
-        $numberOfParticipants += $this->countLines($rueckmeldung['participants']);
-        $numberOfParticipants += $this->countLines($rueckmeldung['externParticipants']);
-
         $rueckmeldung['numberOfParticipants'] = $numberOfParticipants;
     }
 
