@@ -248,3 +248,12 @@
     command: |
       wp rewrite structure '{{ vccw.permalink_structure }}' --path={{ path }}
     when: vccw.permalink_structure != ''
+
+  - name: Copy tinymce-settings file
+    become: no
+    template:
+      src: templates/tinymce-settings.json
+      dest: "{{ ansible_env.HOME }}/tinymce-settings.json"
+
+  - name: Update tinymce plugin
+    shell: wp option update tadv_settings --format=json < {{ ansible_env.HOME }}/tinymce-settings.json
