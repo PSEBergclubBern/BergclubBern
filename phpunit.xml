@@ -21,7 +21,7 @@
 
     <testsuites>
         <testsuite name="Plugin Test Suite">
-	    <directory>./wordpress/wp-content/plugins/bergclub-plugin/Tests/</directory>
+	        <directory>./wordpress/wp-content/plugins/bergclub-plugin/Tests/</directory>
         </testsuite>
     </testsuites>
 
@@ -34,7 +34,7 @@
 
     <filter>
         <whitelist>
-            <directory>./wordpress/wp-content/plugins/bergclub-plugin/</directory>
+            <directory>./wordpress/wp-content/plugins/bergclub-plugin/Tests/</directory>
         </whitelist>
     </filter>
 

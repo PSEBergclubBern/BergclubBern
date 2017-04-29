@@ -10,10 +10,9 @@ namespace BergclubPlugin\Commands;
 
 
 use BergclubPlugin\Commands\Entities\Adressen;
-use BergclubPlugin\Commands\Entities\Meldung;
 use BergclubPlugin\Commands\Entities\Tour;
 use BergclubPlugin\Commands\Entities\TourBericht;
-use BergclubPlugin\Commands\Entities\User;
+use BergclubPlugin\Commands\Processor\MitteilungProcessor;
 use BergclubPlugin\MVC\Models\Option;
 use BergclubPlugin\MVC\Models\Role;
 use BergclubPlugin\MVC\Models\User as ModelUser;
@@ -25,6 +24,33 @@ class Import extends Init
 {
 
     private $noop = false;
+
+    /**
+     * @var MitteilungProcessor
+     */
+    private $mitteilungsProcessor;
+
+    /**
+     * @var Logger
+     */
+    private $logger;
+
+    public function __construct(MitteilungProcessor $mitteilungProcessor = null, Logger $logger = null)
+    {
+        if ($logger == null) {
+            $this->logger = new WPCliLogger();
+        } else {
+            $this->logger = $logger;
+        }
+
+        if ($mitteilungProcessor == null) {
+            $this->mitteilungsProcessor = new MitteilungProcessor($this->logger);
+        } else {
+            $this->mitteilungsProcessor = $mitteilungProcessor;
+        }
+
+    }
+
 
     /**
      * Import old database files into wordpress.
@@ -100,35 +126,13 @@ class Import extends Init
         \WP_CLI::log('Begin processing of mitteilungen');
         \WP_CLI::log('It has ' . count($mitteilungen) . ' Mitteilungen');
 
-        $list = array();
-        foreach ($mitteilungen as $key => $mitteilung) {
-            \WP_CLI::debug('Processing element ' . (1+$key));
+        $entities = $this->mitteilungsProcessor->process($mitteilungen);
 
-            $mit = new Entities\Mitteilung();
-            $mit->id = $mitteilung['id'];
-            $mit->datum = $mitteilung['datum'];
-            $mit->titel = $this->convertTitleField($mitteilung['titel']);
-            $mit->text = $this->convertTextField($mitteilung['text']);
-
-            \WP_CLI::debug($mit->__toString());
-            $list[] = $mit;
+        foreach ($entities as $entity) {
+            $this->mitteilungsProcessor->save($entity, $this->noop);
         }
 
-        $tempDirectory = sys_get_temp_dir() . '/' . uniqid("mit");
-        mkdir ($tempDirectory);
-        \WP_CLI::log('Using temp directory "' . $tempDirectory . '" for post processing');
-
-        foreach ($list as $mit) {
-            /** @var $mitteilung Entities\Mitteilung */
-            touch($tempDirectory . '/' . $mit->id);
-            file_put_contents($tempDirectory . '/' . $mit->id, $mit->text);
-            if (!$this->noop) {
-                \WP_CLI::runcommand("bergclub mitteilung create " . $tempDirectory . "/" . $mit->id . " " .
-                        "--title='" . $mit->titel . "' " .
-                        "--date='" . $mit->datum . "'
-                    ");
-            }
-        }
+        \WP_CLI::success('All mitteilungen are imported');
     }
 
     private function prepareArt($art){
@@ -401,68 +405,5 @@ class Import extends Init
                 \WP_CLI::warning('couldnt find couple ' . $lastName);
             }
         }
-    }
-
-    /**
-     * generate address entity from an array key
-     *
-     * @param $array
-     * @return Adressen
-     */
-    private function generateEntitiesFromArray($a) {
-        $addressEntity = new Adressen();
-        $addressEntity->id = $a['id'];
-        $addressEntity->firstName = trim($a['vorname']);
-        $addressEntity->lastName = trim($a['name']);
-        $addressEntity->salutation = $a['anrede'];
-
-        $addressEntity->email = $a['email'];
-        $addressEntity->ahv = $a['ahv'];
-        $addressEntity->birthday = $a['geburtsdatum'];
-        $addressEntity->category = $a['kategorie'];
-        $addressEntity->number = $a['nr'];
-        $addressEntity->phoneBusiness = $a['tel_g'];
-        $addressEntity->phoneMobile = $a['natel'];
-        $addressEntity->phonePrivate = $a['tel_p'];
-        $addressEntity->place = $a['ort'];
-        $addressEntity->plz = $a['plz'];
-        $addressEntity->street = $a['strasse'];
-        $addressEntity->comment = $a['bemerkungen'];
-        $addressEntity->addition = $a['zusatz'];
-
-        $addressEntity->freeMemberDate = $a['edat'];
-        $addressEntity->freeMemberReason = $a['egrund'];
-        $addressEntity->honorMemberDate = $a['fdat'];
-        $addressEntity->honorMemberReason = $a['fgrund'];
-        $addressEntity->exitDate = $a['adat'];
-        $addressEntity->exitReason = $a['agrund'];
-        $addressEntity->diedDate = $a['ddat'];
-        $addressEntity->diedReason = $a['dgrund'];
-
-        $addressEntity->leader = $a['leiter'];
-        $addressEntity->leaderDescription = $a['beschreibung'];
-        $addressEntity->leaderFrom = $a['ldat'] == '0000-00-00' ? null : $a['ldat'];
-        $addressEntity->leaderTo = $a['lbis'] == '0000-00-00' ? null : $a['lbis'];
-
-        $addressEntity->leaderYouth = $a['js_leiter'];
-        $addressEntity->leaderYouthDescription = $a['js_beschreibung'];
-        $addressEntity->leaderYouthFrom = $a['jsdat'] == '0000-00-00' ? null : $a['jsdat'];
-        $addressEntity->leaderYouthTo = $a['jsbis'] == '0000-00-00' ? null : $a['jsbis'];
-        $addressEntity->leaderYouthYear = $a['js_jahr'];
-        $addressEntity->leaderYouthPersonNr = $a['pers_nr'];
-
-        $addressEntity->vorstand = $a['vorstand'];
-        $addressEntity->vorstandDescription = $a['funktion'];
-        $addressEntity->vorstandFrom = $a['vdat'] == '0000-00-00' ? null : $a['vdat'];
-        $addressEntity->vorstandTo = $a['vbis'] == '0000-00-00' ? null : $a['vbis'];
-
-        $addressEntity->support = $a['support'];
-        $addressEntity->supportFrom = $a['sdat'] == '0000-00-00' ? null : $a['sdat'];;
-        $addressEntity->supportTo = $a['sbis'] == '0000-00-00' ? null : $a['sbis'];;
-        $addressEntity->supportDescription = $a['aufgabe'];
-
-        $addressEntity->sendProgram = empty($a['versenden']) || $a['versenden'] == 0 ? false : true;
-
-        return $addressEntity;
     }
 }
