@@ -51,6 +51,11 @@ class Common extends MetaBox {
 
         $values[self::DATE_FROM_DB] = null;
         $values[self::DATE_TO_DB] = null;
+        if ((!array_key_exists(self::DATE_TO_IDENTIFIER, $values)
+            || empty($values[self::DATE_TO_IDENTIFIER]))
+            && array_key_exists(self::DATE_FROM_IDENTIFIER, $values)) {
+            $values[self::DATE_TO_IDENTIFIER] = $values[self::DATE_FROM_IDENTIFIER];
+        }
 
         if (array_key_exists(self::DATE_FROM_IDENTIFIER, $values) && !empty($values[self::DATE_FROM_IDENTIFIER])) {
             $date_from = \DateTime::createFromFormat( "d.m.Y", $values[ self::DATE_FROM_IDENTIFIER ] );
@@ -59,7 +64,6 @@ class Common extends MetaBox {
             }
         }
 
-        $values[self::DATE_TO_DB] = null;
         if (array_key_exists(self::DATE_TO_IDENTIFIER, $values) && !empty($values[self::DATE_TO_IDENTIFIER])) {
             $date_to = \DateTime::createFromFormat( "d.m.Y", $values[ self::DATE_TO_IDENTIFIER ] );
             if ($date_to !== false) {
