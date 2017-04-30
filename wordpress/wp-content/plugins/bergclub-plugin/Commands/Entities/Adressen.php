@@ -43,7 +43,10 @@ class Adressen
     public $comment;
     public $sendProgram = false;
     public $addition;
-    public $spouseId;
+    /**
+     * @var Adressen
+     */
+    public $spouse;
 
     public $leader = false;
     public $leaderDescription;
@@ -146,11 +149,18 @@ class Adressen
     }
 
     /**
-     * get the spouse id or null if no spouse
-     * @return mixed
+     * @return Adressen
      */
-    public function getSpouseId()
+    public function getSpouse(): Adressen
     {
-        return $this->spouseId;
+        return $this->spouse;
+    }
+
+    /**
+     * @param Adressen $spouse
+     */
+    public function setSpouse(Adressen $spouse)
+    {
+        $this->spouse = $spouse;
     }
 }

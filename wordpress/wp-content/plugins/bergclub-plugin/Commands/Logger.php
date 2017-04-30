@@ -14,4 +14,5 @@ interface Logger
     public function error($message);
     public function debug($message);
     public function success($message);
+    public function warning($message);
 }

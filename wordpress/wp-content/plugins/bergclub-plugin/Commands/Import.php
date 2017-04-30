@@ -12,7 +12,9 @@ namespace BergclubPlugin\Commands;
 use BergclubPlugin\Commands\Entities\Adressen;
 use BergclubPlugin\Commands\Entities\Tour;
 use BergclubPlugin\Commands\Entities\TourBericht;
+use BergclubPlugin\Commands\Processor\AdressenProcessor;
 use BergclubPlugin\Commands\Processor\MitteilungProcessor;
+use BergclubPlugin\Commands\Processor\Processor;
 use BergclubPlugin\MVC\Models\Option;
 use BergclubPlugin\MVC\Models\Role;
 use BergclubPlugin\MVC\Models\User as ModelUser;
@@ -31,11 +33,18 @@ class Import extends Init
     private $mitteilungsProcessor;
 
     /**
+     * @var AdressenProcessor
+     */
+    private $addressenProcessor;
+
+    /**
      * @var Logger
      */
     private $logger;
 
-    public function __construct(MitteilungProcessor $mitteilungProcessor = null, Logger $logger = null)
+    public function __construct(MitteilungProcessor $mitteilungProcessor = null,
+                                AdressenProcessor $adressenProcessor = null,
+                                Logger $logger = null)
     {
         if ($logger == null) {
             $this->logger = new WPCliLogger();
@@ -49,6 +58,12 @@ class Import extends Init
             $this->mitteilungsProcessor = $mitteilungProcessor;
         }
 
+
+        if ($adressenProcessor == null) {
+            $this->addressenProcessor = new AdressenProcessor($this->logger);
+        } else {
+            $this->addressenProcessor = $adressenProcessor;
+        }
     }
 
 
@@ -92,7 +107,7 @@ class Import extends Init
         list($filename) = $args;
 
         if (!file_exists($filename)) {
-            \WP_CLI::error('Input file not found, aborting!');
+            $this->logger->error('Input file not found, aborting!');
             return;
         }
 
@@ -101,38 +116,38 @@ class Import extends Init
 
         // Check for adressen
         if (!isset($adressen)) {
-            \WP_CLI::warning('Input file has no adressen, skipping');
+            $this->logger->warning('Input file has no adressen, skipping');
         } else {
-            $this->importAddress($adressen);
+            $this->import($adressen, $this->addressenProcessor);
         }
 
         // Check for mitteilungen
         if (!isset($mitteilungen)) {
-            \WP_CLI::warning('Input file has no mitteilungen, skipping');
+            $this->logger->warning('Input file has no mitteilungen, skipping');
         } else {
-            $this->importMitteilungen($mitteilungen);
+            $this->import($mitteilungen, $this->mitteilungsProcessor);
         }
 
         // Check for touren
         if (!isset($touren) || !isset($berichte) || !isset($art) || !isset($schwierigkeit) || !isset($adressen)) {
-            \WP_CLI::warning('Input file has no touren, berichte, art, schwierigkeit, adressen... skipping');
+            $this->logger->warning('Input file has no touren, berichte, art, schwierigkeit, adressen... skipping');
         } else {
             $this->importTouren($touren, $berichte, $art, $schwierigkeit, $adressen);
         }
     }
 
-    function importMitteilungen($mitteilungen)
+    private function import($values, Processor $processor)
     {
-        \WP_CLI::log('Begin processing of mitteilungen');
-        \WP_CLI::log('It has ' . count($mitteilungen) . ' Mitteilungen');
+        $this->logger->log('Begin processing of ' . $processor->getEntityName());
+        $this->logger->log('It has ' . count($values) . ' ' . $processor->getEntityName());
 
-        $entities = $this->mitteilungsProcessor->process($mitteilungen);
+        $entities = $processor->process($values);
 
         foreach ($entities as $entity) {
-            $this->mitteilungsProcessor->save($entity, $this->noop);
+            $processor->save($entity, $this->noop);
         }
 
-        \WP_CLI::success('All mitteilungen are imported');
+        $this->logger->success('All ' . $processor->getEntityName() . ' are imported');
     }
 
     private function prepareArt($art){
@@ -329,81 +344,5 @@ class Import extends Init
             }
         }
         \WP_CLI::success('Finished processing of touren');
-    }
-
-    /**
-     * Import method for address
-     *
-     * @param $addresses array of address
-     */
-    function importAddress($address) {
-        \WP_CLI::log('Begin processing of address');
-        \WP_CLI::log('It has ' . count($address) . ' Addresses');
-
-        $addressEntities = array();
-        $spouseEntries = array();
-        foreach ($address as $a) {
-            if ($a['kategorie'] == Adressen::CATEGORY_EHEPAAR) {
-                $spouseEntries[] = $a;
-            } else {
-                $addressEntities[] = $this->generateEntitiesFromArray($a);
-            }
-        }
-
-        $processedAddresses = array();
-        $i = 0;
-        foreach ($addressEntities as $addressEntity) {
-            $i++;
-            /** @var Adressen $addressEntity */
-            \WP_CLI::log('Processing ' . $addressEntity);
-            $model = new ModelUser($addressEntity->toArray());
-            $model->addRole(Role::find($addressEntity->determinateRole()));
-            if (!$this->noop) {
-                $model->save();
-            }
-
-            $processedAddresses[$addressEntity->id]['entity'] = $addressEntity;
-            $processedAddresses[$addressEntity->id]['model'] = $model;
-        }
-
-        $i = 0;
-        foreach ($spouseEntries as $spouseEntry) {
-            $i++;
-            \WP_CLI::log('Processing spouses ' . $i);
-            $firstNames = mb_split('\+', $spouseEntry['vorname']);
-            $lastName = $spouseEntry['name'];
-
-            $firstName1 = trim(current($firstNames));
-            $firstName2 = trim(end($firstNames));
-
-            $spouseId1 = null;
-            $spouseId2 = null;
-            foreach($processedAddresses as $id => $values) {
-                if($values['entity']->lastName == $lastName &&
-                    $values['entity']->firstName == $firstName1
-                    ) {
-                    $spouseId1 = $id;
-                }
-
-                if($values['entity']->lastName == $lastName &&
-                    $values['entity']->firstName == $firstName2
-                ) {
-                    $spouseId2 = $id;
-                }
-            }
-
-            if ($spouseId1 && $spouseId2) {
-                \WP_CLI::log("Marry " . $processedAddresses[$spouseId1]['entity'] . " and " . $processedAddresses[$spouseId2]['entity']);
-                $processedAddresses[$spouseId1]['model']->spouse = $processedAddresses[$spouseId2]['model'];
-                $processedAddresses[$spouseId1]['model']->main_address = true;
-                $processedAddresses[$spouseId2]['model']->spouse = $processedAddresses[$spouseId1]['model'];
-                if (!$this->noop) {
-                    $processedAddresses[$spouseId1]['model']->save();
-                    $processedAddresses[$spouseId2]['model']->save();
-                }
-            } else {
-                \WP_CLI::warning('couldnt find couple ' . $lastName);
-            }
-        }
     }
 }

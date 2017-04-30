@@ -28,7 +28,7 @@ abstract class Processor
      * @param $values
      * @return Entity
      */
-    abstract public function process($values) : array;
+    abstract public function process(...$values) : array;
 
     /**
      * save an entity
@@ -39,6 +39,12 @@ abstract class Processor
      */
     abstract public function save(Entity $entity, $noOp = true);
 
+    /**
+     * get name of entity
+     *
+     * @return string
+     */
+    abstract public function getEntityName();
 
     /**
      * Convert a title field for the new database

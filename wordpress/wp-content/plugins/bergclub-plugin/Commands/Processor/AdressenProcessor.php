@@ -10,11 +10,14 @@ namespace BergclubPlugin\Commands\Processor;
 
 use BergclubPlugin\Commands\Entities\Adressen;
 use BergclubPlugin\Commands\Entities\Entity;
+use BergclubPlugin\MVC\Models\Role;
+use BergclubPlugin\MVC\Models\User;
 
 class AdressenProcessor extends Processor
 {
-    public function process($values): array
-    {
+    protected $processedAddressen = array();
+
+    public function process(...$values): array {
         $addressEntities = array();
         $spouseEntries = array();
         foreach ($values as $a) {
@@ -37,55 +40,49 @@ class AdressenProcessor extends Processor
 
             $spouseId1 = null;
             $spouseId2 = null;
-            foreach($addressEntities as $id => $values) {
-                if($values['entity']->lastName == $lastName &&
-                    $values['entity']->firstName == $firstName1
+            foreach($addressEntities as $addressEntity) {
+                /** @var $addressEntity Adressen */
+                if($addressEntity->lastName == $lastName &&
+                    $addressEntity->firstName == $firstName1
                 ) {
-                    $spouseId1 = $id;
+                    $spouseId1 = $addressEntity;
                 }
 
-                if($values['entity']->lastName == $lastName &&
-                    $values['entity']->firstName == $firstName2
+                if($addressEntity->lastName == $lastName &&
+                    $addressEntity->firstName == $firstName2
                 ) {
-                    $spouseId2 = $id;
+                    $spouseId2 = $addressEntity;
                 }
             }
 
             if ($spouseId1 && $spouseId2) {
-                \WP_CLI::log("Marry " . $processedAddresses[$spouseId1]['entity'] . " and " . $processedAddresses[$spouseId2]['entity']);
-                $processedAddresses[$spouseId1]['model']->spouse = $processedAddresses[$spouseId2]['model'];
-                $processedAddresses[$spouseId1]['model']->main_address = true;
-                $processedAddresses[$spouseId2]['model']->spouse = $processedAddresses[$spouseId1]['model'];
-                if (!$this->noop) {
-                    $processedAddresses[$spouseId1]['model']->save();
-                    $processedAddresses[$spouseId2]['model']->save();
-                }
+                $this->logger->log("link " . $spouseId1->firstName . " and " . $spouseId2->firstName);
+                $spouseId1->setSpouse($spouseId2);
+                $spouseId2->setSpouse($spouseId1);
             } else {
-                \WP_CLI::warning('couldnt find couple ' . $lastName);
+                $this->logger->warning('couldnt find couple ' . $lastName);
             }
         }
 
+        return $addressEntities;
     }
 
     public function save(Entity $entity, $noOp = true)
     {
-        $processedAddresses = array();
-        $i = 0;
-        foreach ($entity as $addressEntity) {
-            $i++;
-            /** @var Adressen $addressEntity */
-            \WP_CLI::log('Processing ' . $addressEntity);
-            $model = new ModelUser($addressEntity->toArray());
-            $model->addRole(Role::find($addressEntity->determinateRole()));
-            if (!$this->noop) {
-                $model->save();
+        /** @var $entity Adressen */
+        $this->logger->log('Processing ' . $entity);
+        $model = new User($entity->toArray());
+        $model->addRole(Role::find($entity->determinateRole()));
+        if (!$noOp) {
+            $model->save();
+            if ($entity->getSpouse() && isset($this->processedAddressen[$entity->getSpouse()->id])) {
+                $model->spouse = $this->processedAddressen[$entity->getSpouse()->id];
+                $model->main_address = true;
+                $this->processedAddressen[$entity->getSpouse()->id]->spouse = $model;
             }
-
-            $processedAddresses[$addressEntity->id]['entity'] = $addressEntity;
-            $processedAddresses[$addressEntity->id]['model'] = $model;
         }
 
-
+        $this->processedAddressen[$entity->id] = $model;
     }
 
     /**
@@ -149,5 +146,9 @@ class AdressenProcessor extends Processor
         $addressEntity->sendProgram = empty($a['versenden']) || $a['versenden'] == 0 ? false : true;
 
         return $addressEntity;
+    }
+
+    public function getEntityName() {
+        return 'Adressen';
     }
 }

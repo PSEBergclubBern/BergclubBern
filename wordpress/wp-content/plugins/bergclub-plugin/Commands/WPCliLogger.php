@@ -30,4 +30,8 @@ class WPCliLogger implements Logger
         \WP_CLI::success($message);
     }
 
+    public function warning($message)
+    {
+        \WP_CLI::warning($message);
+    }
 }

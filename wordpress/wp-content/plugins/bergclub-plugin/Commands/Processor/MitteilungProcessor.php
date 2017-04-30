@@ -12,7 +12,7 @@ use BergclubPlugin\Commands\Entities\Mitteilung;
  */
 class MitteilungProcessor extends Processor
 {
-    public function process($values) : array {
+    public function process(...$values) : array {
         $list = array();
         foreach ($values as $key => $mitteilung) {
             $this->logger->debug('Processing element ' . (1+$key));
@@ -30,8 +30,7 @@ class MitteilungProcessor extends Processor
         return $list;
     }
 
-    public function save(Entity $entity, $noOp = true)
-    {
+    public function save(Entity $entity, $noOp = true) {
         if (!($entity instanceof Mitteilung)) {
             $this->logger->error('Entity not for this processor');
         }
@@ -49,5 +48,9 @@ class MitteilungProcessor extends Processor
                 true
             );
         }
+    }
+
+    public function getEntityName() {
+        return 'Mitteilungen';
     }
 }
