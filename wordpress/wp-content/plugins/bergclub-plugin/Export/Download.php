@@ -673,7 +673,7 @@ class Download
                             $currentIndex++;
                             $row["Adresszeile " . $currentIndex] = $gender;
                             $currentIndex++;
-                            $row["Adresszeile " . $currentIndex] = $user->first_name . ' & ' . $spouse->firstname . ' ' . $user->last_name;
+                            $row["Adresszeile " . $currentIndex] = $user->first_name . ' & ' . $spouse->first_name . ' ' . $user->last_name;
                         } else {
                             $currentIndex++;
                             $row["Adresszeile " . $currentIndex] = trim($user->gender . ' ' . $user->first_name . ' ' . $user->last_name);
