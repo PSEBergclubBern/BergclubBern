@@ -8,7 +8,7 @@
 
 namespace BergclubPlugin\Commands\Entities;
 
-class Tour
+class Tour implements Entity
 {
     public $id;
     public $userId;

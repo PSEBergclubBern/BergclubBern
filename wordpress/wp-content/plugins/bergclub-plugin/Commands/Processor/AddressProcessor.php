@@ -83,6 +83,8 @@ class AddressProcessor extends Processor
                 $model->spouse = $this->processedAddressen[$entity->getSpouse()->id];
                 $model->main_address = true;
                 $this->processedAddressen[$entity->getSpouse()->id]->spouse = $model;
+                $model->save();
+                $this->processedAddressen[$entity->getSpouse()->id]->save();
             }
         }
 

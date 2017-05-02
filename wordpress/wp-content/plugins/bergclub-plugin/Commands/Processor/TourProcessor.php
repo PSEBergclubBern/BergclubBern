@@ -15,6 +15,7 @@ use BergclubPlugin\Commands\Entities\TourBericht;
 use BergclubPlugin\Touren\MetaBoxes\Common;
 use BergclubPlugin\Touren\MetaBoxes\MeetingPoint;
 use BergclubPlugin\Touren\MetaBoxes\Tour as TourMetabox;
+use BergclubPlugin\MVC\Models\Option;
 
 class TourProcessor extends Processor
 {
@@ -84,6 +85,7 @@ class TourProcessor extends Processor
             }
         }
 
+        return $tourEntities;
     }
 
     public function save(Entity $entity, $noOp = true)

@@ -36,9 +36,20 @@ class MitteilungProcessor extends Processor
 
     public function save(Entity $entity, $noOp = true) {
         if (!($entity instanceof Mitteilung)) {
-            $this->logger->error('Entity not for this processor');
+            $this->logger->error('Entity not importable by this processor');
         }
 
+        $categoryId = null;
+        foreach (get_categories() as $category) {
+            /** @var $category \WP_Term */
+            if ($category->slug == 'mitteilungen') {
+                $categoryId = $category->term_id;
+            }
+        }
+        if (!$categoryId) {
+            $this->logger->error('Didnt find category "mitteilungen"');
+        }
+        $this->logger->log('Importing ' . $this->getEntityName() . ': ' . $entity);
         if (!$noOp) {
             wp_insert_post(
                 array(
@@ -47,7 +58,7 @@ class MitteilungProcessor extends Processor
                     'post_status'       => 'publish',
                     'post_date'         => $entity->datum,
                     'post_content'      => $entity->text,
-                    'post_type'         => 'mitteilungen',
+                    'post_category'     => array($categoryId),
                 ),
                 true
             );

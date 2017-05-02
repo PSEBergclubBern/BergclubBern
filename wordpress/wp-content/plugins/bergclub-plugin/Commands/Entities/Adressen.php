@@ -8,7 +8,7 @@
 
 namespace BergclubPlugin\Commands\Entities;
 
-class Adressen
+class Adressen implements Entity
 {
     const CATEGORY_INSTITUTION = 2;
     const CATEGORY_INSERENT = 3;
@@ -148,7 +148,7 @@ class Adressen
     /**
      * @return Adressen
      */
-    public function getSpouse(): Adressen
+    public function getSpouse()
     {
         return $this->spouse;
     }
