@@ -171,6 +171,9 @@ class TourProcessor extends Processor
 
     private function prepareArt($art)
     {
+        if (count($art) == 0) {
+            return array();
+        }
         $tourenTypes = Option::get('tourenarten');
         $result = [];
         foreach ($art as $item) {
