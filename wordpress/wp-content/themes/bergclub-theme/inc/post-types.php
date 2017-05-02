@@ -212,7 +212,7 @@ function bcb_pre_get_posts(WP_Query $query){
         }
     }
 
-    if(!is_admin() && isset($query->query['post_type']) && ($query->query['post_type'] == 'touren' || $query->query['post_type'] == 'tourenberichte')){
+    if(!is_admin() && isset($query->query['post_type']) && ($query->query['post_type'] == 'touren' || $query->query['post_type'] == 'tourenberichte') && !is_singular()){
         $currentTourenart = '';
         if(isset($_GET['type'])){
             $currentTourenart = $_GET['type'];
