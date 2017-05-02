@@ -13,11 +13,15 @@ use BergclubPlugin\Commands\Entities\Entity;
 use BergclubPlugin\MVC\Models\Role;
 use BergclubPlugin\MVC\Models\User;
 
-class AdressenProcessor extends Processor
+class AddressProcessor extends Processor
 {
     protected $processedAddressen = array();
 
     public function process(...$values): array {
+        if (count($values) != 1) {
+            throw new \RuntimeException();
+        }
+        $values = current($values);
         $addressEntities = array();
         $spouseEntries = array();
         foreach ($values as $a) {

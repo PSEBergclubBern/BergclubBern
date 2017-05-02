@@ -8,9 +8,6 @@
 
 namespace BergclubPlugin\Commands\Entities;
 
-
-use BergclubPlugin\MVC\Models\User;
-
 class Adressen
 {
     const CATEGORY_INSTITUTION = 2;

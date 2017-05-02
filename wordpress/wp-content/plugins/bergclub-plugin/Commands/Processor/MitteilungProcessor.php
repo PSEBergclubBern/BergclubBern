@@ -13,6 +13,10 @@ use BergclubPlugin\Commands\Entities\Mitteilung;
 class MitteilungProcessor extends Processor
 {
     public function process(...$values) : array {
+        if (count($values) != 1) {
+            throw new \RuntimeException();
+        }
+        $values = current($values);
         $list = array();
         foreach ($values as $key => $mitteilung) {
             $this->logger->debug('Processing element ' . (1+$key));

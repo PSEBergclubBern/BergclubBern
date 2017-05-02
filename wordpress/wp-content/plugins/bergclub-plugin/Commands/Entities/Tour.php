@@ -37,7 +37,6 @@ class Tour
     public $jsEvent;
     public $isYouth;
 
-
     /**
      * @var TourBericht
      */
