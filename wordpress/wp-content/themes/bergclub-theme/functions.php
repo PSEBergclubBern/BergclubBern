@@ -110,6 +110,7 @@ if ( ! function_exists( 'bcb_enqueue_scripts' ) ) {
         wp_deregister_script('jquery-core');
 
         wp_enqueue_style('bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
+        wp_enqueue_style('lightbox', get_template_directory_uri() . '/css/lightbox.css');
         wp_enqueue_style('font-roboto', 'https://fonts.googleapis.com/css?family=Roboto:400,400i', ['bootstrap']);
         //wp_enqueue_style('font-touren',  get_template_directory_uri() . '/css/fonts/touren.css', ['bootstrap']);
         if (!bcb_is_jugend()) {
@@ -126,6 +127,7 @@ if ( ! function_exists( 'bcb_enqueue_scripts' ) ) {
 
         wp_enqueue_script('jquery-own', 'https://code.jquery.com/jquery-3.1.1.min.js', null, null, true);
         wp_enqueue_script('bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', ['jquery-own'], null, true);
+        wp_enqueue_script('lightbox', get_template_directory_uri() . '/js/lightbox.js', ['jquery-own'], null, true);
         wp_enqueue_script('bergclub', bcb_add_jugend_to_url(get_template_directory_uri() . '/js/bergclub.js', true), ['jquery-own'], null, true);
     }
 }
