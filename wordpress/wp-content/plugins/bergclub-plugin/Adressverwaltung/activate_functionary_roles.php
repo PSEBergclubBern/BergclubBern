@@ -232,12 +232,11 @@ $functionaryRoles = [
             'rueckmeldungen_read_others' => true,
             'rueckmeldungen_edit' => true,
             'rueckmeldungen_edit_others' => true,
-            'rueckmeldungen_publish' => true,
             'rueckmeldungen_jugend_read' => true,
             'rueckmeldungen_jugend_read_others' => true,
             'rueckmeldungen_jugend_edit' => true,
             'rueckmeldungen_jugend_edit_others' => true,
-            'rueckmeldungen_jugend_publish' => true,
+            'rueckmeldungen_tab_nofeedback' => true,
             'rueckmeldungen_tab_all' => true,
 
             'export' => true,
