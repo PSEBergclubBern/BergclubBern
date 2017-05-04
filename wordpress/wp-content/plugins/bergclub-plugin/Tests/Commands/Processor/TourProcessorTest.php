@@ -10,6 +10,7 @@ namespace BergclubPlugin\Tests\Commands;
 
 
 use BergclubPlugin\Commands\Entities\Tour;
+use BergclubPlugin\Touren\MetaBoxes\MeetingPoint;
 use PHPUnit\Framework\TestCase;
 use BergclubPlugin\Commands\Logger;
 use BergclubPlugin\Commands\Processor\TourProcessor;
@@ -143,6 +144,42 @@ class TourProcessorTest extends TestCase
         /** @var Tour $entity */
         $this->assertNotNull($entity->tourBericht);
         $this->assertEquals(1, $entity->tourBericht->id);
+    }
+
+    /**
+     * @test
+     */
+    public function setMeetpointToDifferentIfThereIsText()
+    {
+        $touren = array(
+            $this->getStandardTour()
+        );
+
+        $entities = $this->processor->process(array($touren, array(), array(), array(), array()));
+        $entity = current($entities);
+        /** @var Tour $entity */
+        $this->assertEquals(MeetingPoint::MEETPOINT_DIFFERENT_KEY, $entity->meetingPointKey);
+        $this->assertEquals('Freitag, 19:15 h Ostermundigen, Banhof SBB', $entity->meetingPoint);
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function setMeetpointToBernIfNoMeetpointIsDefined()
+    {
+        $tour = $this->getStandardTour();
+        $tour['treff_o'] = '';
+        $touren = array(
+            $tour
+        );
+
+        $entities = $this->processor->process(array($touren, array(), array(), array(), array()));
+        $entity = current($entities);
+        /** @var Tour $entity */
+        $this->assertEquals(1, $entity->meetingPointKey);
+        $this->assertTrue(empty($entity->meetingPoint));
     }
 
     private function getStandardTour()

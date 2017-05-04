@@ -167,6 +167,8 @@ class TourProcessor extends Processor
                     TourMetaBox::JSEVENT => $entity->jsEvent,
                     MeetingPoint::FOOD => $entity->food,
                     MeetingPoint::RETURNBACK => $entity->returnBack,
+                    MeetingPoint::MEETPOINT => $entity->meetingPointKey,
+                    MeetingPoint::MEETPOINT_DIFFERENT => $entity->meetingPointKey == MeetingPoint::MEETPOINT_DIFFERENT_KEY ? $entity->meetingPoint : '',
                 );
 
                 foreach ($customFields as $key => $value) {
