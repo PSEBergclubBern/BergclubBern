@@ -130,24 +130,31 @@ class Import extends Init
         if (!isset($adressen)) {
             $this->logger->warning('Input file has no adressen, skipping');
         } else {
-            $this->import($adressen, $this->addressenProcessor);
+            $this->import(array($adressen), $this->addressenProcessor);
         }
 
         // Check for mitteilungen
         if (!isset($mitteilungen)) {
             $this->logger->warning('Input file has no mitteilungen, skipping');
         } else {
-            $this->import($mitteilungen, $this->mitteilungsProcessor);
+            $this->import(array($mitteilungen), $this->mitteilungsProcessor);
         }
 
         // Check for touren
         if (!isset($touren) || !isset($berichte) || !isset($art) || !isset($schwierigkeit) || !isset($adressen)) {
             $this->logger->warning('Input file has no touren, berichte, art, schwierigkeit, adressen... skipping');
         } else {
-            $this->importTouren($touren, $berichte, $art, $schwierigkeit, $adressen);
+
+            $this->import(array($touren, $berichte, $art, $schwierigkeit, $adressen), $this->tourProcessor);
         }
     }
 
+    /**
+     * Helper method for the processor
+     *
+     * @param $values
+     * @param Processor $processor
+     */
     private function import($values, Processor $processor)
     {
         $this->logger->log('Begin processing of ' . $processor->getEntityName());
@@ -160,21 +167,6 @@ class Import extends Init
         }
 
         $this->logger->success('All ' . $processor->getEntityName() . ' are imported');
-    }
-
-    function importTouren($touren, $berichte, $art, $schwierigkeit, $adressen)
-    {
-        $this->logger->log('Begin processing of ' . $this->tourProcessor->getEntityName());
-        $this->logger->log('It has ' . count($touren) . ' ' . $this->tourProcessor->getEntityName());
-
-        $entities = $this->tourProcessor->process($touren, $berichte, $art, $schwierigkeit, $adressen);
-
-        foreach ($entities as $entity) {
-            $this->tourProcessor->save($entity, $this->noop);
-        }
-
-        $this->logger->success('All ' . $this->tourProcessor->getEntityName() . ' are imported');
-
     }
 
 }

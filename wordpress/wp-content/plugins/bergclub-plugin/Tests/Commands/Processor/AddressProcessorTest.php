@@ -31,7 +31,7 @@ class AddressProcessorTest extends TestCase
      */
     public function standardAddressHasRightEntity()
     {
-        $values = array($this->getStandardAddress());
+        $values = array(array($this->getStandardAddress()));
 
         $entities = $this->processor->process($values);
         $this->assertEquals(1, count($entities));
@@ -47,7 +47,7 @@ class AddressProcessorTest extends TestCase
      */
     public function standardAddressWillResultInRightGender()
     {
-        $values = array($this->getStandardAddress());
+        $values = array(array($this->getStandardAddress()));
 
         $entities = $this->processor->process($values);
         $entity = current($entities);

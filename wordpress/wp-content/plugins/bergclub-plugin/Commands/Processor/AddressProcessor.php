@@ -13,11 +13,27 @@ use BergclubPlugin\Commands\Entities\Entity;
 use BergclubPlugin\MVC\Models\Role;
 use BergclubPlugin\MVC\Models\User;
 
+/**
+ * Class AddressProcessor handles old addresses and converts them to the new schema
+ *
+ * @package BergclubPlugin\Commands\Processor
+ * @author Kevin Studer <kreemer@me.com>
+ */
 class AddressProcessor extends Processor
 {
+    /**
+     * @var array
+     */
     protected $processedAddressen = array();
 
-    public function process(...$values): array {
+    /**
+     * process the address variables and generates entities
+     *
+     * @param $values
+     * @return array
+     */
+    public function process($values): array
+    {
         if (count($values) != 1) {
             throw new \RuntimeException();
         }
@@ -44,15 +60,15 @@ class AddressProcessor extends Processor
 
             $spouseId1 = null;
             $spouseId2 = null;
-            foreach($addressEntities as $addressEntity) {
+            foreach ($addressEntities as $addressEntity) {
                 /** @var $addressEntity Adressen */
-                if($addressEntity->lastName == $lastName &&
+                if ($addressEntity->lastName == $lastName &&
                     $addressEntity->firstName == $firstName1
                 ) {
                     $spouseId1 = $addressEntity;
                 }
 
-                if($addressEntity->lastName == $lastName &&
+                if ($addressEntity->lastName == $lastName &&
                     $addressEntity->firstName == $firstName2
                 ) {
                     $spouseId2 = $addressEntity;
@@ -71,8 +87,18 @@ class AddressProcessor extends Processor
         return $addressEntities;
     }
 
+    /**
+     * Save one entity in the db
+     *
+     * @param Entity $entity
+     * @param bool $noOp
+     * @return void
+     */
     public function save(Entity $entity, $noOp = true)
     {
+        if (!($entity instanceof Adressen)) {
+            $this->logger->error('Entity not importable by this processor');
+        }
         /** @var $entity Adressen */
         $this->logger->log('Processing ' . $entity);
         $model = new User($entity->toArray());
@@ -97,7 +123,8 @@ class AddressProcessor extends Processor
      * @param $array
      * @return Adressen
      */
-    private function generateEntitiesFromArray($a) {
+    private function generateEntitiesFromArray($a)
+    {
         $addressEntity = new Adressen();
         $addressEntity->id = $a['id'];
         $addressEntity->firstName = trim($a['vorname']);
@@ -154,7 +181,13 @@ class AddressProcessor extends Processor
         return $addressEntity;
     }
 
-    public function getEntityName() {
+    /**
+     * the entity name
+     *
+     * @return string
+     */
+    public function getEntityName()
+    {
         return 'Adressen';
     }
 }

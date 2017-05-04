@@ -5,10 +5,10 @@ use BergclubPlugin\Commands\Entities\Entity;
 use BergclubPlugin\Commands\Logger;
 
 /**
- * Created by PhpStorm.
- * User: kevstuder
- * Date: 29.04.17
- * Time: 13:52
+ * Abstract class for processors
+ * A processor takes data from the old website and imports them into the new one
+ *
+ * @author Kevin Studer <kreemer@me.com>
  */
 abstract class Processor
 {
@@ -17,6 +17,10 @@ abstract class Processor
      */
     protected $logger;
 
+    /**
+     * Processor constructor
+     * @param Logger $logger
+     */
     public function __construct(Logger $logger)
     {
         $this->logger = $logger;
@@ -26,16 +30,16 @@ abstract class Processor
      * get all entities from the import variables
      *
      * @param $values
-     * @return Entity
+     * @return array
      */
-    abstract public function process(...$values) : array;
+    abstract public function process($values) : array;
 
     /**
      * save an entity
      *
      * @param Entity $entity
      * @param boolean $noOp true if no operation should be executed
-     * @return mixed
+     * @return void
      */
     abstract public function save(Entity $entity, $noOp = true);
 

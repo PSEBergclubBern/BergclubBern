@@ -38,7 +38,7 @@ class MitteilungProcessorTest extends TestCase
             'text'      => 'judihui',
         );
 
-        $entities = $this->processor->process(array($mitteilung));
+        $entities = $this->processor->process(array(array($mitteilung)));
 
         $this->assertEquals(1, count($entities));
     }
@@ -55,7 +55,7 @@ class MitteilungProcessorTest extends TestCase
             'text'      => 'judihui',
         );
 
-        $entities = $this->processor->process(array($mitteilung));
+        $entities = $this->processor->process(array(array($mitteilung)));
 
         $this->assertEquals(1, current($entities)->id);
     }
@@ -72,7 +72,7 @@ class MitteilungProcessorTest extends TestCase
             'text'      => 'judihui',
         );
 
-        $entities = $this->processor->process(array($mitteilung));
+        $entities = $this->processor->process(array(array($mitteilung)));
 
         $this->assertEquals('Testtitel', current($entities)->titel);
     }
@@ -89,7 +89,7 @@ class MitteilungProcessorTest extends TestCase
             'text'      => 'judihui',
         );
 
-        $entities = $this->processor->process(array($mitteilung));
+        $entities = $this->processor->process(array(array($mitteilung)));
 
         $this->assertEquals('judihui', current($entities)->text);
     }
@@ -106,7 +106,7 @@ class MitteilungProcessorTest extends TestCase
             'text'      => 'judihui',
         );
 
-        $entities = $this->processor->process(array($mitteilung));
+        $entities = $this->processor->process(array(array($mitteilung)));
 
         $this->assertEquals('01-01-2017', current($entities)->datum);
     }

@@ -45,7 +45,7 @@ class TourProcessorTest extends TestCase
             )
         );
 
-        $entities = $this->processor->process($touren, $bericht, array(), array(), array());
+        $entities = $this->processor->process(array($touren, $bericht, array(), array(), array()));
         $this->assertEquals(1, count($entities));
 
         $entity = current($entities);
@@ -71,12 +71,78 @@ class TourProcessorTest extends TestCase
             )
         );
 
-        $entities = $this->processor->process($touren, $bericht, array(), array(), array());
+        $entities = $this->processor->process(array($touren, $bericht, array(), array(), array()));
         $this->assertEquals(1, count($entities));
 
         $entity = current($entities);
         /** @var Tour $entity */
         $this->assertNull($entity->tourBericht);
+    }
+
+    /**
+     * @test
+     */
+    public function ifMoreThanOneReportIsFoundTakeWithMostMatchingTitleAndNotFirstOccur()
+    {
+        $touren = array(
+            $this->getStandardTour()
+        );
+
+        $bericht = array(
+            array(
+                'id' => '1',
+                'datum' => '2006-04-21',
+                'titel' => 'Superwanderung',
+                'text' => urlencode('text für bericht')
+            ),
+            array(
+                'id' => '2',
+                'datum' => '2006-04-21',
+                'titel' => 'Skitour Appenzell',
+                'text' => urlencode('text für bericht')
+            )
+        );
+
+        $entities = $this->processor->process(array($touren, $bericht, array(), array(), array()));
+        $this->assertEquals(1, count($entities));
+
+        $entity = current($entities);
+        /** @var Tour $entity */
+        $this->assertNotNull($entity->tourBericht);
+        $this->assertEquals(2, $entity->tourBericht->id);
+    }
+
+    /**
+     * @test
+     */
+    public function ifMoreThanOneReportIsFoundTakeWithMostMatchingTitleAndNotLastOccur()
+    {
+        $touren = array(
+            $this->getStandardTour()
+        );
+
+        $bericht = array(
+            array(
+                'id' => '1',
+                'datum' => '2006-04-21',
+                'titel' => 'Skitour Appenzell',
+                'text' => urlencode('text für bericht')
+            ),
+            array(
+                'id' => '2',
+                'datum' => '2006-04-21',
+                'titel' => 'Superwanderung',
+                'text' => urlencode('text für bericht')
+            )
+        );
+
+        $entities = $this->processor->process(array($touren, $bericht, array(), array(), array()));
+        $this->assertEquals(1, count($entities));
+
+        $entity = current($entities);
+        /** @var Tour $entity */
+        $this->assertNotNull($entity->tourBericht);
+        $this->assertEquals(1, $entity->tourBericht->id);
     }
 
     private function getStandardTour()

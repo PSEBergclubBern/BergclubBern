@@ -17,12 +17,29 @@ use BergclubPlugin\Touren\MetaBoxes\MeetingPoint;
 use BergclubPlugin\Touren\MetaBoxes\Tour as TourMetabox;
 use BergclubPlugin\MVC\Models\Option;
 
+/**
+ * Class TourProcessor handles all tours and the reports
+ *
+ * @package BergclubPlugin\Commands\Processor
+ * @author Kevin Studer <kreemer@me.com>
+ */
 class TourProcessor extends Processor
 {
 
-    protected $processedAddressen = array();
-
-    public function process(...$values): array
+    /**
+     * process the tours and tourreports variables and generate entities
+     *
+     * the values has to be an array with following content
+     * $values[0] = $touren variable from the dump
+     * $values[1] = $berichte variable from the dump
+     * $values[2] = $art variable from the dump
+     * $values[3] = $schwierigkeit variable from the dump
+     * $values[4] = $adressen variable from the dump
+     *
+     * @param $values
+     * @return array
+     */
+    public function process($values): array
     {
         if (count($values) != 5) {
             throw new \RuntimeException();
@@ -65,29 +82,47 @@ class TourProcessor extends Processor
                 $tourEntity->coLeader = $this->findUserIdByName($adressen[$tourEntity->coLeader]);
             }
 
-
-            $tourEntities[] = $tourEntity;
-
-            $i = 0;
+            // Find report
+            $reportCandidates = array();
             foreach ($berichte as $bericht) {
-                if ($bericht['datum'] == $tourEntity->dateFrom) {
-                    $bericht['text'] = $this->convertTextField($bericht['text']);
-                    $tourEntity->tourBericht = new TourBericht($bericht);
-                    $i++;
+                if ($bericht['datum'] == $tourEntity->dateFrom || $bericht['datum'] == $tourEntity->dateTo) {
+                    $reportCandidates[] = $bericht;
                 }
             }
-            if ($i > 1) {
-                $this->logger->warning('Found more than one report for tour ' . $tourEntity . ', taking the last');
-            } elseif ($i == 0) {
+
+            if (count($reportCandidates) > 1) {
+                $this->logger->warning('Found more than one report for tour ' . $tourEntity . ', trying to match title');
+                $max = -1;
+                foreach ($reportCandidates as $reportCandidate) {
+                    $currentMax = 0;
+                    similar_text($tourEntity->title, $reportCandidate['titel'], $currentMax);
+                    if ($max < $currentMax) {
+                        $tourEntity->tourBericht = new TourBericht($reportCandidate);
+                        $tourEntity->tourBericht->text = $this->convertTextField($tourEntity->tourBericht->text);
+                        $max = $currentMax;
+                    }
+                }
+            } elseif (count($reportCandidates) == 0) {
                 $this->logger->warning('Found no report');
             } else {
                 $this->logger->log('Found one report');
+                $tourEntity->tourBericht = new TourBericht(current($reportCandidates));
+                $tourEntity->tourBericht->text = $this->convertTextField($tourEntity->tourBericht->text);
             }
+
+            $tourEntities[] = $tourEntity;
         }
 
         return $tourEntities;
     }
 
+    /**
+     * Save the generated entities
+     *
+     * @param Entity $entity
+     * @param bool $noOp
+     * @return void
+     */
     public function save(Entity $entity, $noOp = true)
     {
         /** @var $entity Tour */
@@ -141,12 +176,12 @@ class TourProcessor extends Processor
                 if ($entity->tourBericht != null) {
                     $generatedReportId = wp_insert_post(
                         array(
-                            'post_title'    => $entity->title,
-                            'post_author'   => 1,
-                            'post_status'   => 'publish',
-                            'post_date'     => $entity->tourBericht->date,
-                            'post_content'  => $entity->tourBericht->text,
-                            'post_type'     => 'tourenberichte',
+                            'post_title' => $entity->title,
+                            'post_author' => 1,
+                            'post_status' => 'publish',
+                            'post_date' => $entity->tourBericht->date,
+                            'post_content' => $entity->tourBericht->text,
+                            'post_type' => 'tourenberichte',
                         ),
                         true
                     );
@@ -163,12 +198,22 @@ class TourProcessor extends Processor
         }
     }
 
+    /**
+     * get the entity name
+     *
+     * @return string
+     */
     public function getEntityName()
     {
         return 'Touren';
     }
 
-
+    /**
+     * get the tourenarten as array with id as key
+     *
+     * @param $art
+     * @return array
+     */
     private function prepareArt($art)
     {
         if (count($art) == 0) {
@@ -187,6 +232,12 @@ class TourProcessor extends Processor
         return $result;
     }
 
+    /**
+     * get the schwierigkeit as array with id as key
+     *
+     * @param $schwierigkeit
+     * @return array
+     */
     private function prepareSchwierigkeit($schwierigkeit)
     {
         $result = [];
@@ -201,6 +252,13 @@ class TourProcessor extends Processor
         return $result;
     }
 
+    /**
+     * read from the adressenvariable the content and generate an array with following content:
+     * [ id ] => [ firstname, lastname ]
+     *
+     * @param $adressen
+     * @return array
+     */
     private function prepareAdressen($adressen)
     {
         $result = [];
@@ -212,6 +270,12 @@ class TourProcessor extends Processor
         return $result;
     }
 
+    /**
+     * get the wordpress user by first- and lastname
+     *
+     * @param $args
+     * @return int
+     */
     private function findUserIdByName($args)
     {
         if (!empty($args['first_name']) && !empty($args['last_name'])) {
