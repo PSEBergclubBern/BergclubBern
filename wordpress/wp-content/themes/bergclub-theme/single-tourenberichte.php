@@ -58,8 +58,11 @@ while (have_posts()) : the_post();
                     $gallery = get_post_gallery(get_the_ID(), false);
                     $gallery_attachments_ids = explode(",", $gallery["ids"]);
                     foreach($gallery_attachments_ids as $id): ?>
-                        <a href="<?=wp_get_attachment_url($id)?>" data-lightbox="report-galary" data-title="<?=get_post($id)->post_excerpt?>">
-                            <img alt="Berichtbild" src="<?=wp_get_attachment_thumb_url($id)?>" class="report-image">
+                        <?php
+                            $imgDescription = htmlentities(get_post($id)->post_excerpt);
+                        ?>
+                        <a href="<?=wp_get_attachment_url($id)?>" data-lightbox="report-gallery" data-title="<?= nl2br($imgDescription) ?>">
+                            <img alt="<?= $imgDescription ?>" title="<?= $imgDescription ?>" src="<?=wp_get_attachment_thumb_url($id)?>" class="report-image">
                         </a>
                     <?php endforeach; ?>
                 <?php endif; ?>
