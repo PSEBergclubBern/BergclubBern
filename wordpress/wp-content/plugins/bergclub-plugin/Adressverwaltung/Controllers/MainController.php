@@ -289,6 +289,13 @@ class MainController extends AbstractController
         /* @var User $user */
         $user = $this->data['user'];
 
+        // make sure that user doesn't add functionary roles on himself
+        $currentUser = User::findCurrent();
+        if ( $user == $currentUser ){
+            FlashMessage::add(FlashMessage::TYPE_ERROR, 'Sie können sich nicht selber Funktionsrollen zuweisen!');
+            Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
+        }
+
         foreach($user->functionary_roles as $role){
             /* @var Role $role */
             if(!isset($_POST['functionary_roles']) || !in_array($role->getKey(), $_POST['functionary_roles'])){
