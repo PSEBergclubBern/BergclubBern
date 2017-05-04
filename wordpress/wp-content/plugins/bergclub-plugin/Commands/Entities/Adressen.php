@@ -8,6 +8,8 @@
 
 namespace BergclubPlugin\Commands\Entities;
 
+use BergclubPlugin\MVC\Models\User;
+
 class Adressen implements Entity
 {
     const CATEGORY_INSTITUTION = 2;
@@ -44,6 +46,10 @@ class Adressen implements Entity
      * @var Adressen
      */
     public $spouse;
+
+    public $activeMemberDate;
+    public $activeYouthMemberDate;
+    public $interessentDate;
 
     public $leader = false;
     public $leaderDescription;
@@ -159,5 +165,17 @@ class Adressen implements Entity
     public function setSpouse(Adressen $spouse)
     {
         $this->spouse = $spouse;
+    }
+
+    /**
+     * return the user history as array
+     * the format is equal to that from the user model
+     *
+     * @return array
+     * @see User
+     */
+    public function getUserHistory()
+    {
+        return array();
     }
 }

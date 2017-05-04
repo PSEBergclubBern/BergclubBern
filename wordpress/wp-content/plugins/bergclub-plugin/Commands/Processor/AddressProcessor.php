@@ -154,6 +154,10 @@ class AddressProcessor extends Processor
         $addressEntity->diedDate = $a['ddat'];
         $addressEntity->diedReason = $a['dgrund'];
 
+        $addressEntity->activeMemberDate = $a['bdat'];
+        $addressEntity->activeYouthMemberDate = $a['jdat'];
+        $addressEntity->interessentDate = $a['idat'];
+
         $addressEntity->leader = $a['leiter'];
         $addressEntity->leaderDescription = $a['beschreibung'];
         $addressEntity->leaderFrom = $a['ldat'] == '0000-00-00' ? null : $a['ldat'];
