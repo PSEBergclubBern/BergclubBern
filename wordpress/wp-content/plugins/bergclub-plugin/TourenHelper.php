@@ -18,6 +18,11 @@ use BergclubPlugin\MVC\Models\User;
  */
 class TourenHelper
 {
+    public static function getIsYouth($postId){
+        $isYouth = ['BCB', 'Jugend', 'Beides'];
+        return $isYouth[self::getMeta($postId, 'isYouth')];
+    }
+
     public static function getDateFrom($postId){
         return self::getDate(self::getMeta($postId, 'dateFrom'));
     }

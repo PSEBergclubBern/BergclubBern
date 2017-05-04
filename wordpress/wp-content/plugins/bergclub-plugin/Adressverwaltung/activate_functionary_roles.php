@@ -25,6 +25,7 @@ $functionaryRoles = [
             'delete_others_tour' => false,
             'read_private_tour' => false,
             'read_tour' => true,
+            'touren_bcb' => true,
 
             'create_tourenbericht' => true,
             'publish_tourenbericht' => false,
@@ -68,6 +69,7 @@ $functionaryRoles = [
             'delete_others_tour' => false,
             'read_private_tour' => false,
             'read_tour' => true,
+            'touren_jugend' => true,
 
             'create_tourenbericht' => true,
             'publish_tourenbericht' => false,
@@ -110,6 +112,7 @@ $functionaryRoles = [
             'delete_others_tour' => true,
             'read_private_tour' => true,
             'read_tour' => true,
+            'touren_bcb' => true,
 
             'create_tourenbericht' => true,
             'publish_tourenbericht' => true,
@@ -158,6 +161,7 @@ $functionaryRoles = [
             'delete_others_tour' => true,
             'read_private_tour' => true,
             'read_tour' => true,
+            'touren_jugend' => true,
 
             'create_tourenbericht' => true,
             'publish_tourenbericht' => true,
@@ -217,6 +221,8 @@ $functionaryRoles = [
             'delete_others_tour' => true,
             'read_private_tour' => true,
             'read_tour' => true,
+            'touren_bcb' => true,
+            'touren_jugend' => true,
 
             'create_tourenbericht' => true,
             'publish_tourenbericht' => true,
@@ -348,6 +354,8 @@ $functionaryRoles = [
             'delete_others_tour' => false,
             'read_private_tour' => false,
             'read_tour' => true,
+            'touren_bcb' => true,
+            'touren_jugend' => true,
 
             'publish_tourenbericht' => false,
             'edit_tourenbericht' => true,

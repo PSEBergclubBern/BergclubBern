@@ -178,15 +178,31 @@ function bcb_map_meta_cap( $caps, $cap, $user_id, $args ) {
 add_filter( 'map_meta_cap', 'bcb_map_meta_cap', 10, 4 );
 
 function bcb_touren_columns($columns) {
-    return array_merge( $columns,
-        ['type' => 'Art', 'dateFrom' => 'Von', 'dateTo' => 'Bis']
-    );
+    $user = \BergclubPlugin\MVC\Models\User::findCurrent();
+
+    if(!$user->hasCapability('touren_jugend') || !$user->hasCapability('touren_bcb')) {
+        return array_merge( $columns,
+            ['type' => 'Art', 'dateFrom' => 'Von', 'dateTo' => 'Bis']
+        );
+    }else{
+        return array_merge( $columns,
+            ['isYouth' => 'BCB/Jugend', 'type' => 'Art', 'dateFrom' => 'Von', 'dateTo' => 'Bis']
+        );
+    }
 }
 
 function bcb_touren_sortable_columns($columns){
-    return array_merge( $columns,
-        ['type' => 'type', 'dateFrom' => 'dateFrom', 'dateTo' => 'dateTo']
-    );
+    $user = \BergclubPlugin\MVC\Models\User::findCurrent();
+
+    if(!$user->hasCapability('touren_jugend') || !$user->hasCapability('touren_bcb')) {
+        return array_merge($columns,
+            ['type' => 'type', 'dateFrom' => 'dateFrom', 'dateTo' => 'dateTo']
+        );
+    }else{
+        return array_merge($columns,
+            ['isYouth' => 'BCB/Jugend', 'type' => 'type', 'dateFrom' => 'dateFrom', 'dateTo' => 'dateTo']
+        );
+    }
 }
 
 function bcb_touren_custom_columns($column, $postId){
@@ -194,22 +210,68 @@ function bcb_touren_custom_columns($column, $postId){
 }
 
 function bcb_pre_get_posts(WP_Query $query){
-    if (is_admin() && $query->is_main_query() && ( $orderby = $query->get( 'orderby' ) ) ) {
+    if (is_admin() && $query->is_main_query() && ($query->query['post_type'] == 'touren' || $query->query['post_type'] == 'tourenberichte') && !is_singular() ) {
 
-        switch( $orderby ) {
-            case 'type':
-                $query->set( 'meta_key', '_type' );
-                $query->set( 'orderby', 'meta_value' );
-                break;
-            case 'dateFrom':
-                $query->set( 'meta_key', '_dateFromDB' );
-                $query->set( 'orderby', 'meta_value' );
-                break;
-            case 'dateTo':
-                $query->set( 'meta_key', '_dateToDB' );
-                $query->set( 'orderby', 'meta_value' );
-                break;
+
+        $user = \BergclubPlugin\MVC\Models\User::findCurrent();
+
+        if(!$user->hasCapability('touren_jugend')){
+            $metaQuery = $query->get('meta_query');
+            $metaQuery[] = [
+                'relation' => 'OR',
+                [
+                    'key' => '_isYouth',
+                    'value' => '0',
+                    'compare' => '='
+                ],
+                [
+                    'key' => '_isYouth',
+                    'value' => '2',
+                    'compare' => '='
+                ],
+            ];
+            $query->set('meta_query', $metaQuery);
+        }elseif(!$user->hasCapability('touren_bcb')){
+            $metaQuery = $query->get('meta_query');
+            $metaQuery[] = [
+                'relation' => 'OR',
+                [
+                    'key' => '_isYouth',
+                    'value' => '1',
+                    'compare' => '='
+                ],
+                [
+                    'key' => '_isYouth',
+                    'value' => '2',
+                    'compare' => '='
+                ],
+            ];
+            $query->set('meta_query', $metaQuery);
         }
+
+
+        if(($orderby = $query->get( 'orderby' )) && $query->query['post_type'] == 'touren') {
+            switch ($orderby) {
+                case 'type':
+                    $query->set('meta_key', '_type');
+                    $query->set('orderby', 'meta_value');
+                    break;
+                case 'dateFrom':
+                    $query->set('meta_key', '_dateFromDB');
+                    $query->set('orderby', 'meta_value');
+                    break;
+                case 'dateTo':
+                    $query->set('meta_key', '_dateToDB');
+                    $query->set('orderby', 'meta_value');
+                    break;
+                case 'isYouth':
+                    $query->set('meta_key', '_isYouth');
+                    $query->set('orderby', 'meta_value');
+                    break;
+            }
+        }
+
+
     }
 
     if(!is_admin() && isset($query->query['post_type']) && ($query->query['post_type'] == 'touren' || $query->query['post_type'] == 'tourenberichte') && !is_singular()){
@@ -375,4 +437,6 @@ function bcb_pre_get_posts(WP_Query $query){
 add_filter('manage_touren_posts_columns' , 'bcb_touren_columns');
 add_filter('manage_edit-touren_sortable_columns', 'bcb_touren_sortable_columns');
 add_action('manage_touren_posts_custom_column' , 'bcb_touren_custom_columns', 10, 2);
+
+
 add_action( 'pre_get_posts', 'bcb_pre_get_posts', 1 );
