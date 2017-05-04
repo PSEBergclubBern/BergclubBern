@@ -58,16 +58,21 @@ while (have_posts()) : the_post();
                     $gallery = get_post_gallery(get_the_ID(), false);
                     $gallery_attachments_ids = explode(",", $gallery["ids"]);
                     foreach($gallery_attachments_ids as $id): ?>
-                        <a href="<?=wp_get_attachment_url($id)?>" data-lightbox="report-galary">
-                            <img alt="Berichtbild" src="<?=wp_get_attachment_thumb_url($id)?>" class="report-image">
+                        <?php
+                            $imgDescription = htmlentities(get_post($id)->post_excerpt);
+                        ?>
+                        <a href="<?=wp_get_attachment_url($id)?>" data-lightbox="report-gallery" data-title="<?= nl2br($imgDescription) ?>">
+                            <img alt="<?= $imgDescription ?>" title="<?= $imgDescription ?>" src="<?=wp_get_attachment_thumb_url($id)?>" class="report-image">
                         </a>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
             <?php
             $content = get_the_content();
+            $content = preg_replace("/\[gallery[^\]]+\]/i", " ", $content); //replaces the gallery
+            $content = preg_replace("/\[caption[^\\\]+\/caption]/i", " ", $content); //replaces single images with caption
+            $content = preg_replace("/<img[^>]+\>/i", " ", $content);  //replaces single images without caption
             $content = apply_filters('the_content', $content);
-            $content = preg_replace("/<img[^>]+\>/i", " ", $content);
             $content = str_replace(']]>', ']]>', $content);
             echo '<p>'.$content.'</p>';
             ?>
