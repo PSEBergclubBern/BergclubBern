@@ -44,6 +44,7 @@ class AdressenTest extends TestCase
                 'date_to' => null,
             )
         );
+        $this->entity->vorstand = true;
         $this->entity->vorstandFrom = '2016-11-13';
         $this->assertEquals(1, count($this->entity->getUserHistory()));
         $this->assertEquals($expectedArray, $this->entity->getUserHistory());
@@ -60,6 +61,7 @@ class AdressenTest extends TestCase
                 'date_to' => null,
             )
         );
+        $this->entity->support = true;
         $this->entity->supportFrom = '2016-11-13';
         $this->assertEquals(1, count($this->entity->getUserHistory()));
         $this->assertEquals($expectedArray, $this->entity->getUserHistory());
@@ -72,9 +74,9 @@ class AdressenTest extends TestCase
     public function generateHistoryWithDateFromFreeMemberWillReturnHistory()
     {
         $expectedArray = array(
-            'bcb_aktivmitglied' => array(
+            'bcb_freimitglied' => array(
                 'date_from' => '2016-11-13',
-                'date_to' => null,
+                'date_to'   => null,
             )
         );
         $this->entity->freeMemberDate = '2016-11-13';
@@ -88,7 +90,7 @@ class AdressenTest extends TestCase
     public function generateHistoryWithDateFromHonorMemberWillReturnHistory()
     {
         $expectedArray = array(
-            'bcb_aktivmitglied' => array(
+            'bcb_ehrenmitglied' => array(
                 'date_from' => '2016-11-13',
                 'date_to' => null,
             )
@@ -110,6 +112,7 @@ class AdressenTest extends TestCase
             )
         );
         $this->entity->leaderFrom = '2016-11-13';
+        $this->entity->leader = true;
         $this->assertEquals(1, count($this->entity->getUserHistory()));
         $this->assertEquals($expectedArray, $this->entity->getUserHistory());
     }
@@ -126,6 +129,7 @@ class AdressenTest extends TestCase
             )
         );
         $this->entity->leaderYouthFrom = '2016-11-13';
+        $this->entity->leaderYouth = true;
         $this->assertEquals(1, count($this->entity->getUserHistory()));
         $this->assertEquals($expectedArray, $this->entity->getUserHistory());
     }
@@ -152,7 +156,7 @@ class AdressenTest extends TestCase
     public function generateHistoryWithDateFromActiveYouthMemberYouthWillReturnHistory()
     {
         $expectedArray = array(
-            'bcb_aktivmitglied' => array(
+            'bcb_aktivmitglied_jugend' => array(
                 'date_from' => '2016-11-13',
                 'date_to' => null,
             )
@@ -168,7 +172,7 @@ class AdressenTest extends TestCase
     public function generateHistoryWithDateFromInteressentMemberYouthWillReturnHistory()
     {
         $expectedArray = array(
-            'bcb_aktivmitglied' => array(
+            'bcb_interessent' => array(
                 'date_from' => '2016-11-13',
                 'date_to' => null,
             )
@@ -177,4 +181,137 @@ class AdressenTest extends TestCase
         $this->assertEquals(1, count($this->entity->getUserHistory()));
         $this->assertEquals($expectedArray, $this->entity->getUserHistory());
     }
+
+    /**
+     * @test
+     */
+    public function generateHistoryWithYouthWillGenerateActiveMember()
+    {
+        $expectedArray = array(
+            'bcb_aktivmitglied_jugend' => array(
+                'date_from' => '2013-11-13',
+                'date_to' => '2014-11-13',
+            ),
+            'bcb_aktivmitglied' => array(
+                'date_from' => '2014-11-13',
+                'date_to' => null,
+            ),
+        );
+
+        $this->entity->activeYouthMemberDate = '2013-11-13';
+        $this->entity->activeMemberDate = '2014-11-13';
+        $this->assertEquals(2, count($this->entity->getUserHistory()));
+        $this->assertEquals($expectedArray, $this->entity->getUserHistory());
+    }
+
+    /**
+     * @test
+     */
+    public function generateHistoryWithDiedDateWillGenerateActiveMember()
+    {
+        $expectedArray = array(
+            'bcb_aktivmitglied' => array(
+                'date_from' => '2014-11-13',
+                'date_to' => '2015-11-13',
+            ),
+        );
+
+        $this->entity->diedDate = '2015-11-13';
+        $this->entity->activeMemberDate = '2014-11-13';
+        $this->assertEquals(1, count($this->entity->getUserHistory()));
+        $this->assertEquals($expectedArray, $this->entity->getUserHistory());
+    }
+
+    /**
+     * @test
+     */
+    public function generateHistoryWithExitDateWillGenerateActiveMember()
+    {
+        $expectedArray = array(
+            'bcb_aktivmitglied' => array(
+                'date_from' => '2014-11-13',
+                'date_to' => '2015-11-13',
+            ),
+        );
+
+        $this->entity->exitDate = '2015-11-13';
+        $this->entity->activeMemberDate = '2014-11-13';
+        $this->assertEquals(1, count($this->entity->getUserHistory()));
+        $this->assertEquals($expectedArray, $this->entity->getUserHistory());
+    }
+
+
+    /**
+     * @test
+     */
+    public function vorstandWillBeIgnoredInActiveMemberDate()
+    {
+        $expectedArray = array(
+            'bcb_aktivmitglied' => array(
+                'date_from' => '2016-11-13',
+                'date_to' => null,
+            )
+        );
+        $this->entity->vorstand = true;
+        $this->entity->vorstandFrom = '2017-11-13';
+        $this->entity->activeMemberDate = '2016-11-13';
+        $this->assertEquals(1, count($this->entity->getUserHistory()));
+        $this->assertEquals($expectedArray, $this->entity->getUserHistory());
+    }
+
+    /**
+     * @test
+     */
+    public function supportWillBeIgnoredInActiveMemberDate()
+    {
+        $expectedArray = array(
+            'bcb_aktivmitglied' => array(
+                'date_from' => '2016-11-13',
+                'date_to' => null,
+            )
+        );
+        $this->entity->support = true;
+        $this->entity->supportFrom = '2017-11-13';
+        $this->entity->activeMemberDate = '2016-11-13';
+        $this->assertEquals(1, count($this->entity->getUserHistory()));
+        $this->assertEquals($expectedArray, $this->entity->getUserHistory());
+    }
+
+
+    /**
+     * @test
+     */
+    public function leaderWillBeIgnoredInActiveMemberDate()
+    {
+        $expectedArray = array(
+            'bcb_aktivmitglied' => array(
+                'date_from' => '2016-11-13',
+                'date_to' => null,
+            )
+        );
+        $this->entity->leader = true;
+        $this->entity->leaderFrom = '2017-11-13';
+        $this->entity->activeMemberDate = '2016-11-13';
+        $this->assertEquals(1, count($this->entity->getUserHistory()));
+        $this->assertEquals($expectedArray, $this->entity->getUserHistory());
+    }
+
+    /**
+     * @test
+     */
+    public function leaderYouthWillBeIgnoredInActiveMemberDate()
+    {
+        $expectedArray = array(
+            'bcb_aktivmitglied' => array(
+                'date_from' => '2016-11-13',
+                'date_to' => null,
+            )
+        );
+        $this->entity->leaderYouth = true;
+        $this->entity->leaderYouthFrom = '2017-11-13';
+        $this->entity->activeMemberDate = '2016-11-13';
+        $this->assertEquals(1, count($this->entity->getUserHistory()));
+        $this->assertEquals($expectedArray, $this->entity->getUserHistory());
+    }
+
 }

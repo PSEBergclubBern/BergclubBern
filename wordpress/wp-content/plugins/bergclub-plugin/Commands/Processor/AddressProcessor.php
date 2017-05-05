@@ -103,6 +103,7 @@ class AddressProcessor extends Processor
         $this->logger->log('Processing ' . $entity);
         $model = new User($entity->toArray());
         $model->addRole(Role::find($entity->determinateRole()));
+        $model->history = $entity->getUserHistory();
         if (!$noOp) {
             $model->save();
             if ($entity->getSpouse() && isset($this->processedAddressen[$entity->getSpouse()->id])) {
