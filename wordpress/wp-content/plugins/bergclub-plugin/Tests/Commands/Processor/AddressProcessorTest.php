@@ -55,6 +55,35 @@ class AddressProcessorTest extends TestCase
         $this->assertEquals('M', $entity->toArray()['gender']);
     }
 
+
+    /**
+     * @test
+     */
+    public function sendProgramIsFalseWhen0()
+    {
+        $address = $this->getStandardAddress();
+        $address['versenden'] = 0;
+        $values = array(array($address));
+
+        $entities = $this->processor->process($values);
+        $entity = current($entities);
+
+        $this->assertEquals('0', $entity->toArray()['program_shipment']);
+    }
+
+    /**
+     * @test
+     */
+    public function sendProgramIsTrueWhen1()
+    {
+        $values = array(array($this->getStandardAddress()));
+
+        $entities = $this->processor->process($values);
+        $entity = current($entities);
+
+        $this->assertEquals('1', $entity->toArray()['program_shipment']);
+    }
+
     private function getStandardAddress()
     {
         return array(

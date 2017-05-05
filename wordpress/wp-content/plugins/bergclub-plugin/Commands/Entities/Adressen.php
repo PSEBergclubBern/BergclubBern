@@ -113,7 +113,7 @@ class Adressen implements Entity
             'email'             => $this->email,
             'birthdate'         => $this->birthday,
             'comments'          => $this->comment,
-            'program_shipment'  => $this->sendProgram ? 1 : 0,
+            'program_shipment'  => $this->sendProgram ? '1' : '0',
             'gender'            => $this->salutation == 'Frau' ? 'F' : 'M',
             'address_addition'  => $this->addition,
         );

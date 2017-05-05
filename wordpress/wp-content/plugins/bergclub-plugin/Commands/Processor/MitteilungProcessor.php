@@ -55,6 +55,7 @@ class MitteilungProcessor extends Processor
         }
 
         $categoryId = null;
+        var_dump(get_categories());
         foreach (get_categories() as $category) {
             /** @var $category \WP_Term */
             if ($category->slug == 'mitteilungen') {

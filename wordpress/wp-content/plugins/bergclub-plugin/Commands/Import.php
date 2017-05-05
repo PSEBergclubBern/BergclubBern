@@ -130,7 +130,7 @@ class Import extends Init
         if (!isset($adressen)) {
             $this->logger->warning('Input file has no adressen, skipping');
         } else {
-            $this->import(array($adressen), $this->addressenProcessor);
+            //$this->import(array($adressen), $this->addressenProcessor);
         }
 
         // Check for mitteilungen
