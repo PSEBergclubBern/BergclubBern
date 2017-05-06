@@ -227,7 +227,16 @@ class MainController extends AbstractController
 
         /* get form data */
         foreach($_POST as $key => $value){
-            $user->$key = trim($value);
+            if($key=='birthdate'){
+                if(Helpers::isValidDate($value)){
+                    $user->$key = trim($value);
+                }elseif(!empty($value)){
+                    FlashMessage::add(FlashMessage::TYPE_ERROR, "Das Geburtsdatum muss im Format tt.mm.jjjj und ein gültiges Datum sein.<br>Falls nur der Jahrgang bekannt ist, notieren Sie dies unter Bemerkungen und verwenden Sie 01.01.jjjj als Geburtsdatum.");
+                    $user->$key = null;
+                }
+            }else{
+                $user->$key = trim($value);
+            }
         }
 
         if ( !$role ){

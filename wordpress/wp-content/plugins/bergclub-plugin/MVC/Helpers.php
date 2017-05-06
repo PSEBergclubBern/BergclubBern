@@ -74,4 +74,19 @@ class Helpers
         }
         return $result;
     }
+
+
+    /**
+     * Checks if the given date is a valid date.
+     * @param string $date A date to check in the format d.m.Y (day and month can be single- or double-digit)
+     * @return bool returns true if date is valid, false otherwise
+     */
+    public static function isValidDate($date){
+        preg_match_all('/^([0-9]{1,2}).([0-9]{1,2}).([0-9]{4})$/', $date, $matches);
+        if(count($matches) == 4){
+            return checkdate($matches[2][0], $matches[1][0], $matches[3][0]);
+        }
+        exit;
+        return false;
+    }
 }
