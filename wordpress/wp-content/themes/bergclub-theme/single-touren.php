@@ -51,7 +51,7 @@ while (have_posts()) : the_post();
         "Konditionelle Anforderungen" => $reqConditionalDisplay,
         "Ausrüstung" => $equipmentDisplay,
         "Übernachtung" => $sleepOverDisplay,
-        "Verplfegung" => $foodDisplay,
+        "Verpflegung" => $foodDisplay,
         "Kartenmaterial" => $mapMaterialDisplay,
         "Online Route" => $onlineMapDisplay,
         "Besonderes" => $additionalInfoDisplay,
