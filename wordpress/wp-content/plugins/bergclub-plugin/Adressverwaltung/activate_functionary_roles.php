@@ -41,6 +41,8 @@ $functionaryRoles = [
             'rueckmeldungen_edit' => true,
             'rueckmeldungen_tab_nofeedback' => true,
             'rueckmeldungen_tab_all' => true,
+
+            'upload_files' => true,
         ],
     ],
 
@@ -85,6 +87,8 @@ $functionaryRoles = [
             'rueckmeldungen_jugend_edit' => true,
             'rueckmeldungen_tab_nofeedback' => true,
             'rueckmeldungen_tab_all' => true,
+
+            'upload_files' => true,
         ],
     ],
     'bcb_tourenchef' => [
@@ -134,6 +138,8 @@ $functionaryRoles = [
 
             'export' => true,
             'export_touren' => true,
+
+            'upload_files' => true,
         ],
     ],
     'bcb_tourenchef_jugend' => [
@@ -183,6 +189,8 @@ $functionaryRoles = [
 
             'export' => true,
             'export_touren' => true,
+
+            'upload_files' => true,
         ],
     ],
     'bcb_redaktion' => [
@@ -250,6 +258,7 @@ $functionaryRoles = [
             'export_druck' => true,
 
             'adressen_read' => true,
+            'upload_files' => true,
         ],
     ],
     'bcb_sekretariat' => [
