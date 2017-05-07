@@ -479,7 +479,7 @@ class User implements IModel
 
         if ( !isset($this->roles[$role->getKey()]) && ($allowSystemRoles || $role->getType() != Role::TYPE_SYSTEM)){
             $this->roles[$role->getKey()] = $role;
-            if($updateHistory) {
+            if($updateHistory && $role->getType() != Role::TYPE_SYSTEM) {
                 $this->openHistory($role);
             }
         }
@@ -495,7 +495,7 @@ class User implements IModel
             if (isset($this->roles[$role->getKey()])) {
                 unset($this->roles[$role->getKey()]);
                 $this->deletedRoles[] = $role;
-                if ($updateHistory) {
+                if ($updateHistory && $role->getType() != Role::TYPE_SYSTEM) {
                     $this->closeHistory($role);
                 }
             }
@@ -773,7 +773,7 @@ class User implements IModel
     {
         $spouse = $this->getSpouse();
         if($spouse) {
-            return $spouse->last_name . ' ' . $spouse->first_name;
+            return $spouse->displayName;
         }
 
         return '';
@@ -899,8 +899,12 @@ class User implements IModel
         if(!empty($this->data['address_addition'])) {
             $address[] = $this->data['address_addition'];
         }
-        $address[] = $this->data['street'];
-        $address[] = trim($this->data['zip'] . ' ' .$this->data['location']);
+        if(!empty($this->data['street'])) {
+            $address[] = $this->data['street'];
+        }
+        if(!empty($this->data['location'])) {
+            $address[] = trim($this->data['zip'] . ' ' . $this->data['location']);
+        }
         return $address;
     }
 
@@ -952,7 +956,7 @@ class User implements IModel
      * @return mixed|null the value of the constant or null if the constant does not exist.
      */
     private function _getConstant($key, $variant){
-        if(!empty($variant) || $variant !== 0 || $variant !=="0") {
+        if(!empty($variant) || is_numeric($variant)) {
             return constant('self::' . strtoupper(trim($key, '_') . '_' . trim($variant, '_')));
         }
         return null;

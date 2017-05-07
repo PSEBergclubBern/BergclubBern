@@ -1,150 +1,10 @@
 <?php
+namespace {
+    require_once __DIR__ . '/wp_mocks.php';
+}
 
-
-//mock wp functions and classes for the Models namespace
+//mock classes for the Models namespace
 namespace BergclubPlugin\MVC\Models {
-    global $wpUsers;
-    global $wpUsersMeta;
-    global $wpRoles;
-
-    function get_user_by($field, $value)
-    {
-        global $wpUsers;
-        if($field == 'ID') {
-            if (isset($wpUsers[$value])) {
-                return $wpUsers[$value];
-            }
-        }elseif($field == 'login'){
-            foreach($wpUsers as $wpUser){
-                if($wpUser->data['user_login'] == $value){
-                    return $wpUser;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    function get_users($args = null){
-        global $wpUsers;
-        if(!$args) {
-            return $wpUsers;
-        }elseif(isset($args['role'])){
-            $result = [];
-            foreach($wpUsers as $wpUser){
-                if(in_array($args['role'], $wpUser->roles)){
-                    $result[] = $wpUser;
-                }
-            }
-            return $result;
-        }
-
-        return [];
-    }
-
-    function get_user_meta($id){
-        global $wpUsersMeta;
-        if(isset($wpUsersMeta[$id])){
-            return $wpUsersMeta[$id];
-        }
-
-        return null;
-    }
-
-    function get_current_user_id(){
-        return 1;
-    }
-
-    function wp_insert_user($args){
-        global $wpUsers;
-        global $wpUsersMeta;
-
-        $lastUser = end($wpUsers);
-        $id = $lastUser->ID + 1;
-        $tm = date("U");
-
-        $wpUser = new \stdClass();
-        $wpUser->data = [
-            'ID' => $id,
-            'user_login' => $args['user_login'],
-            'user_pass' => '$P$B374xSqLsoDdG5.zVyvNTy1wJjpoUW.',
-            'user_nicename' => $args['user_login'],
-            'user_email' => $args['user_email'],
-            'user_registered' => date('Y-m-d H:i:s', $tm),
-            'user_activation_key' => null,
-            'user_status' => 0,
-            'display_name' => $args['user_login'],
-        ];
-        $wpUser->ID = $id;
-        $wpUser->caps = [];
-        $wpUser->cap_key = 'wp_capabilities';
-        $wpUser->roles = [];
-        $wpUser->allcaps = ['read' => null];
-
-        $wpUsers[$id] = $wpUser;
-
-        $wpUsersMeta[$id] = [
-            'nickname' => $args['user_login'],
-            'description' => [null],
-            'rich_editing' => [true],
-            'comment_shortcuts' => [false],
-            'admin_color' => ['fresh'],
-            'use_ssl' => [0],
-            'show_admin_bar_front' => [true],
-            'locale' => [null],
-            'wp_capabilities' => [serialize([])],
-            'wp_user_level' => [0],
-            'dismissed_wp_pointers' => [null],
-        ];
-    }
-
-    function wp_update_user($args){
-        global $wpUsers;
-        if(isset($args['ID'])) {
-            $id = $args['ID'];
-            foreach ($args as $key => $value) {
-                $wpUsers[$id]->data[$key] = $value;
-            }
-        }
-    }
-
-    function update_user_meta($id, $field, $value){
-        global $wpUsersMeta;
-        $wpUsersMeta[$id][$field] = [$value];
-    }
-
-    function username_exists($username){
-        global $wpUsers;
-        foreach($wpUsers as $wpUser){
-            if($wpUser->data['user_login'] == $username){
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    function sanitize_email($value){
-        return $value;
-    }
-
-    function sanitize_text_field($value){
-        return $value;
-    }
-
-    class WP_User {
-        public $ID;
-
-        public function add_role($role){
-            global $wpUsers;
-
-        }
-
-        public function remove_role($role){
-            
-        }
-    }
-
     class Role {
         const TYPE_SYSTEM = 'system';
         const TYPE_ADDRESS = 'address';
@@ -214,677 +74,186 @@ namespace BergclubPlugin\MVC\Models {
         public function getName(){
             return self::$roles[$this->key]['name'];
         }
-    }
-}
 
-//mock wp_mail
-namespace BergclubPlugin\MVC {
-    global $wpMail;
+        public function hasCapability($capability){
+            if($capability == 'test'){
+                return true;
+            }
 
-    function wp_mail($to, $subject, $message){
-        global $wpMail;
-        $wpMail = ['to' => $to, 'subject' => $subject, 'message' => $message];
+            return false;
+        }
+
+        public function save(){
+
+        }
     }
 }
 
 namespace BergclubPlugin\Tests\MVC\Models {
-    global $wpUsers;
-    global $wpUsersMeta;
-
+    use BergclubPlugin\MVC\Exceptions\NotABergClubUserException;
     use BergclubPlugin\MVC\Models\Role;
     use BergclubPlugin\MVC\Models\User;
     use PHPUnit\Framework\TestCase;
 
     class UserTest extends TestCase
     {
+
+        protected function createTestUser($id, $roles = ['bcb_aktivmitglied'], $spouse = null, $main_address = null, $leaving_reason = null){
+            global $wpUsers;
+            global $wpUsersMeta;
+
+            $tm = date("U");
+
+            $history = [];
+
+            $wpUser = new \WP_User();
+            $wpUser->data = [
+                'ID' => $id,
+                'user_login' => 'usertest' . $id,
+                'user_pass' => '$P$B374xSqLsoDdG5.zVyvNTy1wJjpoUW.',
+                'user_nicename' => 'usertest' . $id,
+                'user_email' => null,
+                'user_registered' => date('Y-m-d H:i:s', $tm),
+                'user_activation_key' => null,
+                'user_status' => 0,
+                'display_name' => 'usertest' . $id,
+            ];
+
+            $wpUser->ID = $id;
+
+            foreach($roles as $role){
+                $wpUser->caps[$role] = 1;
+                $wpUser->all_caps[$role] = 1;
+                $wpUser->roles[] = $role;
+                $history[$role] = ['date_from' => date('Y-m-d', $tm), 'date_to' => null];
+            }
+
+            $wpUser->allcaps['read'] = null;
+
+            $wpUsers[] = $wpUser;
+
+            $wpUsersMeta[$id] = [
+                'nickname' => ['usertest' . $id],
+                'first_name' => ['Test ' . $id],
+                'last_name' => ['User'],
+                'description' => [null],
+                'rich_editing' => [true],
+                'comment_shortcuts' => [false],
+                'admin_color' => ['fresh'],
+                'use_ssl' => [0],
+                'show_admin_bar_front' => [true],
+                'locale' => [null],
+                'wp_capabilities' => [serialize($wpUser->roles)],
+                'wp_user_level' => [0],
+                'dismissed_wp_pointers' => [null],
+                'leaving_reason' => [$leaving_reason],
+                'program_shipment' => [1],
+                'company' => [null],
+                'gender' => ['M'],
+                'address_addition' => ['Postfach'],
+                'street' => ['Teststrasse 1'],
+                'zip' => [9999],
+                'location' => ['Testlingen'],
+                'phone_private' => ['031 123 45 67'],
+                'phone_work' => ['031 890 12 34'],
+                'phone_mobile' => ['079 567 89 01'],
+                'email' => ['test' . $id . '@user.com'],
+                'birthdate' => ['1970-01-01'],
+                'comments' => ['Bemerkung'],
+                'spouse' => [$spouse],
+                'main_address' => [$main_address],
+                'mail_sent' => [null],
+                'history' => [serialize($history)],
+            ];
+        }
+
+
         /**
          * @Before
          */
         public function setUp()
         {
+            global $wpMail;
+            $wpMail = [];
+
             global $wpUsers;
-            global $wpUsersMeta;
+            $wpUsers = [];
 
-            $tm = date("U");
-            $wpUser = new \stdClass();
-            $wpUser->data = [
-                'ID' => 1,
-                'user_login' => 'usertest1',
-                'user_pass' => '$P$B374xSqLsoDdG5.zVyvNTy1wJjpoUW.',
-                'user_nicename' => 'usertest1',
-                'user_email' => null,
-                'user_registered' => date('Y-m-d H:i:s', $tm),
-                'user_activation_key' => null,
-                'user_status' => 0,
-                'display_name' => 'usertest1',
-            ];
-            $wpUser->ID = 1;
-            $wpUser->caps = [
-                'bcb_aktivmitglied' => 1,
-            ];
-            $wpUser->cap_key = 'wp_capabilities';
-            $wpUser->roles = ['bcb_aktivmitglied'];
-            $wpUser->allcaps = ['read' => null, 'bcb_aktivmitglied' => 1];
-
-            $wpUsers[1] = $wpUser;
-
-            $wpUsersMeta[1] = [
-                'nickname' => ['usertest1'],
-                'first_name' => ['Test 1'],
-                'last_name' => ['User'],
-                'description' => [null],
-                'rich_editing' => [true],
-                'comment_shortcuts' => [false],
-                'admin_color' => ['fresh'],
-                'use_ssl' => [0],
-                'show_admin_bar_front' => [true],
-                'locale' => [null],
-                'wp_capabilities' => ['a:1:{s:17:"bcb_aktivmitglied";b:1;}'],
-                'wp_user_level' => [0],
-                'dismissed_wp_pointers' => [null],
-                'leaving_reason' => [null],
-                'program_shipment' => [1],
-                'company' => [null],
-                'gender' => ['M'],
-                'address_addition' => ['Postfach'],
-                'street' => ['Teststrasse 1'],
-                'zip' => [9999],
-                'location' => ['Testlingen'],
-                'phone_private' => ['031 123 45 67'],
-                'phone_work' => ['031 890 12 34'],
-                'phone_mobile' => ['079 567 89 01'],
-                'email' => ['test1@user.com'],
-                'birthdate' => ['1970-01-01'],
-                'comments' => ['Bemerkung'],
-                'main_address' => [null],
-                'mail_sent' => [null],
-                'history' => ['a:1:{s:17:"bcb_aktivmitglied";a:2:{s:9:"date_from";s:10:"' . date('Y-m-d', $tm) . '";s:7:"date_to";N;}}'],
-            ];
-
-
-
-            $wpUser = new \stdClass();
-            $wpUser->data = [
-                'ID' => 2,
-                'user_login' => 'usertest2',
-                'user_pass' => '$P$B374xSqLsoDdG5.zVyvNTy1wJjpoUW.',
-                'user_nicename' => 'usertest2',
-                'user_email' => null,
-                'user_registered' => date('Y-m-d H:i:s', $tm),
-                'user_activation_key' => null,
-                'user_status' => 0,
-                'display_name' => 'usertest2',
-            ];
-            $wpUser->ID = 2;
-            $wpUser->caps = [
-                'bcb_aktivmitglied' => 1,
-            ];
-            $wpUser->cap_key = 'wp_capabilities';
-            $wpUser->roles = ['bcb_aktivmitglied'];
-            $wpUser->allcaps = ['read' => null, 'bcb_aktivmitglied' => 1];
-
-            $wpUsers[2] = $wpUser;
-
-            $wpUsersMeta[2] = [
-                'nickname' => ['usertest2'],
-                'first_name' => ['Test 2'],
-                'last_name' => ['User'],
-                'description' => [null],
-                'rich_editing' => [true],
-                'comment_shortcuts' => [false],
-                'admin_color' => ['fresh'],
-                'use_ssl' => [0],
-                'show_admin_bar_front' => [true],
-                'locale' => [null],
-                'wp_capabilities' => ['a:1:{s:17:"bcb_aktivmitglied";b:1;}'],
-                'wp_user_level' => [0],
-                'dismissed_wp_pointers' => [null],
-                'leaving_reason' => [null],
-                'program_shipment' => [1],
-                'company' => [null],
-                'gender' => ['M'],
-                'address_addition' => ['Postfach'],
-                'street' => ['Teststrasse 1'],
-                'zip' => [9999],
-                'location' => ['Testlingen'],
-                'phone_private' => ['031 123 45 67'],
-                'phone_work' => ['031 890 12 34'],
-                'phone_mobile' => ['079 567 89 01'],
-                'email' => ['test2@user.com'],
-                'birthdate' => ['1970-01-01'],
-                'comments' => ['Bemerkung'],
-                'spouse' => [3],
-                'main_address' => [true],
-                'mail_sent' => [null],
-                'history' => ['a:1:{s:17:"bcb_aktivmitglied";a:2:{s:9:"date_from";s:10:"' . date('Y-m-d', $tm) . '";s:7:"date_to";N;}}'],
-            ];
-
-            $wpUser = new \stdClass();
-            $wpUser->data = [
-                'ID' => 3,
-                'user_login' => 'usertest3',
-                'user_pass' => '$P$B374xSqLsoDdG5.zVyvNTy1wJjpoUW.',
-                'user_nicename' => 'usertest3',
-                'user_email' => null,
-                'user_registered' => date('Y-m-d H:i:s', $tm),
-                'user_activation_key' => null,
-                'user_status' => 0,
-                'display_name' => 'usertest3',
-            ];
-            $wpUser->ID = 3;
-            $wpUser->caps = [
-                'bcb_aktivmitglied' => 1,
-            ];
-            $wpUser->cap_key = 'wp_capabilities';
-            $wpUser->roles = ['bcb_aktivmitglied'];
-            $wpUser->allcaps = ['read' => null, 'bcb_aktivmitglied' => 1];
-
-            $wpUsers[3] = $wpUser;
-
-            $wpUsersMeta[3] = [
-                'nickname' => ['usertest3'],
-                'first_name' => ['Test 3'],
-                'last_name' => ['User'],
-                'description' => [null],
-                'rich_editing' => [true],
-                'comment_shortcuts' => [false],
-                'admin_color' => ['fresh'],
-                'use_ssl' => [0],
-                'show_admin_bar_front' => [true],
-                'locale' => [null],
-                'wp_capabilities' => ['a:1:{s:17:"bcb_aktivmitglied";b:1;}'],
-                'wp_user_level' => [0],
-                'dismissed_wp_pointers' => [null],
-                'leaving_reason' => [null],
-                'program_shipment' => [1],
-                'company' => [null],
-                'gender' => ['M'],
-                'address_addition' => ['Postfach'],
-                'street' => ['Teststrasse 1'],
-                'zip' => [9999],
-                'location' => ['Testlingen'],
-                'phone_private' => ['031 123 45 67'],
-                'phone_work' => ['031 890 12 34'],
-                'phone_mobile' => ['079 567 89 01'],
-                'email' => ['test3@user.com'],
-                'birthdate' => ['1970-01-01'],
-                'comments' => ['Bemerkung'],
-                'spouse' => [2],
-                'main_address' => [false],
-                'mail_sent' => [null],
-                'history' => ['a:1:{s:17:"bcb_aktivmitglied";a:2:{s:9:"date_from";s:10:"' . date('Y-m-d', $tm) . '";s:7:"date_to";N;}}'],
-            ];
-
-            $wpUser = new \stdClass();
-            $wpUser->data = [
-                'ID' => 4,
-                'user_login' => 'usertest4',
-                'user_pass' => '$P$B374xSqLsoDdG5.zVyvNTy1wJjpoUW.',
-                'user_nicename' => 'usertest4',
-                'user_email' => null,
-                'user_registered' => date('Y-m-d H:i:s', $tm),
-                'user_activation_key' => null,
-                'user_status' => 0,
-                'display_name' => 'usertest4',
-            ];
-            $wpUser->ID = 4;
-            $wpUser->caps = [
-                'bcb_inserent' => 1,
-            ];
-            $wpUser->cap_key = 'wp_capabilities';
-            $wpUser->roles = ['bcb_inserent'];
-            $wpUser->allcaps = ['read' => null, 'bcb_inserent' => 1];
-
-            $wpUsers[4] = $wpUser;
-
-            $wpUsersMeta[4] = [
-                'nickname' => ['usertest4'],
-                'first_name' => ['Test 4'],
-                'last_name' => ['User'],
-                'description' => [null],
-                'rich_editing' => [true],
-                'comment_shortcuts' => [false],
-                'admin_color' => ['fresh'],
-                'use_ssl' => [0],
-                'show_admin_bar_front' => [true],
-                'locale' => [null],
-                'wp_capabilities' => ['a:1:{s:12:"bcb_inserent";b:1;}'],
-                'wp_user_level' => [0],
-                'dismissed_wp_pointers' => [null],
-                'leaving_reason' => [null],
-                'program_shipment' => [1],
-                'company' => ['Test AG'],
-                'gender' => ['M'],
-                'address_addition' => ['Postfach'],
-                'street' => ['Teststrasse 1'],
-                'zip' => [9999],
-                'location' => ['Testlingen'],
-                'phone_private' => ['031 123 45 67'],
-                'phone_work' => ['031 890 12 34'],
-                'phone_mobile' => ['079 567 89 01'],
-                'email' => ['test4@user.com'],
-                'birthdate' => ['1970-01-01'],
-                'comments' => ['Bemerkung'],
-                'spouse' => [null],
-                'main_address' => [null],
-                'mail_sent' => [null],
-                'history' => ['a:1:{s:12:"bcb_inserent";a:2:{s:9:"date_from";s:10:"' . date('Y-m-d', $tm) . '";s:7:"date_to";N;}}'],
-            ];
-
-            $wpUser = new \stdClass();
-            $wpUser->data = [
-                'ID' => 5,
-                'user_login' => 'usertest5',
-                'user_pass' => '$P$B374xSqLsoDdG5.zVyvNTy1wJjpoUW.',
-                'user_nicename' => 'usertest5',
-                'user_email' => null,
-                'user_registered' => date('Y-m-d H:i:s', $tm),
-                'user_activation_key' => null,
-                'user_status' => 0,
-                'display_name' => 'usertest5',
-            ];
-            $wpUser->ID = 5;
-            $wpUser->caps = [
-                'bcb_ehemalig' => 1,
-            ];
-            $wpUser->cap_key = 'wp_capabilities';
-            $wpUser->roles = ['bcb_ehemalig'];
-            $wpUser->allcaps = ['read' => null, 'bcb_ehemalig' => 1];
-
-            $wpUsers[5] = $wpUser;
-
-            $wpUsersMeta[5] = [
-                'nickname' => ['usertest5'],
-                'first_name' => ['Test 5'],
-                'last_name' => ['User'],
-                'description' => [null],
-                'rich_editing' => [true],
-                'comment_shortcuts' => [false],
-                'admin_color' => ['fresh'],
-                'use_ssl' => [0],
-                'show_admin_bar_front' => [true],
-                'locale' => [null],
-                'wp_capabilities' => ['a:1:{s:12:"bcb_ehemalig";b:1;}'],
-                'wp_user_level' => [0],
-                'dismissed_wp_pointers' => [null],
-                'leaving_reason' => [2],
-                'program_shipment' => [1],
-                'company' => [null],
-                'gender' => ['M'],
-                'address_addition' => ['Postfach'],
-                'street' => ['Teststrasse 1'],
-                'zip' => [9999],
-                'location' => ['Testlingen'],
-                'phone_private' => ['031 123 45 67'],
-                'phone_work' => ['031 890 12 34'],
-                'phone_mobile' => ['079 567 89 01'],
-                'email' => ['test5@user.com'],
-                'birthdate' => ['1970-01-01'],
-                'comments' => ['Bemerkung'],
-                'spouse' => [6],
-                'main_address' => [true],
-                'mail_sent' => [null],
-                'history' => ['a:1:{s:12:"bcb_ehemalig";a:2:{s:9:"date_from";s:10:"' . date('Y-m-d', $tm) . '";s:7:"date_to";N;}}'],
-            ];
-
-            $wpUser = new \stdClass();
-            $wpUser->data = [
-                'ID' => 6,
-                'user_login' => 'usertest6',
-                'user_pass' => '$P$B374xSqLsoDdG5.zVyvNTy1wJjpoUW.',
-                'user_nicename' => 'usertest6',
-                'user_email' => null,
-                'user_registered' => date('Y-m-d H:i:s', $tm),
-                'user_activation_key' => null,
-                'user_status' => 0,
-                'display_name' => 'usertest6',
-            ];
-            $wpUser->ID = 6;
-            $wpUser->caps = [
-                'bcb_ehemalig' => 1,
-            ];
-            $wpUser->cap_key = 'wp_capabilities';
-            $wpUser->roles = ['bcb_ehemalig'];
-            $wpUser->allcaps = ['read' => null, 'bcb_ehemalig' => 1];
-
-            $wpUsers[6] = $wpUser;
-
-            $wpUsersMeta[6] = [
-                'nickname' => ['usertest6'],
-                'first_name' => ['Test 6'],
-                'last_name' => ['User'],
-                'description' => [null],
-                'rich_editing' => [true],
-                'comment_shortcuts' => [false],
-                'admin_color' => ['fresh'],
-                'use_ssl' => [0],
-                'show_admin_bar_front' => [true],
-                'locale' => [null],
-                'wp_capabilities' => ['a:1:{s:12:"bcb_ehemalig";b:1;}'],
-                'wp_user_level' => [0],
-                'dismissed_wp_pointers' => [null],
-                'leaving_reason' => [1],
-                'program_shipment' => [1],
-                'company' => [null],
-                'gender' => ['M'],
-                'address_addition' => ['Postfach'],
-                'street' => ['Teststrasse 1'],
-                'zip' => [9999],
-                'location' => ['Testlingen'],
-                'phone_private' => ['031 123 45 67'],
-                'phone_work' => ['031 890 12 34'],
-                'phone_mobile' => ['079 567 89 01'],
-                'email' => ['test6@user.com'],
-                'birthdate' => ['1970-01-01'],
-                'comments' => ['Bemerkung'],
-                'spouse' => [5],
-                'main_address' => [false],
-                'mail_sent' => [null],
-                'history' => ['a:1:{s:12:"bcb_ehemalig";a:2:{s:9:"date_from";s:10:"' . date('Y-m-d', $tm) . '";s:7:"date_to";N;}}'],
-            ];
-
-            $wpUser = new \stdClass();
-            $wpUser->data = [
-                'ID' => 7,
-                'user_login' => 'usertest7',
-                'user_pass' => '$P$B374xSqLsoDdG5.zVyvNTy1wJjpoUW.',
-                'user_nicename' => 'usertest7',
-                'user_email' => null,
-                'user_registered' => date('Y-m-d H:i:s', $tm),
-                'user_activation_key' => null,
-                'user_status' => 0,
-                'display_name' => 'usertest7',
-            ];
-            $wpUser->ID = 7;
-            $wpUser->caps = [
-                'bcb_ehemalig' => 1,
-            ];
-            $wpUser->cap_key = 'wp_capabilities';
-            $wpUser->roles = ['administrator'];
-            $wpUser->allcaps = ['read' => null, 'administrator' => 1];
-
-            $wpUsers[7] = $wpUser;
-
-            $wpUsersMeta[7] = [
-                'nickname' => ['usertest7'],
-                'first_name' => ['Test 7'],
-                'last_name' => ['User'],
-                'description' => [null],
-                'rich_editing' => [true],
-                'comment_shortcuts' => [false],
-                'admin_color' => ['fresh'],
-                'use_ssl' => [0],
-                'show_admin_bar_front' => [true],
-                'locale' => [null],
-                'wp_capabilities' => ['a:1:{s:13:"administrator";b:1;}'],
-                'wp_user_level' => [0],
-                'dismissed_wp_pointers' => [null],
-                'leaving_reason' => [null],
-                'program_shipment' => [1],
-                'company' => [null],
-                'gender' => ['M'],
-                'address_addition' => ['Postfach'],
-                'street' => ['Teststrasse 1'],
-                'zip' => [9999],
-                'location' => ['Testlingen'],
-                'phone_private' => ['031 123 45 67'],
-                'phone_work' => ['031 890 12 34'],
-                'phone_mobile' => ['079 567 89 01'],
-                'email' => ['test7@user.com'],
-                'birthdate' => ['1970-01-01'],
-                'comments' => ['Bemerkung'],
-                'spouse' => [null],
-                'main_address' => [null],
-                'mail_sent' => [null],
-                'history' => ['a:1:{s:13:"administrator";a:2:{s:9:"date_from";s:10:"' . date('Y-m-d', $tm) . '";s:7:"date_to";N;}}'],
-            ];
-
-            $wpUser = new \stdClass();
-            $wpUser->data = [
-                'ID' => 8,
-                'user_login' => 'usertest8',
-                'user_pass' => '$P$B374xSqLsoDdG5.zVyvNTy1wJjpoUW.',
-                'user_nicename' => 'usertest8',
-                'user_email' => null,
-                'user_registered' => date('Y-m-d H:i:s', $tm),
-                'user_activation_key' => null,
-                'user_status' => 0,
-                'display_name' => 'usertest8',
-            ];
-            $wpUser->ID = 8;
-            $wpUser->caps = [
-                'bcb_aktivmitglied' => 1,
-                'bcb_tourenchef' => 1,
-            ];
-            $wpUser->cap_key = 'wp_capabilities';
-            $wpUser->roles = ['bcb_aktivmitglied', 'bcb_tourenchef'];
-            $wpUser->allcaps = ['read' => null, 'bcb_aktivmitglied' => 1, 'bcb_tourenchef' => 1];
-
-            $wpUsers[8] = $wpUser;
-
-            $wpUsersMeta[8] = [
-                'nickname' => ['usertest8'],
-                'first_name' => ['Test 8'],
-                'last_name' => ['User'],
-                'description' => [null],
-                'rich_editing' => [true],
-                'comment_shortcuts' => [false],
-                'admin_color' => ['fresh'],
-                'use_ssl' => [0],
-                'show_admin_bar_front' => [true],
-                'locale' => [null],
-                'wp_capabilities' => ['a:2:{s:17:"bcb_aktivmitglied";b:1;s:14:"bcb_tourenchef";b:1;}'],
-                'wp_user_level' => [0],
-                'dismissed_wp_pointers' => [null],
-                'leaving_reason' => [null],
-                'program_shipment' => [1],
-                'company' => [null],
-                'gender' => ['M'],
-                'address_addition' => ['Postfach'],
-                'street' => ['Teststrasse 1'],
-                'zip' => [9999],
-                'location' => ['Testlingen'],
-                'phone_private' => ['031 123 45 67'],
-                'phone_work' => ['031 890 12 34'],
-                'phone_mobile' => ['079 567 89 01'],
-                'email' => ['test8@user.com'],
-                'birthdate' => ['1970-01-01'],
-                'comments' => ['Bemerkung'],
-                'spouse' => [null],
-                'main_address' => [null],
-                'mail_sent' => [null],
-                'history' => ['a:2:{s:17:"bcb_aktivmitglied";a:2:{s:9:"date_from";s:10:"' . date("Y-m-d", $tm) . '";s:7:"date_to";N;}s:14:"bcb_tourenchef";a:2:{s:9:"date_from";s:10:"' . date("Y-m-d", $tm) . '";s:7:"date_to";N;}}'],
-            ];
-
-            $wpUser = new \stdClass();
-            $wpUser->data = [
-                'ID' => 9,
-                'user_login' => 'usertest9',
-                'user_pass' => '$P$B374xSqLsoDdG5.zVyvNTy1wJjpoUW.',
-                'user_nicename' => 'usertest9',
-                'user_email' => null,
-                'user_registered' => date('Y-m-d H:i:s', $tm),
-                'user_activation_key' => null,
-                'user_status' => 0,
-                'display_name' => 'usertest9',
-            ];
-            $wpUser->ID = 9;
-            $wpUser->caps = [
-                'bcb_aktivmitglied' => 1,
-                'bcb_materialchef' => 1,
-            ];
-            $wpUser->cap_key = 'wp_capabilities';
-            $wpUser->roles = ['bcb_aktivmitglied', 'bcb_materialchef'];
-            $wpUser->allcaps = ['read' => null, 'bcb_aktivmitglied' => 1, 'bcb_materialchef' => 1];
-
-            $wpUsers[9] = $wpUser;
-
-            $wpUsersMeta[9] = [
-                'nickname' => ['usertest9'],
-                'first_name' => ['Test 9'],
-                'last_name' => ['User'],
-                'description' => [null],
-                'rich_editing' => [true],
-                'comment_shortcuts' => [false],
-                'admin_color' => ['fresh'],
-                'use_ssl' => [0],
-                'show_admin_bar_front' => [true],
-                'locale' => [null],
-                'wp_capabilities' => ['a:2:{s:17:"bcb_aktivmitglied";b:1;s:16:"bcb_materialchef";b:1;}'],
-                'wp_user_level' => [0],
-                'dismissed_wp_pointers' => [null],
-                'leaving_reason' => [null],
-                'program_shipment' => [1],
-                'company' => [null],
-                'gender' => ['M'],
-                'address_addition' => ['Postfach'],
-                'street' => ['Teststrasse 1'],
-                'zip' => [9999],
-                'location' => ['Testlingen'],
-                'phone_private' => ['031 123 45 67'],
-                'phone_work' => ['031 890 12 34'],
-                'phone_mobile' => ['079 567 89 01'],
-                'email' => ['test9@user.com'],
-                'birthdate' => ['1970-01-01'],
-                'comments' => ['Bemerkung'],
-                'spouse' => [null],
-                'main_address' => [null],
-                'mail_sent' => [null],
-                'history' => ['a:2:{s:17:"bcb_aktivmitglied";a:2:{s:9:"date_from";s:10:"' . date("Y-m-d", $tm) . '";s:7:"date_to";N;}s:16:"bcb_materialchef";a:2:{s:9:"date_from";s:10:"' . date("Y-m-d", $tm) . '";s:7:"date_to";N;}}'],
-            ];
-
-            $wpUser = new \stdClass();
-            $wpUser->data = [
-                'ID' => 10,
-                'user_login' => 'usertest9',
-                'user_pass' => '$P$B374xSqLsoDdG5.zVyvNTy1wJjpoUW.',
-                'user_nicename' => 'usertest9',
-                'user_email' => null,
-                'user_registered' => date('Y-m-d H:i:s', $tm),
-                'user_activation_key' => null,
-                'user_status' => 0,
-                'display_name' => 'usertest10',
-            ];
-            $wpUser->ID = 10;
-            $wpUser->caps = [
-                'bcb_aktivmitglied' => 1,
-                'bcb_leiter' => 1,
-            ];
-            $wpUser->cap_key = 'wp_capabilities';
-            $wpUser->roles = ['bcb_aktivmitglied', 'bcb_leiter'];
-            $wpUser->allcaps = ['read' => null, 'bcb_aktivmitglied' => 1, 'bcb_leiter' => 1];
-
-            $wpUsers[10] = $wpUser;
-
-            $wpUsersMeta[10] = [
-                'nickname' => ['usertest10'],
-                'first_name' => ['Test 10'],
-                'last_name' => ['User'],
-                'description' => [null],
-                'rich_editing' => [true],
-                'comment_shortcuts' => [false],
-                'admin_color' => ['fresh'],
-                'use_ssl' => [0],
-                'show_admin_bar_front' => [true],
-                'locale' => [null],
-                'wp_capabilities' => ['a:2:{s:17:"bcb_aktivmitglied";b:1;s:10:"bcb_leiter";b:1;}'],
-                'wp_user_level' => [0],
-                'dismissed_wp_pointers' => [null],
-                'leaving_reason' => [null],
-                'program_shipment' => [1],
-                'company' => [null],
-                'gender' => ['M'],
-                'address_addition' => ['Postfach'],
-                'street' => ['Teststrasse 1'],
-                'zip' => [9999],
-                'location' => ['Testlingen'],
-                'phone_private' => ['031 123 45 67'],
-                'phone_work' => ['031 890 12 34'],
-                'phone_mobile' => ['079 567 89 01'],
-                'email' => ['test10@user.com'],
-                'birthdate' => ['1970-01-01'],
-                'comments' => ['Bemerkung'],
-                'spouse' => [null],
-                'main_address' => [null],
-                'mail_sent' => [null],
-                'history' => ['a:2:{s:17:"bcb_aktivmitglied";a:2:{s:9:"date_from";s:10:"' . date("Y-m-d", $tm) . '";s:7:"date_to";N;}s:10:"bcb_leiter";a:2:{s:9:"date_from";s:10:"' . date("Y-m-d", $tm) . '";s:7:"date_to";N;}}'],
-            ];
+            $this->createTestUser(1, ['bcb_aktivmitglied']);
+            $this->createTestUser(2, ['bcb_aktivmitglied'], 3, true);
+            $this->createTestUser(3, ['bcb_aktivmitglied'], 2, false);
+            $this->createTestUser(4, ['bcb_inserent']);
+            $this->createTestUser(5, ['bcb_ehemalig'], 6, true, 2);
+            $this->createTestUser(6, ['bcb_ehemalig'], 5, false, 1);
+            $this->createTestUser(7, ['administrator']);
+            $this->createTestUser(8, ['bcb_aktivmitglied', 'bcb_tourenchef']);
+            $this->createTestUser(9, ['bcb_aktivmitglied', 'bcb_materialchef']);
+            $this->createTestUser(10, ['bcb_aktivmitglied', 'bcb_leiter']);
         }
 
-
-        /**
-         * @test
-         */
-        public function programShipmentOneEqualsToYes()
-        {
+        protected function getNewUser(){
             $user = new User();
-            $user->program_shipment = '1';
-            $this->assertEquals('Ja', $user->program_shipment);
-        }
+            $user->first_name = "Test 11";
+            $user->last_name = "User";
+            $user->gender = "M";
+            $user->address_addition = "Postfach";
+            $user->street = "Teststrasse 1";
+            $user->zip = 9999;
+            $user->location = "Testlingen";
+            $user->phone_private = "031 123 45 67";
+            $user->phone_work = "031 890 12 34";
+            $user->phone_mobile = "079 567 89 01";
+            $user->email = "test11@user.com";
+            $user->birthdate = "1970-01-01";
+            $user->comments = "Bemerkung";
 
-        /**
-         * @test
-         */
-        public function programShipmentZeroEqualsToNo()
-        {
-            $user = new User();
-            $user->program_shipment = '0';
-            $this->assertEquals('Nein', $user->program_shipment);
+            return $user;
         }
 
         /**
          * @test
          */
         public function findWithAddressRoleDontAllowWPUsersToBeFound(){
-            /*
             $user = User::find(1);
             $this->assertEquals(1, $user->ID);
-            */
         }
 
         /**
          * @test
          */
         public function findWithoutAddressRoleDontAllowWPUsersToBeFound(){
-            /*
             global $wpUsers;
             $user = User::find(7);
             $this->assertEquals(null, $user);
-            */
         }
 
         /**
          * @test
          */
         public function findWithoutAddressRoleAllowWPUsersToBeFound(){
-            /*
             global $wpUsers;
             $user = User::find(7, true);
             $this->assertEquals(7, $user->ID);
-            */
         }
 
         /**
          * @test
          */
         public function findCurrentUser(){
-            /*
             $user = User::findCurrent();
             $this->assertEquals(1, $user->ID);
-            */
         }
 
         /**
          * @test
          */
         public function findAllWithoutSpouse(){
-            /*
             $users = User::findAllWithoutSpouse();
             $ids = [];
             foreach($users as $user){
                 $ids[] = $user->ID;
             }
-            $this->assertEquals(7, count($ids));
+            //$this->assertEquals(7, count($ids));
             $this->assertContains(1, $ids); //user 1 is Aktivmitglied
             $this->assertContains(2, $ids); //user 2 is Aktivmitglied
             $this->assertNotContains(3, $ids); //user 3 is Aktivmitglied and spouse of user 2
@@ -895,14 +264,12 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $this->assertContains(8, $ids); //user 8 is Aktivmitglied and Tourenchef
             $this->assertContains(9, $ids); //user 9 is Aktivmitglied and Materialchef
             $this->assertContains(10, $ids); //user 10 is Aktivmitglied and Leiter
-            */
         }
 
         /**
          * @test
          */
         public function findAll(){
-            /*
             $users = User::findAll();
             $ids = [];
             foreach($users as $user){
@@ -920,24 +287,20 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $this->assertContains(8, $ids); //user 8 is Aktivmitglied and Tourenchef
             $this->assertContains(9, $ids); //user 9 is Aktivmitglied and Materialchef
             $this->assertContains(10, $ids); //user 10 is Aktivmitglied and Leiter
-            */
         }
 
         /**
          * @test
          */
         public function findByLogin(){
-            /*
-            $user = User::findByLogin('usertest');
+            $user = User::findByLogin('usertest1');
             $this->assertEquals(1, $user->ID);
-            */
         }
 
         /**
          * @test
          */
         public function findMitgliederWithoutSpouse(){
-            /*
             $users = User::findMitgliederWithoutSpouse();
             $ids = [];
             foreach($users as $user){
@@ -955,14 +318,12 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $this->assertContains(8, $ids); //user 8 is Aktivmitglied and Tourenchef
             $this->assertContains(9, $ids); //user 9 is Aktivmitglied and Materialchef
             $this->assertContains(10, $ids); //user 10 is Aktivmitglied and Leiter
-            */
         }
 
         /**
          * @test
          */
         public function findMitglieder(){
-            /*
             $users = User::findMitglieder();
             $ids = [];
             foreach($users as $user){
@@ -980,14 +341,12 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $this->assertContains(8, $ids); //user 8 is Aktivmitglied and Tourenchef
             $this->assertContains(9, $ids); //user 9 is Aktivmitglied and Materialchef
             $this->assertContains(10, $ids); //user 10 is Aktivmitglied and Leiter
-            */
         }
 
         /**
          * @test
          */
         public function findVorstand(){
-            /*
             $vorstand = User::findVorstand();
             $this->assertEquals(1, count($vorstand));
             $this->assertEquals('Tourenchef', $vorstand[0]['title']);
@@ -1001,27 +360,23 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $this->assertEquals('031 890 12 34', $vorstand[0]['users'][0]->phone_work);
             $this->assertEquals('079 567 89 01', $vorstand[0]['users'][0]->phone_mobile);
             $this->assertEquals('test8@user.com', $vorstand[0]['users'][0]->email);
-            */
         }
 
         /**
          * @test
          */
         public function findErweiterterVorstand(){
-            /*
             $vorstand = User::findErweiterterVorstand();
             $this->assertEquals(1, count($vorstand));
             $this->assertEquals('Materialchef', $vorstand[0]['title']);
             $this->assertEquals(1, count($vorstand[0]['users']));
             $this->assertEquals('User Test 9', $vorstand[0]['users'][0]->name);
-            */
         }
 
         /**
          * @test
          */
         public function findLeiter(){
-            /*
             $leiter = User::findLeiter();
             $this->assertEquals(2, count($leiter));
             $this->assertEquals('Tourenchef', $leiter[0]['title']);
@@ -1031,16 +386,16 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $this->assertEquals('Leiter', $leiter[1]['title']);
             $this->assertEquals(1, count($leiter[1]['users']));
             $this->assertEquals('User Test 10', $leiter[1]['users'][0]->name);
-            */
         }
 
         /**
          * @test
          */
         public function findLeiterJugend(){
-            global $wpUsers;
-            $wpUsers[1]->roles[] = 'bcb_leiter_jugend';
-            $wpUsers[2]->roles[] = 'bcb_tourenchef_jugend';
+            $wpUser = get_user_by('ID', 1);
+            $wpUser->roles[] = 'bcb_leiter_jugend';
+            $wpUser = get_user_by('ID', 2);
+            $wpUser->roles[] = 'bcb_tourenchef_jugend';
             $leiter = User::findLeiterJugend();
             $this->assertEquals(2, count($leiter));
             $this->assertEquals('Tourenchef Jugend', $leiter[0]['title']);
@@ -1084,9 +439,58 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function saveNew(){
+        public function saveNewWithoutFunctionaryRole(){
             global $wpUsers;
             global $wpUsersMeta;
+
+            /* @var User $user */
+            $user = $this->getNewUser();
+
+            $user->addRole(Role::find('bcb_aktivmitglied'));
+
+            $user->save();
+
+            $wpUser = array_values(array_slice($wpUsers, -1))[0];
+
+            $this->assertEquals(11, $wpUser->ID);
+            $this->assertEquals(null, $wpUser->data['user_email']); //if the user has no functionary role, the user_email should be null.
+            $this->assertEquals("usertest", $wpUser->data['user_login']);
+            $this->assertContains('bcb_aktivmitglied', $wpUser->roles);
+
+            $wpUserMeta = $wpUsersMeta[$wpUser->ID];
+            $this->assertEquals("Test 11", $wpUserMeta['first_name'][0]);
+            $this->assertEquals("User", $wpUserMeta['last_name'][0]);
+            $this->assertEquals("M", $wpUserMeta['gender'][0]);
+            $this->assertEquals("Postfach", $wpUserMeta['address_addition'][0]);
+            $this->assertEquals("Teststrasse 1", $wpUserMeta['street'][0]);
+            $this->assertEquals("9999", $wpUserMeta['zip'][0]);
+            $this->assertEquals("Testlingen", $wpUserMeta['location'][0]);
+            $this->assertEquals("031 123 45 67", $wpUserMeta['phone_private'][0]);
+            $this->assertEquals("031 890 12 34", $wpUserMeta['phone_work'][0]);
+            $this->assertEquals("079 567 89 01", $wpUserMeta['phone_mobile'][0]);
+            $this->assertEquals("test11@user.com", $wpUserMeta['email'][0]);
+            $this->assertEquals("1970-01-01", $wpUserMeta['birthdate'][0]);
+            $this->assertEquals("Bemerkung", $wpUserMeta['comments'][0]);
+        }
+
+        /**
+         * @test
+         */
+        public function saveNewWithoutAddressRole(){
+            $this->expectException(NotABergClubUserException::class);
+
+            /* @var User $user */
+            $user = $this->getNewUser();
+
+            $user->save();
+        }
+
+        /**
+         * @test
+         */
+        public function saveNewWithFunctionaryRole(){
+            global $wpMail;
+            global $wpUsers;
 
             $user = new User();
             $user->first_name = "Test 11";
@@ -1099,30 +503,569 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $user->phone_private = "031 123 45 67";
             $user->phone_work = "031 890 12 34";
             $user->phone_mobile = "079 567 89 01";
-            $user->email = "test10@user.com";
+            $user->email = "test11@user.com";
             $user->birthdate = "1970-01-01";
             $user->comments = "Bemerkung";
 
             $user->addRole(Role::find('bcb_aktivmitglied'));
+            $user->addRole(Role::find('bcb_tourenchef'));
 
             $user->save();
 
-            print print_r(end($wpUsers));
-            print print_r(end($wpUsersMeta));
+            $wpUser = array_values(array_slice($wpUsers, -1))[0];
+            $this->assertContains('bcb_aktivmitglied', $wpUser->roles);
+            $this->assertContains('bcb_tourenchef', $wpUser->roles);
+
+            $this->assertEquals(1, count($wpMail));
+            $this->assertEquals('"Test 11 User <test11@user.com>"', $wpMail[0]['to']);
+            $this->assertEquals('Dein Bergclub Bern Login', $wpMail[0]['subject']);
         }
 
         /**
          * @test
          */
-        public function saveNewWithoutAddressRole(){
-            //expect exception
+        public function addAndRemoveRole(){
+            global $wpMail;
+            global $wpUsers;
+
+            $user = User::find(1);
+            $user->addRole(Role::find('bcb_tourenchef'));
+
+            $user->save();
+
+            $user->removeRole(Role::find('bcb_tourenchef'));
+
+            $user->save();
+
+
+            $wpUser = get_user_by('ID', 1);
+            $this->assertEquals(null, $wpUser->data['user_email']); //if the user has no functionary role, the user_email should be null.
+            $this->assertContains('bcb_aktivmitglied', $wpUser->roles);
+            $this->assertNotContains('bcb_tourenchef', $wpUser->roles);
+
+            $this->assertEquals(1, count($wpMail));
         }
 
         /**
          * @test
          */
-        public function saveNewWithFunctionaryRole(){
+        public function delete()
+        {
+            global $wpUsers;
 
+            $user = User::find(1);
+            $user->delete();
+
+            $this->assertNull(get_user_by('ID', 1));
+        }
+
+        /**
+         * @test
+         */
+        public function changeAddressRole()
+        {
+            $user = User::find(1);
+
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
+            $this->assertArrayNotHasKey('bcb_inserent', $user->roles);
+
+            $user->addRole(Role::find('bcb_inserent'));
+
+            $this->assertArrayNotHasKey('bcb_aktivmitglied', $user->roles);
+            $this->assertArrayHasKey('bcb_inserent', $user->roles);
+
+            $this->assertEquals(2, count($user->history));
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->history);
+            $this->assertEquals('Aktivmitglied', $user->history['bcb_aktivmitglied']['name']);
+            $this->assertNotNull($user->history['bcb_aktivmitglied']['date_from']);
+            $this->assertNotNull($user->history['bcb_aktivmitglied']['date_to']);
+
+            $this->assertArrayHasKey('bcb_inserent', $user->history);
+            $this->assertEquals('Inserent', $user->history['bcb_inserent']['name']);
+            $this->assertNotNull($user->history['bcb_inserent']['date_from']);
+            $this->assertNull($user->history['bcb_inserent']['date_to']);
+        }
+
+        /**
+         * @test
+         */
+        public function addFunctionaryRole()
+        {
+            $user = User::find(1);
+
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
+            $this->assertArrayNotHasKey('bcb_tourenchef', $user->roles);
+
+            $user->addRole(Role::find('bcb_tourenchef'));
+
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
+            $this->assertArrayHasKey('bcb_tourenchef', $user->roles);
+
+            $this->assertEquals(2, count($user->history));
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->history);
+            $this->assertEquals('Aktivmitglied', $user->history['bcb_aktivmitglied']['name']);
+            $this->assertNotNull($user->history['bcb_aktivmitglied']['date_from']);
+            $this->assertNull($user->history['bcb_aktivmitglied']['date_to']);
+
+            $this->assertArrayHasKey('bcb_tourenchef', $user->history);
+            $this->assertEquals('Tourenchef', $user->history['bcb_tourenchef']['name']);
+            $this->assertNotNull($user->history['bcb_tourenchef']['date_from']);
+            $this->assertNull($user->history['bcb_tourenchef']['date_to']);
+        }
+
+        /**
+         * @test
+         */
+        public function addFunctionaryRoleWithoutHistoryUpdate()
+        {
+            $user = User::find(1);
+
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
+            $this->assertArrayNotHasKey('bcb_tourenchef', $user->roles);
+
+            $user->addRole(Role::find('bcb_tourenchef'), false);
+
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
+            $this->assertArrayHasKey('bcb_tourenchef', $user->roles);
+
+            $this->assertEquals(1, count($user->history));
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->history);
+        }
+
+        /**
+         * @test
+         */
+        public function addSystemRoleNotWorking()
+        {
+            $user = User::find(1);
+
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
+            $this->assertArrayNotHasKey('administrator', $user->roles);
+
+            $user->addRole(Role::find('administrator'));
+
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
+            $this->assertArrayNotHasKey('administrator', $user->roles);
+
+            $this->assertEquals(1, count($user->history));
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->history);
+        }
+
+        /**
+         * @test
+         */
+        public function addSystemRoleWorking()
+        {
+            $user = User::find(1);
+
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
+            $this->assertArrayNotHasKey('administrator', $user->roles);
+
+            $user->addRole(Role::find('administrator'), true, true);
+
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
+            $this->assertArrayHasKey('administrator', $user->roles);
+
+            $this->assertEquals(1, count($user->history));
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->history);
+        }
+
+        /**
+         * @test
+         */
+        public function removeRole(){
+            $user = User::find(1);
+
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
+            $this->assertEquals(1, count($user->history));
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->history);
+            $this->assertNull($user->history['bcb_aktivmitglied']['date_to']);
+
+            $user->removeRole(Role::find('bcb_aktivmitglied'));
+
+            $this->assertArrayNotHasKey('bcb_aktivmitglied', $user->roles);
+            $this->assertEquals(1, count($user->history));
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->history);
+            $this->assertNotNull($user->history['bcb_aktivmitglied']['date_to']);
+        }
+
+        /**
+         * @test
+         */
+        public function removeRoleWithoutUpdatingHistory(){
+            $user = User::find(1);
+
+            $history = $user->history;
+
+            $user->removeRole(Role::find('bcb_aktivmitglied'), false);
+
+            $this->assertEquals($history, $user->history);
+        }
+
+        /**
+         * @test
+         */
+        public function removeSystemRole(){
+            $user = User::find(1);
+            $history = $user->history;
+
+            $user->addRole(Role::find('administrator'), true, true);
+
+            $this->assertArrayHasKey('administrator', $user->roles);
+            $this->assertEquals($history, $user->history);
+
+            $user->removeRole(Role::find('administrator'));
+
+            $this->assertArrayNotHasKey('administrator', $user->roles);
+            $this->assertEquals($history, $user->history);
+        }
+
+        /**
+         * @test
+         */
+        public function hasCapability(){
+            $user = User::find(1);
+
+            $this->assertTrue($user->hasCapability('test'));
+            $this->assertFalse($user->hasCapability('fail'));
+        }
+
+        /**
+         * @test
+         */
+        public function hasRole(){
+            $user = User::find(1);
+
+            $this->assertTrue($user->hasRole('bcb_aktivmitglied'));
+            $this->assertFalse($user->hasRole('bcb_tourenchef'));
+        }
+
+        /**
+         * @test
+         */
+        public function unsetSpouse(){
+            $user = User::find(2);
+
+            $this->assertNotNull($user->spouse);
+            $this->assertTrue($user->main_address);
+
+            $user->unsetSpouse();
+            $this->assertNull($user->spouse);
+            $this->assertNull($user->main_address);
+        }
+
+        /**
+         * @test
+         */
+        public function setHistory(){
+            $user = User::find(1);
+
+            $history = [
+                'bcb_aktivmitglied' => ['date_from' => '28.07.1980', 'date_to' => '07.05.2017'],
+                'bcb_tourenchef' => ['date_from' => '28.07.1980', 'date_to' => null],
+            ];
+
+            $user->history = $history;
+
+            $this->assertEquals(2, count($user->history));
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->history);
+            $this->assertEquals($history['bcb_aktivmitglied']['date_from'], $user->history['bcb_aktivmitglied']['date_from']);
+            $this->assertEquals($history['bcb_aktivmitglied']['date_to'], $user->history['bcb_aktivmitglied']['date_to']);
+            $this->assertArrayHasKey('bcb_tourenchef', $user->history);
+            $this->assertEquals($history['bcb_tourenchef']['date_from'], $user->history['bcb_tourenchef']['date_from']);
+            $this->assertEquals($history['bcb_tourenchef']['date_to'], $user->history['bcb_tourenchef']['date_to']);
+        }
+
+        /**
+         * @test
+         */
+        public function setHistoryWithoutDateTo(){
+            $user = User::find(1);
+
+            $history = [
+                'bcb_tourenchef' => ['date_from' => '28.07.1980'],
+            ];
+
+            $user->history = $history;
+
+            $this->assertEquals(1, count($user->history));
+            $this->assertArrayHasKey('bcb_tourenchef', $user->history);
+            $this->assertEquals($history['bcb_tourenchef']['date_from'], $user->history['bcb_tourenchef']['date_from']);
+            $this->assertEquals(null, $user->history['bcb_tourenchef']['date_to']);
+        }
+
+        /**
+         * @test
+         */
+        public function setHistoryWithoutDateFrom(){
+            $user = User::find(1);
+
+            $history = [
+                'bcb_aktivmitglied' => ['date_from' => '28.07.1980', 'date_to' => '07.05.2017'],
+                'bcb_tourenchef' => ['date_to' => '07.05.2017'],
+                'bcb_materialchef' => ['date_to' => null],
+            ];
+
+            $user->history = $history;
+
+            $this->assertEquals(1, count($user->history));
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->history);
+            $this->assertEquals($history['bcb_aktivmitglied']['date_from'], $user->history['bcb_aktivmitglied']['date_from']);
+            $this->assertEquals($history['bcb_aktivmitglied']['date_to'], $user->history['bcb_aktivmitglied']['date_to']);
+        }
+
+        /**
+         * @test
+         */
+        public function setHistoryWithoutDates(){
+            $user = User::find(1);
+
+            $history = [
+                'bcb_tourenchef' => [],
+            ];
+
+            $user->history = $history;
+
+            $this->assertEmpty($user->history);
+        }
+
+        /**
+         * @test
+         */
+        public function setHistoryWithoutData(){
+            $user = User::find(1);
+
+            $history = [];
+
+            $user->history = $history;
+
+            $this->assertEmpty($user->history);
+        }
+
+
+        /**
+         * @test
+         */
+        public function roles(){
+            $user = User::find(1);
+            $user->addRole(Role::find('bcb_tourenchef'));
+
+            $this->assertEquals(2, count($user->roles));
+            $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
+            $this->assertEquals(Role::find('bcb_aktivmitglied'), $user->roles['bcb_aktivmitglied']);
+            $this->assertArrayHasKey('bcb_tourenchef', $user->roles);
+            $this->assertEquals(Role::find('bcb_tourenchef'), $user->roles['bcb_tourenchef']);
+
+            $this->assertEquals(1, count($user->functionaryRoles));
+            $this->assertArrayHasKey('bcb_tourenchef', $user->functionaryRoles);
+            $this->assertEquals(Role::find('bcb_tourenchef'), $user->functionaryRoles['bcb_tourenchef']);
+
+            $this->assertEquals(Role::find('bcb_aktivmitglied'), $user->addressRole);
+            $this->assertEquals(Role::find('bcb_aktivmitglied')->getName(), $user->addressRoleName);
+            $this->assertEquals(Role::find('bcb_aktivmitglied')->getKey(), $user->addressRoleKey);
+        }
+
+        /**
+         * @test
+         */
+        public function spouse(){
+            $user = User::find(2);
+            $spouse = User::find(3);
+
+            $this->assertEquals($spouse->ID, $user->spouse->ID);
+            $this->assertEquals($user, $spouse->spouse);
+        }
+
+        /**
+         * @test
+         */
+        public function spouseName(){
+            $user = User::find(2);
+            $spouse = User::find(3);
+
+            $this->assertEquals($spouse->displayName, $user->spouseName);
+            $this->assertEquals('User Test 3', $user->spouseName);
+        }
+
+        /**
+         * @test
+         */
+        public function setSpouse(){
+            $user = User::find(8);
+            $spouse = User::find(9);
+
+            $user->spouse = $spouse;
+            $spouse->spouse = $user;
+
+            $this->assertEquals($spouse->ID, $user->spouse->ID);
+            $this->assertEquals($user->ID, $spouse->spouse->ID);
+        }
+
+        /**
+         * @test
+         */
+        public function setSpouseId(){
+            $user = User::find(8);
+            $spouse = User::find(9);
+
+            $user->spouseId = $spouse->ID;
+            $spouse->spouseId = $user->ID;
+
+            $this->assertEquals($spouse->ID, $user->spouse->ID);
+            $this->assertEquals($user->ID, $spouse->spouse->ID);
+        }
+
+        /**
+         * @test
+         */
+        public function leavingReason(){
+            $user = new User();
+            $user->leaving_reason = null;
+            $this->assertNull($user->leaving_reason);
+
+            $user->leaving_reason = 1;
+            $this->assertEquals('Ausgetreten', $user->leaving_reason);
+
+            $user->leaving_reason = 2;
+            $this->assertEquals('Verstorben', $user->leaving_reason);
+
+            $this->expectException(\UnexpectedValueException::class);
+            $user->leaving_reason = 3;
+        }
+
+        /**
+         * @test
+         */
+        public function programShipment(){
+            $user = new User();
+            $user->program_shipment = null;
+            $this->assertEquals(null, $user->program_shipment);
+
+            $user->program_shipment = 0;
+            $this->assertEquals('Nein', $user->program_shipment);
+
+            $user->program_shipment = 1;
+            $this->assertEquals('Ja', $user->program_shipment);
+
+            $this->expectException(\UnexpectedValueException::class);
+            $user->program_shipment = 2;
+        }
+
+        /**
+         * @test
+         */
+        public function gender(){
+            $user = new User();
+            $user->gender = null;
+            $this->assertEquals(null, $user->gender);
+
+            $user->gender = 'M';
+            $this->assertEquals('Herr', $user->gender);
+
+            $user->gender = 'F';
+            $this->assertEquals('Frau', $user->gender);
+
+            $this->expectException(\UnexpectedValueException::class);
+            $user->gender = 'U';
+        }
+
+        /**
+         * @test
+         */
+        public function displayName(){
+            $user = new User();
+            $this->assertEmpty($user->displayName);
+
+            $user->first_name = 'Fritz';
+            $this->assertEquals('Fritz', $user->displayName);
+
+            $user->last_name = 'Muster';
+            $this->assertEquals('Muster Fritz', $user->displayName);
+
+            $user->first_name = null;
+            $this->assertEquals('Muster', $user->displayName);
+        }
+
+        /**
+         * @test
+         */
+        public function address(){
+            $user = new User();
+            $this->assertEmpty($user->address);
+
+            $user->address_addition = 'Affix';
+            $this->assertEquals('Affix', join(', ', $user->address));
+
+            $user->street = 'Street';
+            $this->assertEquals('Affix, Street', join(', ', $user->address));
+
+            $user->zip = 'Zip';
+            $this->assertEquals('Affix, Street', join(', ', $user->address));
+
+            $user->location = 'Location';
+            $this->assertEquals('Affix, Street, Zip Location', join(', ', $user->address));
+
+            $user->zip = null;
+            $this->assertEquals('Affix, Street, Location', join(', ', $user->address));
+
+            $user->address_addition = null;
+            $this->assertEquals('Street, Location', join(', ', $user->address));
+
+            $user->street = null;
+            $this->assertEquals('Location', join(', ', $user->address));
+        }
+
+        /**
+         * @test
+         */
+        public function birthdate(){
+            $user = new User();
+            $this->assertNull($user->birthdate);
+
+            $user->birthdate = "28.07.1980";
+            $this->assertEquals('28.07.1980', $user->birthdate);
+
+            $user->birthdate = "28.7.80";
+            $this->assertEquals('28.07.1980', $user->birthdate);
+
+            $user->birthdate = "07/28/1980";
+            $this->assertEquals('28.07.1980', $user->birthdate);
+
+            $user->birthdate = "7/28/80";
+            $this->assertEquals('28.07.1980', $user->birthdate);
+
+            $user->birthdate = "1980-07-28";
+            $this->assertEquals('28.07.1980', $user->birthdate);
+
+            $user->birthdate = "80-7-28";
+            $this->assertEquals('28.07.1980', $user->birthdate);
+        }
+
+        /**
+         * @test
+         */
+        public function userName(){
+            $firstName = md5(time() . uniqid());
+            $lastName = "User";
+
+            $user = new User();
+            $user->first_name = $firstName;
+            $user->last_name = $lastName;
+            $user->addRole(Role::find('bcb_aktivmitglied'));
+            $user->save();
+
+            $userName = $user->user_login;
+
+            $this->assertEquals(strtolower(substr($lastName.$firstName, 0, 8)), $userName);
+
+            for($i = 1; $i <= 100; $i++){
+                $user = new User();
+                $user->first_name = $firstName;
+                $user->last_name = $lastName;
+                $user->addRole(Role::find('bcb_aktivmitglied'));
+                $user->save();
+                $this->assertEquals($userName . $i, $user->user_login);
+            }
         }
     }
 }
