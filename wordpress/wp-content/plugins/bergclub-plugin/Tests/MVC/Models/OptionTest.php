@@ -4,10 +4,7 @@ namespace {
 }
 
 namespace BergclubPlugin\Tests\MVC\Models {
-    use BergclubPlugin\MVC\Exceptions\NotABergClubUserException;
     use BergclubPlugin\MVC\Models\Option;
-    use BergclubPlugin\MVC\Models\Role;
-    use BergclubPlugin\MVC\Models\User;
     use PHPUnit\Framework\TestCase;
 
     class OptionTest extends TestCase

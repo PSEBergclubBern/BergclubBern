@@ -1,7 +1,10 @@
 <?php
 
+global $wpOptions;
+
 function get_option($key){
     global $wpOptions;
+
     if(isset($wpOptions[$key])){
         return $wpOptions[$key];
     }
@@ -177,6 +180,28 @@ function wp_mail($to, $subject, $message){
     $wpMail[] = ['to' => $to, 'subject' => $subject, 'message' => $message];
 }
 
+function get_role($name){
+    global $wp_roles;
+
+    if(isset($wp_roles->roles[$name])){
+        return new WP_Role($name, $wp_roles->roles[$name]['capabilities']);
+    }
+
+    return null;
+}
+
+function add_role($key, $name, $capabilities){
+    global $wp_roles;
+    $wp_roles->roles[$key] = ['name' => $name, 'capabilities' => $capabilities];
+}
+
+function remove_role($name){
+    global $wp_roles;
+    unset($wp_roles->roles[$name]);
+}
+
+
+
 class WP_User {
     public $ID;
     public $data;
@@ -209,5 +234,21 @@ class WP_User {
 
             update_user_meta($this->ID, 'wp_capabilities', $this->roles);
         }
+    }
+}
+
+class WP_Role{
+    public $name;
+    public $capabilities=[];
+
+    public function __construct($name, array $capabilities){
+        $this->name = $name;
+        $this->capabilities = $capabilities;
+    }
+
+    public function add_cap($capability, $grant){
+        global $wp_roles;
+        $this->capabilities[$capability] = $grant;
+        $wp_roles->roles[$this->name]['capabilities'][$capability] = $grant;
     }
 }

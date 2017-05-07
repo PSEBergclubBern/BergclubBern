@@ -3,92 +3,6 @@ namespace {
     require_once __DIR__ . '/wp_mocks.php';
 }
 
-//mock classes for the Models namespace
-namespace BergclubPlugin\MVC\Models {
-    class Role {
-        const TYPE_SYSTEM = 'system';
-        const TYPE_ADDRESS = 'address';
-        const TYPE_FUNCTIONARY = 'functionary';
-
-        private $key;
-
-        public static $roles = [
-            'bcb_aktivmitglied' => [
-                'type' => 'address',
-                'name' => 'Aktivmitglied'
-            ],
-            'bcb_ehemalig' => [
-                'type' => 'address',
-                'name' => 'Ehemalig',
-            ],
-            'bcb_leiter' => [
-                'type' => 'functionary',
-                'name' => 'Leiter'
-            ],
-            'bcb_tourenchef' => [
-                'type' => 'functionary',
-                'name' => 'Tourenchef'
-            ],
-            'bcb_leiter_jugend' => [
-                'type' => 'functionary',
-                'name' => 'Leiter Jugend'
-            ],
-            'bcb_tourenchef_jugend' => [
-                'type' => 'functionary',
-                'name' => 'Tourenchef Jugend'
-            ],
-            'bcb_materialchef' => [
-                'type' => 'functionary',
-                'name' => 'Materialchef'
-            ],
-            'bcb_inserent' => [
-                'type' => 'address',
-                'name' => 'Inserent'
-            ],
-            'administrator' => [
-                'type' => 'system',
-                'name' => 'Administrator'
-            ],
-        ];
-
-        public function __construct($key){
-            $this->key = $key;
-        }
-
-        public static function find($key){
-            if(isset(self::$roles[$key])) {
-                return new Role($key);
-            }
-
-            return null;
-        }
-
-        public function getType(){
-            return self::$roles[$this->key]['type'];
-        }
-
-        public function getKey(){
-            return $this->key;
-        }
-
-        public function getName(){
-            return self::$roles[$this->key]['name'];
-        }
-
-        public function hasCapability($capability){
-            if($capability == 'test'){
-                return true;
-            }
-
-            return false;
-        }
-
-        public function save(){
-
-        }
-    }
-}
-
 namespace BergclubPlugin\Tests\MVC\Models {
     use BergclubPlugin\MVC\Exceptions\NotABergClubUserException;
     use BergclubPlugin\MVC\Models\Role;
@@ -173,6 +87,18 @@ namespace BergclubPlugin\Tests\MVC\Models {
          */
         public function setUp()
         {
+            global $wpOptions;
+            $wpOptions['bcb_roles'] = unserialize('a:2:{s:7:"address";a:9:{s:15:"bcb_institution";s:11:"Institution";s:12:"bcb_inserent";s:8:"Inserent";s:15:"bcb_interessent";s:11:"Interessent";s:22:"bcb_interessent_jugend";s:18:"Interessent Jugend";s:17:"bcb_aktivmitglied";s:13:"Aktivmitglied";s:24:"bcb_aktivmitglied_jugend";s:20:"Aktivmitglied Jugend";s:17:"bcb_ehrenmitglied";s:13:"Ehrenmitglied";s:12:"bcb_ehemalig";s:8:"Ehemalig";s:16:"bcb_freimitglied";s:12:"Freimitglied";}s:11:"functionary";a:14:{s:10:"bcb_leiter";s:9:"Leiter/in";s:17:"bcb_leiter_jugend";s:16:"Leiter/in Jugend";s:14:"bcb_tourenchef";s:13:"Tourenchef/in";s:21:"bcb_tourenchef_jugend";s:20:"Tourenchef/in Jugend";s:13:"bcb_redaktion";s:9:"Redaktion";s:15:"bcb_sekretariat";s:11:"Sekretariat";s:14:"bcb_mutationen";s:10:"Mutationen";s:9:"bcb_kasse";s:5:"Kasse";s:14:"bcb_praesident";s:13:"Präsident/in";s:16:"bcb_materialchef";s:15:"Materialchef/in";s:23:"bcb_materialchef_jugend";s:22:"Materialchef/in Jugend";s:12:"bcb_js_coach";s:9:"J&S-Coach";s:11:"bcb_versand";s:7:"Versand";s:12:"bcb_internet";s:8:"Internet";}}');
+            $wpOptions['bcb_roles']['system'] = ['administrator' => null];
+
+            global $wp_roles;
+            $rolesByType = get_option('bcb_roles');
+            foreach($rolesByType as $type => $rolesArray){
+                foreach($rolesArray as $key => $name){
+                    $wp_roles->roles[$key] = ['name' => $name, 'capabilities' => ['read' => true]];
+                }
+            }
+
             global $wpMail;
             $wpMail = [];
 
@@ -349,7 +275,7 @@ namespace BergclubPlugin\Tests\MVC\Models {
         public function findVorstand(){
             $vorstand = User::findVorstand();
             $this->assertEquals(1, count($vorstand));
-            $this->assertEquals('Tourenchef', $vorstand[0]['title']);
+            $this->assertEquals('Tourenchef/in', $vorstand[0]['title']);
             $this->assertEquals(1, count($vorstand[0]['users']));
             $this->assertEquals('User Test 8', $vorstand[0]['users'][0]->name);
             $this->assertEquals(3, count($vorstand[0]['users'][0]->address));
@@ -368,7 +294,7 @@ namespace BergclubPlugin\Tests\MVC\Models {
         public function findErweiterterVorstand(){
             $vorstand = User::findErweiterterVorstand();
             $this->assertEquals(1, count($vorstand));
-            $this->assertEquals('Materialchef', $vorstand[0]['title']);
+            $this->assertEquals('Materialchef/in', $vorstand[0]['title']);
             $this->assertEquals(1, count($vorstand[0]['users']));
             $this->assertEquals('User Test 9', $vorstand[0]['users'][0]->name);
         }
@@ -379,11 +305,11 @@ namespace BergclubPlugin\Tests\MVC\Models {
         public function findLeiter(){
             $leiter = User::findLeiter();
             $this->assertEquals(2, count($leiter));
-            $this->assertEquals('Tourenchef', $leiter[0]['title']);
+            $this->assertEquals('Tourenchef/in', $leiter[0]['title']);
             $this->assertEquals(1, count($leiter[0]['users']));
             $this->assertEquals('User Test 8', $leiter[0]['users'][0]->name);
 
-            $this->assertEquals('Leiter', $leiter[1]['title']);
+            $this->assertEquals('Leiter/in', $leiter[1]['title']);
             $this->assertEquals(1, count($leiter[1]['users']));
             $this->assertEquals('User Test 10', $leiter[1]['users'][0]->name);
         }
@@ -398,11 +324,11 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $wpUser->roles[] = 'bcb_tourenchef_jugend';
             $leiter = User::findLeiterJugend();
             $this->assertEquals(2, count($leiter));
-            $this->assertEquals('Tourenchef Jugend', $leiter[0]['title']);
+            $this->assertEquals('Tourenchef/in Jugend', $leiter[0]['title']);
             $this->assertEquals(1, count($leiter[0]['users']));
             $this->assertEquals('User Test 2', $leiter[0]['users'][0]->name);
 
-            $this->assertEquals('Leiter Jugend', $leiter[1]['title']);
+            $this->assertEquals('Leiter/in Jugend', $leiter[1]['title']);
             $this->assertEquals(1, count($leiter[1]['users']));
             $this->assertEquals('User Test 1', $leiter[1]['users'][0]->name);
         }
@@ -608,7 +534,7 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $this->assertNull($user->history['bcb_aktivmitglied']['date_to']);
 
             $this->assertArrayHasKey('bcb_tourenchef', $user->history);
-            $this->assertEquals('Tourenchef', $user->history['bcb_tourenchef']['name']);
+            $this->assertEquals('Tourenchef/in', $user->history['bcb_tourenchef']['name']);
             $this->assertNotNull($user->history['bcb_tourenchef']['date_from']);
             $this->assertNull($user->history['bcb_tourenchef']['date_to']);
         }
@@ -640,12 +566,12 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $user = User::find(1);
 
             $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
-            $this->assertArrayNotHasKey('administrator', $user->roles);
+            $this->assertArrayNotHasKey('bcb_administrator', $user->roles);
 
             $user->addRole(Role::find('administrator'));
 
             $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
-            $this->assertArrayNotHasKey('administrator', $user->roles);
+            $this->assertArrayNotHasKey('bcb_administrator', $user->roles);
 
             $this->assertEquals(1, count($user->history));
             $this->assertArrayHasKey('bcb_aktivmitglied', $user->history);
@@ -659,12 +585,12 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $user = User::find(1);
 
             $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
-            $this->assertArrayNotHasKey('administrator', $user->roles);
+            $this->assertArrayNotHasKey('bcb_administrator', $user->roles);
 
             $user->addRole(Role::find('administrator'), true, true);
 
             $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
-            $this->assertArrayHasKey('administrator', $user->roles);
+            $this->assertArrayHasKey('bcb_administrator', $user->roles);
 
             $this->assertEquals(1, count($user->history));
             $this->assertArrayHasKey('bcb_aktivmitglied', $user->history);
@@ -711,12 +637,12 @@ namespace BergclubPlugin\Tests\MVC\Models {
 
             $user->addRole(Role::find('administrator'), true, true);
 
-            $this->assertArrayHasKey('administrator', $user->roles);
+            $this->assertArrayHasKey('bcb_administrator', $user->roles);
             $this->assertEquals($history, $user->history);
 
             $user->removeRole(Role::find('administrator'));
 
-            $this->assertArrayNotHasKey('administrator', $user->roles);
+            $this->assertArrayNotHasKey('bcb_administrator', $user->roles);
             $this->assertEquals($history, $user->history);
         }
 
@@ -725,9 +651,7 @@ namespace BergclubPlugin\Tests\MVC\Models {
          */
         public function hasCapability(){
             $user = User::find(1);
-
-            $this->assertTrue($user->hasCapability('test'));
-            $this->assertFalse($user->hasCapability('fail'));
+            $this->assertTrue($user->hasCapability('read'));
         }
 
         /**
