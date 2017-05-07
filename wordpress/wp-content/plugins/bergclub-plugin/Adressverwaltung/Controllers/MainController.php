@@ -296,6 +296,11 @@ class MainController extends AbstractController
             Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
         }
 
+        if(isset($_POST['functionary_roles']) && count($_POST['functionary_roles']) && !$user->email){
+            FlashMessage::add(FlashMessage::TYPE_ERROR, 'Sie müssen dem Adresssatz zuerst eine Emailadresse zuweisen, bevor Funktionsrollen zugewiesen werden können.');
+            Helpers::redirect("?page=" . $_GET['page'] . "&view=detail&tab=data&id=" . $user->ID . "&edit=1");
+        }
+
         foreach($user->functionary_roles as $role){
             /* @var Role $role */
             if(!isset($_POST['functionary_roles']) || !in_array($role->getKey(), $_POST['functionary_roles'])){

@@ -25,7 +25,6 @@ class User implements IModel
     const GENDER_M = 'Herr';
     const GENDER_F = 'Frau';
 
-
     /**
      * @var array $main holds the main user values from WP that magic getters and setters allow to access.
      */
@@ -33,6 +32,7 @@ class User implements IModel
         'ID' => null,
         'user_login' => null,
         'user_pass' => null,
+        'user_email' => null,
     ];
 
     /**
@@ -59,6 +59,7 @@ class User implements IModel
         'birthdate' => null,
         'comments' => null,
         'main_address' => null,
+        'mail_sent' => null,
     ];
 
     /**
@@ -292,6 +293,8 @@ class User implements IModel
         return $users;
     }
 
+
+
     /**
      * Finds and WP User with the given id and converts it to our custom User.
      *
@@ -353,14 +356,19 @@ class User implements IModel
             $this->main['ID'] = wp_insert_user($main);
         }
 
+        if(!$this->hasFunctionaryRole()){
+            $this->data['mail_sent'] = false;
+        }
+
         foreach($this->data as $key => $value){
             if($key == 'email'){
                 $value = sanitize_email($value);
                 if($this->hasFunctionaryRole()) {
                     wp_update_user(['ID' => $this->main['ID'], 'user_email' => $value]);
-
+                    $this->main['user_email'] = $value;
                 }else{
                     wp_update_user(['ID' => $this->main['ID'], 'user_email' => null]);
+                    $this->main['user_email'] = null;
                 }
             }else{
                 $value = sanitize_text_field($value);
@@ -392,6 +400,11 @@ class User implements IModel
         }
         $this->deletedRoles = [];
 
+        if(!$this->data['mail_sent'] && $this->hasFunctionaryRole()){
+            Helpers::sendPassResetMail($this);
+            $this->data['mail_sent'] = true;
+            update_user_meta($this->main['ID'], 'mail_sent', $this->data['mail_sent']);
+        }
     }
 
     /**
