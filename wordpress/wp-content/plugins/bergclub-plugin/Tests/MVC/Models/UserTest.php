@@ -98,16 +98,30 @@ namespace BergclubPlugin\MVC\Models {
         ];
     }
 
-    function wp_update_user($args, $data){
+    function wp_update_user($args){
         global $wpUsers;
-        $id = $args['ID'];
-        foreach($data as $key => $value) {
-            $wpUsers[$id]->data[$key] = $value;
+        if(isset($args['ID'])) {
+            $id = $args['ID'];
+            foreach ($args as $key => $value) {
+                $wpUsers[$id]->data[$key] = $value;
+            }
         }
     }
 
     function update_user_meta($id, $field, $value){
+        global $wpUsersMeta;
+        $wpUsersMeta[$id][$field] = [$value];
+    }
 
+    function username_exists($username){
+        global $wpUsers;
+        foreach($wpUsers as $wpUser){
+            if($wpUser->data['user_login'] == $username){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     function sanitize_email($value){
@@ -116,6 +130,19 @@ namespace BergclubPlugin\MVC\Models {
 
     function sanitize_text_field($value){
         return $value;
+    }
+
+    class WP_User {
+        public $ID;
+
+        public function add_role($role){
+            global $wpUsers;
+
+        }
+
+        public function remove_role($role){
+            
+        }
     }
 
     class Role {
@@ -204,6 +231,7 @@ namespace BergclubPlugin\Tests\MVC\Models {
     global $wpUsers;
     global $wpUsersMeta;
 
+    use BergclubPlugin\MVC\Models\Role;
     use BergclubPlugin\MVC\Models\User;
     use PHPUnit\Framework\TestCase;
 
@@ -221,14 +249,14 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $wpUser = new \stdClass();
             $wpUser->data = [
                 'ID' => 1,
-                'user_login' => 'usertest',
+                'user_login' => 'usertest1',
                 'user_pass' => '$P$B374xSqLsoDdG5.zVyvNTy1wJjpoUW.',
-                'user_nicename' => 'usertest',
+                'user_nicename' => 'usertest1',
                 'user_email' => null,
                 'user_registered' => date('Y-m-d H:i:s', $tm),
                 'user_activation_key' => null,
                 'user_status' => 0,
-                'display_name' => 'usertest',
+                'display_name' => 'usertest1',
             ];
             $wpUser->ID = 1;
             $wpUser->caps = [
@@ -241,8 +269,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $wpUsers[1] = $wpUser;
 
             $wpUsersMeta[1] = [
-                'nickname' => ['usertest'],
-                'first_name' => ['Test'],
+                'nickname' => ['usertest1'],
+                'first_name' => ['Test 1'],
                 'last_name' => ['User'],
                 'description' => [null],
                 'rich_editing' => [true],
@@ -265,7 +293,7 @@ namespace BergclubPlugin\Tests\MVC\Models {
                 'phone_private' => ['031 123 45 67'],
                 'phone_work' => ['031 890 12 34'],
                 'phone_mobile' => ['079 567 89 01'],
-                'email' => ['test@user.com'],
+                'email' => ['test1@user.com'],
                 'birthdate' => ['1970-01-01'],
                 'comments' => ['Bemerkung'],
                 'main_address' => [null],
@@ -1021,7 +1049,7 @@ namespace BergclubPlugin\Tests\MVC\Models {
 
             $this->assertEquals('Leiter Jugend', $leiter[1]['title']);
             $this->assertEquals(1, count($leiter[1]['users']));
-            $this->assertEquals('User Test', $leiter[1]['users'][0]->name);
+            $this->assertEquals('User Test 1', $leiter[1]['users'][0]->name);
         }
 
         /**
@@ -1056,8 +1084,38 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function saveNewWithoutFunctionaryRole(){
+        public function saveNew(){
+            global $wpUsers;
+            global $wpUsersMeta;
 
+            $user = new User();
+            $user->first_name = "Test 11";
+            $user->last_name = "User";
+            $user->gender = "M";
+            $user->address_addition = "Postfach";
+            $user->street = "Teststrasse 1";
+            $user->zip = 9999;
+            $user->location = "Testlingen";
+            $user->phone_private = "031 123 45 67";
+            $user->phone_work = "031 890 12 34";
+            $user->phone_mobile = "079 567 89 01";
+            $user->email = "test10@user.com";
+            $user->birthdate = "1970-01-01";
+            $user->comments = "Bemerkung";
+
+            $user->addRole(Role::find('bcb_aktivmitglied'));
+
+            $user->save();
+
+            print print_r(end($wpUsers));
+            print print_r(end($wpUsersMeta));
+        }
+
+        /**
+         * @test
+         */
+        public function saveNewWithoutAddressRole(){
+            //expect exception
         }
 
         /**
@@ -1065,13 +1123,6 @@ namespace BergclubPlugin\Tests\MVC\Models {
          */
         public function saveNewWithFunctionaryRole(){
 
-        }
-
-        /**
-         * @test
-         */
-        public function saveNewWithoutAddressRole(){
-                //expect exception
         }
     }
 }
