@@ -821,7 +821,7 @@ class User implements IModel
      * @return mixed|null the value of the constant or null if the constant does not exist.
      */
     private function _getConstant($key, $variant){
-        if(!empty($variant)) {
+        if(!empty($variant) || is_numeric($variant)) {
             return constant('self::' . strtoupper(trim($key, '_') . '_' . trim($variant, '_')));
         }
         return null;

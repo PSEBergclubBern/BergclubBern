@@ -8,10 +8,9 @@
 
 namespace BergclubPlugin\Commands\Entities;
 
-
 use BergclubPlugin\MVC\Models\User;
 
-class Adressen
+class Adressen implements Entity
 {
     const CATEGORY_INSTITUTION = 2;
     const CATEGORY_INSERENT = 3;
@@ -43,7 +42,14 @@ class Adressen
     public $comment;
     public $sendProgram = false;
     public $addition;
-    public $spouseId;
+    /**
+     * @var Adressen
+     */
+    public $spouse;
+
+    public $activeMemberDate;
+    public $activeYouthMemberDate;
+    public $interessentDate;
 
     public $leader = false;
     public $leaderDescription;
@@ -107,7 +113,7 @@ class Adressen
             'email'             => $this->email,
             'birthdate'         => $this->birthday,
             'comments'          => $this->comment,
-            'program_shipment'  => $this->sendProgram ? 1 : 0,
+            'program_shipment'  => $this->sendProgram ? '1' : '0',
             'gender'            => $this->salutation == 'Frau' ? 'F' : 'M',
             'address_addition'  => $this->addition,
         );
@@ -146,11 +152,211 @@ class Adressen
     }
 
     /**
-     * get the spouse id or null if no spouse
-     * @return mixed
+     * @return Adressen
      */
-    public function getSpouseId()
+    public function getSpouse()
     {
-        return $this->spouseId;
+        return $this->spouse;
+    }
+
+    /**
+     * @param Adressen $spouse
+     */
+    public function setSpouse(Adressen $spouse)
+    {
+        $this->spouse = $spouse;
+    }
+
+    /**
+     * return the user history as array
+     * the format is equal to that from the user model
+     *
+     * @return array
+     * @see User
+     */
+    public function getUserHistory()
+    {
+        return array_merge(
+            $this->getActiveMemberHistory(),
+            $this->getActiveYouthMemberHistory(),
+            $this->getFreeMemberHistory(),
+            $this->getHonorMemberHistory(),
+            $this->getInterestedMemberHistory()
+        );
+    }
+
+    /**
+     * get the history entry for the active member role
+     * if the date is not set, it checks if the use has a
+     * - leader
+     * - support
+     * - vorstand
+     * - or leader youth role, and takes that date as activemember role.
+     *
+     * @return array
+     */
+    private function getActiveMemberHistory()
+    {
+        $activeMemberDateFrom = null;
+        $activeMemberDateTo = null;
+        if ($this->activeMemberDate && $this->activeMemberDate != '0000-00-00') {
+            $activeMemberDateFrom = new \DateTime($this->activeMemberDate);
+        } else {
+            $datesActive = array(
+                $this->leader ? new \DateTime($this->leaderFrom) : null,
+                $this->support ? new \DateTime($this->supportFrom) : null,
+                $this->vorstand ? new \DateTime($this->vorstandFrom) : null,
+                $this->leaderYouth ? new \DateTime($this->leaderYouthFrom) : null,
+            );
+
+            $chk = true;
+            $currentLowestDate = new \DateTime();
+            foreach ($datesActive as $dateActive) {
+                /** @var \DateTime $dateActive */
+                if ($dateActive && $currentLowestDate->getTimestamp() > $dateActive->getTimestamp()) {
+                    $currentLowestDate = $dateActive;
+                    $chk = false;
+                }
+            }
+            if ($chk) {
+                return array();
+            }
+            $activeMemberDateFrom = $currentLowestDate;
+        }
+
+        $activeMemberDateTo = $this->getNextActiveDateOrNull($activeMemberDateFrom);
+
+        return array(
+            'bcb_aktivmitglied' => array(
+                'date_from'  => $activeMemberDateFrom->format('Y-m-d'),
+                'date_to'    => $activeMemberDateTo,
+            )
+        );
+    }
+
+    /**
+     * get the active youth member history
+     *
+     * @return array
+     */
+    private function getActiveYouthMemberHistory()
+    {
+        if ($this->activeYouthMemberDate && $this->activeYouthMemberDate != '0000-00-00') {
+            return array(
+                'bcb_aktivmitglied_jugend' => array(
+                    'date_from' => $this->activeYouthMemberDate,
+                    'date_to'   => $this->getNextActiveDateOrNull(new \DateTime($this->activeYouthMemberDate)),
+                )
+            );
+        }
+        return array();
+    }
+
+    /**
+     * get the history entry for the honor member role
+     *
+     * @return array
+     */
+    private function getHonorMemberHistory()
+    {
+        if ($this->honorMemberDate && $this->honorMemberDate != '0000-00-00') {
+            return array(
+                'bcb_ehrenmitglied' => array(
+                    'date_from' => $this->honorMemberDate,
+                    'date_to'   => $this->getNextActiveDateOrNull(new \DateTime($this->honorMemberDate)),
+                )
+            );
+        }
+        return array();
+    }
+
+    /**
+     * get the history entry for the free member role
+     *
+     * @return array
+     */
+    private function getFreeMemberHistory()
+    {
+        if ($this->freeMemberDate && $this->freeMemberDate != '0000-00-00') {
+            return array(
+                'bcb_freimitglied' => array(
+                    'date_from' => $this->freeMemberDate,
+                    'date_to'   => $this->getNextActiveDateOrNull(new \DateTime($this->freeMemberDate)),
+                )
+            );
+        }
+        return array();
+    }
+
+    /**
+     * get the history entry for interested in members
+     *
+     * @return array
+     */
+    private function getInterestedMemberHistory()
+    {
+        if ($this->interessentDate && $this->interessentDate != '0000-00-00') {
+            return array(
+                'bcb_interessent' => array(
+                    'date_from' => $this->interessentDate,
+                    'date_to'   => $this->getNextActiveDateOrNull(new \DateTime($this->interessentDate)),
+                )
+            );
+        }
+        return array();
+    }
+
+    /**
+     * gives the next date after the current date
+     *
+     * @param \DateTime|null $currentDate
+     * @return null|string
+     */
+    private function getNextActiveDateOrNull(\DateTime $currentDate = null)
+    {
+        $candidateTime = PHP_INT_MAX;
+        $candidate = null;
+        foreach ($this->getAllDatesAsDateTime() as $date) {
+            /** @var \DateTime $date */
+            if ($date->getTimestamp() <= $currentDate->getTimestamp()) {
+                continue;
+            }
+            $dateIntervall = $date->diff($currentDate);
+            if ($dateIntervall->format('s') < $candidateTime) {
+                $candidate = $date;
+                $candidateTime = $dateIntervall->format('s');
+            }
+        }
+
+        if ($candidate) {
+            return $candidate->format('Y-m-d');
+        }
+        return null;
+    }
+
+    /**
+     * get all dates as datetime objects
+     *
+     * @return array
+     */
+    private function getAllDatesAsDateTime()
+    {
+        $dates = array(
+            $this->interessentDate && $this->interessentDate != '0000-00-00' ? new \DateTime($this->interessentDate) : null,
+            $this->freeMemberDate && $this->freeMemberDate != '0000-00-00' ? new \DateTime($this->freeMemberDate) : null,
+            $this->honorMemberDate && $this->honorMemberDate != '0000-00-00' ? new \DateTime($this->honorMemberDate) : null,
+            $this->activeYouthMemberDate && $this->activeYouthMemberDate != '0000-00-00' ? new \DateTime($this->activeYouthMemberDate) : null,
+            $this->activeMemberDate && $this->activeMemberDate != '0000-00-00' ? new \DateTime($this->activeMemberDate) : null,
+            $this->diedDate && $this->diedDate != '0000-00-00' ? new \DateTime($this->diedDate) : null,
+            $this->exitDate && $this->exitDate != '0000-00-00' ? new \DateTime($this->exitDate) : null,
+        );
+        $returnDates = array();
+        foreach ($dates as $date) {
+            if ($date) {
+                $returnDates[] = $date;
+            }
+        }
+
+        return $returnDates;
     }
 }

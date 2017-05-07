@@ -17,6 +17,7 @@ class MeetingPoint extends MetaBox {
 	const TIME = '_meetingPointTime';
 	const RETURNBACK = '_returnBack';
 	const FOOD = '_food';
+	const MEETPOINT_DIFFERENT_KEY = 99;
 
 	public function getUniqueFieldNames() {
 		return array(
@@ -35,7 +36,7 @@ class MeetingPoint extends MetaBox {
 				array( 'id' => 1, 'text' => 'Bern HB, Treffpunkt' ),
 				array( 'id' => 2, 'text' => 'Bern HB, auf dem Abfahrtsperron' ),
 				array( 'id' => 3, 'text' => 'Bern, auf der Welle' ),
-				array( 'id' => 99, 'text' => 'Anderer' ),
+				array( 'id' => self::MEETPOINT_DIFFERENT_KEY, 'text' => 'Anderer' ),
 			),
 		);
 	}
@@ -61,7 +62,7 @@ class MeetingPoint extends MetaBox {
             if (array_key_exists(self::MEETPOINT, $values)) {
                 $value = $values[self::MEETPOINT];
 
-                if ($value == 99) {
+                if ($value == self::MEETPOINT_DIFFERENT_KEY) {
                     if (!array_key_exists(self::MEETPOINT_DIFFERENT, $values) || empty($values[self::MEETPOINT_DIFFERENT])) {
                         $errors[] = 'Wenn als Treffpunkt "Anderes" ausgewählt wurde, muss auch ein alternativer Treffpunkt angegeben werden';
                     }

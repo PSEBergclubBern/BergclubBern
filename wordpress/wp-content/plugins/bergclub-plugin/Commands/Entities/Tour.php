@@ -8,7 +8,9 @@
 
 namespace BergclubPlugin\Commands\Entities;
 
-class Tour
+use BergclubPlugin\Touren\MetaBoxes\MeetingPoint;
+
+class Tour implements Entity
 {
     public $id;
     public $userId;
@@ -36,7 +38,7 @@ class Tour
     public $coLeader;
     public $jsEvent;
     public $isYouth;
-
+    public $meetingPointKey;
 
     /**
      * @var TourBericht
@@ -55,7 +57,7 @@ class Tour
         $this->up = $array['auf'];
         $this->down = $array['ab'];
         $this->map = $array['karte'];
-        //$this->meetingPoint = $array['treff_o'];
+        $this->meetingPoint = $array['treff_o'];
         $this->program = $array['prog'];
         $this->returnBack = $array['rueck_o'];
         $this->equiptment = $array['ausr'];
@@ -69,16 +71,22 @@ class Tour
         $this->requirementsConditional = $array['anf_k'];
         $this->leader = $array['leiter_a'];
         $this->coLeader = $array['leiter_b'];
-        $this->jsEvent = $array['js'] * 1;
+        $this->jsEvent = $array['js'];
 
         $isYouth = 0;
-        if($array['bcbj'] == 1){
+        if ($array['bcbj'] == 1) {
             $isYouth = 1;
-            if($array['bcb'] == 1){
+            if ($array['bcb'] == 1) {
                 $isYouth = 2;
             }
         }
         $this->isYouth = $isYouth;
+
+        if (empty($this->meetingPoint)) {
+            $this->meetingPointKey = 1;
+        } else {
+            $this->meetingPointKey = MeetingPoint::MEETPOINT_DIFFERENT_KEY;
+        }
     }
 
     public function __toString()

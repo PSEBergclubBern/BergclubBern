@@ -1,5 +1,6 @@
 <?php
 
+
 //mock wp functions and classes for the Models namespace
 namespace BergclubPlugin\MVC\Models {
     global $wpUsers;
@@ -780,6 +781,27 @@ namespace BergclubPlugin\Tests\MVC\Models {
                 'mail_sent' => [null],
                 'history' => ['a:2:{s:17:"bcb_aktivmitglied";a:2:{s:9:"date_from";s:10:"' . date("Y-m-d", $tm) . '";s:7:"date_to";N;}s:10:"bcb_leiter";a:2:{s:9:"date_from";s:10:"' . date("Y-m-d", $tm) . '";s:7:"date_to";N;}}'],
             ];
+        }
+
+
+        /**
+         * @test
+         */
+        public function programShipmentOneEqualsToYes()
+        {
+            $user = new User();
+            $user->program_shipment = '1';
+            $this->assertEquals('Ja', $user->program_shipment);
+        }
+
+        /**
+         * @test
+         */
+        public function programShipmentZeroEqualsToNo()
+        {
+            $user = new User();
+            $user->program_shipment = '0';
+            $this->assertEquals('Nein', $user->program_shipment);
         }
 
         /**
