@@ -24,6 +24,7 @@ class MitteilungProcessor extends Processor
             throw new \RuntimeException();
         }
         $values = current($values);
+
         $list = array();
         foreach ($values as $key => $mitteilung) {
             $this->logger->debug('Processing element ' . (1 + $key));
@@ -55,8 +56,7 @@ class MitteilungProcessor extends Processor
         }
 
         $categoryId = null;
-        var_dump(get_categories());
-        foreach (get_categories() as $category) {
+        foreach (get_categories(array('hide_empty' => false)) as $category) {
             /** @var $category \WP_Term */
             if ($category->slug == 'mitteilungen') {
                 $categoryId = $category->term_id;

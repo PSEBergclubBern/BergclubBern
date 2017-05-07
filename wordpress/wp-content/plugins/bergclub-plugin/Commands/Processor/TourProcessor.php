@@ -85,15 +85,18 @@ class TourProcessor extends Processor
             // Find report
             $reportCandidates = array();
             foreach ($berichte as $bericht) {
-                if ($bericht['datum'] == $tourEntity->dateFrom || $bericht['datum'] == $tourEntity->dateTo) {
+                if ($bericht['datum'] == $tourEntity->dateFrom) {
                     $reportCandidates[] = $bericht;
                 }
             }
 
             if (count($reportCandidates) > 1) {
-                $this->logger->warning('Found more than one report for tour ' . $tourEntity . ', trying to match title');
+                $this->logger->log('Found more than one report for tour ' . $tourEntity . ', trying to match title');
                 $max = -1;
                 foreach ($reportCandidates as $reportCandidate) {
+                    if (empty($reportCandidate['titel']) && empty($reportCandidate['text'])) {
+                        continue;
+                    }
                     $currentMax = 0;
                     similar_text($tourEntity->title, $reportCandidate['titel'], $currentMax);
                     if ($max < $currentMax) {
@@ -101,6 +104,11 @@ class TourProcessor extends Processor
                         $tourEntity->tourBericht->text = $this->convertTextField($tourEntity->tourBericht->text);
                         $max = $currentMax;
                     }
+                }
+                if ($tourEntity->tourBericht) {
+                    $this->logger->success('Matched tour ' . $tourEntity->title . ' with report "' . $tourEntity->tourBericht->title . '"');
+                } else {
+                    $this->logger->warning('Couldnt match tourreport');
                 }
             } elseif (count($reportCandidates) == 0) {
                 $this->logger->warning('Found no report');
@@ -191,7 +199,7 @@ class TourProcessor extends Processor
                     if (is_numeric($generatedReportId)) {
                         update_post_meta($generatedReportId, '_touren', $generatedId);
                     } else {
-                        $this->logger->warning('While creating tourbericht for tour ' . $entity . ': ERROR: ' . $generatedId->get_error_message());
+                        $this->logger->warning('While creating tourbericht for tour ' . $entity . ': ERROR: ' . $generatedReportId->get_error_message());
                     }
                 }
 

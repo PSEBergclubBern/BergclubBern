@@ -185,6 +185,16 @@ class Adressen implements Entity
         );
     }
 
+    /**
+     * get the history entry for the active member role
+     * if the date is not set, it checks if the use has a
+     * - leader
+     * - support
+     * - vorstand
+     * - or leader youth role, and takes that date as activemember role.
+     *
+     * @return array
+     */
     private function getActiveMemberHistory()
     {
         $activeMemberDateFrom = null;
@@ -224,6 +234,11 @@ class Adressen implements Entity
         );
     }
 
+    /**
+     * get the active youth member history
+     *
+     * @return array
+     */
     private function getActiveYouthMemberHistory()
     {
         if ($this->activeYouthMemberDate && $this->activeYouthMemberDate != '0000-00-00') {
@@ -237,6 +252,11 @@ class Adressen implements Entity
         return array();
     }
 
+    /**
+     * get the history entry for the honor member role
+     *
+     * @return array
+     */
     private function getHonorMemberHistory()
     {
         if ($this->honorMemberDate && $this->honorMemberDate != '0000-00-00') {
@@ -250,6 +270,11 @@ class Adressen implements Entity
         return array();
     }
 
+    /**
+     * get the history entry for the free member role
+     *
+     * @return array
+     */
     private function getFreeMemberHistory()
     {
         if ($this->freeMemberDate && $this->freeMemberDate != '0000-00-00') {
@@ -263,6 +288,11 @@ class Adressen implements Entity
         return array();
     }
 
+    /**
+     * get the history entry for interested in members
+     *
+     * @return array
+     */
     private function getInterestedMemberHistory()
     {
         if ($this->interessentDate && $this->interessentDate != '0000-00-00') {
@@ -276,6 +306,12 @@ class Adressen implements Entity
         return array();
     }
 
+    /**
+     * gives the next date after the current date
+     *
+     * @param \DateTime|null $currentDate
+     * @return null|string
+     */
     private function getNextActiveDateOrNull(\DateTime $currentDate = null)
     {
         $candidateTime = PHP_INT_MAX;
@@ -298,6 +334,11 @@ class Adressen implements Entity
         return null;
     }
 
+    /**
+     * get all dates as datetime objects
+     *
+     * @return array
+     */
     private function getAllDatesAsDateTime()
     {
         $dates = array(

@@ -130,7 +130,7 @@ class Import extends Init
         if (!isset($adressen)) {
             $this->logger->warning('Input file has no adressen, skipping');
         } else {
-            //$this->import(array($adressen), $this->addressenProcessor);
+            $this->import(array($adressen), $this->addressenProcessor);
         }
 
         // Check for mitteilungen
@@ -158,7 +158,7 @@ class Import extends Init
     private function import($values, Processor $processor)
     {
         $this->logger->log('Begin processing of ' . $processor->getEntityName());
-        $this->logger->log('It has ' . count($values) . ' ' . $processor->getEntityName());
+        $this->logger->log('It has ' . count(current($values)) . ' ' . $processor->getEntityName());
 
         $entities = $processor->process($values);
 
