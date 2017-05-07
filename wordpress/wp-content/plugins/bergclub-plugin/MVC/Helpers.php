@@ -9,6 +9,7 @@
 namespace BergclubPlugin\MVC;
 
 use BergclubPlugin\MVC\Models\Option;
+use BergclubPlugin\MVC\Models\User;
 
 class Helpers
 {
@@ -73,5 +74,37 @@ class Helpers
             $result = strtoupper(substr($result, 0, 1)) . substr($result, 1);
         }
         return $result;
+    }
+
+    /**
+     * Checks if the given date is a valid date.
+     * @param string $date A date to check in the format d.m.Y (day and month can be single- or double-digit)
+     * @return bool returns true if date is valid, false otherwise
+     */
+    public static function isValidDate($date){
+        preg_match_all('/^([0-9]{1,2}).([0-9]{1,2}).([0-9]{4})$/', $date, $matches);
+        if(count($matches) == 4){
+            return checkdate($matches[2][0], $matches[1][0], $matches[3][0]);
+        }
+        return false;
+    }
+  
+    public static function sendPassResetMail(User $user){
+        if($user->user_login && $user->user_email) {
+            $message = "";
+            if ($user->gender == "Herr") {
+                $message = "Lieber " . $user->first_name . "\n\n";
+            } elseif ($user->gender == "Frau") {
+                $message = "Liebe " . $user->first_name . "\n\n";
+            }
+
+            $message .= "Aufgrund deiner Funktion für den Bergclub Bern wurde für dich ein Login erstellt.\n\n";
+            $message .= "Dein Benutzername lautet: " . $user->user_login . "\n\n";
+            $message .= "Bitte besuche den untenstehenden Link und gib deinen Benutzernamen ein, danach erhälst du einen Link per Email unter welchem du dein Passwort setzen kannst.\n\n";
+            $message .= "<" . wp_lostpassword_url() . ">\n\n";
+            $message .= "Beste Grüsse\nBergclub Bern";
+
+            wp_mail('"' . $user->first_name . ' ' . $user->last_name . ' <' . $user->user_email . '>"', "Dein Bergclub Bern Login", $message);
+        }
     }
 }

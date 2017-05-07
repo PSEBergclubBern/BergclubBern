@@ -13,6 +13,8 @@ use duncan3dc\Laravel\BladeInstance;
 
 abstract class MetaBox
 {
+    const YOUTH = '_touren';
+
     private static $saveActionRegistered = false;
     private static $alreadyValidated = false;
     private static $registeredBoxes = [];
@@ -21,7 +23,7 @@ abstract class MetaBox
     {
         self::$registeredBoxes[] = $this;
         //ensure that action hook only gets registered once
-        if (!self::$saveActionRegistered){
+        if (!self::$saveActionRegistered) {
             self::$saveActionRegistered = true;
             //we create a hook only for this specific post type
             if (function_exists('\add_action')) {
@@ -65,8 +67,21 @@ abstract class MetaBox
      * @param $posttype
      * @return bool
      */
-    public function isValid($values, $posttype) {
+    public function isValid($values, $posttype)
+    {
         return true;
+    }
+
+    /**
+     * this function will be called before the save function
+     * it has to return all values which are processed / filtered
+     *
+     * @param $values array of transmitted values
+     * @return array
+     */
+    protected function preSave($values)
+    {
+        return $values;
     }
 
     /**
@@ -75,13 +90,14 @@ abstract class MetaBox
      * @param \WP_Post $post
      * @return array
      */
-    protected function addAdditionalValuesForView(\WP_Post $post) {
+    protected function addAdditionalValuesForView(\WP_Post $post)
+    {
         return array();
     }
 
     public function add()
     {
-        $screens = [ BCB_CUSTOM_POST_TYPE_TOURENBERICHTE ];
+        $screens = [BCB_CUSTOM_POST_TYPE_TOURENBERICHTE];
         foreach ($screens as $screen) {
             \add_meta_box(
                 $this->getUniqueMetaBoxName(),
@@ -98,7 +114,7 @@ abstract class MetaBox
         //ensure that is not a revision (seems to have nothing to do with the state "Review")
         //ensure that it is not autosave which is calling
         //ensure that action is set and the action is 'editpost'
-        if( ! ( wp_is_post_revision( $postId) || wp_is_post_autosave( $postId ) ) && isset($_POST['action']) && $_POST['action'] == 'editpost') {
+        if (!(wp_is_post_revision($postId) || wp_is_post_autosave($postId)) && isset($_POST['action']) && $_POST['action'] == 'editpost') {
             //workaround (otherwise the method still gets called multiple times
             if (!self::$alreadyValidated) {
                 self::$alreadyValidated = true;
@@ -113,31 +129,31 @@ abstract class MetaBox
                 $status = get_post_status($postId);
                 $originalStatus = $_POST['original_post_status'];
 
-                if($originalStatus == "auto-draft"){
+                if ($originalStatus == "auto-draft") {
                     $originalStatus = "draft";
                 }
 
                 $valid = true;
 
                 foreach (self::$registeredBoxes as $box) {
+                    $filteredValues = $this->preSave($_POST);
                     /* @var MetaBox $box */
                     foreach ($box->getUniqueFieldNames() as $fieldId) {
-                        if (array_key_exists($fieldId, $_POST)) {
+                        if (array_key_exists($fieldId, $filteredValues)) {
                             \update_post_meta(
                                 $postId,
                                 $fieldId,
-                                $_POST[$fieldId]
+                                $filteredValues[$fieldId]
                             );
                         }
                     }
                     //we don't want to validate a freshly created post (status: 'auto-draft')
                     if ($status != 'auto-draft') {
-                        if (!$box->isValid($_POST, $status) ) {
+                        if (!$box->isValid($_POST, $status)) {
                             $valid = false;
                         }
                     }
                 }
-
 
 
                 if (!$valid) {
@@ -152,8 +168,8 @@ abstract class MetaBox
                         wp_update_post(array(
                             'ID' => $postId,
                             'post_status' => $originalStatus,
-                            'post_title'   => 'Dieser Tourenbericht konnte nicht validiert werden.',
-                            ));
+                            'post_title' => 'Dieser Tourenbericht konnte nicht validiert werden.',
+                        ));
                         FlashMessage::add(FlashMessage::TYPE_WARNING, "Die Validierung ist aus den oben genannten Gründen gescheitert. Bitte beheben Sie die Fehler, wenn Sie diese Tour auf 'Ausstehender Review' oder 'Veröffentlichung' setzen wollen. Die gemachten Änderungen wurden dennoch gespeichert.");
                     }
 
@@ -161,7 +177,7 @@ abstract class MetaBox
                     $tour = get_the_title(get_post_meta($postId, "_touren", true));
                     wp_update_post(array(
                         'ID' => $postId,
-                        'post_title'   => "Bericht für Tour: ".$tour,
+                        'post_title' => "Bericht für Tour: " . $tour,
                     ));
                     //add a success message when the post fields where valid.
                     FlashMessage::add(FlashMessage::TYPE_SUCCESS, "Änderungen gespeichert.");
@@ -173,15 +189,16 @@ abstract class MetaBox
         }
     }
 
-    public function redirectPostLocation($location, $postId){
+    public function redirectPostLocation($location, $postId)
+    {
         $status = get_post_status($postId);
 
         //remove any system message (otherwise it could be e.g. 'successful published', but new state is 'draft')
         $location = remove_query_arg('message', $location);
 
         //forward to touren overview when publish button was clicked and state really is 'publish'.
-        if(isset($_POST['publish']) && $status == 'publish'){
-            $location = admin_url( "edit.php?post_type=" . BCB_CUSTOM_POST_TYPE_TOURENBERICHTE );
+        if (isset($_POST['publish']) && $status == 'publish') {
+            $location = admin_url("edit.php?post_type=" . BCB_CUSTOM_POST_TYPE_TOURENBERICHTE);
         }
 
         return $location;
@@ -194,7 +211,7 @@ abstract class MetaBox
             $values[$fieldId] = get_post_meta($post->ID, $fieldId, true);
         }
 
-        if(!file_exists(__DIR__ . '/cache')){
+        if (!file_exists(__DIR__ . '/cache')) {
             mkdir(__DIR__ . '/cache');
         }
         $arguments = array_merge(array('values' => $values), $this->addAdditionalValuesForView($post));
@@ -206,14 +223,15 @@ abstract class MetaBox
 
     }
 
-	/**
-	 * @param $values
-	 *
-	 * @return bool
-	 */
-	public function isValidTime( $test ): bool {
-		$match_duration_format = preg_match( "/^([01]?[0-9]|2[0-3])\:+[0-5][0-9]$/", $test ) === 1;
+    /**
+     * @param $values
+     *
+     * @return bool
+     */
+    public function isValidTime($test): bool
+    {
+        $match_duration_format = preg_match("/^([01]?[0-9]|2[0-3])\:+[0-5][0-9]$/", $test) === 1;
 
-		return $match_duration_format;
-	}
+        return $match_duration_format;
+    }
 }

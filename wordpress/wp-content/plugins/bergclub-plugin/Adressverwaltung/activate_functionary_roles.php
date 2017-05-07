@@ -25,6 +25,7 @@ $functionaryRoles = [
             'delete_others_tour' => false,
             'read_private_tour' => false,
             'read_tour' => true,
+            'touren_bcb' => true,
 
             'create_tourenbericht' => true,
             'publish_tourenbericht' => false,
@@ -40,6 +41,8 @@ $functionaryRoles = [
             'rueckmeldungen_edit' => true,
             'rueckmeldungen_tab_nofeedback' => true,
             'rueckmeldungen_tab_all' => true,
+
+            'upload_files' => true,
         ],
     ],
 
@@ -68,6 +71,7 @@ $functionaryRoles = [
             'delete_others_tour' => false,
             'read_private_tour' => false,
             'read_tour' => true,
+            'touren_jugend' => true,
 
             'create_tourenbericht' => true,
             'publish_tourenbericht' => false,
@@ -83,6 +87,8 @@ $functionaryRoles = [
             'rueckmeldungen_jugend_edit' => true,
             'rueckmeldungen_tab_nofeedback' => true,
             'rueckmeldungen_tab_all' => true,
+
+            'upload_files' => true,
         ],
     ],
     'bcb_tourenchef' => [
@@ -110,6 +116,7 @@ $functionaryRoles = [
             'delete_others_tour' => true,
             'read_private_tour' => true,
             'read_tour' => true,
+            'touren_bcb' => true,
 
             'create_tourenbericht' => true,
             'publish_tourenbericht' => true,
@@ -131,6 +138,8 @@ $functionaryRoles = [
 
             'export' => true,
             'export_touren' => true,
+
+            'upload_files' => true,
         ],
     ],
     'bcb_tourenchef_jugend' => [
@@ -158,6 +167,7 @@ $functionaryRoles = [
             'delete_others_tour' => true,
             'read_private_tour' => true,
             'read_tour' => true,
+            'touren_jugend' => true,
 
             'create_tourenbericht' => true,
             'publish_tourenbericht' => true,
@@ -179,6 +189,8 @@ $functionaryRoles = [
 
             'export' => true,
             'export_touren' => true,
+
+            'upload_files' => true,
         ],
     ],
     'bcb_redaktion' => [
@@ -217,6 +229,8 @@ $functionaryRoles = [
             'delete_others_tour' => true,
             'read_private_tour' => true,
             'read_tour' => true,
+            'touren_bcb' => true,
+            'touren_jugend' => true,
 
             'create_tourenbericht' => true,
             'publish_tourenbericht' => true,
@@ -232,12 +246,11 @@ $functionaryRoles = [
             'rueckmeldungen_read_others' => true,
             'rueckmeldungen_edit' => true,
             'rueckmeldungen_edit_others' => true,
-            'rueckmeldungen_publish' => true,
             'rueckmeldungen_jugend_read' => true,
             'rueckmeldungen_jugend_read_others' => true,
             'rueckmeldungen_jugend_edit' => true,
             'rueckmeldungen_jugend_edit_others' => true,
-            'rueckmeldungen_jugend_publish' => true,
+            'rueckmeldungen_tab_nofeedback' => true,
             'rueckmeldungen_tab_all' => true,
 
             'export' => true,
@@ -245,6 +258,7 @@ $functionaryRoles = [
             'export_druck' => true,
 
             'adressen_read' => true,
+            'upload_files' => true,
         ],
     ],
     'bcb_sekretariat' => [
@@ -349,6 +363,8 @@ $functionaryRoles = [
             'delete_others_tour' => false,
             'read_private_tour' => false,
             'read_tour' => true,
+            'touren_bcb' => true,
+            'touren_jugend' => true,
 
             'publish_tourenbericht' => false,
             'edit_tourenbericht' => true,

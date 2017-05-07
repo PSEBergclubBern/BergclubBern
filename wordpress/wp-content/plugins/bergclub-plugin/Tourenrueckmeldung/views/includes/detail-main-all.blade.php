@@ -8,7 +8,7 @@
                 <tr><td>Tour</td><td><strong>{{ $rueckmeldung['title'] }}</strong></td></tr>
                 <tr><td>Datum</td><td>{{ $rueckmeldung['date'] }}</td></tr>
                 <tr><td>Datum Rückmeldung</td><td>{{ $rueckmeldung['dateFeedback'] }}</td></tr>
-                <tr><td>Datum Freigabe</td><td>{{ $rueckmeldung['dateApproved'] }}</td></tr>
+                <tr><td>Datum Freigabe</td><td>@if( key_exists('dateApproved', $rueckmeldung) ){{ $rueckmeldung['dateApproved'] }}@endif</td></tr>
                 <tr><td colspan="2">&nbsp;</td></tr>
                 <tr><td>Durchgeführt:</td><td>@if( $rueckmeldung['executed'] ) Ja @else Nein @endif </td></tr>
                 <tr><td>Leiter</td><td>{{ $rueckmeldung['leader'] }}</td></tr>
@@ -54,7 +54,7 @@
 
     @else
 
-        <p>Momentan gibt es keine Touren, welche ausbezahlt werden müssen.</p>
+        <p>Momentan keine Touren vorhanden.</p>
 
     @endif
 

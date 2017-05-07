@@ -13,13 +13,14 @@ use BergclubPlugin\FlashMessage;
 
 class Common extends MetaBox {
 	const TOUREN = '_touren';
+    const IS_ADULT_OR_YOUTH = '_isYouth';
 
 	public function getUniqueFieldNames() {
 		return array(
 			self::TOUREN,
+            self::IS_ADULT_OR_YOUTH,
 		);
 	}
-
 
 	protected function addAdditionalValuesForView(\WP_Post $post) {
         $args = array(
@@ -41,10 +42,10 @@ class Common extends MetaBox {
         $posts_array = get_posts($args);
 
         $args1 = array(
-            'orderby'          => 'date',
-            'order'            => 'DESC',
-            'post_type'        => BCB_CUSTOM_POST_TYPE_TOURENBERICHTE,
-            'post_status'      => 'autodraft',
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'post_type' => BCB_CUSTOM_POST_TYPE_TOURENBERICHTE,
+            'post_status' => 'autodraft',
         );
         $posts_array_tourenberichte = get_posts($args1);
 
@@ -61,8 +62,6 @@ class Common extends MetaBox {
             }
         }
 
-        //die();
-
         $posts = [];
         $tourId = get_post_meta($post->ID, '_touren', true);
         if(!empty($tourId)){
@@ -74,7 +73,23 @@ class Common extends MetaBox {
 		);
 	}
 
-	public function getUniqueMetaBoxName() {
+    protected function preSave($values)
+    {
+        $values = parent::preSave($values);
+
+        // overwrite is youth
+        if (isset($values[self::TOUREN])) {
+            $values[self::IS_ADULT_OR_YOUTH] = get_post_meta(
+                $values[self::TOUREN],
+                \BergclubPlugin\Touren\MetaBoxes\Common::IS_ADULT_OR_YOUTH,
+                true
+            );
+        }
+
+        return $values;
+    }
+
+    public function getUniqueMetaBoxName() {
 		return 'commontourenberichte';
 	}
 
