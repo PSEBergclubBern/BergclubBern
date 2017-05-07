@@ -71,7 +71,7 @@ class Tour implements Entity
         $this->requirementsConditional = $array['anf_k'];
         $this->leader = $array['leiter_a'];
         $this->coLeader = $array['leiter_b'];
-        $this->jsEvent = $array['js'] * 1;
+        $this->jsEvent = $array['js'];
 
         $isYouth = 0;
         if ($array['bcbj'] == 1) {
