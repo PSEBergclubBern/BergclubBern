@@ -94,11 +94,8 @@ class Tour extends MetaBox {
 		$errors = array();
 
         if ($posttype != "draft") {
-            if (array_key_exists(self::DURATION, $values)) {
-                $match_format = $this->isValidTime($values[self::DURATION]);
-                if ($match_format === false) {
-                    $errors[] = '"Dauer" muss in einem dieser Formate angegeben werden: HH:MM, H:MM';
-                }
+            if (array_key_exists(self::DURATION, $values) && empty($values[self::DURATION])) {
+                $errors[] = '"Dauer" darf nicht leer sein';
             }
 
             if (array_key_exists(self::ONLINEMAP, $values) && !empty($values[self::ONLINEMAP])) {

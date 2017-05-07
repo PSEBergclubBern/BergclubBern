@@ -25,6 +25,7 @@ class MeetingPointTest extends TestCase
      * @Before
      */
     public function setUp() {
+        FlashMessage::show();
         $this->meeting = new MeetingPoint();
     }
 

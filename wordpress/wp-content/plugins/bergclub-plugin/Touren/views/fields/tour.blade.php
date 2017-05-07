@@ -88,11 +88,10 @@
         <tr>
             <th align="left">Dauer (ohne Pause)</th>
             <td>
-                <input type="text"
+                <textarea
                        id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::DURATION }}"
                        name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::DURATION }}"
-                       value="{{ $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::DURATION ] }}"
-                />
+                >{{ $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::DURATION ] }}</textarea>
             </td>
         </tr>
 
