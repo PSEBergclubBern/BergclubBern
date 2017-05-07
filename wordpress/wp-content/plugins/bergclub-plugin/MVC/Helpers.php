@@ -86,7 +86,6 @@ class Helpers
         if(count($matches) == 4){
             return checkdate($matches[2][0], $matches[1][0], $matches[3][0]);
         }
-        exit;
         return false;
     }
 }
