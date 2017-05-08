@@ -210,3 +210,26 @@ function add_additional_info_to_title( $title, $id = null ) {
 }
 //adds the filter for the title
 add_filter( 'the_title', 'add_additional_info_to_title', 10, 2 );
+
+function move_images_to_lightbox($content)
+{
+    $content = preg_replace("/\[gallery[^\]]+\]/i", " ", $content); //replaces the gallery
+    $content = preg_replace("/\[caption[^\\\]+\/caption]/i", " ", $content); //replaces single images with caption
+    $content = preg_replace("/<img[^>]+\>/i", " ", $content);  //replaces single images without caption
+    $images = get_attached_media('image');
+    if(empty($images)){
+        return $content;
+    }
+    $lightbox_html = "<div class=\"report-images row\">";
+    foreach ($images as $image) {
+        $id = $image->ID;
+        $imgDescription = htmlentities(get_post($id)->post_excerpt);
+        $lightbox_html .= "<a href=\"" . wp_get_attachment_url($id) . "\" data-lightbox=\"report-gallery\" data-title=\"" . nl2br($imgDescription) . "\">
+                <img alt=\"" . $imgDescription . "\" title=\"" . $imgDescription . "\" src=\"" . wp_get_attachment_thumb_url($id) . "\" class=\"report-image\"></a>";
+    }
+    $lightbox_html .="</div>";
+    return $lightbox_html . $content;
+}
+
+add_filter( 'the_content', 'move_images_to_lightbox' );
+
