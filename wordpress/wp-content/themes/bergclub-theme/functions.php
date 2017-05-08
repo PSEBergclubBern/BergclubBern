@@ -211,18 +211,43 @@ function add_additional_info_to_title( $title, $id = null ) {
 //adds the filter for the title
 add_filter( 'the_title', 'add_additional_info_to_title', 10, 2 );
 
+
+//removes all images from the content and reinserts them at the beginning with as lightbox images
 function move_images_to_lightbox($content)
 {
+    $img_ids = array();
+
+    //searches the gallery ids in the content and places them in the $img_ids array
+    $gallery_ids = array();
+    preg_match_all('/gallery ids="(?<ids>[\d+,?]+)"/', $content, $gallery_ids);
+    if(array_key_exists('ids', $gallery_ids)) {
+        foreach ($gallery_ids['ids'] as $ids) {
+            $img_ids = array_merge($img_ids, explode(",", $ids));
+        }
+    }
+
+    //searches single image ids in the content and places them in the $img_ids array
+    $single_img_ids = array();
+    preg_match_all('/wp-image-(?<id>\d+)/', $content, $single_img_ids);
+    if(array_key_exists('id', $single_img_ids)) {
+        foreach ($single_img_ids['id'] as $id) {
+            array_push($img_ids, $id);
+        }
+    }
+
+    //remove all images from the content
     $content = preg_replace("/\[gallery[^\]]+\]/i", " ", $content); //replaces the gallery
     $content = preg_replace("/\[caption[^\\\]+\/caption]/i", " ", $content); //replaces single images with caption
     $content = preg_replace("/<img[^>]+\>/i", " ", $content);  //replaces single images without caption
-    $images = get_attached_media('image');
-    if(empty($images)){
+
+    //if there were no image ids found, return
+    if(empty($img_ids)){
         return $content;
     }
+
+    //if there are images patch together the html for the lightbox images
     $lightbox_html = "<div class=\"report-images row\">";
-    foreach ($images as $image) {
-        $id = $image->ID;
+    foreach ($img_ids as $id) {
         $imgDescription = htmlentities(get_post($id)->post_excerpt);
         $lightbox_html .= "<a href=\"" . wp_get_attachment_url($id) . "\" data-lightbox=\"report-gallery\" data-title=\"" . nl2br($imgDescription) . "\">
                 <img alt=\"" . $imgDescription . "\" title=\"" . $imgDescription . "\" src=\"" . wp_get_attachment_thumb_url($id) . "\" class=\"report-image\"></a>";
@@ -231,5 +256,6 @@ function move_images_to_lightbox($content)
     return $lightbox_html . $content;
 }
 
+//adds the filter for the content
 add_filter( 'the_content', 'move_images_to_lightbox' );
 
