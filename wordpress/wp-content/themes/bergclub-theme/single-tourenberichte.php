@@ -59,7 +59,7 @@ while (have_posts()) : the_post();
                     $gallery_attachments_ids = explode(",", $gallery["ids"]);
                     foreach($gallery_attachments_ids as $id): ?>
                         <?php
-                            $imgDescription = htmlentities(get_post($id)->post_excerpt);
+                        $imgDescription = htmlentities(get_post($id)->post_excerpt);
                         ?>
                         <a href="<?=wp_get_attachment_url($id)?>" data-lightbox="report-gallery" data-title="<?= nl2br($imgDescription) ?>">
                             <img alt="<?= $imgDescription ?>" title="<?= $imgDescription ?>" src="<?=wp_get_attachment_thumb_url($id)?>" class="report-image">
