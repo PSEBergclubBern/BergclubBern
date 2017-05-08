@@ -34,7 +34,7 @@ if(isset($_GET['type'])){
                     $typeWithTechnicalRequirementsDisplay = bcb_touren_meta($tourPostID, 'typeWithTechnicalRequirements');
                     ?>
                     <div class="row add-link">
-                        <div class="col-sm-2 italic-sm">
+                        <div class="col-sm-2 hidden-xs">
                             <?php echo get_the_date(); ?>
                         </div>
                         <div class="col-sm-7">
