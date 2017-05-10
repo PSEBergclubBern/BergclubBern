@@ -10,18 +10,17 @@ if(isset($_GET['type'])){
 ?>
     <div class="container">
         <h1>
-            <div class="pull-right title-right type-select">
-                Art: <select id="tourenart"><option value="">Alle</option>
-                    <?php foreach($tourenarten as $key => $tourenart){ ?>
-                    <option value="<?= $key ?>"<?php if($key == $currentTourenart){ ?> selected<?php } ?>><?= $tourenart ?></option>
-                    <?php } ?>
-                </select>
+            <div class="row">
+                <div class="col-sm-6"><?php the_archive_title(); ?></div>
+                <div class="col-sm-3 title-right type-select">Art: <select id="tourenart"><option value="">Alle</option>
+                        <?php foreach($tourenarten as $key => $tourenart){ ?>
+                            <option value="<?= $key ?>"<?php if($key == $currentTourenart){ ?> selected<?php } ?>><?= $tourenart ?></option>
+                        <?php } ?>
+                    </select></div>
+                <div class="col-sm-3 title-right download"><a target="_blank" href="<?= BCB_CALENDAR_URL ?>"><span class="glyphicon glyphicon-download-alt"></span> Kalender <?= date('Y') ?> herunterladen</a></div>
             </div>
-            <div class="pull-right title-right download">
-                <a target="_blank" href="<?= BCB_CALENDAR_URL ?>"><span class="glyphicon glyphicon-download-alt"></span> Kalender <?= date('Y') ?> herunterladen</a>
-            </div>
-            <?php the_archive_title(); ?>
         </h1>
+
         <?php if ( have_posts() ){ ?>
             <div class="container-fluid grid-table hide-links row-hover">
                 <div class="row row-header hidden-xs">
@@ -41,14 +40,14 @@ if(isset($_GET['type'])){
                     $typeWithTechnicalRequirementsDisplay = bcb_touren_meta(get_the_ID(), 'typeWithTechnicalRequirements');
                     ?>
                     <div class="row add-link">
-                        <div class="col-sm-2 italic-sm">
+                        <div class="col-sm-7 col-sm-push-5">
+                            <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
+                        </div>
+                        <div class="col-sm-2 col-sm-pull-7 italic-sm">
                             <?= bcb_touren_meta(get_the_ID(), 'dateDisplayFull'); ?>
                         </div>
-                        <div class="col-sm-3 italic-sm">
+                        <div class="col-sm-3 col-sm-pull-7 italic-sm">
                             <?= $typeWithTechnicalRequirementsDisplay; ?>
-                        </div>
-                        <div class="col-sm-7">
-                            <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
                         </div>
                     </div>
                 <?php endwhile; ?>
