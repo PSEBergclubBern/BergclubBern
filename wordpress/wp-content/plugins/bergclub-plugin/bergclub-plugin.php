@@ -169,3 +169,11 @@ function bcb_touren_meta($postId, $metaKey){
     $method = "get" . strtoupper(substr($metaKey, 0, 1)) . substr($metaKey, 1);
     return \BergclubPlugin\TourenHelper::$method($postId);
 }
+
+add_action( 'add_meta_boxes', 'bcb_remove_slug_meta_box' );
+function bcb_remove_slug_meta_box() {
+    remove_meta_box( 'slugdiv', 'post', 'normal' );
+    remove_meta_box( 'slugdiv', 'page', 'normal' );
+    remove_meta_box( 'slugdiv', 'touren', 'normal' );
+    remove_meta_box( 'slugdiv', 'tourenberichte', 'normal' );
+}
