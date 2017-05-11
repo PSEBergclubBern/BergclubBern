@@ -176,4 +176,8 @@ function bcb_remove_slug_meta_box() {
     remove_meta_box( 'slugdiv', 'page', 'normal' );
     remove_meta_box( 'slugdiv', 'touren', 'normal' );
     remove_meta_box( 'slugdiv', 'tourenberichte', 'normal' );
+    remove_meta_box( 'postimagediv', 'post', 'normal' );
+    remove_meta_box( 'postimagediv', 'page', 'normal' );
+    remove_meta_box( 'postimagediv', 'touren', 'normal' );
+    remove_meta_box( 'postimagediv', 'tourenberichte', 'normal' );
 }
