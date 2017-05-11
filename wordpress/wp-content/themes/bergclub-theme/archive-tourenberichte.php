@@ -29,12 +29,12 @@ if(isset($_GET['type'])){
                 </div>
                 <?php while (have_posts()) : the_post(); ?>
                     <?php
-                        $tourPostID = bcb_touren_meta(get_the_ID(), "touren");
-                        $typeDisplay = bcb_touren_meta($tourPostID, "type");
-                        $typeWithTechnicalRequirementsDisplay = bcb_touren_meta($tourPostID, 'typeWithTechnicalRequirements');
+                    $tourPostID = bcb_touren_meta(get_the_ID(), "touren");
+                    $typeDisplay = bcb_touren_meta($tourPostID, "type");
+                    $typeWithTechnicalRequirementsDisplay = bcb_touren_meta($tourPostID, 'typeWithTechnicalRequirements');
                     ?>
                     <div class="row add-link">
-                        <div class="col-sm-2 italic-sm">
+                        <div class="col-sm-2 hidden-xs">
                             <?php echo get_the_date(); ?>
                         </div>
                         <div class="col-sm-7">

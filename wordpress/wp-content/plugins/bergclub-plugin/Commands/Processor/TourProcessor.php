@@ -198,6 +198,7 @@ class TourProcessor extends Processor
 
                     if (is_numeric($generatedReportId)) {
                         update_post_meta($generatedReportId, '_touren', $generatedId);
+                        update_post_meta($generatedReportId, '_isYouth', $entity->isYouth);
                     } else {
                         $this->logger->warning('While creating tourbericht for tour ' . $entity . ': ERROR: ' . $generatedReportId->get_error_message());
                     }
