@@ -3,7 +3,7 @@
         <tr>
             <th align="left">Tour auswählen:</th>
             <td>
-                <select name="{{ \BergclubPlugin\Tourenberichte\MetaBoxes\Common::TOUREN }}">
+                <select style="width:100%;" name="{{ \BergclubPlugin\Tourenberichte\MetaBoxes\Common::TOUREN }}">
                     @foreach($touren as $tour)
                         @if($tour->ID == $values[ \BergclubPlugin\Tourenberichte\MetaBoxes\Common::TOUREN])
                             <option selected="selected" value="{{ $tour->ID }}">
