@@ -173,7 +173,7 @@ class TourenHelper
     public static function getDuration($postId){
         $duration = get_post_meta($postId, "_duration", true);
         if(!empty($duration)){
-            return $duration . " Stunden";
+            return $duration;
         }
         return null;
     }
