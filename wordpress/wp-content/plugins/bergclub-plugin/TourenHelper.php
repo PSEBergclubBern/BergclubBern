@@ -23,6 +23,10 @@ class TourenHelper
         return $isYouth[self::getMeta($postId, 'isYouth')];
     }
 
+    public static function getIsYouthRaw($postId){
+        return self::getMeta($postId, 'isYouth');
+    }
+
     public static function getDateFrom($postId){
         return self::getDate(self::getMeta($postId, 'dateFrom'));
     }
