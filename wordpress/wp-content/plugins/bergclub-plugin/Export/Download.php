@@ -289,10 +289,6 @@ class Download
             }
 
             if(!empty($entry['additionalInfo'])) {
-                if($entry["title"] == "Sommerlager Bergclub Jugend"){
-                    print_r($entry['additionalInfo']);
-                    exit;
-                }
                 $lines = $entry['additionalInfo'];
                 $table->addRow();
                 $table->addCell(2100)->addText('Besonderes', $contentSmallItalic);
@@ -649,7 +645,7 @@ class Download
                 /* @var User $spouse */
                 $spouse = $user->spouse;
 
-                if ($user->first_name && $user->last_name) {
+                if (!empty(trim($user->first_name . $user->last_name))) {
                     if (empty($spouse)) {
                         if ($user->company) {
                             $currentIndex++;
@@ -683,9 +679,9 @@ class Download
                     }
                 }
 
-                if ($user->address_addition) {
+                if (!empty($user->address_addition)) {
                     $currentIndex++;
-                    $row["Adresszeile " . $currentIndex] = $user->addressAddition;
+                    $row["Adresszeile " . $currentIndex] = $user->address_addition;
                 }
 
                 $currentIndex++;
