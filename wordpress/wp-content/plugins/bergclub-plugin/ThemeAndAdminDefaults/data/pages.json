@@ -34,5 +34,9 @@
   "dokumente-links": {
     "title": "Dokumente & Links",
     "content": "Dokumente & Links"
+  },
+  "impressum": {
+    "title": "Impressum",
+    "content": "[bcb_impressum]"
   }
 }

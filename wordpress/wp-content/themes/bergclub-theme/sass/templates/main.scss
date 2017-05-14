@@ -337,6 +337,42 @@ li.switch a{
   }
 }
 
+.footer-menu{
+  display: inline;
+  margin: 6px 20px;
+}
+
+.menu-fusszeile-container{
+  color: white;
+  display: inline;
+  ul{
+    display: inline;
+    margin: 0;
+    padding: 0;
+
+    li{
+      display: inline;
+      margin: 0;
+      padding: 0;
+
+      a{
+        color: white;
+        text-decoration: underline;
+      }
+
+      a:hover{
+        text-decoration: none;
+      }
+    }
+    li::after{
+      content: " | ";
+    }
+    li:last-child::after{
+      content: "";
+    }
+  }
+}
+
 .pagination>.active>a,
 .pagination>.active>a:focus,
 .pagination>.active>a:hover,
