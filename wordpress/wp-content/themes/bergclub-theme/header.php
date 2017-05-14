@@ -41,8 +41,8 @@
             <div id="navbar" class="collapse navbar-collapse">
                 <?php /* Primary navigation */
                 wp_nav_menu( array(
-                        'menu' => 'header-navigation',
-                        'theme_location'    => 'header-navigation',
+                        'menu' => 'Hauptmenü',
+                        'theme_location'    => 'header-menu',
                         'depth'             => 2,
                         'container'         => false,
                         'menu_class'        => 'nav navbar-nav',
