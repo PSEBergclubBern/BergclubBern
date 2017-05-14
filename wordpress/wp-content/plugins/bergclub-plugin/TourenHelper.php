@@ -155,11 +155,6 @@ class TourenHelper
         return null;
     }
 
-    public static function getDistance($postId){
-        $distance = self::getMeta($postId, "distance");
-        return empty($distance) ? $distance : $distance . "km";
-    }
-
     public static function getRiseUpAndDown($postId){
         $riseUp = self::getMeta($postId, "riseUpMeters");
         $riseDown = self::getMeta($postId, "riseDownMeters");
@@ -173,7 +168,7 @@ class TourenHelper
     public static function getDuration($postId){
         $duration = get_post_meta($postId, "_duration", true);
         if(!empty($duration)){
-            return $duration . " Stunden";
+            return $duration;
         }
         return null;
     }
