@@ -5,7 +5,7 @@ namespace BergclubPlugin\Export\Data;
 
 use BergclubPlugin\MVC\Models\User;
 
-abstract class AbstractAddressLineGenerator implements Generator
+abstract class AbstractAddressLineGenerator extends AbstractGenerator
 {
     protected $maxIndex = 0;
     protected $data = [];

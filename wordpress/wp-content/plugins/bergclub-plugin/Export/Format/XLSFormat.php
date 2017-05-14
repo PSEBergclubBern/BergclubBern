@@ -11,7 +11,7 @@ namespace BergclubPlugin\Export\Format;
 
 use BergclubPlugin\Export\Data\Generator;
 
-class XlsFormat implements Format
+class XlsFormat extends AbstractFormat
 {
     /**
      * @var string

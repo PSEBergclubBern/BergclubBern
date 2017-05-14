@@ -100,6 +100,10 @@ class TourenHelper
         return self::getUser(self::getMeta($postId, 'signupTo'), true);
     }
 
+    public static function getSignupToNoLinks($postId){
+        return self::getUser(self::getMeta($postId, 'signupTo'), true, true);
+    }
+
     public static function getMeetpoint($postId){
         $id = self::getMeta($postId, 'meetpoint');
         if($id == 1){
@@ -207,13 +211,17 @@ class TourenHelper
         return $value ? "Ja" : "Nein";
     }
 
-    private static function getUser($id, $contact = false){
+    private static function getUser($id, $contact = false, $noLinks = false){
         $user = User::find($id);
         if($user){
             $result = [$user->last_name . ' ' . $user->first_name];
             if($contact){
                 if($user->email){
-                    $result[] = bcb_email($user->email);
+                    if(!$noLinks) {
+                        $result[] = bcb_email($user->email);
+                    }else{
+                        $result[] = $user->email;
+                    }
                 }
                 if($user->phone_private){
                     $result[] = $user->phone_private . " (P)";
