@@ -13,7 +13,9 @@
 
             <div class="footer navbar-fixed-bottom">
                 <p>&copy; Bergclub Bern 2017</p>
-                <p class="pull-right"><a href="#">Kontakt</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">Impressum</a></p>
+                <div class="footer-menu pull-right">
+                    <?php wp_nav_menu( [ 'theme_location' => 'footer-menu' ] ); ?>
+                </div>
             </div>
 
         </div><!-- .site -->

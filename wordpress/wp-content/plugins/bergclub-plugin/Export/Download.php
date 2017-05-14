@@ -567,9 +567,14 @@ class Download
             $date_to =  bcb_touren_meta($post->ID, "dateTo");
             $type = bcb_touren_meta($post->ID, "type");
             $reqTechnical = bcb_touren_meta($post->ID, "requirementsTechnical");
+            $isYouth = bcb_touren_meta($post->ID, "isYouth");
 
             if(!empty($date_from)) {
                 $item = [];
+
+                if($isYouth == 1){
+                    $item['isYouth'] = 'Jugend';
+                }
                 if (!empty($type)) {
                     $item['type'] = $type;
                     if (!empty($reqTechnical)) {
@@ -670,7 +675,7 @@ class Download
                             $currentIndex++;
                             $row["Adresszeile " . $currentIndex] = $gender;
                             $currentIndex++;
-                            $row["Adresszeile " . $currentIndex] = $user->first_name . ' & ' . $spouse->firstname . ' ' . $user->last_name;
+                            $row["Adresszeile " . $currentIndex] = $user->first_name . ' & ' . $spouse->first_name . ' ' . $user->last_name;
                         } else {
                             $currentIndex++;
                             $row["Adresszeile " . $currentIndex] = trim($user->gender . ' ' . $user->first_name . ' ' . $user->last_name);
@@ -821,8 +826,22 @@ class Download
 
     private function checkRights(){
         $currentUser = User::findCurrent();
-        if(!$currentUser || !$currentUser->hasCapability('export')){
-            return false;
+        if($_GET['download'] != "calendar") {
+            if (!$currentUser || !$currentUser->hasCapability('export')) {
+                return false;
+            }
+
+            if(!$currentUser->hasCapability('export_adressen') && ($_GET['download'] == 'shipping' || $_GET['download'] == 'members' || $_GET['download'] == 'contributions')){
+                return false;
+            }
+
+            if(!$currentUser->hasCapability('export_touren') && $_GET['download'] == 'touren'){
+                return false;
+            }
+
+            if(!$currentUser->hasCapability('export_druck') && ($_GET['download'] == 'pfarrblatt' || $_GET['download'] == 'program')){
+                return false;
+            }
         }
         return true;
     }

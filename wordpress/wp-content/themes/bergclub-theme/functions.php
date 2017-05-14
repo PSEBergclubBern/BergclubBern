@@ -45,7 +45,8 @@ if (!function_exists('bcb_setup')) {
 
         // This theme uses wp_nav_menu() in one location.
         register_nav_menus(array(
-            'header-menu' => __('Hauptmenü', 'header-navigation'),
+            'header-menu' => 'Hauptmenü',
+            'footer-menu' => 'Fusszeile',
         ));
 
         /*
@@ -110,6 +111,7 @@ if ( ! function_exists( 'bcb_enqueue_scripts' ) ) {
         wp_deregister_script('jquery-core');
 
         wp_enqueue_style('bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
+        wp_enqueue_style('lightbox', get_template_directory_uri() . '/css/lightbox.css');
         wp_enqueue_style('font-roboto', 'https://fonts.googleapis.com/css?family=Roboto:400,400i', ['bootstrap']);
         //wp_enqueue_style('font-touren',  get_template_directory_uri() . '/css/fonts/touren.css', ['bootstrap']);
         if (!bcb_is_jugend()) {
@@ -126,11 +128,14 @@ if ( ! function_exists( 'bcb_enqueue_scripts' ) ) {
 
         wp_enqueue_script('jquery-own', 'https://code.jquery.com/jquery-3.1.1.min.js', null, null, true);
         wp_enqueue_script('bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', ['jquery-own'], null, true);
+        wp_enqueue_script('lightbox', get_template_directory_uri() . '/js/lightbox.js', ['jquery-own'], null, true);
         wp_enqueue_script('bergclub', bcb_add_jugend_to_url(get_template_directory_uri() . '/js/bergclub.js', true), ['jquery-own'], null, true);
     }
 }
 
 add_action( 'wp_enqueue_scripts', 'bcb_enqueue_scripts' );
+
+add_editor_style(  get_template_directory_uri() . '/css/bergclub.css' );
 
 if ( ! function_exists( 'bcb_carousel_images_css' ) ) {
     /**
@@ -183,3 +188,75 @@ add_filter( 'get_the_archive_title', function ( $title ) {
 
 //disable admin bar in frontend
 add_filter('show_admin_bar', '__return_false');
+
+//adds Training and JS to the Title
+function add_additional_info_to_title( $title, $id = null ) {
+    if ( "touren" == get_post_type(get_post($id)) ) {
+        $training = get_post_meta($id, "_training", true);
+        $jsEvent = get_post_meta($id, "_jsEvent", true);
+        if(!empty($training) || !empty($jsEvent)) {
+            $title .= " (";
+            if(!empty($training)){
+                $title .= "Training";
+                if(!empty($jsEvent))
+                    $title .= ", JS-Event";
+            } else {
+                $title .= "JS-Event";
+            }
+            $title .= ")";
+        }
+    }
+
+    return $title;
+}
+//adds the filter for the title
+add_filter( 'the_title', 'add_additional_info_to_title', 10, 2 );
+
+
+//removes all images from the content and reinserts them at the beginning with as lightbox images
+function move_images_to_lightbox($content)
+{
+    $img_ids = array();
+
+    //searches the gallery ids in the content and places them in the $img_ids array
+    $gallery_ids = array();
+    preg_match_all('/gallery ids="(?<ids>[\d+,?]+)"/', $content, $gallery_ids);
+    if(array_key_exists('ids', $gallery_ids)) {
+        foreach ($gallery_ids['ids'] as $ids) {
+            $img_ids = array_merge($img_ids, explode(",", $ids));
+        }
+    }
+
+    //searches single image ids in the content and places them in the $img_ids array
+    $single_img_ids = array();
+    preg_match_all('/wp-image-(?<id>\d+)/', $content, $single_img_ids);
+    if(array_key_exists('id', $single_img_ids)) {
+        foreach ($single_img_ids['id'] as $id) {
+            array_push($img_ids, $id);
+        }
+    }
+
+    //remove all images from the content
+    $content = preg_replace("/\[gallery[^\]]+\]/i", " ", $content); //replaces the gallery
+    $content = preg_replace("/\[caption[^\\\]+\/caption]/i", " ", $content); //replaces single images with caption
+    $content = preg_replace("/<img[^>]+\>/i", " ", $content);  //replaces single images without caption
+
+    //if there were no image ids found, return
+    if(empty($img_ids)){
+        return $content;
+    }
+
+    //if there are images patch together the html for the lightbox images
+    $lightbox_html = "<div class=\"report-images row\">";
+    foreach ($img_ids as $id) {
+        $imgDescription = htmlentities(get_post($id)->post_excerpt);
+        $lightbox_html .= "<a href=\"" . wp_get_attachment_url($id) . "\" data-lightbox=\"report-gallery\" data-title=\"" . nl2br($imgDescription) . "\">
+                <img alt=\"" . $imgDescription . "\" title=\"" . $imgDescription . "\" src=\"" . wp_get_attachment_thumb_url($id) . "\" class=\"report-image\"></a>";
+    }
+    $lightbox_html .="</div>";
+    return $lightbox_html . $content;
+}
+
+//adds the filter for the content
+add_filter( 'the_content', 'move_images_to_lightbox' );
+

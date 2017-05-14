@@ -18,6 +18,11 @@ use BergclubPlugin\MVC\Models\User;
  */
 class TourenHelper
 {
+    public static function getIsYouth($postId){
+        $isYouth = ['BCB', 'Jugend', 'Beides'];
+        return $isYouth[self::getMeta($postId, 'isYouth')];
+    }
+
     public static function getDateFrom($postId){
         return self::getDate(self::getMeta($postId, 'dateFrom'));
     }
@@ -37,7 +42,15 @@ class TourenHelper
 
     public static function getDateDisplayFull($postId){
         if(self::getIsSeveralDays($postId)){
-            return self::getDate(self::getMeta($postId, 'dateFrom'), 'd.m.Y') . ' - ' . self::getDate(self::getMeta($postId, 'dateTo'), 'd.m.Y');
+            $dateFrom = strtotime(self::getMeta($postId, 'dateFrom'));
+            $dateTo = strtotime(self::getMeta($postId, 'dateTo'));
+            if(date('Y', $dateFrom) != date('Y', $dateTo)){
+                return date('d.m.Y', $dateFrom) . ' - ' . date('d.m.Y', $dateTo);
+            }elseif(date('m', $dateFrom) != date('m', $dateTo)){
+                return date('d.m.', $dateFrom) . ' - ' . date('d.m.Y', $dateTo);
+            }
+
+            return date('d.', $dateFrom) . ' - ' . date('d.m.Y', $dateTo);
         }
 
         return self::getDate(self::getMeta($postId, 'dateFrom'), 'd.m.Y');
@@ -54,6 +67,24 @@ class TourenHelper
 
     public static function getCoLeader($postId){
         return self::getUser(self::getMeta($postId, 'coLeader'));
+    }
+
+    public static function getLeaderAndCoLeader($postId){
+        $leaderId = self::getMeta($postId, "leader");
+        $leaderName = self::getFullName($leaderId);
+        $coLeaderId = self::getMeta($postId, "coLeader");
+        if(!empty($coLeaderId)){
+            $coLeaderFullName = self::getFullName($coLeaderId);
+            $leaderName .= ", " . $coLeaderFullName . " (Co-Leiter)";
+        }
+        return $leaderName;
+    }
+
+    public static function getFullName($userId){
+        $firstName = get_user_meta($userId, "first_name", true);
+        $lastName = get_user_meta($userId, "last_name", true);
+        $fullName = $firstName . " " . $lastName;
+        return $fullName;
     }
 
     public static function getSignupUntil($postId){
@@ -83,6 +114,15 @@ class TourenHelper
         return null;
     }
 
+    public static function getMeetpointWithTime($postId){
+        $meetpoint = self::getMeetpoint($postId);
+        $time = self::getMeta($postId, "meetingPointTime");
+        if(!empty($meetpoint) && !empty($time)){
+            return $meetpoint . ", " . $time . " Uhr";
+        }
+        return null;
+    }
+
     public static function getType($postId){
         $slug =  self::getMeta($postId, 'type');
         $tourenarten = Option::get('tourenarten');
@@ -103,6 +143,33 @@ class TourenHelper
             return "Schwer";
         }
 
+        return null;
+    }
+
+    public static function getTypeWithTechnicalRequirements($postId){
+        $type = self::getType($postId);
+        $reqTechnical = self::getMeta($postId, 'requirementsTechnical');
+        if(!empty($reqTechnical)){
+            return $type . ", " . $reqTechnical;
+        }
+        return null;
+    }
+
+    public static function getRiseUpAndDown($postId){
+        $riseUp = self::getMeta($postId, "riseUpMeters");
+        $riseDown = self::getMeta($postId, "riseDownMeters");
+        if(empty($riseUp) && empty($riseDown)){
+            return null;
+        } else {
+            return "<div class=\"icon icon-up\" title=\"Hinauf\"></div>" . $riseUp . " <div class=\"icon icon-down\" title=\"Hinab\"></div>" . $riseDown;
+        }
+    }
+
+    public static function getDuration($postId){
+        $duration = get_post_meta($postId, "_duration", true);
+        if(!empty($duration)){
+            return $duration;
+        }
         return null;
     }
 

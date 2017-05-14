@@ -104,21 +104,6 @@
       --path={{ path }}
       --activate
 
-  # Install Plugins
-  - name: Run `wp plugin install`
-    command: |
-      wp plugin install {{ item }}
-      --activate
-      --path={{ path }}
-    with_items: "{{ vccw.plugins | default([]) }}"
-
-  # Activate Plugins
-  - name: Run `wp plugin activate`
-    command: |
-      wp plugin activate {{ item }}
-      --path={{ path }}
-    with_items: "{{ vccw.plugins_activate | default([]) }}"
-
   # Install wp-multibyte-patch
   - name: Run `wp plugin install wp-multibyte-patch`
     command: |
@@ -168,6 +153,21 @@
       /tmp/theme-unit-test-data.xml
       --authors=create
       --path={{ path }}
+
+  # Install Plugins
+  - name: Run `wp plugin install`
+    command: |
+      wp plugin install {{ item }}
+      --activate
+      --path={{ path }}
+    with_items: "{{ vccw.plugins | default([]) }}"
+
+  # Activate Plugins
+  - name: Run `wp plugin activate`
+    command: |
+      wp plugin activate {{ item }}
+      --path={{ path }}
+    with_items: "{{ vccw.plugins_activate | default([]) }}"
 
   # Import Options
   - name: Run `wp options update`
@@ -248,3 +248,12 @@
     command: |
       wp rewrite structure '{{ vccw.permalink_structure }}' --path={{ path }}
     when: vccw.permalink_structure != ''
+
+  - name: Copy tinymce-settings file
+    become: no
+    template:
+      src: templates/tinymce-settings.json
+      dest: "{{ ansible_env.HOME }}/tinymce-settings.json"
+
+  - name: Update tinymce plugin
+    shell: wp option update tadv_settings --format=json < {{ ansible_env.HOME }}/tinymce-settings.json

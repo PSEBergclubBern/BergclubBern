@@ -1,0 +1,33 @@
+.wrapper{
+    padding-right: 20px;
+}
+.no-link-underline a{
+    text-decoration: none;
+}
+td .dashicons{
+    font-size: 1.9em;
+}
+
+.container{
+    padding: 25px;
+    background-color: white;
+    margin-bottom:25px;
+}
+
+.required {
+    font-weight: bold;
+}
+
+#tours{
+    border-spacing: 0;
+}
+
+#tours td{
+    padding:5px;
+    padding-right:20px;
+    margin:0;
+}
+
+#tours tr:nth-child(even) {
+    background-color: #eeeeee;
+}

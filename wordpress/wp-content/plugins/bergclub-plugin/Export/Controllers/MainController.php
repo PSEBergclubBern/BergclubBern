@@ -60,6 +60,21 @@ class MainController extends AbstractController
 
         $this->data['quarterTouren'] = $quarterTouren[(int)(ceil(date('n') / 3) - 1)];
         $this->data['quarterRueckblick'] = $quarterRueckblick[(int)(ceil(date('n') / 3) - 1)];
+
+        $this->data['allowed'] = [];
+
+        $user = User::findCurrent();
+        if($user->hasCapability('export_adressen')){
+            $this->data['allowed'][] = "adressen";
+        }
+
+        if($user->hasCapability('export_touren')){
+            $this->data['allowed'][] = "touren";
+        }
+
+        if($user->hasCapability('export_druck')){
+            $this->data['allowed'][] = "druck";
+        }
     }
 
     protected function get(){

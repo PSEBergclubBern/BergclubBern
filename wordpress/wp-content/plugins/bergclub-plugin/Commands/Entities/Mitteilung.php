@@ -9,12 +9,20 @@
 namespace BergclubPlugin\Commands\Entities;
 
 
-class Mitteilung
+class Mitteilung implements Entity
 {
     public $id;
     public $datum;
     public $titel;
     public $text;
+
+    public function __construct($id, $datum, $titel, $text)
+    {
+        $this->id = $id;
+        $this->datum = $datum;
+        $this->titel = $titel;
+        $this->text = $text;
+    }
 
     public function __toString()
     {

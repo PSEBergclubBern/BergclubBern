@@ -44,6 +44,7 @@ $role->save();
 require_once 'activate_functionary_roles.php';
 
 foreach($functionaryRoles as $slug => $item){
+    remove_role( $slug );
     $role = new Role(Role::TYPE_FUNCTIONARY, $slug, $item['name']);
     $role->setCapabilities($item['capabilities']);
     $role->save();
@@ -60,7 +61,9 @@ $roles = Role::findByType(Role::TYPE_FUNCTIONARY);
 foreach($roles as $role){
     /* @var Role $role */
     foreach($role->getCapabilities() as $capability => $grant){
-        $roleInternet->addCapability($capability, $grant);
+        if($grant) {
+            $roleInternet->addCapability($capability, $grant);
+        }
     }
 }
 

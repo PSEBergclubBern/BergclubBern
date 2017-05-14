@@ -570,6 +570,7 @@ class User implements IModel
      */
     public function __get($key){
         $method = "get" . Helpers::snakeToCamelCase($key);
+
         if(method_exists($this, $method)) {
             return $this->$method();
         }

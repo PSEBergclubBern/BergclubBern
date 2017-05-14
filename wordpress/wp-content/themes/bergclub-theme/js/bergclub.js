@@ -11,4 +11,16 @@ $(document).ready(function(){
         $(this).attr('href', 'mailto:' + email);
         $(this).html(email);
     });
+
+    lightbox.option({
+        albumLabel: "Bild %1 von %2"
+    })
+});
+
+$('#tourenart').change(function(){
+    var url = '//' + window.location.hostname + window.location.pathname;
+    if($(this).val() != ''){
+        url += '?type=' + $(this).val();
+    }
+    document.location.href = url;
 });

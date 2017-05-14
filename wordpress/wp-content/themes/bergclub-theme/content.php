@@ -8,7 +8,11 @@
 ?>
 <div class="container">
     <div class="row">
-        <h1><?php the_title(); ?></h1>
+        <h1>
+            <img class="pull-right hidden-xs" src="<?= get_template_directory_uri() ?>/img/bergclub-jugend-sm.png" style="margin-left:20px">
+            <img class="pull-right hidden-xs" src="<?= get_template_directory_uri() ?>/img/bergclub-sm.png" style="margin-left:20px">
+            <?php the_title(); ?>
+        </h1>
     </div>
     <div class="row">
         <div class="col-lg-10">

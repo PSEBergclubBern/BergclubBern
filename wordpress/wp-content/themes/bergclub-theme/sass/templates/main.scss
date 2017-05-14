@@ -1,3 +1,5 @@
+$transparentized-primary-dark-color: transparentize($primary-dark-color, 0.75);
+
 @font-face {
   font-family: "touren";
   src:url("fonts/touren.eot");
@@ -59,6 +61,7 @@ html {
 body {
   padding-top: 50px;
   font-family: 'Roboto', sans-serif;
+  padding-bottom: 30px;
 }
 
 h1{
@@ -121,6 +124,16 @@ h1 {
 
 h3 {
   margin: 5px 5px;
+}
+
+.title-right {
+  font-size: 0.5em;
+  margin-top: 11px;
+  padding-left: 20px
+}
+
+.title-right.type-select {
+  margin-top: 10px;
 }
 
 .hide-links a {
@@ -225,6 +238,29 @@ article h1 {
   margin-bottom: 0.8em;
 }
 
+.article-block {
+  margin-left: 2vw;
+  margin-bottom: 7vh;
+  margin-right: 0;
+  h3 {
+    color: $primary-dark-color;
+    margin-bottom: 0.8em;
+    margin-left: -20px;
+  }
+  .article-line {
+    padding: 5px 0px;
+    border-bottom: 1px solid $transparentized-primary-dark-color;
+  }
+}
+
+.bericht-block{
+  margin-top: -3vh;
+  h2{
+    color: $primary-dark-color;
+    margin-bottom: 0.8em;
+  }
+}
+
 /* Navigation */
 .navbar-inverse .navbar-brand {
   color: $primary-lightest-color !important;
@@ -301,6 +337,42 @@ li.switch a{
   }
 }
 
+.footer-menu{
+  display: inline;
+  margin: 6px 20px;
+}
+
+.menu-fusszeile-container{
+  color: white;
+  display: inline;
+  ul{
+    display: inline;
+    margin: 0;
+    padding: 0;
+
+    li{
+      display: inline;
+      margin: 0;
+      padding: 0;
+
+      a{
+        color: white;
+        text-decoration: underline;
+      }
+
+      a:hover{
+        text-decoration: none;
+      }
+    }
+    li::after{
+      content: " | ";
+    }
+    li:last-child::after{
+      content: "";
+    }
+  }
+}
+
 .pagination>.active>a,
 .pagination>.active>a:focus,
 .pagination>.active>a:hover,
@@ -359,4 +431,11 @@ label.error {
   .italic-sm {
     font-style: italic;
   }
+}
+
+/* lightbox images */
+
+.report-images {
+  margin-bottom: 25px;
+  padding: 0px 20px;
 }

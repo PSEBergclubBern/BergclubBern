@@ -24,6 +24,7 @@ class TourTest extends TestCase
      * @Before
      */
     public function setUp() {
+        FlashMessage::show();
         $this->tour = new Tour();
     }
 
@@ -49,46 +50,6 @@ class TourTest extends TestCase
     public function fieldsReturnFieldAsArray() {
         $this->assertNotEmpty($this->tour->getUniqueFieldNames());
         $this->assertTrue(is_array($this->tour->getUniqueFieldNames()));
-    }
-
-    /**
-     * @test
-     */
-    public function durationIsNoValidTime() {
-        $this->assertFalse($this->tour->isValid(array(Tour::DURATION => 'test'), "publish"));
-        $this->assertNotEmpty(FlashMessage::show());
-    }
-
-    /**
-     * @test
-     */
-    public function durationIsNoValidTime1() {
-        $this->assertFalse($this->tour->isValid(array(Tour::DURATION => '1 Stunde; 15 Minuten'), "publish"));
-        $this->assertNotEmpty(FlashMessage::show());
-    }
-
-    /**
-     * @test
-     */
-    public function durationIsValidTime() {
-        $this->assertTrue($this->tour->isValid(array(Tour::DURATION => '15:32'), "publish"));
-        $this->assertEmpty(FlashMessage::show());
-    }
-
-    /**
-     * @test
-     */
-    public function durationIsValidTime1() {
-        $this->assertTrue($this->tour->isValid(array(Tour::DURATION => '5:32'), "publish"));
-        $this->assertEmpty(FlashMessage::show());
-    }
-
-    /**
-     * @test
-     */
-    public function durationIsValidTime2() {
-        $this->assertTrue($this->tour->isValid(array(Tour::DURATION => '0:00'), "publish"));
-        $this->assertEmpty(FlashMessage::show());
     }
 
     /**

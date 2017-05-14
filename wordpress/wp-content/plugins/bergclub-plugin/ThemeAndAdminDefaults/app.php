@@ -5,3 +5,9 @@ function bcb_remove_category_metabox(){
 }
 
 add_action( 'edit_form_after_title', 'bcb_remove_category_metabox' );
+
+function bcb_impressum(){
+    return \BergclubPlugin\MVC\View::render(__DIR__ . '/views', 'page');
+}
+
+\BergclubPlugin\TagHelper::addTag('bcb_impressum', 'bcb_impressum');

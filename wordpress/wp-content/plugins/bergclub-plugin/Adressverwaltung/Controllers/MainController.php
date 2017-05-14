@@ -227,7 +227,14 @@ class MainController extends AbstractController
 
         /* get form data */
         foreach($_POST as $key => $value){
-            if($key != "spouse" || $_GET['view'] != "new") {
+            if($key=='birthdate'){
+                if(Helpers::isValidDate($value)){
+                    $user->$key = trim($value);
+                }elseif(!empty($value)){
+                    FlashMessage::add(FlashMessage::TYPE_ERROR, "Das Geburtsdatum muss im Format tt.mm.jjjj und ein gültiges Datum sein.<br>Falls nur der Jahrgang bekannt ist, notieren Sie dies unter Bemerkungen und verwenden Sie 01.01.jjjj als Geburtsdatum.");
+                    $user->$key = null;
+                }
+            }else{
                 $user->$key = trim($value);
             }
         }
@@ -280,11 +287,7 @@ class MainController extends AbstractController
                 /* save user */
                 $user->save();
                 FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Benutzerdaten wurden erfolgreich gespeichert.');
-                if($this->view == "pages.new") {
-                    Helpers::redirect("?page=" . $_GET['page'] . "&view=detail&id=" . $user->ID);
-                }else{
-                    Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
-                }
+                Helpers::redirect("?page=" . $_GET['page'] . "&view=detail&id=" . $user->ID);
             }
 
         }
@@ -294,6 +297,18 @@ class MainController extends AbstractController
     private function postFunctions(){
         /* @var User $user */
         $user = $this->data['user'];
+
+        // make sure that user doesn't add functionary roles on himself
+        $currentUser = User::findCurrent();
+        if ( $user == $currentUser ){
+            FlashMessage::add(FlashMessage::TYPE_ERROR, 'Sie können sich nicht selber Funktionsrollen zuweisen!');
+            Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
+        }
+
+        if(isset($_POST['functionary_roles']) && count($_POST['functionary_roles']) && !$user->email){
+            FlashMessage::add(FlashMessage::TYPE_ERROR, 'Sie müssen dem Adresssatz zuerst eine Emailadresse zuweisen, bevor Funktionsrollen zugewiesen werden können.');
+            Helpers::redirect("?page=" . $_GET['page'] . "&view=detail&tab=data&id=" . $user->ID . "&edit=1");
+        }
 
         foreach($user->functionary_roles as $role){
             /* @var Role $role */

@@ -48,7 +48,8 @@ html {
 
 body {
   padding-top: 50px;
-  font-family: 'Roboto', sans-serif; }
+  font-family: 'Roboto', sans-serif;
+  padding-bottom: 30px; }
 
 h1 {
   color: #000452; }
@@ -91,6 +92,14 @@ h1 {
 
 h3 {
   margin: 5px 5px; }
+
+.title-right {
+  font-size: 0.5em;
+  margin-top: 11px;
+  padding-left: 20px; }
+
+.title-right.type-select {
+  margin-top: 10px; }
 
 .hide-links a {
   color: black;
@@ -173,6 +182,24 @@ h3 {
 article h1 {
   margin-bottom: 0.8em; }
 
+.article-block {
+  margin-left: 2vw;
+  margin-bottom: 7vh;
+  margin-right: 0; }
+  .article-block h3 {
+    color: #000452;
+    margin-bottom: 0.8em;
+    margin-left: -20px; }
+  .article-block .article-line {
+    padding: 5px 0px;
+    border-bottom: 1px solid rgba(0, 4, 82, 0.25); }
+
+.bericht-block {
+  margin-top: -3vh; }
+  .bericht-block h2 {
+    color: #000452;
+    margin-bottom: 0.8em; }
+
 /* Navigation */
 .navbar-inverse .navbar-brand {
   color: white !important;
@@ -229,6 +256,31 @@ li.switch a {
     .footer p a {
       color: #d5d5d5; }
 
+.footer-menu {
+  display: inline;
+  margin: 6px 20px; }
+
+.menu-fusszeile-container {
+  color: white;
+  display: inline; }
+  .menu-fusszeile-container ul {
+    display: inline;
+    margin: 0;
+    padding: 0; }
+    .menu-fusszeile-container ul li {
+      display: inline;
+      margin: 0;
+      padding: 0; }
+      .menu-fusszeile-container ul li a {
+        color: white;
+        text-decoration: underline; }
+      .menu-fusszeile-container ul li a:hover {
+        text-decoration: none; }
+    .menu-fusszeile-container ul li::after {
+      content: " | "; }
+    .menu-fusszeile-container ul li:last-child::after {
+      content: ""; }
+
 .pagination > .active > a,
 .pagination > .active > a:focus,
 .pagination > .active > a:hover,
@@ -273,5 +325,9 @@ label.error {
 @media only screen and (max-width: 768px) {
   .italic-sm {
     font-style: italic; } }
+/* lightbox images */
+.report-images {
+  margin-bottom: 25px;
+  padding: 0px 20px; }
 
 /*# sourceMappingURL=bergclub.css.map */

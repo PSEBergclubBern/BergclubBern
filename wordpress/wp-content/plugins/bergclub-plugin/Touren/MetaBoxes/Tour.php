@@ -18,6 +18,7 @@ class Tour extends MetaBox {
 	const REQUIREMENTS_CONDITIONAL = '_requirementsConditional';
 	const RISE_UP_METERS = '_riseUpMeters';
 	const RISE_DOWN_METERS = '_riseDownMeters';
+	const DISTANCE = '_distance';
 	const DURATION = '_duration';
 	const ADDITIONAL_INFO = '_additionalInfo';
 	const TRAINING = '_training';
@@ -37,6 +38,7 @@ class Tour extends MetaBox {
 			self::REQUIREMENTS_CONDITIONAL,
 			self::RISE_UP_METERS,
 			self::RISE_DOWN_METERS,
+			self::DISTANCE,
 			self::DURATION,
 			self::ADDITIONAL_INFO,
 			self::TRAINING,
@@ -92,11 +94,8 @@ class Tour extends MetaBox {
 		$errors = array();
 
         if ($posttype != "draft") {
-            if (array_key_exists(self::DURATION, $values)) {
-                $match_format = $this->isValidTime($values[self::DURATION]);
-                if ($match_format === false) {
-                    $errors[] = '"Dauer" muss in einem dieser Formate angegeben werden: HH:MM, H:MM';
-                }
+            if (array_key_exists(self::DURATION, $values) && empty($values[self::DURATION])) {
+                $errors[] = '"Dauer" darf nicht leer sein';
             }
 
             if (array_key_exists(self::ONLINEMAP, $values) && !empty($values[self::ONLINEMAP])) {
@@ -119,6 +118,10 @@ class Tour extends MetaBox {
 
             if (array_key_exists(self::RISE_DOWN_METERS, $values) && empty($values[self::RISE_DOWN_METERS])) {
                 $errors[] = '"Abstieg Höhenmeter" darf nicht leer sein';
+            }
+
+            if (array_key_exists(self::DISTANCE, $values) && empty($values[self::DISTANCE])) {
+                $errors[] = '"Distanz (km)" darf nicht leer sein';
             }
 
             if (array_key_exists(self::EQUIPMENT, $values) && empty($values[self::EQUIPMENT])) {

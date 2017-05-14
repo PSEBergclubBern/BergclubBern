@@ -26,6 +26,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 if( defined( 'WP_CLI' ) && WP_CLI ) {
     WP_CLI::add_command( 'bergclub import', 'BergclubPlugin\Commands\Import' );
     WP_CLI::add_command( 'bergclub mitteilung', 'BergclubPlugin\Commands\Mitteilung' );
+    WP_CLI::add_command( 'bergclub pseudo-users', 'BergclubPlugin\Commands\PseudoUser' );
 }
 
 /*
@@ -54,6 +55,17 @@ add_action('init','bcb_register_session');
 function bcb_register_session(){
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
+    }
+}
+
+add_action( 'admin_menu', 'bcb_remove_admin_pages' );
+function bcb_remove_admin_pages() {
+    $user = wp_get_current_user();
+    if(!in_array('administrator', (array) $user->roles)) {
+        remove_menu_page('profile.php');
+        remove_submenu_page('users.php', 'profile.php');
+        remove_menu_page('edit-comments.php');
+        remove_menu_page('tools.php');
     }
 }
 

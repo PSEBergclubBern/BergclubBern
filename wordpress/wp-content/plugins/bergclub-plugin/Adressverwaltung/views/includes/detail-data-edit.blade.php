@@ -62,17 +62,17 @@
             </tr>
 
         @elseif( $key == 'spouse')
-            @if($_GET['view'] != 'new')
-                <tr>
-                    <td class="td-{{ $key }}"><label id="label-{{ $key }}" for="{{ $key }}">{{ $value }}</label></td>
+            @if( $_GET['view']!='new' )
+            <tr>
+                <td class="td-{{ $key }}"><label id="label-{{ $key }}" for="{{ $key }}">{{ $value }}</label></td>
 
-                    @if( $spouse != null )
-                        <td class="td-{{ $key }}">{{ $spouse->first_name }} {{ $spouse->last_name  }} <a href="?page={{ $_GET['page'] }}&view=detail&tab=data&id={{ $_GET['id'] }}&edit=1&action=deleteSpouse"><span class="dashicons dashicons-trash"></span></a></td>
-                    @else
-                        <td class="td-{{ $key }}"><a href="?page={{ $_GET['page'] }}&view=detail&tab=spouse&id={{ $_GET['id'] }}&edit=1">Zuweisen</a></td>
-                    @endif
+                @if( $spouse != null )
+                    <td class="td-{{ $key }}">{{ $spouse->first_name }} {{ $spouse->last_name  }} <a href="?page={{ $_GET['page'] }}&view=detail&tab=data&id={{ $_GET['id'] }}&edit=1&action=deleteSpouse"><span class="dashicons dashicons-trash"></span></a></td>
+                @else
+                    <td class="td-{{ $key }}"><a href="?page={{ $_GET['page'] }}&view=detail&tab=spouse&id={{ $_GET['id'] }}&edit=1">Zuweisen</a></td>
+                @endif
 
-                </tr>
+            </tr>
             @endif
         @else
 

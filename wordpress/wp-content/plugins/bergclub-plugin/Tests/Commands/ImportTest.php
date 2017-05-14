@@ -24,7 +24,7 @@ class ImportTest extends TestCase
     /**
      * @test
      */
-    public function isInvokable()
+    public function isCallable()
     {
         $this->assertTrue(is_callable($this->import));
     }
