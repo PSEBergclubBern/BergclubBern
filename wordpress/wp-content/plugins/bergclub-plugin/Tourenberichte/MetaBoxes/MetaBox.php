@@ -13,8 +13,6 @@ use duncan3dc\Laravel\BladeInstance;
 
 abstract class MetaBox
 {
-    const YOUTH = '_touren';
-
     private static $saveActionRegistered = false;
     private static $alreadyValidated = false;
     private static $registeredBoxes = [];

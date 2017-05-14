@@ -128,22 +128,26 @@ function bcb_menu_args(array $menuItem){
  * @param array $menu the array which is extracted and json decoded from data/menu.json
  */
 function bcb_create_menu(array $menu){
-    //delete menu if exists
-    wp_delete_nav_menu('header-navigation');
+    foreach($menu as $menuEntry) {
+        wp_delete_nav_menu($menuEntry['title']);
 
-    $menuId = wp_create_nav_menu('header-navigation');
-    $position = 0;
-    foreach ($menu as $slug => $menuItem) {
-        $parentId = 0;
-        $position++;
+        $menuId = wp_create_nav_menu($menuEntry['title']);
+        $locations = get_theme_mod('nav_menu_locations'); //get the menu locations
+        $locations[$menuEntry['theme_position']] = $menuId;
+        set_theme_mod('nav_menu_locations', $locations);
+        $position = 0;
+        foreach ($menuEntry['items'] as $slug => $menuItem) {
+            $parentId = 0;
+            $position++;
 
-        $parentId = bcb_create_menu_item($menuId, $parentId, $slug, $menuItem['title'], $position, bcb_menu_args($menuItem));
-        if(isset($menuItem['sub-menu'])){
-            $subPosition = 0;
-            foreach ($menuItem['sub-menu'] as $subSlug => $subMenuItem){
-                $subPosition++;
-                $slug .= "-" . $subSlug;
-                bcb_create_menu_item($menuId, $parentId, $slug, $subMenuItem['title'], $subPosition, bcb_menu_args($subMenuItem));
+            $parentId = bcb_create_menu_item($menuId, $parentId, $slug, $menuItem['title'], $position, bcb_menu_args($menuItem));
+            if (isset($menuItem['sub-menu'])) {
+                $subPosition = 0;
+                foreach ($menuItem['sub-menu'] as $subSlug => $subMenuItem) {
+                    $subPosition++;
+                    $slug .= "-" . $subSlug;
+                    bcb_create_menu_item($menuId, $parentId, $slug, $subMenuItem['title'], $subPosition, bcb_menu_args($subMenuItem));
+                }
             }
         }
     }

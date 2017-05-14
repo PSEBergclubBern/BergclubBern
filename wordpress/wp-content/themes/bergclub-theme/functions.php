@@ -45,7 +45,8 @@ if (!function_exists('bcb_setup')) {
 
         // This theme uses wp_nav_menu() in one location.
         register_nav_menus(array(
-            'header-menu' => __('Hauptmenü', 'header-navigation'),
+            'header-menu' => 'Hauptmenü',
+            'footer-menu' => 'Fusszeile',
         ));
 
         /*

@@ -33,9 +33,9 @@ while (have_posts()) : the_post();
                 $isYouth = bcb_touren_meta(get_the_ID(), 'isYouth');
                 if($isYouth == 1 || $isYouth == 2){
                     ?>
-                    <img class="pull-right" src="<?= get_template_directory_uri() ?>/img/bergclub-jugend-sm.png" style="margin-left:20px">
+                    <img class="pull-right hidden-xs" src="<?= get_template_directory_uri() ?>/img/bergclub-jugend-sm.png" style="margin-left:20px">
                 <?php }if($isYouth == 0 || $isYouth == 2){ ?>
-                    <img class="pull-right" src="<?= get_template_directory_uri() ?>/img/bergclub-sm.png" style="margin-left:20px">
+                    <img class="pull-right hidden-xs" src="<?= get_template_directory_uri() ?>/img/bergclub-sm.png" style="margin-left:20px">
                 <?php } ?>
                 <?php the_title(); ?>
             </h1>
@@ -59,7 +59,7 @@ while (have_posts()) : the_post();
                     $gallery_attachments_ids = explode(",", $gallery["ids"]);
                     foreach($gallery_attachments_ids as $id): ?>
                         <?php
-                            $imgDescription = htmlentities(get_post($id)->post_excerpt);
+                        $imgDescription = htmlentities(get_post($id)->post_excerpt);
                         ?>
                         <a href="<?=wp_get_attachment_url($id)?>" data-lightbox="report-gallery" data-title="<?= nl2br($imgDescription) ?>">
                             <img alt="<?= $imgDescription ?>" title="<?= $imgDescription ?>" src="<?=wp_get_attachment_thumb_url($id)?>" class="report-image">
