@@ -5,7 +5,6 @@ namespace BergclubPlugin\MVC\Models;
 
 use BergclubPlugin\MVC\Exceptions\NotABergClubUserException;
 use BergclubPlugin\MVC\Helpers;
-use BergclubPlugin\MVC\MassAssignmentException;
 
 /**
  * Represents a Berg Club address entry.
@@ -25,7 +24,6 @@ class User implements IModel
     const GENDER_M = 'Herr';
     const GENDER_F = 'Frau';
 
-
     /**
      * @var array $main holds the main user values from WP that magic getters and setters allow to access.
      */
@@ -33,6 +31,7 @@ class User implements IModel
         'ID' => null,
         'user_login' => null,
         'user_pass' => null,
+        'user_email' => null,
     ];
 
     /**
@@ -59,6 +58,7 @@ class User implements IModel
         'birthdate' => null,
         'comments' => null,
         'main_address' => null,
+        'mail_sent' => null,
     ];
 
     /**
@@ -102,8 +102,9 @@ class User implements IModel
      */
     private $historie = [];
 
-    private $allowWpUser = false;
-
+    /**
+     * @var array all role slugs that are considered as 'Vorstand'.
+     */
     private static $vorstandRoles = [
         'bcb_praesident',
         'bcb_tourenchef',
@@ -114,6 +115,9 @@ class User implements IModel
         'sekretariat',
     ];
 
+    /**
+     * @var array all role slugs that are considered as 'Mitglieder'.
+     */
     private static $mitgliederRoles = [
         'bcb_aktivmitglied',
         'bcb_aktivmitglied_jugend',
@@ -121,6 +125,9 @@ class User implements IModel
         'bcb_freimitglied',
     ];
 
+    /**
+     * @var array all role slugs that are considered as 'Erweiterter Vorstand'.
+     */
     private static $erweiterterVorstandRoles = [
         'bcb_materialchef',
         'bcb_materialchef_jugend',
@@ -128,11 +135,17 @@ class User implements IModel
         'bcb_versand',
     ];
 
+    /**
+     * @var array all role slugs that are considered as 'Leiter'.
+     */
     private static $leiter =[
         'bcb_tourenchef',
         'bcb_leiter',
     ];
 
+    /**
+     * @var array all role slugs that are considered as 'Leiter Jugend'.
+     */
     private static $leiterJugend =[
         'bcb_tourenchef_jugend',
         'bcb_leiter_jugend',
@@ -158,6 +171,9 @@ class User implements IModel
         return self::find(get_current_user_id(), true);
     }
 
+    /**
+     * @return array An array with all User objects except for spouses that are not set as main address.
+     */
     public static function findAllWithoutSpouse(){
         $users = User::findAll();
         foreach($users as $key => $user){
@@ -191,6 +207,21 @@ class User implements IModel
         return $users;
     }
 
+    /**
+     * @param string $login The username of the user to find.
+     * @return User|null The user with the given username, null if not found.
+     */
+    public static function findByLogin($login){
+        $wpUser = get_user_by('login', $login);
+        if(!$wpUser){
+            return null;
+        }
+        return self::find($wpUser->ID);
+    }
+
+    /**
+     * @return array An array with all User objects that have assigned one of the 'Mitglieder' roles except for spouses that are not set as main address.
+     */
     public static function findMitgliederWithoutSpouse(){
         $users = User::findMitglieder();
         foreach($users as $key => $user){
@@ -203,53 +234,46 @@ class User implements IModel
         return array_values($users);
     }
 
+    /**
+     * @return array An array with all User objects that have assigned one of the 'Mitglieder' roles.
+     */
     public static function findMitglieder(){
         return self::findByRoles(self::$mitgliederRoles);
     }
 
+    /**
+     * @return array An array with user data from the 'Vorstand' as array ('name', 'address', 'phone_private', 'phone_work', 'phone_mobile', 'email')
+     */
     public static function findVorstand(){
         return self::findUsersAndRoleByArray(self::$vorstandRoles);
     }
 
+    /**
+     * @return array An array with user data from the 'Erweiterter Vorstand' as array ('name', 'address', 'phone_private', 'phone_work', 'phone_mobile', 'email')
+     */
     public static function findErweiterterVorstand(){
         return self::findUsersAndRoleByArray(self::$erweiterterVorstandRoles);
     }
 
+    /**
+     * @return array An array with user data from the 'Leiter' as array ('name', 'address', 'phone_private', 'phone_work', 'phone_mobile', 'email')
+     */
     public static function findLeiter(){
         return self::findUsersAndRoleByArray(self::$leiter);
     }
 
+    /**
+     * @return array An array with user data from the 'Leiter Jugend' as array ('name', 'address', 'phone_private', 'phone_work', 'phone_mobile', 'email')
+     */
     public static function findLeiterJugend(){
         return self::findUsersAndRoleByArray(self::$leiterJugend);
     }
 
-    private static function findUsersAndRoleByArray($roleList){
-        $membersByRole = [];
-        foreach($roleList as $itemRole){
-            $role = Role::find($itemRole);
-            if($role){
-                $item = ['title' => $role->getName(), 'users' => []];
-                $users = self::findByRole($itemRole);
-                foreach($users as $user){
-                    $data = [
-                        'name' => trim($user->last_name . ' ' . $user->first_name),
-                        'address' => $user->address,
-                        'phone_private' => $user->phone_private,
-                        'phone_work' => $user->phone_work,
-                        'phone_mobile' => $user->phone_mobile,
-                        'email' => $user->email,
-                    ];
-                    $item['users'][] = (object) $data;
-                }
-                if(count($item['users']) > 0) {
-                    $membersByRole[] = $item;
-                }
-            }
-        }
-        return $membersByRole;
-    }
-
-    private static function findByRoles(array $roleList){
+    /**
+     * @param array $roleList a list of role slugs
+     * @return array An array with User objects that have one of the given roles assigned.
+     */
+    public static function findByRoles(array $roleList){
         $result = [];
         $membersByRole = [];
         foreach($roleList as $itemRole){
@@ -259,20 +283,25 @@ class User implements IModel
                 $users = self::findByRole($itemRole);
                 foreach($users as $user){
                     /* @var User $user */
-                    $result[$user->ID] = $user;
+                    $result[$user->last_name . ' ' . $user->first_name . ' ' . $user->ID] = $user;
                 }
             }
         }
+        ksort($result);
         return array_values($result);
     }
 
+    /**
+     * @param String $role A role slug.
+     * @return array An array with User objects that have the given role assigned.
+     */
     public static function findByRole($role){
         $role = Helpers::ensureKeyHasPrefix($role);
         $result = get_users(['role' => $role]);
         $users = [];
         foreach($result as $item){
-            $user = self::find( $item ->ID );
-            if($user){
+            $user = self::find($item->ID);
+            if ($user) {
                 $users[] = $user;
             }
         }
@@ -294,6 +323,7 @@ class User implements IModel
         if ($item) {
             $user = new User((array) $item->data);
             $metadata = get_user_meta($item->ID);
+
             foreach ($metadata as $key => $arr) {
                 if($key == 'history') {
                     $arr[0] = unserialize($arr[0]);
@@ -327,31 +357,45 @@ class User implements IModel
      * @throws NotABergClubUserException if no address type role is assigned.
      */
     public function save(){
+        //users need to have at least one address role assigned.
         if(!$this->hasAddressRole()){
             throw new NotABergClubUserException('The user you are trying to save needs at least one custom address type role.');
         }
 
+        //if username is empty, create and set one
         if(empty($this->main['user_login'])){
             $this->main['user_login'] = $this->createLogin();
         }
 
+        //if it is a newly created user, we need to insert it to the wp table
         if(!$this->main['ID']) {
             $main = $this->main;
             if($this->hasFunctionaryRole()) {
                 $main['user_email'] = $this->data['email'];
             }
-            array_map('sanitize_text_field', $main);
+            foreach($main as $key => $value){
+                $main[$key] = sanitize_text_field($value);
+            }
             $this->main['ID'] = wp_insert_user($main);
         }
 
+        //mark user as 'not informed' when no funtionary role is assigned
+        if(!$this->hasFunctionaryRole()){
+            $this->data['mail_sent'] = false;
+        }
+
+        //persist the users meta data
         foreach($this->data as $key => $value){
             if($key == 'email'){
                 $value = sanitize_email($value);
+                //if the user has at least one functionary role assigned, we also want to set his user_email (pass reset possible)
+                //otherwise we set the user_email to null (pass reset not possible)
                 if($this->hasFunctionaryRole()) {
                     wp_update_user(['ID' => $this->main['ID'], 'user_email' => $value]);
-
+                    $this->main['user_email'] = $value;
                 }else{
                     wp_update_user(['ID' => $this->main['ID'], 'user_email' => null]);
+                    $this->main['user_email'] = null;
                 }
             }else{
                 $value = sanitize_text_field($value);
@@ -359,6 +403,7 @@ class User implements IModel
             update_user_meta($this->main['ID'], $key, $value);
         }
 
+        //update the meta data of the user if a spouse is assigned
         if($this->spouse) {
             update_user_meta($this->main['ID'], 'spouse', $this->spouse);
         }
@@ -368,12 +413,14 @@ class User implements IModel
         $user = get_user_by('ID', $this->main['ID'] );
 
         if($user) {
+            //add roles to the user
             foreach ($this->roles as $role) {
                 /* @var Role $role */
                 $role->save(); //ensure the role is saved (exists in WP) before added to the WP user.
                 $user->add_role($role->getKey());
             }
 
+            //remove roles from user
             foreach ($this->deletedRoles as $role) {
                 $user->remove_role($role->getKey());
             }
@@ -383,6 +430,13 @@ class User implements IModel
         }
         $this->deletedRoles = [];
 
+        //send an email with the password reset link to the user if not already done and if the user has at least one
+        //functionary role assigned.
+        if(!$this->data['mail_sent'] && $this->hasFunctionaryRole()){
+            Helpers::sendPassResetMail($this);
+            $this->data['mail_sent'] = true;
+            update_user_meta($this->main['ID'], 'mail_sent', $this->data['mail_sent']);
+        }
     }
 
     /**
@@ -425,7 +479,7 @@ class User implements IModel
 
         if ( !isset($this->roles[$role->getKey()]) && ($allowSystemRoles || $role->getType() != Role::TYPE_SYSTEM)){
             $this->roles[$role->getKey()] = $role;
-            if($updateHistory) {
+            if($updateHistory && $role->getType() != Role::TYPE_SYSTEM) {
                 $this->openHistory($role);
             }
         }
@@ -441,13 +495,17 @@ class User implements IModel
             if (isset($this->roles[$role->getKey()])) {
                 unset($this->roles[$role->getKey()]);
                 $this->deletedRoles[] = $role;
-                if ($updateHistory) {
+                if ($updateHistory && $role->getType() != Role::TYPE_SYSTEM) {
                     $this->closeHistory($role);
                 }
             }
         }
     }
 
+    /**
+     * @param string $key a capability slug
+     * @return bool returns true if the user has the the given capability, false otherwise
+     */
     public function hasCapability($key){
         foreach($this->getRoles() as $role){
             /* @var Role $role */
@@ -458,55 +516,36 @@ class User implements IModel
         return false;
     }
 
-    private function openHistory(Role $role){
-        if(!isset($this->historie[$role->getKey()])) {
-            $this->historie[$role->getKey()] = ['date_from' => date('Y-m-d'), 'date_to' => null];
-        }
-    }
+    /**
+     * @param string $roleSlug a role slug
+     * @return bool returns true if the user has the given role assigned, false otherwise
+     */
+    public function hasRole($roleSlug){
+        $roleSlug = Helpers::ensureKeyHasNoPrefix($roleSlug);
+        $roleSlugPrefix = Helpers::ensureKeyHasPrefix($roleSlug);
 
-    private function closeHistory(Role $role){
-        $this->historie[$role->getKey()]['date_to'] = date('Y-m-d');
-    }
-
-    private function setHistory($history){
-        if(is_array($history)) {
-            $newHistory = [];
-            foreach($history as $key => $item){
-                if(array_key_exists('date_from', $item)){
-                    $newHistory[$key]['date_from'] = date('Y-m-d', strtotime($item['date_from']));
-                    $newHistory[$key]['date_to'] = null;
-                    if(array_key_exists('date_to', $item) && !empty($item['date_to'])){
-                        $newHistory[$key]['date_to'] = date('Y-m-d', strtotime($item['date_to']));
-                    }
-                }
-            }
-            $this->historie = $newHistory;
-        }
-    }
-
-    private function getHistory(){
-        $history = [];
-        foreach($this->historie as $key => $item){
-            $role = Role::find($key);
-            if($role) {
-                $date_to = $item['date_to'];
-                if($date_to){
-                    $date_to = date("d.m.Y", strtotime($item['date_to']));
-                }
-                $history[$key] = [
-                    'name' => $role->getName(),
-                    'date_from' => date("d.m.Y", strtotime($item['date_from'])),
-                    'date_to' => $date_to,
-                ];
+        foreach($this->roles as $role){
+            /* @var Role $role */
+            if($role->getKey() == $roleSlug || $role->getKey() == $roleSlugPrefix){
+                return true;
             }
         }
-        return $history;
+        return false;
     }
 
     /**
-     * Magic setter. Will set either the $data, $custom, $roles field or will do nothing, depending on the given input.
-     * If $key is a key for the $data or $custom field, the value will be added to this field. If $key is 'roles' the
-     * roles field will be set with the value.
+     * Removes the spouse from the user and persists this information immediately
+     */
+    public function unsetSpouse(){
+        $this->spouse = null;
+        $this->data['main_address'] = null;
+        update_user_meta($this->main['ID'], 'spouse', $this->spouse);
+    }
+
+    /**
+     * Magic setter. Will set either the $data, $custom, $roles field or will do nothing, depending on the given key.
+     * If a 'set[key]' method exists, this method will be called. Otherwise if $key is a key for the $data or $custom
+     * field, the value will be added to this field.
      * @param string $key the key to set.
      * @param mixed $value the value to set.
      */
@@ -523,6 +562,12 @@ class User implements IModel
         return null;
     }
 
+    /**
+     * Magic getter. Will get either the $data, $custom, $roles field or will do nothing, depending on the given key.
+     * If a 'get[key]' method exists, this method will be called. Otherwise if $key is a key for the $data or $custom
+     * field, the value will be retrieved from this field.
+     * @param string $key the key to get.
+     */
     public function __get($key){
         $method = "get" . Helpers::snakeToCamelCase($key);
         if(method_exists($this, $method)) {
@@ -541,6 +586,104 @@ class User implements IModel
             return $this->data[$key];
         }
         return null;
+    }
+
+    /**
+     * @param array $roleList an array of role slugs
+     * @return array returns an array of user data arrays ('name', 'address', 'phone_private', 'phone_work', 'phone_mobile',
+     * 'email') from users that have one of the given roles assigned
+     */
+    private static function findUsersAndRoleByArray(array $roleList){
+        $membersByRole = [];
+        foreach($roleList as $itemRole){
+            $role = Role::find($itemRole);
+            if($role){
+                $item = ['title' => $role->getName(), 'users' => []];
+                $users = self::findByRole($itemRole);
+                foreach($users as $user){
+                    $data = [
+                        'name' => trim($user->last_name . ' ' . $user->first_name),
+                        'address' => $user->address,
+                        'phone_private' => $user->phone_private,
+                        'phone_work' => $user->phone_work,
+                        'phone_mobile' => $user->phone_mobile,
+                        'email' => $user->email,
+                    ];
+                    $item['users'][] = (object) $data;
+                }
+                if(count($item['users']) > 0) {
+                    $membersByRole[] = $item;
+                }
+            }
+        }
+        return $membersByRole;
+    }
+
+    /**
+     * Opens/overwrites a new history entry for the given role. 'date_from' will be set to the actual date, 'date_to' will
+     * be set to null.
+     * @param Role $role
+     */
+    private function openHistory(Role $role){
+        if(!isset($this->historie[$role->getKey()])) {
+            $this->historie[$role->getKey()] = ['date_from' => date('Y-m-d'), 'date_to' => null];
+        }
+    }
+
+    /**
+     * Closes the history entry for the given role by setting 'date_to' to the actual date
+     * @param Role $role
+     */
+    private function closeHistory(Role $role){
+        $this->historie[$role->getKey()]['date_to'] = date('Y-m-d');
+    }
+
+    /**
+     * Sets the history array for the user.
+     * Use $user->history = $history to call this from outside the class class over the magic set method.
+     * The array needs to have entries in the following format:
+     * ['role_slug' => ['date_from' => 'date_as_string', 'date_to' => 'date_as_string']
+     * @param mixed $history an array with the user history.
+     */
+    private function setHistory($history){
+        if(is_array($history)) {
+            $newHistory = [];
+            foreach($history as $key => $item){
+                if(array_key_exists('date_from', $item)){
+                    $newHistory[$key]['date_from'] = date('Y-m-d', strtotime($item['date_from']));
+                    $newHistory[$key]['date_to'] = null;
+                    if(array_key_exists('date_to', $item) && !empty($item['date_to'])){
+                        $newHistory[$key]['date_to'] = date('Y-m-d', strtotime($item['date_to']));
+                    }
+                }
+            }
+            $this->historie = $newHistory;
+        }
+    }
+
+    /**
+     * Gets the history array for the user. Role slug will be translated to role name and date will be converted
+     * to d.m.Y format.
+     * Use $user->history to call this from outside the class class over the magic get method.
+     * @return array the history array of the user,
+     */
+    private function getHistory(){
+        $history = [];
+        foreach($this->historie as $key => $item){
+            $role = Role::find($key);
+            if($role) {
+                $date_to = $item['date_to'];
+                if($date_to){
+                    $date_to = date("d.m.Y", strtotime($item['date_to']));
+                }
+                $history[$key] = [
+                    'name' => $role->getName(),
+                    'date_from' => date("d.m.Y", strtotime($item['date_from'])),
+                    'date_to' => $date_to,
+                ];
+            }
+        }
+        return $history;
     }
 
 
@@ -638,7 +781,7 @@ class User implements IModel
     {
         $spouse = $this->getSpouse();
         if($spouse) {
-            return $spouse->last_name . ' ' . $spouse->first_name;
+            return $spouse->displayName;
         }
 
         return '';
@@ -658,17 +801,16 @@ class User implements IModel
         }
     }
 
+    /**
+     * Sets the spouse assigned to this user.
+     * Use $user->spouseId = $spouseId to call this from outside the class class over the magic set method.
+     * @param int $spouseId the id of the spouse.
+     */
     private function setSpouseId($spouseId)
     {
         if(is_numeric($spouseId)) {
             $this->spouse = $spouseId;
         }
-    }
-
-    public function unsetSpouse(){
-        $this->spouse = null;
-        $this->data['main_address'] = null;
-        update_user_meta($this->main['ID'], 'spouse', $this->spouse);
     }
 
     /**
@@ -745,17 +887,32 @@ class User implements IModel
         $this->_setByConstant('gender', $value);
     }
 
+    /**
+     * Returns the display name of the user.
+     * Use $user->displayName to call this from outside the class over the magic get method.
+     * @return string a string containing the lastname and firstname of the user, or only the lastname or firstname, or
+     * an empty string depending on which values are set.
+     */
     private function getDisplayName(){
         return trim($this->data['last_name'] . ' ' . $this->data['first_name']);
     }
 
+    /**
+     * Returns an non-associative array containing the address fields.
+     * Use $user->address to call this from outside the class over the magic get method.
+     * @return array an array containing the address fields.
+     */
     private function getAddress(){
         $address = [];
         if(!empty($this->data['address_addition'])) {
             $address[] = $this->data['address_addition'];
         }
-        $address[] = $this->data['street'];
-        $address[] = trim($this->data['zip'] . ' ' .$this->data['location']);
+        if(!empty($this->data['street'])) {
+            $address[] = $this->data['street'];
+        }
+        if(!empty($this->data['location'])) {
+            $address[] = trim($this->data['zip'] . ' ' . $this->data['location']);
+        }
         return $address;
     }
 
