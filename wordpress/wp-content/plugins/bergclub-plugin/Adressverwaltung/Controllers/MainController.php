@@ -227,7 +227,9 @@ class MainController extends AbstractController
 
         /* get form data */
         foreach($_POST as $key => $value){
-            $user->$key = trim($value);
+            if($key != "spouse" || $_GET['view'] != "new") {
+                $user->$key = trim($value);
+            }
         }
 
         if ( !$role ){
@@ -278,10 +280,10 @@ class MainController extends AbstractController
                 /* save user */
                 $user->save();
                 FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Benutzerdaten wurden erfolgreich gespeichert.');
-                if($this->view == "page.new") {
-                    Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
+                if($this->view == "pages.new") {
+                    Helpers::redirect("?page=" . $_GET['page'] . "&view=detail&id=" . $user->ID);
                 }else{
-                    Helpers::redirect('?page=' . $_GET['page']);
+                    Helpers::redirect(str_replace('&edit=1', '', $_SERVER['REQUEST_URI']));
                 }
             }
 

@@ -525,11 +525,19 @@ class User implements IModel
 
     public function __get($key){
         $method = "get" . Helpers::snakeToCamelCase($key);
-        if(method_exists($this, $method)){
+        if(method_exists($this, $method)) {
             return $this->$method();
-        } elseif (array_key_exists($key, $this->main)) {
+        }
+
+        if(substr($key, 0, 4) == "raw_"){
+            $key = substr($key, 4);
+        }
+
+        if (array_key_exists($key, $this->main)) {
             return $this->main[$key];
-        } elseif (array_key_exists($key, $this->data)) {
+        }
+
+        if (array_key_exists($key, $this->data)) {
             return $this->data[$key];
         }
         return null;
@@ -799,7 +807,7 @@ class User implements IModel
      * @return mixed|null the value of the constant or null if the constant does not exist.
      */
     private function _getConstant($key, $variant){
-        if(!empty($variant)) {
+        if(!empty($variant) || is_numeric($variant)) {
             return constant('self::' . strtoupper(trim($key, '_') . '_' . trim($variant, '_')));
         }
         return null;
@@ -849,14 +857,14 @@ class User implements IModel
     /**
      * @return bool returns true if the user has an address role assigned, false otherwise.
      */
-    private function hasAddressRole(){
+    public function hasAddressRole(){
         return $this->hasRoleOfType( Role::TYPE_ADDRESS );
     }
 
     /**
      * @return bool returns true if the user has a functionary role assigned, false otherwise.
      */
-    private function hasFunctionaryRole(){
+    public function hasFunctionaryRole(){
         return $this->hasRoleOfType( Role::TYPE_FUNCTIONARY );
     }
 

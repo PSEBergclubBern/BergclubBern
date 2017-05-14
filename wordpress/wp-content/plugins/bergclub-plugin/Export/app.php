@@ -12,7 +12,7 @@ $assets = [
 
 $adminMenu = new Menu('Export', 'export', 'BergclubPlugin\\Export\\Controllers\\MainController', $assets, 'dashicons-download');
 
-define('BCB_CALENDAR_URL', $adminMenu->getUrl() . '&download=calendar');
+define('BCB_CALENDAR_URL', $adminMenu->getUrl() . '&download=calendar.pdf');
 
 function bcb_calendar_link(){
     return '<a target="_blank" href="'.BCB_CALENDAR_URL.'">';
@@ -25,5 +25,4 @@ function bcb_calendar_link_end(){
 \BergclubPlugin\TagHelper::addTag('bcb_calendar_link', 'bcb_calendar_link');
 \BergclubPlugin\TagHelper::addTag('bcb_calendar_link_end', 'bcb_calendar_link_end');
 
-$download = new \BergclubPlugin\Export\Download();
-add_action( 'init', [$download, 'detectDownload'] );
+add_action( 'init', [new \BergclubPlugin\Export\Download(), 'run'] );

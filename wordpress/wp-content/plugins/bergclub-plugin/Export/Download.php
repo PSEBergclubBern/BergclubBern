@@ -1,42 +1,44 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mathi
- * Date: 12.04.2017
- * Time: 17:07
- */
 
 namespace BergclubPlugin\Export;
 
-
+use BergclubPlugin\Export\Data\Generator;
+use BergclubPlugin\Export\Data\GeneratorFactory;
+use BergclubPlugin\Export\Format\Format;
+use BergclubPlugin\Export\Format\FormatFactory;
 use BergclubPlugin\MVC\Helpers;
 use BergclubPlugin\MVC\Models\Option;
 use BergclubPlugin\MVC\Models\User;
 
 class Download
 {
-    private function hasDownload(){
-        return
-            isset($_GET['page']) && $_GET['page'] == 'bergclubplugin-export-controllers-maincontroller' && isset($_GET['download'])
-            && ($_GET['download'] == 'addresses'
-                || $_GET['download'] == 'shipping'
-                || $_GET['download'] == 'members'
-                || $_GET['download'] == 'contributions'
-                || $_GET['download'] == 'touren'
-                || $_GET['download'] == 'calendar'
-                || $_GET['download'] == 'pfarrblatt'
-                || $_GET['download'] == 'program');
-    }
+    /**
+     * @var Generator
+     */
+    private $dataGenerator;
+    /**
+     * @var Format
+     */
+    private $format;
 
-    public function detectDownload(){
-        if($this->hasDownload()){
-            if($_GET['download'] == "calendar" || $this->checkRights()) {
-                $method = "download" . Helpers::snakeToCamelCase($_GET['download'], true);
-                if (method_exists($this, $method)) {
-                    set_time_limit (0);
-                    $this->$method();
+    public function __construct()
+    {
+        if(isset($_GET['page']) && $_GET['page'] == 'bergclubplugin-export-controllers-maincontroller' && isset($_GET['download'])){
+            $arrDownload = explode(".", $_GET['download']);
+            if(count($arrDownload) == 2) {
+                $this->dataGenerator = GeneratorFactory::getConcrete($arrDownload[0]);
+                if ($this->dataGenerator) {
+                    $this->format = FormatFactory::getConcrete($arrDownload[1]);
                 }
             }
+        }
+    }
+
+    public function run(){
+        set_time_limit (0);
+        if($this->dataGenerator && $this->format){
+            $this->format->output($this->dataGenerator, "hier-kommt-der-name");
+            exit;
         }
     }
 
@@ -736,7 +738,7 @@ class Download
             /* @var User $spouse */
             $spouse = $user->spouse;
             if($spouse){
-                $row["Ehepartner"] = $spouse->lastname . ' ' . $spouse->firstname;
+                $row["Ehepartner"] = $spouse->last_name . ' ' . $spouse->first_name;
             }
 
             $roles = $user->functionary_roles;
