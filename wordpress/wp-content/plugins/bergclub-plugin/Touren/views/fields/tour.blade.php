@@ -4,7 +4,8 @@
             <th align="left">Art</th>
             <td>
                 <select name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::TYPE }}"
-                        id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::TYPE }}">
+                        id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::TYPE }}"
+                        style="width:100%;max-width:200px">
                     @foreach($tourenarten as $key => $tourenart)
                         @if($key == $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::TYPE])
                             <option selected="selected" value="{{ $key }}">{{ $tourenart }}</option>
@@ -21,7 +22,8 @@
             <th align="left">Anforderungen technisch (Artabhängig)</th>
             <td>
                 <select name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::REQUIREMENTS_TECHNICAL }}"
-                        id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::REQUIREMENTS_TECHNICAL }}">
+                        id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::REQUIREMENTS_TECHNICAL }}"
+                        style="width:100%;max-width:200px">
                     @foreach($difficulties as $key => $diffArray)
                         <optgroup id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::REQUIREMENTS_TECHNICAL }}-opt-{{ $key }}" label="{{ $diffArray['title'] }}">
                             @foreach($diffArray['options'] as $value)
@@ -40,7 +42,8 @@
         <tr>
             <th align="left">Anforderungen konditionell</th>
             <td>
-                <select name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::REQUIREMENTS_CONDITIONAL }}">
+                <select name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::REQUIREMENTS_CONDITIONAL }}"
+                        style="width:100%;max-width:200px">
                     @foreach($conditions as $key => $condition)
                         @if($key == $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::REQUIREMENTS_CONDITIONAL])
                             <option selected="selected" value="{{ $key }}">{{ $condition }}</option>
@@ -59,6 +62,7 @@
                        id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::RISE_UP_METERS }}"
                        name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::RISE_UP_METERS }}"
                        value="{{ $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::RISE_UP_METERS ] }}"
+                       style="width:100%;max-width:200px"
                 />
             </td>
         </tr>
@@ -70,6 +74,7 @@
                        id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::RISE_DOWN_METERS }}"
                        name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::RISE_DOWN_METERS }}"
                        value="{{ $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::RISE_DOWN_METERS ] }}"
+                       style="width:100%;max-width:200px"
                 />
             </td>
         </tr>
@@ -81,6 +86,7 @@
                        id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::DISTANCE }}"
                        name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::DISTANCE }}"
                        value="{{ $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::DISTANCE ] }}"
+                       style="width:100%;max-width:200px"
                 />
             </td>
         </tr>
@@ -91,6 +97,7 @@
                 <input type="text"
                        id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::DURATION }}"
                        name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::DURATION }}"
+                       style="width:100%;max-width:200px"
                        value="{{ $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::DURATION ] }}"
                 />
             </td>
@@ -101,6 +108,7 @@
             <td>
                 <textarea id="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::ADDITIONAL_INFO }}"
                           name="{{ \BergclubPlugin\Touren\MetaBoxes\Tour::ADDITIONAL_INFO }}"
+                          style="width:100%;max-width:200px"
                           >{{ $values[ \BergclubPlugin\Touren\MetaBoxes\Tour::ADDITIONAL_INFO ] }}</textarea>
             </td>
         </tr>
@@ -155,6 +163,8 @@
             <td>
                 <textarea name="{{ BergclubPlugin\Touren\MetaBoxes\Tour::PROGRAM }}"
                           id = "{{ BergclubPlugin\Touren\MetaBoxes\Tour::PROGRAM }}"
+                          style="width:100%;max-width:200px"
+                          rows="4"
                           >{{ $values[ BergclubPlugin\Touren\MetaBoxes\Tour::PROGRAM ] }}</textarea>
             </td>
         </tr>
@@ -164,6 +174,8 @@
             <td>
                 <textarea name="{{ BergclubPlugin\Touren\MetaBoxes\Tour::EQUIPMENT }}"
                           id = "{{ BergclubPlugin\Touren\MetaBoxes\Tour::EQUIPMENT }}"
+                          style="width:100%;max-width:200px"
+                          rows="4"
                 >{{ $values[ BergclubPlugin\Touren\MetaBoxes\Tour::EQUIPMENT ] }}</textarea>
             </td>
         </tr>
@@ -176,6 +188,7 @@
                        name="{{ BergclubPlugin\Touren\MetaBoxes\Tour::MAPMATERIAL }}"
                        id = "{{ BergclubPlugin\Touren\MetaBoxes\Tour::MAPMATERIAL }}"
                        value="{{ $values[ BergclubPlugin\Touren\MetaBoxes\Tour::MAPMATERIAL ] }}"
+                       style="width:100%;max-width:200px"
                 />
             </td>
         </tr>
@@ -187,6 +200,7 @@
                        name="{{ BergclubPlugin\Touren\MetaBoxes\Tour::ONLINEMAP }}"
                        id = "{{ BergclubPlugin\Touren\MetaBoxes\Tour::ONLINEMAP }}"
                        value="{{ $values[ BergclubPlugin\Touren\MetaBoxes\Tour::ONLINEMAP ] }}"
+                       style="width:100%;max-width:200px"
                 />
             </td>
         </tr>
@@ -198,6 +212,7 @@
                        name="{{ BergclubPlugin\Touren\MetaBoxes\Tour::COSTS }}"
                        id = "{{ BergclubPlugin\Touren\MetaBoxes\Tour::COSTS }}"
                        value="{{ $values[ BergclubPlugin\Touren\MetaBoxes\Tour::COSTS ] }}"
+                       style="width:100%;max-width:200px"
                 />
             </td>
         </tr>
@@ -209,6 +224,7 @@
                        name="{{ BergclubPlugin\Touren\MetaBoxes\Tour::COSTS_FOR }}"
                        id = "{{ BergclubPlugin\Touren\MetaBoxes\Tour::COSTS_FOR }}"
                        value="{{ $values[ BergclubPlugin\Touren\MetaBoxes\Tour::COSTS_FOR ] }}"
+                       style="width:100%;max-width:200px"
                 />
             </td>
         </tr>

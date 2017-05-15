@@ -101,7 +101,7 @@
     @if($user->spouse)
         <tr>
             <td>Ehepartner:</td>
-            <td>{{ $user->spouse->first_name }} {{ $user->spouse->last_name }}</td>
+            <td><a href="?page={{ $_GET['page'] }}&view=detail&id={{ $spouse->ID }}">{{ $user->spouse->first_name }} {{ $user->spouse->last_name }}</a></td>
         </tr>
     @endif
     @if($user->comments)
