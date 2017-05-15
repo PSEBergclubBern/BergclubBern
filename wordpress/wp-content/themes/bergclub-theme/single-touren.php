@@ -76,7 +76,7 @@ while (have_posts()) : the_post();
         <div class="row">
             <h1>
                 <?php
-                $isYouth = bcb_touren_meta(get_the_ID(), 'isYouth');
+                $isYouth = bcb_touren_meta(get_the_ID(), 'isYouthRaw');
                 if($isYouth == 1 || $isYouth == 2){
                     ?>
                     <img class="pull-right hidden-xs" src="<?= get_template_directory_uri() ?>/img/bergclub-jugend-sm.png" style="margin-left:20px">
