@@ -136,8 +136,7 @@ class Adressen implements Entity
             case Adressen::CATEGORY_EHEPAAR:
                 return null;
             case Adressen::CATEGORY_FREE:
-                // TODO: What to do?
-                return 'bcb_aktivmitglied';
+                return 'bcb_freimitglied';
             case Adressen::CATEGORY_HONOR:
                 return 'bcb_ehrenmitglied';
             case Adressen::CATEGORY_INSERENT:
