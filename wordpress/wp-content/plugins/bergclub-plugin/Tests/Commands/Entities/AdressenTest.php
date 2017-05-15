@@ -314,4 +314,12 @@ class AdressenTest extends TestCase
         $this->assertEquals($expectedArray, $this->entity->getUserHistory());
     }
 
+    /**
+     * @test
+     */
+    public function roleFreimitgliedIsCorrectlyAssigned()
+    {
+        $this->entity->category = Adressen::CATEGORY_FREE;
+        $this->assertEquals('bcb_freimitglied', $this->entity->determinateRole());
+    }
 }
