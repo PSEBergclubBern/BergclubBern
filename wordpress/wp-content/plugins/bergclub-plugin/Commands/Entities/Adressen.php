@@ -1,15 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kevstuder
- * Date: 09.04.17
- * Time: 21:12
- */
 
 namespace BergclubPlugin\Commands\Entities;
 
 use BergclubPlugin\MVC\Models\User;
 
+/**
+ * Class Adressen
+ *
+ * This entity represents an address from the old website.
+ *
+ * @package BergclubPlugin\Commands\Entities
+ */
 class Adressen implements Entity
 {
     const CATEGORY_INSTITUTION = 2;
@@ -88,6 +89,11 @@ class Adressen implements Entity
         return 'ID: ' . $this->id . ' (' . $this->salutation . ' ' . $this->firstName . ' ' . $this->lastName . ')';
     }
 
+    /**
+     * return true if this entity is a company
+     *
+     * @return bool
+     */
     public function isCompany()
     {
         return self::CATEGORY_INSTITUTION == $this->category;
@@ -101,21 +107,21 @@ class Adressen implements Entity
     public function toArray()
     {
         return array(
-            'first_name'        => $this->firstName,
-            'last_name'         => $this->lastName,
-            'company'           => $this->isCompany() ? $this->lastName : '',
-            'street'            => $this->street,
-            'zip'               => $this->plz,
-            'location'          => $this->place,
-            'phone_private'     => $this->phonePrivate,
-            'phone_work'        => $this->phoneBusiness,
-            'phone_mobile'      => $this->phoneMobile,
-            'email'             => $this->email,
-            'birthdate'         => $this->birthday,
-            'comments'          => $this->comment,
-            'program_shipment'  => $this->sendProgram ? '1' : '0',
-            'gender'            => $this->salutation == 'Frau' ? 'F' : 'M',
-            'address_addition'  => $this->addition,
+            'first_name'       => $this->firstName,
+            'last_name'        => $this->lastName,
+            'company'          => $this->isCompany() ? $this->lastName : '',
+            'street'           => $this->street,
+            'zip'              => $this->plz,
+            'location'         => $this->place,
+            'phone_private'    => $this->phonePrivate,
+            'phone_work'       => $this->phoneBusiness,
+            'phone_mobile'     => $this->phoneMobile,
+            'email'            => $this->email,
+            'birthdate'        => $this->birthday,
+            'comments'         => $this->comment,
+            'program_shipment' => $this->sendProgram ? '1' : '0',
+            'gender'           => $this->salutation == 'Frau' ? 'F' : 'M',
+            'address_addition' => $this->addition,
         );
     }
 
@@ -124,8 +130,9 @@ class Adressen implements Entity
      *
      * @return string
      */
-    public function determinateRole() {
-        switch($this->category) {
+    public function determinateRole()
+    {
+        switch ($this->category) {
             case Adressen::CATEGORY_INSTITUTION:
                 return 'bcb_institution';
             case Adressen::CATEGORY_ACTIVE_YOUTH:
@@ -227,8 +234,8 @@ class Adressen implements Entity
 
         return array(
             'bcb_aktivmitglied' => array(
-                'date_from'  => $activeMemberDateFrom->format('Y-m-d'),
-                'date_to'    => $activeMemberDateTo,
+                'date_from' => $activeMemberDateFrom->format('Y-m-d'),
+                'date_to'   => $activeMemberDateTo,
             )
         );
     }
@@ -248,6 +255,7 @@ class Adressen implements Entity
                 )
             );
         }
+
         return array();
     }
 
@@ -266,6 +274,7 @@ class Adressen implements Entity
                 )
             );
         }
+
         return array();
     }
 
@@ -284,6 +293,7 @@ class Adressen implements Entity
                 )
             );
         }
+
         return array();
     }
 
@@ -302,6 +312,7 @@ class Adressen implements Entity
                 )
             );
         }
+
         return array();
     }
 
@@ -330,6 +341,7 @@ class Adressen implements Entity
         if ($candidate) {
             return $candidate->format('Y-m-d');
         }
+
         return null;
     }
 

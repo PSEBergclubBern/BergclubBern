@@ -1,15 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kevstuder
- * Date: 03.04.17
- * Time: 12:59
- */
 
 namespace BergclubPlugin\Commands\Entities;
 
 use BergclubPlugin\Touren\MetaBoxes\MeetingPoint;
 
+/**
+ * Class Tour
+ *
+ * This class represents a tour from the old website and has methods to easily save the tour in the new database format
+ *
+ * @package BergclubPlugin\Commands\Entities
+ */
 class Tour implements Entity
 {
     public $id;
@@ -45,6 +46,10 @@ class Tour implements Entity
      */
     public $tourBericht;
 
+    /**
+     * Tour constructor.
+     * @param $array    array   An array with the values of the tour
+     */
     public function __construct($array)
     {
         $this->id = $array['id'];

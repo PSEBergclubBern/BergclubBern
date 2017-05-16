@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kevstuder
- * Date: 29.04.17
- * Time: 14:34
- */
 
 namespace BergclubPlugin\Commands\Processor;
 
@@ -17,7 +11,7 @@ use BergclubPlugin\MVC\Models\User;
  * Class AddressProcessor handles old addresses and converts them to the new schema
  *
  * @package BergclubPlugin\Commands\Processor
- * @author Kevin Studer <kreemer@me.com>
+ * @author  Kevin Studer <kreemer@me.com>
  */
 class AddressProcessor extends Processor
 {
@@ -91,7 +85,7 @@ class AddressProcessor extends Processor
      * Save one entity in the db
      *
      * @param Entity $entity
-     * @param bool $noOp
+     * @param bool   $noOp
      * @return void
      */
     public function save(Entity $entity, $noOp = true)

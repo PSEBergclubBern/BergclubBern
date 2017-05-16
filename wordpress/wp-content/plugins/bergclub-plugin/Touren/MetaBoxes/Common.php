@@ -192,7 +192,7 @@ class Common extends MetaBox
                             if (!array_key_exists(self::SLEEPOVER, $values) || empty($values[self::SLEEPOVER])) {
                                 $errors[] = 'Bei mehrtägigen Touren muss das Feld "Übernachtung" ausgefüllt werden.';
                             }
-                        } elseif ($date_to = $date_from) {
+                        } else {
                             if (!array_key_exists(self::SLEEPOVER, $values) || !empty($values[self::SLEEPOVER])) {
                                 $errors[] = 'Eintägige Touren dürfen keine Übernachtung beinhalten';
                             }

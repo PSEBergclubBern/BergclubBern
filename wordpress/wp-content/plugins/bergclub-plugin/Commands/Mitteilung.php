@@ -1,14 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kevstuder
- * Date: 14.03.17
- * Time: 17:50
- */
 
 namespace BergclubPlugin\Commands;
 
-
+/**
+ * Class Mitteilung
+ *
+ * This class can import messages from a dump file
+ *
+ * @package BergclubPlugin\Commands
+ */
 class Mitteilung extends Init
 {
 
@@ -44,10 +44,10 @@ class Mitteilung extends Init
         list($filename) = $args;
 
         $options = array(
-            'return'        => true,
-            'parse'         => 'json',
-            'launch'        => false,
-            'exit_error'    => false,
+            'return'     => true,
+            'parse'      => 'json',
+            'launch'     => false,
+            'exit_error' => false,
         );
 
         $terms = \WP_CLI::runcommand('term list category --format=json', $options);
