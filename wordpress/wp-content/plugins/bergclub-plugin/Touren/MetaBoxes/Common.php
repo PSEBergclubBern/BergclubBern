@@ -1,17 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kevstuder
- * Date: 21.03.17
- * Time: 16:56
- */
 
 namespace BergclubPlugin\Touren\MetaBoxes;
-
 
 use BergclubPlugin\FlashMessage;
 use BergclubPlugin\MVC\Models\User;
 
+/**
+ * Class Common
+ *
+ * This class represents the general metabox for tours
+ *
+ * @package BergclubPlugin\Touren\MetaBoxes
+ */
 class Common extends MetaBox
 {
     const DATE_FROM_IDENTIFIER = '_dateFrom';
@@ -25,6 +25,9 @@ class Common extends MetaBox
     const SIGNUP_TO = '_signupTo';
     const SLEEPOVER = '_sleepOver';
 
+    /**
+     * @return array
+     */
     public function getUniqueFieldNames()
     {
         return array(
@@ -54,8 +57,9 @@ class Common extends MetaBox
         $values[self::DATE_FROM_DB] = null;
         $values[self::DATE_TO_DB] = null;
         if ((!array_key_exists(self::DATE_TO_IDENTIFIER, $values)
-            || empty($values[self::DATE_TO_IDENTIFIER]))
-            && array_key_exists(self::DATE_FROM_IDENTIFIER, $values)) {
+                || empty($values[self::DATE_TO_IDENTIFIER]))
+            && array_key_exists(self::DATE_FROM_IDENTIFIER, $values)
+        ) {
             $values[self::DATE_TO_IDENTIFIER] = $values[self::DATE_FROM_IDENTIFIER];
         }
 
@@ -75,9 +79,9 @@ class Common extends MetaBox
 
         // hook for changes in field IS_ADULT_OR_YOUTH
         $queryArguments = array(
-            'orderby' => 'date',
-            'order' => 'DESC',
-            'post_type' => BCB_CUSTOM_POST_TYPE_TOURENBERICHTE,
+            'orderby'     => 'date',
+            'order'       => 'DESC',
+            'post_type'   => BCB_CUSTOM_POST_TYPE_TOURENBERICHTE,
             'post_status' => 'autodraft',
         );
         $tourenberichte = get_posts($queryArguments);
@@ -97,10 +101,13 @@ class Common extends MetaBox
             }
 
         }
+
         return $values;
     }
 
-
+    /**
+     * @return array
+     */
     protected function addAdditionalValuesForView()
     {
         global $post;
@@ -145,23 +152,34 @@ class Common extends MetaBox
 
 
         return array(
-            'leiter' => $leiter,
+            'leiter'   => $leiter,
             'coLeiter' => array_merge($coLeiter, User::findMitglieder()),
             'signUpTo' => array_merge(get_users(array('role' => 'bcb_leiter')), User::findMitglieder()),
-            'events' => array(0 => 'BCB', 1 => 'BCB Jugend', 2 => 'Beides'),
+            'events'   => array(0 => 'BCB', 1 => 'BCB Jugend', 2 => 'Beides'),
         );
     }
 
+    /**
+     * @return string
+     */
     public function getUniqueMetaBoxName()
     {
         return 'common';
     }
 
+    /**
+     * @return string
+     */
     public function getUniqueMetaBoxTitle()
     {
         return 'Zusatzinformationen';
     }
 
+    /**
+     * @param $values   array   Values for this class
+     * @param $posttype String  Posttype (draft, publish, ...)
+     * @return bool
+     */
     public function isValid($values, $posttype)
     {
         $errors = array();
@@ -232,5 +250,4 @@ class Common extends MetaBox
 
         return count($errors) == 0;
     }
-
 }
