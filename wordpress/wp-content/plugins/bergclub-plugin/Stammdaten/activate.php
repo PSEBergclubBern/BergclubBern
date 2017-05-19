@@ -1,6 +1,9 @@
 <?php
 use BergclubPlugin\MVC\Models\Option;
 
+/**
+ *  create the three different "Mitgliederbeiträge" with their default values
+ */
 $mitgliederBeitraege = [
     'bcb' => [
         'name' => 'Mitgliederbeitrag BCB',
@@ -16,8 +19,12 @@ $mitgliederBeitraege = [
     ],
 ];
 
+// add "Mitgliederbeiträge" to WP option table
 Option::set('mitgliederbeitraege', $mitgliederBeitraege);
 
+/**
+ *  create the default "Tourenarten"
+ */
 $tourenarten = [
     'bcb_bergtour' => 'Bergtour',
     'bcb_skitour' => 'Skitour',
@@ -35,6 +42,9 @@ $tourenarten = [
     'bcb_abendwanderung' => 'Abendwanderung',
 ];
 
+/**
+ *  create the default "Schwierigkeiten" for the "Tourenarten"
+ */
 $schwierigkeiten = [
     '',
     'T1 (Wanderung)',
@@ -55,8 +65,12 @@ $schwierigkeiten = [
     'S (schwierig)',
 ];
 
+/**
+ *  add the "Tourenarten" to WP option table and add each "Schwierigkeit"
+ *  to each "Tourenart" as default
+ */
 Option::set('tourenarten', $tourenarten);
 
-foreach($tourenarten as $key => $tourenart){
+foreach ($tourenarten as $key => $tourenart) {
     Option::set($key, $schwierigkeiten);
 }

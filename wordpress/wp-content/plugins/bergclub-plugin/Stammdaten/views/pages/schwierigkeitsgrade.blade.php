@@ -15,15 +15,23 @@
 
         <form method="post">
             <table>
-                <thead><tr><th align="left">Schwierigkeitsgrade für Tourenart {{$tourenart}}</th></thead>
+                <thead>
+                <tr>
+                    <th align="left">Schwierigkeitsgrade für Tourenart {{$tourenart}}</th>
+                </thead>
                 <tbody>
 
                 @forelse($schwierigkeitsgrade as $key => $grad)
                     <tr>
-                        <td align="left"><label for="{{ $key }}">{{ $grad }}</label></td><td><a href="admin.php?page=bergclubplugin-stammdaten-schwierigkeitsgradecontroller&action=delete&tourid={{$tourenartId}}&id={{ $key }}"><span class="dashicons dashicons-trash"></span></a></td>
+                        <td align="left"><label for="{{ $key }}">{{ $grad }}</label></td>
+                        <td>
+                            <a href="admin.php?page=bergclubplugin-stammdaten-schwierigkeitsgradecontroller&action=delete&tourid={{$tourenartId}}&id={{ $key }}"><span
+                                        class="dashicons dashicons-trash"></span></a></td>
                     </tr>
                 @empty
-                    <tr><td>Keine Schwierigkeitsgrade erfasst für diese Tourenart.</td></tr>
+                    <tr>
+                        <td>Keine Schwierigkeitsgrade erfasst für diese Tourenart.</td>
+                    </tr>
                 @endforelse
                 </tbody>
             </table>
@@ -36,16 +44,17 @@
         </form>
 
     @else
-        <p>Momentan sind keine Tourenarten erfasst. Daher können auch keine Schwierigkeitsgrade für Tourenarten erfasst werden.</p>
+        <p>Momentan sind keine Tourenarten erfasst. Daher können auch keine Schwierigkeitsgrade für Tourenarten erfasst
+            werden.</p>
     @endif
 
 @endsection
 
 @section('script')
-      <script type="text/javascript">
-          jQuery('#tourenart').change(function(){
-              document.location.href='?page=bergclubplugin-stammdaten-schwierigkeitsgradecontroller&tourid=' + jQuery(this).val();
-          });
-      </script>
+    <script type="text/javascript">
+        jQuery('#tourenart').change(function () {
+            document.location.href = '?page=bergclubplugin-stammdaten-schwierigkeitsgradecontroller&tourid=' + jQuery(this).val();
+        });
+    </script>
 @stop
 
