@@ -13,4 +13,5 @@ $assets = [
     plugins_url('assets/js/de/datepicker.js', __FILE__),
 ];
 
+// create admin menu "Adressen"
 $adminMenu = new Menu('Adressen', 'adressen_read', 'BergclubPlugin\\Adressverwaltung\\Controllers\\MainController', $assets, 'dashicons-admin-users');
