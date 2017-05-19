@@ -118,7 +118,7 @@ class MainController extends AbstractController
     }
 
     /**
-     * @see AbstractController::get()
+     * @see AbstractController::post()
      */
     protected function post()
     {
