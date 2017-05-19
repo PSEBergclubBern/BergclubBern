@@ -53,7 +53,7 @@ class ProgramGenerator extends AbstractGenerator
                 'meetpoint' => $this->oneLine(bcb_touren_meta($post->ID, 'meetpoint')),
                 'meetingPointTime' => $this->oneLine(bcb_touren_meta($post->ID, 'meetingPointTime')),
                 'returnBack' => $this->oneLine(bcb_touren_meta($post->ID, 'returnBack')),
-                'costs' => $this->oneLine(bcb_touren_meta($post->ID, 'oosts')),
+                'costs' => $this->oneLine(bcb_touren_meta($post->ID, 'costs')),
                 'costsFor' => $this->oneLine(bcb_touren_meta($post->ID, 'costsFor')),
                 'signupUntil' => $this->oneLine(bcb_touren_meta($post->ID, 'signupUntil')),
                 'signUpTo' => $this->oneLine(bcb_touren_meta($post->ID, 'signupToNoLinks')),

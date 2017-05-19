@@ -43,8 +43,22 @@ class TourenGenerator extends AbstractGenerator
             ],
         ]);
 
+        $post_status = [
+            'publish' => "Veröffentlicht",
+            'future' => "Zukünftig (Publizierungsdatum in Zukunft)",
+            'draft' => "Entwurf",
+            'pending' => "Veröffentlichung beantragt",
+        ];
+
         foreach($posts as $post){
+            $status = "Unbekannt";
+            if(!empty($post_status[$post->post_status])){
+                $status = $post_status[$post->post_status];
+            }
             $data[] = [
+                'Satus' => $status,
+                'Erstellt am' => date('d.m.Y', strtotime($post->post_date)),
+                'Geändert am' => date('d.m.Y', strtotime($post->post_modified)),
                 'Datum von' => bcb_touren_meta($post->ID, "dateFrom"),
                 'Datum bis' => bcb_touren_meta($post->ID, "dateTo"),
                 'Titel' => get_the_title($post),
@@ -61,13 +75,12 @@ class TourenGenerator extends AbstractGenerator
                 'Treffpunkt' => bcb_touren_meta($post->ID, 'meetpoint'),
                 'Zeit' => bcb_touren_meta($post->ID, 'meetingpointTime'),
                 'Rückkehr' => bcb_touren_meta($post->ID, 'returnBack'),
-                'Kosten' => bcb_touren_meta($post->ID, 'oosts'),
+                'Kosten' => bcb_touren_meta($post->ID, 'costs'),
                 'Kosten für' => bcb_touren_meta($post->ID, 'costsFor'),
                 'Anmeldung bis' => bcb_touren_meta($post->ID, 'signupUntil'),
                 'Anmeldung an' => bcb_touren_meta($post->ID, 'signupTo'),
             ];
         }
-
         return $data;
     }
 }
