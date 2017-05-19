@@ -1,5 +1,7 @@
 <?php
-//remove category selection from post edit form, default category: see activate.php
+/**
+ * Removes category selection from post edit form, for default category see {@link [activate.php]}.
+ */
 function bcb_remove_category_metabox(){
     remove_meta_box('categorydiv', 'post', 'side');
 }
