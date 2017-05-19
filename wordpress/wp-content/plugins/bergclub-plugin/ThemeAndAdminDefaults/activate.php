@@ -53,6 +53,7 @@ bcb_create_pages($pages);
 
 /**
  * Creates a front-end menu entry from the given values.
+ *
  * @param int $menuId id of the menu place in theme.
  * @param int $parentId id of the parent menu. If greater than zero it will be a sub entry for the given parent otherwise
  * it will be a main menu entry
@@ -104,6 +105,7 @@ function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, arra
 
 /**
  * Creates the array needed for $itemArgs parameter of bcb_create_menu_item
+ *
  * @param array $menuItem the menu item which is extracted from data/menu.json
  * @return array An array which can be used as $itemArgs parameter for bcb_create_menu_item
  */
@@ -125,6 +127,7 @@ function bcb_menu_args(array $menuItem){
 
 /**
  * Creates the front-end menu
+ *
  * @param array $menu the array which is extracted and json decoded from data/menu.json
  */
 function bcb_create_menu(array $menu){
