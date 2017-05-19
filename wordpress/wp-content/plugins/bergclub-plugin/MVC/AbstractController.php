@@ -7,37 +7,10 @@ namespace BergclubPlugin\MVC;
  * You need override the `$viewDirectory` property.
  * The `$viewDirectory` and `$view` property needs to be overridden or set in at least one of the inherited methods.
  *
- * Class AbstractController
  * @package BergclubPlugin\MVC
  */
 abstract class AbstractController
 {
-    /**
-     * The full path to your views directory (common name: views)
-     * e.g. __DIR__ . '/../views'
-     *
-     * @var string $viewDir
-     */
-    protected $viewDirectory;
-
-    /**
-     * The view to use (needs to be in your views directory).
-     * You can also use '.' instead of '/' for subdirectories, for the OOP 'look and feel' ;)
-     *
-     * e.g. 'main', 'content/page', 'content.page'
-     *
-     * @var string $viewDir
-     */
-    protected $view;
-
-    /**
-     * In this array you can put your data for the view.
-     * e.g. $this->data['title'] = 'MVC Demo' is available as `$title` in the view.
-     *
-     * @var array $data
-     */
-    protected $data = [];
-
     /**
      * Calls the following methods in this order:
      * - `first`
@@ -47,9 +20,33 @@ abstract class AbstractController
      */
 
     protected static $alreadyRun = false;
+    /**
+     * The full path to your views directory (common name: views)
+     * e.g. __DIR__ . '/../views'
+     *
+     * @var string $viewDir
+     */
+    protected $viewDirectory;
+    /**
+     * The view to use (needs to be in your views directory).
+     * You can also use '.' instead of '/' for subdirectories, for the OOP 'look and feel' ;)
+     *
+     * e.g. 'main', 'content/page', 'content.page'
+     *
+     * @var string $viewDir
+     */
+    protected $view;
+    /**
+     * In this array you can put your data for the view.
+     * e.g. $this->data['title'] = 'MVC Demo' is available as `$title` in the view.
+     *
+     * @var array $data
+     */
+    protected $data = [];
 
-    public function __construct(){
-        if(!static::$alreadyRun) {
+    public function __construct()
+    {
+        if (!static::$alreadyRun) {
             static::$alreadyRun = true;
             $method = strtolower($_SERVER['REQUEST_METHOD']);
             $this->first();
@@ -59,14 +56,20 @@ abstract class AbstractController
         }
     }
 
-    protected function render(){
-        echo View::render($this->viewDirectory, $this->view, $this->data);
-    }
-
     /**
      * Is called first.
      */
     abstract protected function first();
+
+    /**
+     * Is called last.
+     */
+    abstract protected function last();
+
+    protected function render()
+    {
+        echo View::render($this->viewDirectory, $this->view, $this->data);
+    }
 
     /**
      * Is called if the request is of type GET
@@ -77,9 +80,4 @@ abstract class AbstractController
      * Is called if the request is of type POST
      */
     abstract protected function post();
-
-    /**
-     * Is called last.
-     */
-    abstract protected function last();
 }

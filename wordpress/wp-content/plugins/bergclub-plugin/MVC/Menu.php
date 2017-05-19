@@ -8,7 +8,6 @@ use BergclubPlugin\AssetHelper;
 /**
  * Represents a main menu entry in WordPress Admin
  *
- * Class Menu
  * @package BergclubPlugin\MVC
  */
 class Menu extends AbstractMenuItem
@@ -28,7 +27,8 @@ class Menu extends AbstractMenuItem
      *               Click on the icon you want to use, click on copy HTML und just copy the part that begins with
      *               `dashicons-` (e.g. `dashicons-admin-media`).
      */
-    public function __construct($title, $capability, $controller, $assets, $icon = ''){
+    public function __construct($title, $capability, $controller, $assets, $icon = '')
+    {
         parent::__construct($title, $capability, $controller, $assets);
 
         $this->icon = $icon;
@@ -39,18 +39,20 @@ class Menu extends AbstractMenuItem
      * Adds a sub menu entry
      * @param SubMenu $subMenu
      */
-    public function addSubMenu(SubMenu $subMenu){
+    public function addSubMenu(SubMenu $subMenu)
+    {
         $this->subMenus[] = $subMenu;
     }
 
     /**
      * Is called from WordPress when generating the admin menu.
      */
-    public function run(){
+    public function run()
+    {
         $parent_slug = Helpers::getSlug($this->controller);
         add_menu_page($this->getTitle(), $this->getTitle(), $this->getCapability(), $parent_slug, [$this, 'show'], $this->getIcon());
 
-        foreach($this->getAssets() as $url){
+        foreach ($this->getAssets() as $url) {
             AssetHelper::addAsset($parent_slug, $url);
         }
 
@@ -58,7 +60,7 @@ class Menu extends AbstractMenuItem
             /* @var \BergclubPlugin\MVC\SubMenu $subMenu */
             $slug = Helpers::getSlug($subMenu->controller);
             add_submenu_page($parent_slug, $subMenu->getTitle(), $subMenu->getTitle(), $subMenu->getCapability(), $slug, [$subMenu, 'show']);
-            foreach($subMenu->getAssets() as $url){
+            foreach ($subMenu->getAssets() as $url) {
                 AssetHelper::addAsset($slug, $url);
             }
         }

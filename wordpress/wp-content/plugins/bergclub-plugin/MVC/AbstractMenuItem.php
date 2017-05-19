@@ -5,7 +5,6 @@ namespace BergclubPlugin\MVC;
 /**
  * Represents a (main or sub) menu item in the WordPress Admin.
  *
- * Class AbstractMenuItem
  * @package BergclubPlugin\MVC
  */
 abstract class AbstractMenuItem
@@ -41,7 +40,8 @@ abstract class AbstractMenuItem
      * @param string $controller The controller class as string (including namespace)
      * @param array $assets An optional array with assets (css and js urls)
      */
-    public function __construct($title, $capability, $controller, $assets = []){
+    public function __construct($title, $capability, $controller, $assets = [])
+    {
         $this->title = $title;
         $this->capability = $capability;
         $this->controller = $controller;
@@ -52,7 +52,8 @@ abstract class AbstractMenuItem
      * This method is called from the page hook for the menu item.
      * Create a new instance from the given class new.
      */
-    public function show(){
+    public function show()
+    {
         new $this->controller();
     }
 
