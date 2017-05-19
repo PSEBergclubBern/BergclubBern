@@ -2,6 +2,7 @@
 
 namespace BergclubPlugin;
 
+use BergclubPlugin\Commands\Entities\Tour;
 use BergclubPlugin\MVC\Models\Option;
 use BergclubPlugin\MVC\Models\User;
 
@@ -187,15 +188,43 @@ class TourenHelper
         return self::getDate(self::getMeta($postId, 'signupUntil'));
     }
 
-
+    /**
+     * Returns the data for the "Anmelden an" field
+     * <code>
+     * last_name first_name [phone_private (P)] [phone_work (G)] [phone_mobile (M)] [<a href="mailto:email">email</a>
+     * </code>
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getSignupTo($postId){
         return self::getUser(self::getMeta($postId, 'signupTo'), true);
     }
 
+    /**
+     * Returns the data for the "Anmelden an" field without <a> tag
+     *
+     * @see TourenHelper::getSignupTo()
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getSignupToNoLinks($postId){
         return self::getUser(self::getMeta($postId, 'signupTo'), true, true);
     }
 
+
+    /**
+     * Returns the data for the field "Treffpunkt" depending of the value of the meta field 'meetpoint'
+     *
+     * - 0: the value of the meta field 'meetpointDifferent'
+     * - 1: "Bern HB, Treffpunkt"
+     * - 2: "Bern HB, auf dem Abfahrtsperron"
+     * - 3: "Bern HB, auf der Welle
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getMeetpoint($postId){
         $id = self::getMeta($postId, 'meetpoint');
         if($id == 1){
@@ -214,6 +243,17 @@ class TourenHelper
         return null;
     }
 
+    /**
+     * Returns the "Treffpunkt" information together with the meta field 'meetingPointTime' value.
+     * <code>
+     * meetpoint[, meetingPointTime Uhr]
+     * </code>
+     *
+     * @see TourenHelper::getMeetpoint()
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getMeetpointWithTime($postId){
         $meetpoint = self::getMeetpoint($postId);
         $time = self::getMeta($postId, "meetingPointTime");
@@ -223,6 +263,13 @@ class TourenHelper
         return null;
     }
 
+    /**
+     * Returns the type of the tour.
+     * See the module "Stammdaten" for more information.
+     *
+     * @param $postId
+     * @return null|string
+     */
     public static function getType($postId){
         $slug =  self::getMeta($postId, 'type');
         $tourenarten = Option::get('tourenarten');
@@ -233,6 +280,17 @@ class TourenHelper
         return null;
     }
 
+    /**
+     * Returns the data for the "Anforderungen konditionell" based on the value of the meta field 'requirementsConditional':
+     *
+     * - 0: null
+     * - 1: 'Leicht'
+     * - 2: 'Mittel'
+     * - 3: 'Schwer'
+     *
+     * @param $postId
+     * @return null|string
+     */
     public static function getRequirementsConditional($postId){
         $id =  self::getMeta($postId, 'requirementsConditional');
         if($id == 1){
@@ -246,6 +304,15 @@ class TourenHelper
         return null;
     }
 
+    /**
+     * Returns the type of the tour together with the technical requirements.
+     * <code>
+     * type[, requirementsTechnical]
+     * </code>
+     *
+     * @param $postId
+     * @return null|string
+     */
     public static function getTypeWithTechnicalRequirements($postId){
         $type = self::getType($postId);
         $reqTechnical = self::getMeta($postId, 'requirementsTechnical');
@@ -255,16 +322,31 @@ class TourenHelper
         return null;
     }
 
+    /**
+     * Returns the data for the fields "Aufstieg" und "Abstieg".
+     * <code>
+     * <div class="icon icon-up" title="Aufstieg"></div> riseUp <div class="icon icon-down" title="Abstieg"></div> riseDown
+     * </code>
+     *
+     * @param $postId
+     * @return null|string
+     */
     public static function getRiseUpAndDown($postId){
         $riseUp = self::getMeta($postId, "riseUpMeters");
         $riseDown = self::getMeta($postId, "riseDownMeters");
         if(empty($riseUp) && empty($riseDown)){
             return null;
         } else {
-            return "<div class=\"icon icon-up\" title=\"Hinauf\"></div>" . $riseUp . " <div class=\"icon icon-down\" title=\"Hinab\"></div>" . $riseDown;
+            return "<div class=\"icon icon-up\" title=\"Aufstieg\"></div>" . $riseUp . " <div class=\"icon icon-down\" title=\"Abstieg\"></div>" . $riseDown;
         }
     }
 
+    /**
+     * Returns the data for "Gesamtdauer"
+     *
+     * @param $postId
+     * @return mixed|null
+     */
     public static function getDuration($postId){
         $duration = get_post_meta($postId, "_duration", true);
         if(!empty($duration)){
@@ -273,25 +355,56 @@ class TourenHelper
         return null;
     }
 
+    /**
+     * Returns the data for "Besonderes", '\n' replaced with '<br>'
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getAdditionalInfo($postId){
         return nl2br(self::getMeta($postId, 'additionalInfo'));
     }
 
+    /**
+     * Returns 'Ja' or 'Nein' based on the value of the meta field 'training'.
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getTraining($postId){
         return self::getYesNo(self::getMeta($postId, 'training'));
     }
 
+    /**
+     * Returns 'Ja' or 'Nein' based on the value of the meta field 'jsEvent'.
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getJsEvent($postId){
         return self::getYesNo(self::getMeta($postId, 'jsEvent'));
     }
 
+    /**
+     * Returns the data for "Programm", '\n' replaced with '<br>'
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getProgram($postId){
         return nl2br(self::getMeta($postId, 'program'));
     }
 
+    /**
+     * Returns the data for "Ausrüstung", '\n' replaced with '<br>'
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getEquipment($postId){
         return nl2br(self::getMeta($postId, 'equipment'));
     }
+
 
     public static function __callStatic($method, $args){
         $metaKey = substr($method, 3);
