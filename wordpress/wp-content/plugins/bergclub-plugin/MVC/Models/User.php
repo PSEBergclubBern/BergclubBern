@@ -132,6 +132,7 @@ class User implements IModel
         'bcb_materialchef',
         'bcb_materialchef_jugend',
         'bcb_js_coach',
+        'bcb_internet',
         'bcb_versand',
     ];
 
