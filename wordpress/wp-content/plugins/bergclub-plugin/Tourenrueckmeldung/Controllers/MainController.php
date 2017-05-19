@@ -8,6 +8,10 @@ use BergclubPlugin\MVC\Helpers;
 use BergclubPlugin\MVC\Models\User;
 use BergclubPlugin\MVC\Models\Option;
 
+/**
+ *  Controls get and post actions and needed objects for the different views for the admin page "Rückmeldungen"
+ * @package BergclubPlugin\Tourenrueckmeldung\Controllers
+ */
 class MainController extends AbstractController
 {
     protected $viewDirectory = __DIR__ . '/../views';
@@ -25,34 +29,37 @@ class MainController extends AbstractController
     protected $editBCB = false;
     protected $editJugend = false;
 
-    protected function first(){
-        //TODO: separate method to send e-mail
-        //TODO: client-side display of required fields
+    /**
+     * Checks the rights (and the therefore displayed tabs) for the current user and adds the needed data to the view.
+     * @see AbstractController::first()
+     */
+    protected function first()
+    {
 
         $this->data['tabs'] = [];
 
         $this->user = User::findCurrent();
 
-        if($this->user->hasCapability('rueckmeldungen_tab_nofeedback')){
+        if ($this->user->hasCapability('rueckmeldungen_tab_nofeedback')) {
             $this->data['tabs']['nofeedback'] = 'Neue Rückmeldung';
         }
 
-        if($this->user->hasCapability('rueckmeldungen_tab_feedback')){
+        if ($this->user->hasCapability('rueckmeldungen_tab_feedback')) {
             $this->data['tabs']['feedback'] = 'Zur Freigabe';
         }
 
-        if($this->user->hasCapability('rueckmeldungen_tab_approved')){
+        if ($this->user->hasCapability('rueckmeldungen_tab_approved')) {
             $this->data['tabs']['approved'] = 'Zur Auszahlung';
         }
 
-        if($this->user->hasCapability('rueckmeldungen_tab_all')){
+        if ($this->user->hasCapability('rueckmeldungen_tab_all')) {
             $this->data['tabs']['all'] = 'Alle Rückmeldungen';
         }
 
-        if(empty($this->data['tabs'])){
+        if (empty($this->data['tabs'])) {
             FlashMessage::add(FlashMessage::TYPE_ERROR, 'Sie haben nicht die benötigten Rechte.');
             $this->view = "pages.empty";
-        }else {
+        } else {
 
             if ($this->user->hasCapability('rueckmeldungen_read_others') || $this->user->hasCapability('rueckmeldungen_jugend_read_others')) {
                 $this->readOthers = true;
@@ -100,29 +107,53 @@ class MainController extends AbstractController
         }
     }
 
-    protected function get(){
+    /**
+     * Handles GET request type.
+     * <p>
+     * Checks if a tab is active and if a specific method for this tab exists, if yes the specific method is called.
+     *
+     * @see AbstractController::get()
+     */
+    protected function get()
+    {
 
-        if($method = $this->getTabMethod('get')) {
+        if ($method = $this->getTabMethod('get')) {
             $this->$method();
         }
 
     }
 
-    protected function post(){
+    /**
+     * Handles POST request type.
+     * <p>
+     * Checks if a tab is active and if a specific method for this tab exists, if yes the specific method is called.
+     *
+     * @see AbstractController::post()
+     */
+    protected function post()
+    {
 
-        if($method = $this->getTabMethod('post')) {
+        if ($method = $this->getTabMethod('post')) {
             $this->$method();
         }
 
     }
 
-    protected function last(){
+    /**
+     * @see AbstractController::last()
+     */
+    protected function last()
+    {
 
     }
 
+    /**
+     * Handles get request for "Neue Rückmeldung" tab.
+     */
     private function getNofeedback()
     {
 
+        // if id is not set, load all "Rückmeldungen" without feedback
         if (!$this->id) {
             $this->data['showDateFeedback'] = false;
             $this->data['showDateApproved'] = false;
@@ -166,19 +197,24 @@ class MainController extends AbstractController
                 }
             }
         } else {
+            // load form to record feedback for the specified "Rückmeldung"
             $this->data['edit'] = true;
             $this->loadRueckmeldung();
         }
     }
 
-    private function postNofeedback(){
+    /**
+     * Handles post request for "Neue Rückmeldung" tab. Stores a new "Rückmeldung".
+     */
+    private function postNofeedback()
+    {
 
         if ($this->id > 0) {
             $this->data['edit'] = true;
 
             $rueckmeldung = array_map('trim', $_POST);
             $tour = get_post($this->id);
-            if($tour) {
+            if ($tour) {
                 $rueckmeldung['leader'] = bcb_touren_meta($this->id, 'leader');
                 $rueckmeldung['coLeader'] = bcb_touren_meta($this->id, 'coLeader');
                 $rueckmeldung['title'] = $tour->post_title;
@@ -197,7 +233,7 @@ class MainController extends AbstractController
                     FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Tourrückmeldung erfolgreich erfasst.');
                     Helpers::redirect('?page=' . $_GET['page'] . '&tab=nofeedback');
                 }
-            }else{
+            } else {
                 FlashMessage::add(FlashMessage::TYPE_ERROR, 'Die Tour mit der Id ' . $this->id . ' konnte nicht gefunden werden.');
                 Helpers::redirect('?page=' . $_GET['page'] . '&tab=nofeedback');
             }
@@ -205,7 +241,12 @@ class MainController extends AbstractController
 
     }
 
-    private function getFeedback(){
+    /**
+     * Handles get request for "Zur Freigabe" tab.
+     */
+    private function getFeedback()
+    {
+        // if id is not set, load all "Rückmeldungen" with feedback who aren't approved yet.
         if (!$this->id) {
             $this->data['showDateFeedback'] = true;
             $this->data['showDateApproved'] = false;
@@ -233,7 +274,7 @@ class MainController extends AbstractController
                 if (!empty($this->rueckmeldungen[$tour->ID]) && $this->rueckmeldungen[$tour->ID]['state'] == 1) {
                     $rueckmeldung = $this->rueckmeldungen[$tour->ID];
                     $isYouth = bcb_touren_meta($tour->ID, 'isYouth');
-                    if ((($isYouth == 0 || $isYouth = 2) && $this->user->hasCapability('rueckmeldungen_publish')) || ($isYouth == 1  && $this->user->hasCapability('rueckmeldungen_jugend_publish'))) {
+                    if ((($isYouth == 0 || $isYouth = 2) && $this->user->hasCapability('rueckmeldungen_publish')) || ($isYouth == 1 && $this->user->hasCapability('rueckmeldungen_jugend_publish'))) {
                         $this->data['tours'][$tour->ID] = [
                             'date' => $rueckmeldung['date'],
                             'dateFeedback' => $rueckmeldung['dateFeedback'],
@@ -245,12 +286,17 @@ class MainController extends AbstractController
                 }
             }
         } else {
+            // load form to approve the specified "Rückmeldung"
             $this->data['edit'] = true;
             $this->loadRueckmeldung();
         }
     }
 
-    private function postFeedback(){
+    /**
+     * Handles post request for "Zur Freigabe" tab. Stores an existing (and maybe updated) "Rückmeldung".
+     */
+    private function postFeedback()
+    {
         if ($this->id > 0) {
             $this->data['edit'] = true;
             $this->loadRueckmeldung();
@@ -259,13 +305,13 @@ class MainController extends AbstractController
             $rueckmeldung['leader'] = bcb_touren_meta($this->id, 'leader');
             $rueckmeldung['coLeader'] = bcb_touren_meta($this->id, 'coLeader');
 
-            if($rueckmeldung['state'] > 1){
+            if ($rueckmeldung['state'] > 1) {
                 FlashMessage::add(FlashMessage::TYPE_ERROR, 'Diese Rückmeldung wurde bereits freigegeben.');
                 Helpers::redirect('?page=' . $_GET['page'] . '&tab=' . $_GET['tab']);
             }
 
             $tour = get_post($this->id);
-            if($tour) {
+            if ($tour) {
                 $rueckmeldung['dateApproved'] = date('d.m.Y H:i:s');
 
                 if ($this->saveRueckmeldung($rueckmeldung)) {
@@ -273,15 +319,19 @@ class MainController extends AbstractController
                     FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Tourrückmeldung erfolgreich freigegeben.');
                     Helpers::redirect('?page=' . $_GET['page'] . '&tab=feedback');
                 }
-            }else{
+            } else {
                 FlashMessage::add(FlashMessage::TYPE_ERROR, 'Die Tour mit der Id ' . $this->id . ' konnte nicht gefunden werden.');
                 Helpers::redirect('?page=' . $_GET['page'] . '&tab=feedback');
             }
         }
     }
 
-    private function getApproved(){
-
+    /**
+     * Handles get request for "Zur Auszahlung" tab.
+     */
+    private function getApproved()
+    {
+        // if no id is specified all "Rückmeldungen" who aren't paid are displayed
         if (!$this->id) {
             $this->data['showDateFeedback'] = true;
             $this->data['showDateApproved'] = true;
@@ -319,13 +369,18 @@ class MainController extends AbstractController
                 }
             }
         } else {
+            // display "Rückmeldung" who will be paid
             $this->data['edit'] = true;
             $this->loadRueckmeldung();
         }
 
     }
 
-    private function postApproved(){
+    /**
+     * Handles post request for "Zur Auszahlung" tab. Marks a "Rückmeldung" as paid and therefore finished.
+     */
+    private function postApproved()
+    {
         if ($this->id > 0) {
             $this->data['edit'] = true;
             $this->loadRueckmeldung();
@@ -334,20 +389,20 @@ class MainController extends AbstractController
             $rueckmeldung['leader'] = bcb_touren_meta($this->id, 'leader');
             $rueckmeldung['coLeader'] = bcb_touren_meta($this->id, 'coLeader');
 
-            if($rueckmeldung['state'] > 2){
+            if ($rueckmeldung['state'] > 2) {
                 FlashMessage::add(FlashMessage::TYPE_ERROR, 'Diese Rückmeldung wurde bereits ausbezahlt.');
                 Helpers::redirect('?page=' . $_GET['page'] . '&tab=' . $_GET['tab']);
             }
 
             $tour = get_post($this->id);
-            if($tour) {
+            if ($tour) {
                 $rueckmeldung['datePay'] = date('d.m.Y H:i:s');
 
                 if ($this->saveRueckmeldung($rueckmeldung)) {
                     FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Auszahlung gespeichert.');
                     Helpers::redirect('?page=' . $_GET['page'] . '&tab=approved');
                 }
-            }else{
+            } else {
                 FlashMessage::add(FlashMessage::TYPE_ERROR, 'Die Tour mit der Id ' . $this->id . ' konnte nicht gefunden werden.');
                 Helpers::redirect('?page=' . $_GET['page'] . '&tab=approved');
             }
@@ -355,7 +410,11 @@ class MainController extends AbstractController
 
     }
 
-    private function getAll(){
+    /**
+     * Handles get request for "Alle Rückmeldungen" tab.
+     */
+    private function getAll()
+    {
 
         if (!$this->id) {
             $this->data['showDateFeedback'] = true;
@@ -390,13 +449,13 @@ class MainController extends AbstractController
                         $dateFeedback = "&nbsp;";
                         $dateApproved = "&nbsp;";
                         $datePay = "&nbsp;";
-                        if(!empty($rueckmeldung['dateFeedback'])){
+                        if (!empty($rueckmeldung['dateFeedback'])) {
                             $dateFeedback = $rueckmeldung['dateFeedback'];
                         }
-                        if(!empty($rueckmeldung['dateApproved'])){
+                        if (!empty($rueckmeldung['dateApproved'])) {
                             $dateApproved = $rueckmeldung['dateApproved'];
                         }
-                        if(!empty($rueckmeldung['datePay'])){
+                        if (!empty($rueckmeldung['datePay'])) {
                             $datePay = $rueckmeldung['datePay'];
                         }
 
@@ -421,7 +480,7 @@ class MainController extends AbstractController
             $isYouth = get_post_meta($this->id, '_isYouth', true);
             if ($this->editOthers || $leaderId == $this->user->ID || $coLeaderId == $this->user->ID) {
                 if (($isYouth == 0 && $this->editBCB) || ($isYouth == 1 && $this->editJugend) || ($isYouth == 2 && ($this->editBCB || $this->readJugend))) {
-                    if($this->user->hasRole('redaktion')) {
+                    if ($this->user->hasRole('redaktion')) {
                         $allowEdit = true;
                     }
                 }
@@ -432,55 +491,31 @@ class MainController extends AbstractController
 
     }
 
-    private function postAll(){
-        if ($this->id > 0) {
-            $this->data['edit'] = true;
-            $this->loadRueckmeldung();
-
-            $rueckmeldung = $this->data['rueckmeldung'];
-            $rueckmeldung['leader'] = bcb_touren_meta($this->id, 'leader');
-            $rueckmeldung['coLeader'] = bcb_touren_meta($this->id, 'coLeader');
-
-            if($rueckmeldung['state'] > 2){
-                FlashMessage::add(FlashMessage::TYPE_ERROR, 'Diese Rückmeldung wurde bereits ausbezahlt.');
-                Helpers::redirect('?page=' . $_GET['page'] . '&tab=' . $_GET['tab']);
-            }
-
-            $tour = get_post($this->id);
-            if($tour) {
-                $rueckmeldung['datePay'] = date('d.m.Y H:i:s');
-
-                if ($this->saveRueckmeldung($rueckmeldung)) {
-                    FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Auszahlung gespeichert.');
-                    Helpers::redirect('?page=' . $_GET['page'] . '&tab=approved');
-                }
-            }else{
-                FlashMessage::add(FlashMessage::TYPE_ERROR, 'Die Tour mit der Id ' . $this->id . ' konnte nicht gefunden werden.');
-                Helpers::redirect('?page=' . $_GET['page'] . '&tab=approved');
-            }
-        }
-
-    }
-
-    private function loadRueckmeldung(){
+    /**
+     *  Loads the "Rückmeldung" with the currently stored id
+     */
+    private function loadRueckmeldung()
+    {
         $leaderId = get_post_meta($this->id, '_leader', true);
         $coLeaderId = get_post_meta($this->id, '_coLeader', true);
         $isYouth = get_post_meta($this->id, '_isYouth', true);
         $edit = false;
 
-        if($_GET['tab'] == 'nofeedback' || $_GET['tab'] == 'all'){
+        // check if current user has caps to edit
+        if ($_GET['tab'] == 'nofeedback' || $_GET['tab'] == 'all') {
             $edit = true;
-        }elseif($_GET['tab'] == 'feedback'){
+        } elseif ($_GET['tab'] == 'feedback') {
             if (($isYouth == 0 && $this->user->hasCapability('rueckmeldungen_publish'))
                 || ($isYouth == 1 && $this->user->hasCapability('rueckmeldungen_jugend_publish'))
-                || ($isYouth == 2 && ($this->user->hasCapability('rueckmeldungen_publish') || $this->user->hasCapability('rueckmeldungen_jugend_publish')))) {
+                || ($isYouth == 2 && ($this->user->hasCapability('rueckmeldungen_publish') || $this->user->hasCapability('rueckmeldungen_jugend_publish')))
+            ) {
                 $edit = true;
             }
-        }elseif($_GET['tab'] == 'approved' && $this->user->hasCapability('rueckmeldungen_pay')){
+        } elseif ($_GET['tab'] == 'approved' && $this->user->hasCapability('rueckmeldungen_pay')) {
             $edit = true;
         }
 
-        if($edit && $_GET['tab'] != 'approved') {
+        if ($edit && $_GET['tab'] != 'approved') {
             if ($this->editOthers || $leaderId == $this->user->ID || $coLeaderId == $this->user->ID) {
                 if (($isYouth == 0 && $this->editBCB) || ($isYouth == 1 && $this->editJugend) || ($isYouth == 2 && ($this->editBCB || $this->readJugend))) {
                     $edit = true;
@@ -488,19 +523,20 @@ class MainController extends AbstractController
             }
         }
 
-        if(!$edit){
+        if (!$edit) {
             $this->view = "pages.empty";
             FlashMessage::add(FlashMessage::TYPE_ERROR, 'Sie haben nicht die benötigten Rechte.');
-        }else {
+        } else {
+            // check if "Rückmeldung" has already been recorded
             if (!isset($this->rueckmeldungen[$this->id])) {
-                if($_GET['tab'] != "nofeedback"){
+                if ($_GET['tab'] != "nofeedback") {
                     FlashMessage::add(FlashMessage::TYPE_ERROR, 'Keine Rückmeldung für Tour mit Id ' . $this->id . ' gefunden.');
                     Helpers::redirect('?page=' . $_GET['page'] . '&view=' . $_GET['view'] . '&tab=' . $_GET['tab']);
                 }
 
                 $tour = get_post($this->id);
 
-                if(!$tour){
+                if (!$tour) {
                     FlashMessage::add(FlashMessage::TYPE_ERROR, 'Keine Tour mit Id ' . $this->id . ' gefunden.');
                     Helpers::redirect('?page=' . $_GET['page'] . '&view=' . $_GET['view'] . '&tab=' . $_GET['tab']);
                 }
@@ -524,10 +560,10 @@ class MainController extends AbstractController
                 ];
             } else {
                 $rueckmeldung = $this->rueckmeldungen[$this->id];
-                if($_GET['tab'] == "feedback" && $rueckmeldung['state'] > 1){
+                if ($_GET['tab'] == "feedback" && $rueckmeldung['state'] > 1) {
                     FlashMessage::add(FlashMessage::TYPE_ERROR, 'Diese Rückmeldung wurde bereits freigegeben.');
                     Helpers::redirect('?page=' . $_GET['page'] . '&tab=' . $_GET['tab']);
-                }elseif($_GET['tab'] == "approved" && $rueckmeldung['state'] > 2){
+                } elseif ($_GET['tab'] == "approved" && $rueckmeldung['state'] > 2) {
                     FlashMessage::add(FlashMessage::TYPE_ERROR, 'Diese Rückmeldung wurde bereits ausbezahlt.');
                     Helpers::redirect('?page=' . $_GET['page'] . '&tab=' . $_GET['tab']);
                 }
@@ -536,53 +572,60 @@ class MainController extends AbstractController
         }
     }
 
-    private function saveRueckmeldung($rueckmeldung){
+    private function saveRueckmeldung($rueckmeldung)
+    {
         $errors = [];
 
         $this->addNumberOfParticipants($rueckmeldung);
-        $rueckmeldung['flatCharge'] = number_format($rueckmeldung['flatCharge']*1, 2, '.', '');
-        $rueckmeldung['journey'] = number_format($rueckmeldung['journey']*1, 2, '.', '');
-        if(!isset($rueckmeldung['sleepOver'])){
+        $rueckmeldung['flatCharge'] = number_format($rueckmeldung['flatCharge'] * 1, 2, '.', '');
+        $rueckmeldung['journey'] = number_format($rueckmeldung['journey'] * 1, 2, '.', '');
+        if (!isset($rueckmeldung['sleepOver'])) {
             $rueckmeldung['sleepOver'] = 0;
         }
-        $rueckmeldung['sleepOver'] = number_format($rueckmeldung['sleepOver']*1, 2, '.', '');
+        $rueckmeldung['sleepOver'] = number_format($rueckmeldung['sleepOver'] * 1, 2, '.', '');
 
-        if($rueckmeldung['executed']) {
+        // validate "Rückmeldung"
+        if ($rueckmeldung['executed']) {
             if ($this->countLines($rueckmeldung['participants']) + $this->countLines($rueckmeldung['externParticipants']) == 0) {
                 $errors[] = "Teilnehmer BCB/Externe Teilnehmer (es muss mindestens ein Teilnehmer erfasst sein)";
             }
-            if(empty($rueckmeldung['shortReport'])){
+            if (empty($rueckmeldung['shortReport'])) {
                 $errors[] = "Kurzbericht muss erfasst sein";
             }
         }
 
-        if($rueckmeldung['flatCharge'] == 0){
+        if ($rueckmeldung['flatCharge'] == 0) {
             $errors[] = "Pauschale (muss grösser als 0 sein)";
         }
 
-        if(!empty($errors)){
-            FlashMessage::add( FlashMessage::TYPE_ERROR, 'Folgende Felder müssen ausgefüllt werden:<br/>- ' . join('<br/>- ', $errors));
+        if (!empty($errors)) {
+            FlashMessage::add(FlashMessage::TYPE_ERROR, 'Folgende Felder müssen ausgefüllt werden:<br/>- ' . join('<br/>- ', $errors));
             $this->data['rueckmeldung'] = $rueckmeldung;
             return false;
         }
 
-        if(!isset($rueckmeldung['state'])){
+        if (!isset($rueckmeldung['state'])) {
             $rueckmeldung['state'] = 1;
-        }else{
+        } else {
             $rueckmeldung['state']++;
         }
 
         $this->rueckmeldungen[$this->id] = $rueckmeldung;
+        // store "Rückmeldungen" in WP options table
         Option::set('rueckmeldungen', $this->rueckmeldungen);
 
         return true;
     }
 
-    private function addNumberOfParticipants( &$rueckmeldung ){
-        if(!$rueckmeldung['executed']){
+    /**
+     * Adds the number of participants to the "Rückmeldung" $rueckmeldung
+     */
+    private function addNumberOfParticipants(&$rueckmeldung)
+    {
+        if (!$rueckmeldung['executed']) {
             $numberOfParticipants = 0;
-        }else {
-            // every tour has a leader
+        } else {
+            // every tour has a leader and therefore at least one participant
             $numberOfParticipants = 1;
 
             if (!empty($rueckmeldung['coLeader'])) {
@@ -596,29 +639,38 @@ class MainController extends AbstractController
         $rueckmeldung['numberOfParticipants'] = $numberOfParticipants;
     }
 
-    private function countLines($text){
+    /**
+     * returns the number of lines $text has.
+     */
+    private function countLines($text)
+    {
         $numLines = 0;
         $text = str_replace("\r", "", $text);
         $lines = explode("\n", $text);
-        foreach($lines as $line){
-            if(!empty(trim($line))){
+        foreach ($lines as $line) {
+            if (!empty(trim($line))) {
                 $numLines++;
             }
         }
         return $numLines;
     }
 
-    private function mail($role, $subject, $message){
-        $users = User::findByRole( $role );
-        foreach( $users as $user ){
-            if($user->email){
-                wp_mail( $user->email, $subject, $message);
+    /**
+     * Sends a mail to each user who has the role $role with the specified subject and message.
+     */
+    private function mail($role, $subject, $message)
+    {
+        $users = User::findByRole($role);
+        foreach ($users as $user) {
+            if ($user->email) {
+                wp_mail($user->email, $subject, $message);
             }
         }
     }
 
-    private function getTabMethod($requestType){
-        if(isset($this->data['tab']) && !empty($this->data['tab'])) {
+    private function getTabMethod($requestType)
+    {
+        if (isset($this->data['tab']) && !empty($this->data['tab'])) {
             $method = strtolower($requestType) . strtoupper(substr($this->data['tab'], 0, 1)) . substr($this->data['tab'], 1);
             if (method_exists($this, $method)) {
                 return $method;
