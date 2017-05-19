@@ -23,11 +23,9 @@ function bcb_jugend_home(){
  * @return string the jugend hostname.
  */
 function bcb_jugend_host(){
-    $hostParts = explode('.', $_SERVER['SERVER_NAME']);
-    if($hostParts[0] != 'jugend'){
+    if( ! bcb_is_jugend() ){
         return 'jugend.' . $_SERVER['SERVER_NAME'];
     }
-
     return $_SERVER['SERVER_NAME'];
 }
 
