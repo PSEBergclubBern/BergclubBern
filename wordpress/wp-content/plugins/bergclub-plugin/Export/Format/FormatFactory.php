@@ -10,7 +10,7 @@ class FormatFactory implements Factory
     public static function getConcrete($formatSlug, array $args = [])
     {
         $className = __NAMESPACE__ . "\\" . Helpers::snakeToCamelCase($formatSlug) . "Format";
-        if(class_exists($className)){
+        if (class_exists($className)) {
             return new $className($args);
         }
 

@@ -6,7 +6,7 @@ namespace BergclubPlugin\Export\Format;
 abstract class AbstractFormat implements Format
 {
     /**
-     * @var array $args;
+     * @var array $args ;
      */
     protected $args;
 

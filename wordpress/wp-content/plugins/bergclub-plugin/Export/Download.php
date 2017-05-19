@@ -59,16 +59,17 @@ class Download
         ],
     ];
 
-    public function prepare(){
-        if(isset($_GET['page']) && $_GET['page'] == 'bergclubplugin-export-controllers-maincontroller' && isset($_GET['download'])){
-            if(!isset($this->downloads[$_GET['download']])){
+    public function prepare()
+    {
+        if (isset($_GET['page']) && $_GET['page'] == 'bergclubplugin-export-controllers-maincontroller' && isset($_GET['download'])) {
+            if (!isset($this->downloads[$_GET['download']])) {
                 FlashMessage::add(FlashMessage::TYPE_WARNING, "Der gewünschte Download ist nicht vorhanden.");
-            }else {
+            } else {
                 $download = $this->downloads[$_GET['download']];
 
                 $this->name = $download['name'];
 
-                if($this->checkCapability($download['needed_cap'])) {
+                if ($this->checkCapability($download['needed_cap'])) {
 
                     $arrDownload = explode(".", $_GET['download']);
                     if (count($arrDownload) == 2) {
@@ -77,30 +78,32 @@ class Download
                             $this->format = FormatFactory::getConcrete($arrDownload[1], $_GET);
                         }
                     }
-                }else{
+                } else {
                     FlashMessage::add(FlashMessage::TYPE_WARNING, "Sie haben nicht die benötigten Rechte um diesen Download zu starten.");
                 }
             }
         }
     }
 
-    public function run(){
+    public function run()
+    {
         $this->prepare();
 
-        if($this->dataGenerator && $this->format){
-            set_time_limit (0);
+        if ($this->dataGenerator && $this->format) {
+            set_time_limit(0);
             $this->format->output($this->dataGenerator, $this->name);
             exit;
         }
     }
 
-    private function checkCapability($capability){
-        if($capability == '*'){
+    private function checkCapability($capability)
+    {
+        if ($capability == '*') {
             return true;
         }
 
         $currentUser = User::findCurrent();
-        if(!$currentUser){
+        if (!$currentUser) {
             return false;
         }
 

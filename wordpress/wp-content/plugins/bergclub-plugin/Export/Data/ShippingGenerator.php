@@ -7,11 +7,12 @@ use BergclubPlugin\MVC\Models\User;
 
 class ShippingGenerator extends AbstractAddressLineGenerator
 {
-    protected function getUsers(){
+    protected function getUsers()
+    {
         $users = User::findAllWithoutSpouse();
-        foreach($users as $key => $user){
+        foreach ($users as $key => $user) {
             /* @var User $user */
-            if(!$user->raw_program_shipment){
+            if (!$user->raw_program_shipment) {
                 unset($users[$key]);
             }
         }
@@ -19,7 +20,8 @@ class ShippingGenerator extends AbstractAddressLineGenerator
         return $users;
     }
 
-    protected function addAdditionalData(&$row, User $user){
+    protected function addAdditionalData(&$row, User $user)
+    {
 
     }
 }

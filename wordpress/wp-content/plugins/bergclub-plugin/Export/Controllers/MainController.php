@@ -8,12 +8,30 @@ use BergclubPlugin\MVC\Helpers;
 use BergclubPlugin\MVC\Models\Role;
 use BergclubPlugin\MVC\Models\User;
 
+/**
+ * Controller for the export page.
+ * Adds data to the view and handles requests.
+ *
+ * @package BergclubPlugin\Export\Controllers
+ */
 class MainController extends AbstractController
 {
+    /**
+     * @var string
+     */
     protected $viewDirectory = __DIR__ . '/../views';
+    /**
+     * @var string
+     */
     protected $view = 'pages.main';
 
-    protected function first(){
+    /**
+     * Sets up the common data for every view and request type.
+     *
+     * @see AbstractController::first()
+     */
+    protected function first()
+    {
 
         $quarterTouren = [
             [
@@ -64,40 +82,54 @@ class MainController extends AbstractController
         $this->data['allowed'] = [];
 
         $user = User::findCurrent();
-        if($user->hasCapability('export_adressen')){
+        if ($user->hasCapability('export_adressen')) {
             $this->data['allowed'][] = "adressen";
         }
 
-        if($user->hasCapability('export_touren')){
+        if ($user->hasCapability('export_touren')) {
             $this->data['allowed'][] = "touren";
         }
 
-        if($user->hasCapability('export_druck')){
+        if ($user->hasCapability('export_druck')) {
             $this->data['allowed'][] = "druck";
         }
     }
 
-    protected function get(){
+    /**
+     * @see AbstractController::get()
+     */
+    protected function get()
+    {
 
     }
 
-    protected function post(){
+    /**
+     * @see AbstractController::get()
+     */
+    protected function post()
+    {
 
     }
 
-    protected function last(){
+    /**
+     * @see AbstractController::last()
+     */
+    protected function last()
+    {
 
     }
 
-    private function checkRights(){
+    private function checkRights()
+    {
         $currentUser = User::findCurrent();
-        if(!$currentUser->hasCapability('export')){
+        if (!$currentUser->hasCapability('export')) {
             FlashMessage::add(FlashMessage::TYPE_ERROR, 'Sie haben nicht die benötigten Rechte um diese Seite anzuzeigen.');
             $this->abort();
         }
     }
 
-    private function abort(){
+    private function abort()
+    {
         $this->data['title'] = "Ungenügende Rechte";
         $this->view = "pages.empty";
         $this->render();
