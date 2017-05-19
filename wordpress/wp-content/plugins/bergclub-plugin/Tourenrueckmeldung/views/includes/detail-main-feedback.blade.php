@@ -6,7 +6,7 @@
 
             @include('includes.tourenrueckmeldung-form')
 
-            <p><input type="submit" class="button button-primary" value="Freigeben" /></p>
+            <p><input type="submit" class="button button-primary" value="Freigeben"/></p>
 
         </form>
 
