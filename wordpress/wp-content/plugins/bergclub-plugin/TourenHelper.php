@@ -18,25 +18,57 @@ use BergclubPlugin\MVC\Models\User;
  */
 class TourenHelper
 {
+
+    /**
+     * Returns 'BCB', 'Jugend' or 'Beides' based on the 'isYouth' meta value (0, 1 or 2).
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getIsYouth($postId){
         $isYouth = ['BCB', 'Jugend', 'Beides'];
         return $isYouth[self::getMeta($postId, 'isYouth')];
     }
 
+    /**
+     * Returns the raw value of the 'isYouth' meta value (0, 1, 2).
+     *
+     * @param $postId
+     * @return int
+     */
     public static function getIsYouthRaw($postId){
         return self::getMeta($postId, 'isYouth');
     }
 
+    /**
+     * Returns the 'dateFrom' meta value in the format `d.m.Y`
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getDateFrom($postId){
         return self::getDate(self::getMeta($postId, 'dateFrom'));
     }
 
+    /**
+     * Returns the 'dateTo' meta value in the format `d.m.Y`
+     * @param $postId
+     * @return string
+     */
     public static function getDateTo($postId){
         $dateFrom = self::getDate(self::getMeta($postId, 'dateFrom'));
         $dateTo = self::getDate(self::getMeta($postId, 'dateTo'));
         return $dateFrom != $dateTo ? $dateTo : null;
     }
 
+    /**
+     * Returns a short display date.
+     * If the tour is over several days it will return `d.m. - d.m.` (dateFrom and dateTo meta value).
+     * Otherwise it will return `d.m.` (dateFrom meta value).
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getDateDisplayShort($postId){
         if(self::getIsSeveralDays($postId)){
             return self::getDate(self::getMeta($postId, 'dateFrom'), 'd.m.') . ' - ' . self::getDate(self::getMeta($postId, 'dateTo'), 'd.m.');
@@ -44,6 +76,19 @@ class TourenHelper
         return self::getDate(self::getMeta($postId, 'dateFrom'), 'd.m.');
     }
 
+    /**
+     * Returns a full display date.
+     *
+     * If the tour is over several days:
+     * - `d.m.Y - d.m.Y` if dateFrom and dateTo meta values have not the same year
+     * - `d.m. - d.m.Y` if dateFrom and dateTo meta values have not the same month
+     * - `d. - d.m.Y` otherwise
+     *
+     * and `d.m.Y` if the tour is only one day:
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getDateDisplayFull($postId){
         if(self::getIsSeveralDays($postId)){
             $dateFrom = strtotime(self::getMeta($postId, 'dateFrom'));
@@ -60,19 +105,53 @@ class TourenHelper
         return self::getDate(self::getMeta($postId, 'dateFrom'), 'd.m.Y');
     }
 
+    /**
+     * Checks if the tour is over several days or not.
+     *
+     * @param $postId
+     * @return bool true when several days, false otherwise
+     */
     public static function getIsSeveralDays($postId){
         $dateFrom = self::getDateFrom($postId);
         $dateTo = self::getDateTo($postId);
         return !empty($dateTo) && $dateTo != $dateFrom;
     }
+
+    /**
+     * Returns the data for the "Leiter"
+     * <code>
+     * last_name first_name [phone_private (P)] [phone_work (G)] [phone_mobile (M)] [<a href="mailto:email">email</a>
+     * </code>
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getLeader($postId){
         return self::getUser(self::getMeta($postId, 'leader'));
     }
 
+    /**
+     * Returns the data for the "Co-Leiter"
+     * <code>
+     * last_name first_name [phone_private (P)] [phone_work (G)] [phone_mobile (M)] [<a href="mailto:email">email</a>
+     * </code>
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getCoLeader($postId){
         return self::getUser(self::getMeta($postId, 'coLeader'));
     }
 
+    /**
+     * Returns the data for the "Co-Leiter"
+     * <code>
+     * leader-first_name leader-last_name[, co-leader-first_name co-leader-last_name]
+     * </code>
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getLeaderAndCoLeader($postId){
         $leaderId = self::getMeta($postId, "leader");
         $leaderName = self::getFullName($leaderId);
@@ -84,6 +163,13 @@ class TourenHelper
         return $leaderName;
     }
 
+
+    /**
+     * Returns the full name (`first_name last_name`) for the given user id
+     *
+     * @param $userId
+     * @return string
+     */
     public static function getFullName($userId){
         $firstName = get_user_meta($userId, "first_name", true);
         $lastName = get_user_meta($userId, "last_name", true);
@@ -91,6 +177,12 @@ class TourenHelper
         return $fullName;
     }
 
+    /**
+     * Returns the 'signupUntil' meta value in the format `d.m.Y`
+     *
+     * @param $postId
+     * @return string
+     */
     public static function getSignupUntil($postId){
         return self::getDate(self::getMeta($postId, 'signupUntil'));
     }
