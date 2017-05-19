@@ -21,6 +21,8 @@ use BergclubPlugin\MVC\Helpers;
  *
  * @see User for how the roles are added, removed and managed.
  * @see ../Adressverwaltung/activate.php for the generated roles and capabilities for Berg Club Bern.
+ *
+ * @package BergclubPlugin\MVC\Models
  */
 class Role implements IModel
 {
@@ -55,12 +57,43 @@ class Role implements IModel
      */
     public function __construct($type, $key, $name)
     {
-        if(!self::isInConstants($type)){
+        if (!self::isInConstants($type)) {
             throw new \UnexpectedValueException('the given type ' . $type . ' is not one of the class constants.');
         }
         $this->type = $type;
         $this->key = Helpers::ensureKeyHasPrefix($key);
         $this->name = $name;
+    }
+
+    /**
+     * Checks if the given value is one of the class constants.
+     *
+     * @param mixed $value the value to search for in the class constants.
+     * @return bool true if found in class constants, false otherwise.
+     */
+    private static function isInConstants($value)
+    {
+        $reflection = new \ReflectionClass(__CLASS__);
+        return in_array($value, $reflection->getConstants());
+    }
+
+    /**
+     * Finds all roles with the given type, filters the result of {@link [Role::findAll][Role::findAll]}.
+     *
+     * @param string $type the type to filter for. Should be one of the class constants.
+     * @return array an array with the generated Role objects. Will be an empty array if no roles with the given type
+     * are found.
+     */
+    public static function findByType($type)
+    {
+        $allRoles = self::findAll();
+        $roles = [];
+        foreach ($allRoles as $role) {
+            if ($role->getType() == $type) {
+                $roles[] = $role;
+            }
+        }
+        return $roles;
     }
 
     /**
@@ -71,29 +104,11 @@ class Role implements IModel
     public static function findAll()
     {
         global $wp_roles;
-        $wpRoles = array_keys ($wp_roles->roles);
+        $wpRoles = array_keys($wp_roles->roles);
         $roles = [];
-        foreach($wpRoles as $role){
+        foreach ($wpRoles as $role) {
             $role = self::find($role);
-            if($role){
-                $roles[] = $role;
-            }
-        }
-        return $roles;
-    }
-
-    /**
-     * Finds all roles with the given type, filters the result of {@link [Role::findAll][Role::findAll]}.
-     *
-     * @param string $type the type to filter for. Should be one of the class constants.
-     * @return array an array with the generated Role objects. Will be an empty array if no roles with the given type
-     * are found.
-     */
-    public static function findByType($type){
-        $allRoles = self::findAll();
-        $roles = [];
-        foreach($allRoles as $role){
-            if($role->getType() == $type){
+            if ($role) {
                 $roles[] = $role;
             }
         }
@@ -114,24 +129,24 @@ class Role implements IModel
         $role = null;
         $data = get_role($key);
 
-        if(!$data){
+        if (!$data) {
             $key = Helpers::ensureKeyHasPrefix($key);
         }
 
         $data = get_role($key);
 
-        if($data){
+        if ($data) {
             $customRoles = Option::get('roles');
             $type = self::TYPE_SYSTEM;
-            if(isset($customRoles[self::TYPE_ADDRESS][$key])){
+            if (isset($customRoles[self::TYPE_ADDRESS][$key])) {
                 $type = self::TYPE_ADDRESS;
-            }elseif(isset($customRoles[self::TYPE_FUNCTIONARY][$key])){
+            } elseif (isset($customRoles[self::TYPE_FUNCTIONARY][$key])) {
                 $type = self::TYPE_FUNCTIONARY;
             }
 
             $name = $data->name;
-            if($type != self::TYPE_SYSTEM){
-                if(isset($customRoles[$type][$key])){
+            if ($type != self::TYPE_SYSTEM) {
+                if (isset($customRoles[$type][$key])) {
                     $name = $customRoles[$type][$key];
                 }
             }
@@ -152,58 +167,25 @@ class Role implements IModel
      */
     public function save()
     {
-        if($this->type == self::TYPE_SYSTEM){
+        if ($this->type == self::TYPE_SYSTEM) {
             $this->key = Helpers::ensureKeyHasNoPrefix($this->key);
         }
         $wpRole = get_role($this->key);
-        if(!$wpRole){
+        if (!$wpRole) {
             add_role($this->key, $this->name, $this->capabilities);
-        }else{
-            foreach($this->getCapabilities() as $capability => $grant){
+        } else {
+            foreach ($this->getCapabilities() as $capability => $grant) {
                 $wpRole->add_cap($capability, $grant);
             }
         }
 
 
-        if($this->type != self::TYPE_SYSTEM){
+        if ($this->type != self::TYPE_SYSTEM) {
             $customRoles = Option::get('roles');
             $customRoles[$this->type][$this->key] = $this->name;
             Option::set('roles', $customRoles);
         }
 
-    }
-
-    /**
-     * Wrapper for the static {@link [Role::remove][Role::remove]} method, so it can directly called on the object
-     * without passing its key.
-     *
-     * Resets the object.
-     */
-    public function delete()
-    {
-        self::remove($this->key);
-        $this->key = null;
-        $this->name = null;
-        $this->capabilites = [];
-    }
-
-    /**
-     * Removes the role with the given key from WP Option 'bcb_roles` where we store our additional information.
-     * Also removes the role from WP.
-     *
-     * @param string $key the key (slug) for the role to remove. See {@link [Role::find][Role::find]} for more information.
-     */
-    public static function remove($key)
-    {
-        $role = self::find($key);
-        if($role){
-            $customRoles = Option::get('roles');
-            if(isset( $customRoles[ $role->getType() ][ $role->getKey() ] )){
-                unset( $customRoles[ $role->getType() ][ $role->getKey() ] );
-                Option::set('roles', $customRoles);
-            }
-        }
-        remove_role($key);
     }
 
     /**
@@ -235,36 +217,36 @@ class Role implements IModel
     }
 
     /**
-     * Adds a capability to the role.
-     * First it checks if WP has already a capability without 'bcb_' prefix with the given name. If yes, this capability
-     * name is used. Otherwise a capability name with 'bcb_' prefix is used.
+     * Wrapper for the static {@link [Role::remove][Role::remove]} method, so it can directly called on the object
+     * without passing its key.
      *
-     * @param string $capability the key (slug) for the capability. Does not have to exist already.
-     *
-     * @param boolean $grant indicates whether to explicitly grant the capability (true) or to explicitly prohibit the
-     * capability (false).
+     * Resets the object.
      */
-    public function addCapability($capability, $grant){
-        $capability = Helpers::ensureKeyHasNoPrefix($capability);
-        if(!$this->capabilityExists($capability)){
-            $capability = Helpers::ensureKeyHasPrefix($capability);
-        }
-        $this->capabilities[$capability] = $grant;
+    public function delete()
+    {
+        self::remove($this->key);
+        $this->key = null;
+        $this->name = null;
+        $this->capabilites = [];
     }
 
     /**
-     * Removes a capability from the role.
-     * First it checks if WP has already a capability without 'bcb_' prefix with the given name. If yes, this capability
-     * name is used. Otherwise a capability name with 'bcb_' prefix is used.
+     * Removes the role with the given key from WP Option 'bcb_roles` where we store our additional information.
+     * Also removes the role from WP.
      *
-     * @param string $capability the key (slug) for the capability to remove.
+     * @param string $key the key (slug) for the role to remove. See {@link [Role::find][Role::find]} for more information.
      */
-    public function removeCapability($capability){
-        $capability = Helpers::ensureKeyHasNoPrefix($capability);
-        if(!$this->capabilityExists($capability)){
-            $capability = Helpers::ensureKeyHasPrefix($capability);
+    public static function remove($key)
+    {
+        $role = self::find($key);
+        if ($role) {
+            $customRoles = Option::get('roles');
+            if (isset($customRoles[$role->getType()][$role->getKey()])) {
+                unset($customRoles[$role->getType()][$role->getKey()]);
+                Option::set('roles', $customRoles);
+            }
         }
-        unset($this->capabilities[$capability]);
+        remove_role($key);
     }
 
     /**
@@ -284,26 +266,22 @@ class Role implements IModel
     }
 
     /**
-     * @return null|string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function hasCapability($key){
-        return isset($this->capabilities[$key]) && $this->capabilities[$key];
-    }
-
-    /**
-     * Checks if the given value is one of the class constants.
+     * Adds a capability to the role.
+     * First it checks if WP has already a capability without 'bcb_' prefix with the given name. If yes, this capability
+     * name is used. Otherwise a capability name with 'bcb_' prefix is used.
      *
-     * @param mixed $value the value to search for in the class constants.
-     * @return bool true if found in class constants, false otherwise.
+     * @param string $capability the key (slug) for the capability. Does not have to exist already.
+     *
+     * @param boolean $grant indicates whether to explicitly grant the capability (true) or to explicitly prohibit the
+     * capability (false).
      */
-    private static function isInConstants($value){
-        $reflection = new \ReflectionClass(__CLASS__);
-        return in_array($value, $reflection->getConstants());
+    public function addCapability($capability, $grant)
+    {
+        $capability = Helpers::ensureKeyHasNoPrefix($capability);
+        if (!$this->capabilityExists($capability)) {
+            $capability = Helpers::ensureKeyHasPrefix($capability);
+        }
+        $this->capabilities[$capability] = $grant;
     }
 
     /**
@@ -312,12 +290,42 @@ class Role implements IModel
      * @param string $key the name (slug) of the capability.
      * @return bool true if the given capability name already exists in WP, false otherwise.
      */
-    private function capabilityExists($key){
+    private function capabilityExists($key)
+    {
         global $wp_roles;
         $capabilities = [];
-        foreach($wp_roles->roles as $role){
+        foreach ($wp_roles->roles as $role) {
             $capabilities = array_merge($capabilities, $role['capabilities']);
         }
         return isset($capabilities[$key]);
+    }
+
+    /**
+     * Removes a capability from the role.
+     * First it checks if WP has already a capability without 'bcb_' prefix with the given name. If yes, this capability
+     * name is used. Otherwise a capability name with 'bcb_' prefix is used.
+     *
+     * @param string $capability the key (slug) for the capability to remove.
+     */
+    public function removeCapability($capability)
+    {
+        $capability = Helpers::ensureKeyHasNoPrefix($capability);
+        if (!$this->capabilityExists($capability)) {
+            $capability = Helpers::ensureKeyHasPrefix($capability);
+        }
+        unset($this->capabilities[$capability]);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function hasCapability($key)
+    {
+        return isset($this->capabilities[$key]) && $this->capabilities[$key];
     }
 }
