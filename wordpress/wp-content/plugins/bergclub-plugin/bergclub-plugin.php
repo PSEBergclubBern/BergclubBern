@@ -91,10 +91,10 @@ include_sub_directory_file('app.php');
 add_action('admin_enqueue_scripts', ['BergclubPlugin\\AssetHelper', 'getAssets']);
 
 /*
- * Returns a special mail link for bergclub@bergclub.ch, which will be encoded in the Bergclub theme.
+ * Returns a special mail link for the admin email (main email for the system), which will be encoded in the Bergclub theme.
  */
 function bcb_email_main(){
-    return bcb_email('bergclub@bergclub.ch');
+    return bcb_email(get_option('admin_email'));
 }
 
 /*
