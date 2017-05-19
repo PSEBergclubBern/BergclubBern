@@ -33,7 +33,7 @@
         var key = jQuery(this).data('key');
         swal({
             title: 'Sind Sie sicher?',
-            text: "Der Löschvorgang kann nicht Rückgängig gemacht werden",
+            text: "Der Löschvorgang kann nicht rückgängig gemacht werden",
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
