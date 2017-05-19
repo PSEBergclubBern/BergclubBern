@@ -132,6 +132,7 @@ class User implements IModel
         'bcb_materialchef',
         'bcb_materialchef_jugend',
         'bcb_js_coach',
+        'bcb_internet',
         'bcb_versand',
     ];
 
@@ -531,6 +532,16 @@ class User implements IModel
             }
         }
         return false;
+    }
+
+    public function getFunctionaryRoleNames(){
+        $roles = $this->getFunctionaryRoles();
+        $result = [];
+        foreach($roles as $role){
+            /* @var Role $role */
+            $result[] = $role->getName();
+        }
+        return $result;
     }
 
     /**

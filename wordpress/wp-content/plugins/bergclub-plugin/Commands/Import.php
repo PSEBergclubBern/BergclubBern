@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kevstuder
- * Date: 14.03.17
- * Time: 16:30
- */
 
 namespace BergclubPlugin\Commands;
-
 
 use BergclubPlugin\Commands\Entities\Adressen;
 use BergclubPlugin\Commands\Entities\Tour;
@@ -23,6 +16,13 @@ use BergclubPlugin\Touren\MetaBoxes\Common;
 use BergclubPlugin\Touren\MetaBoxes\MeetingPoint;
 use \BergclubPlugin\Touren\MetaBoxes\Tour as TourMetaBox;
 
+/**
+ * Class Import
+ *
+ * The main entry point for the import command
+ *
+ * @package BergclubPlugin\Commands
+ */
 class Import extends Init
 {
 
@@ -120,6 +120,7 @@ class Import extends Init
 
         if (!file_exists($filename)) {
             $this->logger->error('Input file not found, aborting!');
+
             return;
         }
 
@@ -152,7 +153,7 @@ class Import extends Init
     /**
      * Helper method for the processor
      *
-     * @param $values
+     * @param           $values
      * @param Processor $processor
      */
     private function import($values, Processor $processor)

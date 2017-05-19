@@ -68,7 +68,7 @@ class ProgramGenerator extends AbstractGenerator
     public function getData()
     {
         $data = [];
-        if(!empty($this->args['touren-from']) && !empty($this->args['touren-to'])) {
+        if (!empty($this->args['touren-from']) && !empty($this->args['touren-to'])) {
             $posts = get_posts([
                 'posts_per_page' => -1,
                 'post_status' => 'publish',
@@ -114,7 +114,7 @@ class ProgramGenerator extends AbstractGenerator
                     'meetpoint' => $this->oneLine(bcb_touren_meta($post->ID, 'meetpoint')),
                     'meetingPointTime' => $this->oneLine(bcb_touren_meta($post->ID, 'meetingPointTime')),
                     'returnBack' => $this->oneLine(bcb_touren_meta($post->ID, 'returnBack')),
-                    'costs' => $this->oneLine(bcb_touren_meta($post->ID, 'oosts')),
+                    'costs' => $this->oneLine(bcb_touren_meta($post->ID, 'costs')),
                     'costsFor' => $this->oneLine(bcb_touren_meta($post->ID, 'costsFor')),
                     'signupUntil' => $this->oneLine(bcb_touren_meta($post->ID, 'signupUntil')),
                     'signUpTo' => $this->oneLine(bcb_touren_meta($post->ID, 'signupToNoLinks')),
@@ -159,9 +159,28 @@ class ProgramGenerator extends AbstractGenerator
         return ['data' => [], 'anmeldeTermine' => []];
     }
 
+    private function getDayOfWeek($date)
+    {
+        $days = [
+            'So',
+            'Mo',
+            'Di',
+            'Mi',
+            'Do',
+            'Fr',
+            'Sa',
+        ];
+        return $days[date("w", strtotime($date))];
+    }
+
     private function oneLine($string)
     {
         return trim(str_replace("\n", "", str_replace("<br />", " ", $this->removeCarriageReturn($string))));
+    }
+
+    private function removeCarriageReturn($string)
+    {
+        return str_replace("\r", "", $string);
     }
 
     private function multiLine($string)
@@ -171,11 +190,6 @@ class ProgramGenerator extends AbstractGenerator
             return [];
         }
         return $lines;
-    }
-
-    private function removeCarriageReturn($string)
-    {
-        return str_replace("\r", "", $string);
     }
 
     private function getMonthYear($date)
@@ -196,20 +210,6 @@ class ProgramGenerator extends AbstractGenerator
         ];
 
         return $months[date("n", strtotime($date)) - 1] . " " . date("Y", strtotime($date));
-    }
-
-    private function getDayOfWeek($date)
-    {
-        $days = [
-            'So',
-            'Mo',
-            'Di',
-            'Mi',
-            'Do',
-            'Fr',
-            'Sa',
-        ];
-        return $days[date("w", strtotime($date))];
     }
 
     private function createOutput()

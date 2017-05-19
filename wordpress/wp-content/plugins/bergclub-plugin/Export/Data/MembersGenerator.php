@@ -87,7 +87,7 @@ class MembersGenerator extends AbstractGenerator
                 $arr[] = $role->getName();
             }
 
-            if(!empty($arr)) {
+            if (!empty($arr)) {
                 $row['Funktionen'] = join(', ', $arr);
             }
             $data[] = $row;

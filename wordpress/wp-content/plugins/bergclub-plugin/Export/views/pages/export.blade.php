@@ -40,22 +40,31 @@
                 <td colspan="4"><h2>Touren</h2></td>
             </tr>
             <tr>
-                <td><b>Übersicht (Excel)</b></td>
-                <td colspan="2"><label><input type="radio" class="touren-data" name="download-touren-status" value="any"
-                                              checked/> Alle</label>&nbsp;&nbsp;&nbsp;<label><input type="radio"
-                                                                                                    class="touren-data"
-                                                                                                    name="download-touren-status"
-                                                                                                    value="publish"/>
-                        Publizierte</label>&nbsp;&nbsp;&nbsp;<label for="download-touren-from">Von:</label> <input
-                            type="text" class="datepicker touren-data" id="download-touren-from"
-                            value="01.01.{{ date("Y") }}" size="8"/> <label for="download-touren-to">Bis:</label> <input
-                            type="text" class="datepicker touren-data" id="download-touren-to"
-                            value="31.12.{{ date("Y") }}" size="8"/></td>
-                <td>
+                <td rowspan="2"><b>Übersicht (Excel)</b></td>
+                <td colspan="2">
+                    <label><input type="checkbox" class="touren-data" name="download-touren-status[]" value="publish"
+                                  checked/> Publizierte</label>&nbsp;&nbsp;&nbsp;
+                    <label><input type="checkbox" class="touren-data" name="download-touren-status[]" value="future"
+                                  checked/> Zukünftige (Publikationsdatum in Zukunft)</label>&nbsp;&nbsp;&nbsp;
+                    <label><input type="checkbox" class="touren-data" name="download-touren-status[]" value="draft"
+                                  checked/> Entwürfe</label>&nbsp;&nbsp;&nbsp;
+                    <label><input type="checkbox" class="touren-data" name="download-touren-status[]" value="pending"
+                                  checked/> Veröffentlichung beantragt</label>&nbsp;&nbsp;&nbsp;
+                </td>
+                <td rowspan="2">
                     <button id="button-touren" class="button button-primary button-download"
-                            data-href="?page={{ $_GET['page'] }}&download=touren.xls&status=any&from=01.01.{{ date('Y') }}&to=31.12.{{ date('Y') }}">
+                            data-href="?page={{ $_GET['page'] }}&download=touren.xls&status=publish,future,draft,pending&from=01.01.{{ date('Y') }}&to=31.12.{{ date('Y') }}">
                         Herunterladen
                     </button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2><label for=" download-touren-from
+                ">Von:</label> <input type="text" class="datepicker touren-data" id="download-touren-from"
+                                      value="01.01.{{ date("Y") }}" size="8"/>
+                <label for="download-touren-to">Bis:</label> <input type="text" class="datepicker touren-data"
+                                                                    id="download-touren-to"
+                                                                    value="31.12.{{ date("Y") }}" size="8"/>
                 </td>
             </tr>
             <tr>
@@ -150,7 +159,11 @@
         });
 
         function updateTourenDownload() {
-            var status = jQuery("input:radio[name = 'download-touren-status']:checked").val();
+            var status = jQuery('input[name="download-touren-status[]"]:checked').map(function () {
+                return this.value;
+            }).get().join(",");
+
+            console.log(status);
             var from = jQuery('#download-touren-from').val();
             var to = jQuery('#download-touren-to').val();
 

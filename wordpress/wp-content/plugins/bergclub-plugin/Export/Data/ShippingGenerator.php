@@ -42,7 +42,7 @@ class ShippingGenerator extends AbstractAddressLineGenerator
      * @param array $row
      * @param User $user
      */
-    protected function addAdditionalData(&$row, User $user)
+    protected function addAdditionalData(array &$row, User $user)
     {
 
     }

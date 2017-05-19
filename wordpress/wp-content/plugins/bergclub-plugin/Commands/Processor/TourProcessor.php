@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kevstuder
- * Date: 02.05.17
- * Time: 16:17
- */
 
 namespace BergclubPlugin\Commands\Processor;
 
@@ -21,7 +15,7 @@ use BergclubPlugin\MVC\Models\Option;
  * Class TourProcessor handles all tours and the reports
  *
  * @package BergclubPlugin\Commands\Processor
- * @author Kevin Studer <kreemer@me.com>
+ * @author  Kevin Studer <kreemer@me.com>
  */
 class TourProcessor extends Processor
 {
@@ -128,7 +122,7 @@ class TourProcessor extends Processor
      * Save the generated entities
      *
      * @param Entity $entity
-     * @param bool $noOp
+     * @param bool   $noOp
      * @return void
      */
     public function save(Entity $entity, $noOp = true)
@@ -139,12 +133,12 @@ class TourProcessor extends Processor
         if (!$noOp) {
             $generatedId = wp_insert_post(
                 array(
-                    'post_title' => $entity->title,
-                    'post_author' => 1,
-                    'post_status' => 'publish',
+                    'post_title'   => $entity->title,
+                    'post_author'  => 1,
+                    'post_status'  => 'publish',
                     'post_content' => '-',
-                    'post_type' => 'touren',
-                    'post_date' => date('Y-01-01', strtotime($entity->dateFrom)),
+                    'post_type'    => 'touren',
+                    'post_date'    => date('Y-01-01', strtotime($entity->dateFrom)),
                 ),
                 true
             );
@@ -155,28 +149,28 @@ class TourProcessor extends Processor
 
                 $this->logger->debug('generated tour with id ' . $generatedId);
                 $customFields = array(
-                    Common::DATE_FROM_IDENTIFIER => date('d.m.Y', strtotime($entity->dateFrom)),
-                    Common::DATE_TO_IDENTIFIER => date('d.m.Y', strtotime($entity->dateTo)),
-                    Common::DATE_FROM_DB => date('Y-m-d', strtotime($entity->dateFrom)),
-                    Common::DATE_TO_DB => date('Y-m-d', strtotime($entity->dateTo)),
-                    Common::LEADER => $entity->leader,
-                    Common::CO_LEADER => $entity->coLeader,
-                    Common::IS_ADULT_OR_YOUTH => $entity->isYouth,
-                    TourMetabox::PROGRAM => $entity->program,
-                    TourMetaBox::COSTS => $entity->costs,
-                    TourMetaBox::COSTS_FOR => $entity->costsFor,
-                    TourMetaBox::EQUIPMENT => $entity->equiptment,
-                    TourMetaBox::RISE_UP_METERS => $entity->up,
-                    TourMetaBox::RISE_DOWN_METERS => $entity->down,
-                    TourMetaBox::ADDITIONAL_INFO => $entity->special,
-                    TourMetaBox::TYPE => $entity->type,
-                    TourMetaBox::REQUIREMENTS_TECHNICAL => $entity->requirementsTechnical,
+                    Common::DATE_FROM_IDENTIFIER          => date('d.m.Y', strtotime($entity->dateFrom)),
+                    Common::DATE_TO_IDENTIFIER            => date('d.m.Y', strtotime($entity->dateTo)),
+                    Common::DATE_FROM_DB                  => date('Y-m-d', strtotime($entity->dateFrom)),
+                    Common::DATE_TO_DB                    => date('Y-m-d', strtotime($entity->dateTo)),
+                    Common::LEADER                        => $entity->leader,
+                    Common::CO_LEADER                     => $entity->coLeader,
+                    Common::IS_ADULT_OR_YOUTH             => $entity->isYouth,
+                    TourMetabox::PROGRAM                  => $entity->program,
+                    TourMetaBox::COSTS                    => $entity->costs,
+                    TourMetaBox::COSTS_FOR                => $entity->costsFor,
+                    TourMetaBox::EQUIPMENT                => $entity->equiptment,
+                    TourMetaBox::RISE_UP_METERS           => $entity->up,
+                    TourMetaBox::RISE_DOWN_METERS         => $entity->down,
+                    TourMetaBox::ADDITIONAL_INFO          => $entity->special,
+                    TourMetaBox::TYPE                     => $entity->type,
+                    TourMetaBox::REQUIREMENTS_TECHNICAL   => $entity->requirementsTechnical,
                     TourMetaBox::REQUIREMENTS_CONDITIONAL => $entity->requirementsConditional,
-                    TourMetaBox::JSEVENT => $entity->jsEvent,
-                    MeetingPoint::FOOD => $entity->food,
-                    MeetingPoint::RETURNBACK => $entity->returnBack,
-                    MeetingPoint::MEETPOINT => $entity->meetingPointKey,
-                    MeetingPoint::MEETPOINT_DIFFERENT => $entity->meetingPointKey == MeetingPoint::MEETPOINT_DIFFERENT_KEY ? $entity->meetingPoint : '',
+                    TourMetaBox::JSEVENT                  => $entity->jsEvent,
+                    MeetingPoint::FOOD                    => $entity->food,
+                    MeetingPoint::RETURNBACK              => $entity->returnBack,
+                    MeetingPoint::MEETPOINT               => $entity->meetingPointKey,
+                    MeetingPoint::MEETPOINT_DIFFERENT     => $entity->meetingPointKey == MeetingPoint::MEETPOINT_DIFFERENT_KEY ? $entity->meetingPoint : '',
                 );
 
                 foreach ($customFields as $key => $value) {
@@ -186,12 +180,12 @@ class TourProcessor extends Processor
                 if ($entity->tourBericht != null) {
                     $generatedReportId = wp_insert_post(
                         array(
-                            'post_title' => $entity->title,
-                            'post_author' => 1,
-                            'post_status' => 'publish',
-                            'post_date' => $entity->tourBericht->date,
+                            'post_title'   => $entity->title,
+                            'post_author'  => 1,
+                            'post_status'  => 'publish',
+                            'post_date'    => $entity->tourBericht->date,
                             'post_content' => $entity->tourBericht->text,
-                            'post_type' => 'tourenberichte',
+                            'post_type'    => 'tourenberichte',
                         ),
                         true
                     );
@@ -240,6 +234,7 @@ class TourProcessor extends Processor
                 }
             }
         }
+
         return $result;
     }
 
@@ -260,6 +255,7 @@ class TourProcessor extends Processor
                 $result[$item['id']] = $item['schwierigkeit'];
             }
         }
+
         return $result;
     }
 
@@ -278,6 +274,7 @@ class TourProcessor extends Processor
                 $result[$item['id']] = ['first_name' => $item['vorname'], 'last_name' => $item['name']];
             }
         }
+
         return $result;
     }
 
@@ -293,11 +290,11 @@ class TourProcessor extends Processor
             $queryArgs = [
                 'meta_query' => [
                     [
-                        'key' => 'first_name',
+                        'key'   => 'first_name',
                         'value' => $args['first_name'],
                     ],
                     [
-                        'key' => 'last_name',
+                        'key'   => 'last_name',
                         'value' => $args['last_name'],
                     ],
                 ]

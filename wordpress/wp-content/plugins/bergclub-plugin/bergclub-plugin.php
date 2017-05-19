@@ -91,10 +91,10 @@ include_sub_directory_file('app.php');
 add_action('admin_enqueue_scripts', ['BergclubPlugin\\AssetHelper', 'getAssets']);
 
 /*
- * Returns a special mail link for bergclub@bergclub.ch, which will be encoded in the Bergclub theme.
+ * Returns a special mail link for the admin email (main email for the system), which will be encoded in the Bergclub theme.
  */
 function bcb_email_main(){
-    return bcb_email('bergclub@bergclub.ch');
+    return bcb_email(get_option('admin_email'));
 }
 
 /*
@@ -168,4 +168,16 @@ add_action( 'init', 'bcb_change_post_object' );
 function bcb_touren_meta($postId, $metaKey){
     $method = "get" . strtoupper(substr($metaKey, 0, 1)) . substr($metaKey, 1);
     return \BergclubPlugin\TourenHelper::$method($postId);
+}
+
+add_action( 'add_meta_boxes', 'bcb_remove_slug_meta_box' );
+function bcb_remove_slug_meta_box() {
+    remove_meta_box( 'slugdiv', 'post', 'normal' );
+    remove_meta_box( 'slugdiv', 'page', 'normal' );
+    remove_meta_box( 'slugdiv', 'touren', 'normal' );
+    remove_meta_box( 'slugdiv', 'tourenberichte', 'normal' );
+    remove_meta_box( 'postimagediv', 'post', 'normal' );
+    remove_meta_box( 'postimagediv', 'page', 'normal' );
+    remove_meta_box( 'postimagediv', 'touren', 'normal' );
+    remove_meta_box( 'postimagediv', 'tourenberichte', 'normal' );
 }

@@ -55,7 +55,7 @@ class ContributionsGenerator extends AbstractAddressLineGenerator
      * @param array $row the generated address line for the given user
      * @param User $user the user associated with the address line
      */
-    protected function addAdditionalData(&$row, User $user)
+    protected function addAdditionalData(array &$row, User $user)
     {
         $contributions = Option::get('mitgliederbeitraege');
         $contributionType = $contributions['bcb']['name'];

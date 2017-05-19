@@ -1,6 +1,7 @@
 <?php
 
 namespace BergclubPlugin\Commands\Processor;
+
 use BergclubPlugin\Commands\Entities\Entity;
 use BergclubPlugin\Commands\Logger;
 
@@ -32,12 +33,12 @@ abstract class Processor
      * @param $values
      * @return array
      */
-    abstract public function process($values) : array;
+    abstract public function process($values): array;
 
     /**
      * save an entity
      *
-     * @param Entity $entity
+     * @param Entity  $entity
      * @param boolean $noOp true if no operation should be executed
      * @return void
      */
@@ -56,7 +57,8 @@ abstract class Processor
      * @param $text
      * @return mixed|string
      */
-    protected function convertTitleField($text){
+    protected function convertTitleField($text)
+    {
         return $this->cleanUp($text);
     }
 
@@ -69,6 +71,7 @@ abstract class Processor
     protected function convertTextField($text)
     {
         $text = $this->convertEncoding($text);
+
         return $this->cleanUp($text);
     }
 
@@ -78,7 +81,8 @@ abstract class Processor
      * @param $text
      * @return mixed|string
      */
-    private function cleanUp($text){
+    private function cleanUp($text)
+    {
         // replace br
         $text = str_replace('<br>', '', $text);
 
@@ -94,7 +98,8 @@ abstract class Processor
      * @param $text
      * @return string
      */
-    private function convertEncoding($text){
+    private function convertEncoding($text)
+    {
         // urldecode
         $text = urldecode($text);
 

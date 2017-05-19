@@ -17,8 +17,8 @@ class GeneratorFactory implements Factory
      * Searches for a class based on a given slug that is in the same namespace as this class and implements `Generator`.
      * The slug will be transformed to class name spelling and the word "Generator" will be added.
      * <p>
-     * Example: If the slug is "xls" it will look for a class named "XlsGenerator" in the same namespace as this class
-     * is and check that the `Generator` interface is implemented in this class.
+     * Example: If the slug is "addresses" it will look for a class named "AdressesGenerator" in the same namespace as
+     * this class is and check that the `Generator` interface is implemented in this class.
      *
      * @see Generator
      *

@@ -11,20 +11,27 @@ namespace BergclubPlugin\Export\Format;
 
 use BergclubPlugin\Export\Data\Generator;
 
+/**
+ * Creates PDF downloads
+ * @package BergclubPlugin\Export\Format
+ */
 class PdfFormat extends AbstractFormat
 {
     /**
-     * @var string
+     * @var string the name used for the download filename.
      */
     private $name;
 
     /**
-     * @var \TCPDF
+     * @var \TCPDF the pdf processer
      */
     private $pdf;
 
     /**
-     * @var Generator
+     * Creates a PDF file download.
+     *
+     * @param Generator $dataGenerator the data generator to use
+     * @param string $name the file name (date and time will be added).
      */
     private $dataGenerator;
 

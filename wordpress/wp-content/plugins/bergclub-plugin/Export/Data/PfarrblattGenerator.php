@@ -44,7 +44,7 @@ class PfarrblattGenerator extends AbstractGenerator
      */
     public function getData()
     {
-        if(!empty($this->args['from']) && !empty($this->args['to'])) {
+        if (!empty($this->args['from']) && !empty($this->args['to'])) {
             $from = $this->args['from'];
             $to = $this->args['to'];
             $data = [];

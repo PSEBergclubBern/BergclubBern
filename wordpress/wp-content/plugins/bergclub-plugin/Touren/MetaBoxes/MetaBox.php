@@ -1,16 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kevstuder
- * Date: 21.03.17
- * Time: 16:46
- */
 
 namespace BergclubPlugin\Touren\MetaBoxes;
 
 use BergclubPlugin\FlashMessage;
 use duncan3dc\Laravel\BladeInstance;
 
+/**
+ * Class MetaBox
+ *
+ * Abstract class for all metaboxes
+ *
+ * @package BergclubPlugin\Touren\MetaBoxes
+ */
 abstract class MetaBox
 {
     private static $saveActionRegistered = false;
@@ -106,6 +107,11 @@ abstract class MetaBox
         }
     }
 
+    /**
+     * save the post
+     *
+     * @param $postId
+     */
     public function save($postId)
     {
         //ensure that is not a revision (seems to have nothing to do with the state "Review")
@@ -181,54 +187,59 @@ abstract class MetaBox
             // re-hook this function again
             add_action('save_post_' . BCB_CUSTOM_POST_TYPE_TOUREN, [$this, 'save']);
         }
-}
-
-public
-function redirectPostLocation($location, $postId)
-{
-    $status = get_post_status($postId);
-
-    //remove any system message (otherwise it could be e.g. 'successful published', but new state is 'draft')
-    $location = remove_query_arg('message', $location);
-
-    //forward to touren overview when publish button was clicked and state really is 'publish'.
-    if (isset($_POST['publish']) && $status == 'publish') {
-        $location = admin_url("edit.php?post_type=" . BCB_CUSTOM_POST_TYPE_TOUREN);
     }
 
-    return $location;
-}
+    /**
+     * @param $location
+     * @param $postId
+     * @return string
+     */
+    public function redirectPostLocation($location, $postId)
+    {
+        $status = get_post_status($postId);
 
-public
-function html($post)
-{
-    $values = array();
-    foreach ($this->getUniqueFieldNames() as $fieldId) {
-        $values[$fieldId] = get_post_meta($post->ID, $fieldId, true);
+        //remove any system message (otherwise it could be e.g. 'successful published', but new state is 'draft')
+        $location = remove_query_arg('message', $location);
+
+        //forward to touren overview when publish button was clicked and state really is 'publish'.
+        if (isset($_POST['publish']) && $status == 'publish') {
+            $location = admin_url("edit.php?post_type=" . BCB_CUSTOM_POST_TYPE_TOUREN);
+        }
+
+        return $location;
     }
 
-    if (!file_exists(__DIR__ . '/cache')) {
-        mkdir(__DIR__ . '/cache');
+    /**
+     * @param $post
+     */
+    public function html($post)
+    {
+        $values = array();
+        foreach ($this->getUniqueFieldNames() as $fieldId) {
+            $values[$fieldId] = get_post_meta($post->ID, $fieldId, true);
+        }
+
+        if (!file_exists(__DIR__ . '/cache')) {
+            mkdir(__DIR__ . '/cache');
+        }
+        $arguments = array_merge(array('values' => $values), $this->addAdditionalValuesForView());
+        $blade = new BladeInstance(__DIR__ . '/../views', __DIR__ . '/../cache');
+        echo $blade->render(
+            $this->getViewName(),
+            $arguments
+        );
+
     }
-    $arguments = array_merge(array('values' => $values), $this->addAdditionalValuesForView());
-    $blade = new BladeInstance(__DIR__ . '/../views', __DIR__ . '/../cache');
-    echo $blade->render(
-        $this->getViewName(),
-        $arguments
-    );
 
-}
+    /**
+     * Returns true if its a valid time
+     * @param $test
+     * @return bool
+     */
+    public function isValidTime($test): bool
+    {
+        $match_duration_format = preg_match("/^([01]?[0-9]|2[0-3])\:+[0-5][0-9]$/", $test) === 1;
 
-/**
- * Returns true if its a valid time
- * @param $test
- * @return bool
- */
-public
-function isValidTime($test): bool
-{
-    $match_duration_format = preg_match("/^([01]?[0-9]|2[0-3])\:+[0-5][0-9]$/", $test) === 1;
-
-    return $match_duration_format;
-}
+        return $match_duration_format;
+    }
 }

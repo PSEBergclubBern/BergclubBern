@@ -3,10 +3,11 @@
 namespace BergclubPlugin\Commands;
 
 /**
- * Created by PhpStorm.
- * User: kevstuder
- * Date: 29.04.17
- * Time: 13:59
+ * Class WPCliLogger
+ *
+ * A wp-cli logger to send messages to the terminal
+ *
+ * @package BergclubPlugin\Commands
  */
 class WPCliLogger implements Logger
 {

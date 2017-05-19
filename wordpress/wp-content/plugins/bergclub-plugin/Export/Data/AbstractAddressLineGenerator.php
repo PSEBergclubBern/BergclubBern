@@ -51,6 +51,14 @@ abstract class AbstractAddressLineGenerator extends AbstractGenerator
     }
 
     /**
+     * Must return an array with the user objects for which the address lines should be generated.
+     *
+     * @return array User objects for which the address lines should be generated
+     * @see AbstractAddressLineGenerator::getData()
+     */
+    abstract protected function getUsers();
+
+    /**
      * Creates an address line as described in the class comment from the given user and adds the line to the existing
      * address lines.
      *
@@ -174,12 +182,4 @@ abstract class AbstractAddressLineGenerator extends AbstractGenerator
      * @see AbstractAddressLineGenerator::addRow()
      */
     abstract protected function addAdditionalData(array &$row, User $user);
-
-    /**
-     * Must return an array with the user objects for which the address lines should be generated.
-     *
-     * @return array User objects for which the address lines should be generated
-     * @see AbstractAddressLineGenerator::getData()
-     */
-    abstract protected function getUsers();
 }

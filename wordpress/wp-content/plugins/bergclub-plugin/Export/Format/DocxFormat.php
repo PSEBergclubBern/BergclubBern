@@ -12,23 +12,33 @@ namespace BergclubPlugin\Export\Format;
 use BergclubPlugin\Export\Data\Generator;
 use PhpOffice\PhpWord\PhpWord;
 
+/**
+ * Creates Word document downloads (docx, open office format)
+ * @package BergclubPlugin\Export\Format
+ */
 class DocxFormat extends AbstractFormat
 {
     /**
-     * @var string
+     * @var string the name used for the download filename.
      */
     private $name;
 
     /**
-     * @var PhpWord
+     * @var PhpWord the word processor
      */
     private $word;
 
     /**
-     * @var Generator
+     * @var Generator the data generator
      */
     private $dataGenerator;
 
+    /**
+     * Creates a Word file download.
+     *
+     * @param Generator $dataGenerator the data generator to use
+     * @param string $name the file name (date and time will be added).
+     */
     public function output(Generator $dataGenerator, $name)
     {
         $this->word = new PhpWord();

@@ -11,23 +11,33 @@ namespace BergclubPlugin\Export\Format;
 
 use BergclubPlugin\Export\Data\Generator;
 
+/**
+ * Creates Excel document downloads (xlsx, open office format)
+ * @package BergclubPlugin\Export\Format
+ */
 class XlsFormat extends AbstractFormat
 {
     /**
-     * @var string
+     * @var string the name used for the download filename.
      */
     private $name;
 
     /**
-     * @var \PHPExcel
+     * @var \PHPExcel the excel processor
      */
     private $excel;
 
     /**
-     * @var Generator
+     * @var Generator the data generator
      */
     private $dataGenerator;
 
+    /**
+     * Creates an Excel file download.
+     *
+     * @param Generator $dataGenerator the data generator to use
+     * @param string $name the file name (date and time will be added).
+     */
     public function output(Generator $dataGenerator, $name)
     {
         $this->excel = new \PHPExcel();
