@@ -533,6 +533,16 @@ class User implements IModel
         return false;
     }
 
+    public function getFunctionaryRoleNames(){
+        $roles = $this->getFunctionaryRoles();
+        $result = [];
+        foreach($roles as $role){
+            /* @var Role $role */
+            $result[] = $role->getName();
+        }
+        return $result;
+    }
+
     /**
      * Removes the spouse from the user and persists this information immediately
      */
