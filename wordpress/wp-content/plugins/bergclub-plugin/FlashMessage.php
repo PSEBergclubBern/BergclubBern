@@ -3,7 +3,7 @@
 namespace BergclubPlugin;
 
 /**
- * Adds flash messages to session. Displays and removes flash messages.
+ * Adds flash messages to session. Renders and removes flash messages.
  *
  * Class FlashMessage
  * @package BergclubPlugin
@@ -17,6 +17,8 @@ class FlashMessage
     const TYPE_ERROR = 'notice-error';
 
     /**
+     * Adds a new flash message to the session.
+     *
      * @param string $type one of the class constants.
      * @param string $message
      * @param bool $closeable if set to true, the flash message can be closed by the user.
@@ -35,7 +37,8 @@ class FlashMessage
     }
 
     /**
-     * Generates the messages as html and removes them from the session.
+     * Generates and returns the messages as html and removes them from the session.
+     *
      * @return string the flash messages as html
      */
     public static function show(){
