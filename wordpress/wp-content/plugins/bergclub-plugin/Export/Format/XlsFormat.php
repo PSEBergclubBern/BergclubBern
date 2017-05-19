@@ -11,23 +11,33 @@ namespace BergclubPlugin\Export\Format;
 
 use BergclubPlugin\Export\Data\Generator;
 
+/**
+ * Creates Excel document downloads (xlsx, open office format)
+ * @package BergclubPlugin\Export\Format
+ */
 class XlsFormat extends AbstractFormat
 {
     /**
-     * @var string
+     * @var string the name used for the download filename.
      */
     private $name;
 
     /**
-     * @var \PHPExcel
+     * @var \PHPExcel the excel processor
      */
     private $excel;
 
     /**
-     * @var Generator
+     * @var Generator the data generator
      */
     private $dataGenerator;
 
+    /**
+     * Creates an Excel file download.
+     *
+     * @param Generator $dataGenerator the data generator to use
+     * @param string $name the file name (date and time will be added).
+     */
     public function output(Generator $dataGenerator, $name)
     {
         $this->excel = new \PHPExcel();
@@ -37,32 +47,33 @@ class XlsFormat extends AbstractFormat
         $this->createOutput();
     }
 
-    private function createExcel(){
+    private function createExcel()
+    {
         $data = $this->dataGenerator->getData();
 
         $this->excel->setActiveSheetIndex(0);
 
-        if(!empty($data)){
+        if (!empty($data)) {
             $currentRow = 1;
             $currentCol = "A";
             $keys = array_keys($data[0]);
-            foreach($keys as $index => $key){
+            foreach ($keys as $index => $key) {
                 $currentCol = $this->getExcelColFromIndex($index);
-                $this->excel->getActiveSheet()->setCellValue($currentCol.$currentRow, html_entity_decode($key));
+                $this->excel->getActiveSheet()->setCellValue($currentCol . $currentRow, html_entity_decode($key));
             }
 
             $maxCol = $currentCol;
-            $this->excel->getActiveSheet()->getStyle("A".$currentRow.":".$maxCol.$currentRow)->applyFromArray(array('font'=> array('bold'=>true,'size'=>11)));
+            $this->excel->getActiveSheet()->getStyle("A" . $currentRow . ":" . $maxCol . $currentRow)->applyFromArray(array('font' => array('bold' => true, 'size' => 11)));
 
-            foreach($data as $row){
+            foreach ($data as $row) {
                 $currentRow++;
-                foreach($keys as $index => $key){
+                foreach ($keys as $index => $key) {
                     $currentCol = $this->getExcelColFromIndex($index);
-                    $this->excel->getActiveSheet()->setCellValue($currentCol.$currentRow, html_entity_decode($row[$key]));
+                    $this->excel->getActiveSheet()->setCellValue($currentCol . $currentRow, html_entity_decode($row[$key]));
                 }
             }
 
-            foreach(range('A', $maxCol) as $columnID) {
+            foreach (range('A', $maxCol) as $columnID) {
                 $this->excel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
             }
         }
@@ -70,9 +81,10 @@ class XlsFormat extends AbstractFormat
         $this->excel->getActiveSheet()->setTitle($this->name);
     }
 
-    private function getExcelColFromIndex($index){
+    private function getExcelColFromIndex($index)
+    {
         $col = "";
-        if($index > 25){
+        if ($index > 25) {
             $col = "A";
             $index -= 26;
         }
@@ -80,9 +92,10 @@ class XlsFormat extends AbstractFormat
         return $col;
     }
 
-    private function createOutput(){
+    private function createOutput()
+    {
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="' . $this->name . ' '.date("Y-m-d_H-i-s").'.xlsx"');
+        header('Content-Disposition: attachment;filename="' . $this->name . ' ' . date("Y-m-d_H-i-s") . '.xlsx"');
         header('Cache-Control: max-age=0');
 
         $writer = \PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');

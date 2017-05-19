@@ -1,7 +1,7 @@
- jQuery(document).ready(function($) {
-        jQuery(".datepicker").datepicker({
-            onSelect: function(){
-                jQuery(this).change();
-            }
-        });
- });
+jQuery(document).ready(function ($) {
+    jQuery(".datepicker").datepicker({
+        onSelect: function () {
+            jQuery(this).change();
+        }
+    });
+});

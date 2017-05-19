@@ -12,37 +12,48 @@ namespace BergclubPlugin\Export\Format;
 use BergclubPlugin\Export\Data\Generator;
 use PhpOffice\PhpWord\PhpWord;
 
+/**
+ * Creates Word document downloads (docx, open office format)
+ * @package BergclubPlugin\Export\Format
+ */
 class DocxFormat extends AbstractFormat
 {
     /**
-     * @var string
+     * @var string the name used for the download filename.
      */
     private $name;
 
     /**
-     * @var PhpWord
+     * @var PhpWord the word processor
      */
     private $word;
 
     /**
-     * @var Generator
+     * @var Generator the data generator
      */
     private $dataGenerator;
 
+    /**
+     * Creates a Word file download.
+     *
+     * @param Generator $dataGenerator the data generator to use
+     * @param string $name the file name (date and time will be added).
+     */
     public function output(Generator $dataGenerator, $name)
     {
         $this->word = new PhpWord();
         $this->name = $name;
         $this->dataGenerator = $dataGenerator;
-        if($this->args['download'] == "pfarrblatt.docx") {
+        if ($this->args['download'] == "pfarrblatt.docx") {
             $this->createPfarrblatt();
-        }else{
+        } else {
             $this->createProgram();
         }
         $this->createOutput();
     }
 
-    private function createPfarrblatt(){
+    private function createPfarrblatt()
+    {
         $data = join('. ', $this->dataGenerator->getData());
         $section = $this->word->addSection();
         $section->addText(
@@ -51,11 +62,12 @@ class DocxFormat extends AbstractFormat
         );
     }
 
-    private function createProgram(){
+    private function createProgram()
+    {
         $tmp = $this->dataGenerator->getData();
         $data = $tmp['data'];
         $anmeldeTermine = $tmp['anmeldeTermine'];
-        
+
         $header = array('name' => 'Arial', 'size' => 16, 'bold' => true);
         $content = array('name' => 'Arial', 'size' => 14, 'bold' => false);
         $contentBold = array('name' => 'Arial', 'size' => 14, 'bold' => true);
@@ -68,8 +80,8 @@ class DocxFormat extends AbstractFormat
 
         $table = $section->addTable();
 
-        foreach($anmeldeTermine as $arr){
-            foreach($arr as $entry) {
+        foreach ($anmeldeTermine as $arr) {
+            foreach ($arr as $entry) {
                 $table->addRow();
                 $table->addCell(1000)->addText($entry['signupUntil'], $content);
                 $table->addCell(600)->addText('für', $content);
@@ -81,12 +93,12 @@ class DocxFormat extends AbstractFormat
         $section->addText('Tourenübersicht', $header);
 
         $table = $section->addTable();
-        foreach($data as $entry){
+        foreach ($data as $entry) {
             $table->addRow();
             $table->addCell(2100)->addText($entry['dateDisplayShort'], $content);
             $textRun = $table->addCell(7000)->addTextRun();
             $textRun->addText($entry['title'], $contentBold);
-            if(!empty($entry['type'])) {
+            if (!empty($entry['type'])) {
                 $textRun->addText(' (' . $entry['type'] . ')', $contentSmall);
             }
         }
@@ -95,44 +107,44 @@ class DocxFormat extends AbstractFormat
         $section->addText('Tourendetails', $header);
 
         $table = $section->addTable();
-        foreach($data as $entry){
+        foreach ($data as $entry) {
             $table->addRow();
             $table->addCell(2100)->addText($entry['dateDisplayShort'], $contentBold);
             $table->addCell(7000)->addText($entry['title'], $contentBold);
             $table->addRow();
             $table->addCell(2100)->addText($entry['dateDisplayWeekday'], $content);
             $table->addCell(7000)->addText($entry['type'], $content);
-            if(!empty($entry['meetpoint'])){
+            if (!empty($entry['meetpoint'])) {
                 $table->addRow();
                 $table->addCell(2100)->addText('Treffpunkt', $contentSmallItalic);
                 $meetpoint = $entry['meetpoint'];
-                if(!empty($entry['meetingPointTime'])){
+                if (!empty($entry['meetingPointTime'])) {
                     $meetpoint .= ', ' . $entry['meetingPointTime'] . ' Uhr';
                 }
                 $table->addCell(7000)->addText($meetpoint, $contentSmall);
             }
 
-            if(!empty($entry['requirementsTechnical']) || !empty($entry['requirementsConditional']) || !empty($entry['riseUpMeters']) || !empty($entry['riseDownMeters']) || !empty($entry['duration'])){
+            if (!empty($entry['requirementsTechnical']) || !empty($entry['requirementsConditional']) || !empty($entry['riseUpMeters']) || !empty($entry['riseDownMeters']) || !empty($entry['duration'])) {
                 $table->addRow();
                 $table->addCell(2100)->addText('Anforderungen', $contentSmallItalic);
                 $cell = $table->addCell(7000);
                 $subTable = $cell->addTable();
-                if(!empty($entry['requirementsTechnical'])) {
+                if (!empty($entry['requirementsTechnical'])) {
                     $subTable->addRow();
                     $subTable->addCell(1500)->addText('technisch:', $contentSmallItalic);
                     $subTable->addCell(5500)->addText($entry['requirementsTechnical'], $contentSmall);
                 }
-                if(!empty($entry['requirementsConditional'])) {
+                if (!empty($entry['requirementsConditional'])) {
                     $subTable->addRow();
                     $subTable->addCell(1500)->addText('konditionell:', $contentSmallItalic);
                     $subTable->addCell(5500)->addText($entry['requirementsConditional'], $contentSmall);
                 }
-                if(!empty($entry['riseUpMeters'])) {
+                if (!empty($entry['riseUpMeters'])) {
                     $subTable->addRow();
                     $subTable->addCell(1500)->addText('Aufstieg:', $contentSmallItalic);
                     $subTable->addCell(5500)->addText($entry['riseUpMeters'], $contentSmall);
                 }
-                if(!empty($entry['riseDownMeters'])) {
+                if (!empty($entry['riseDownMeters'])) {
                     $subTable->addRow();
                     $subTable->addCell(1500)->addText('Abstieg:', $contentSmallItalic);
                     $subTable->addCell(5500)->addText($entry['riseDownMeters'], $contentSmall);
@@ -141,8 +153,8 @@ class DocxFormat extends AbstractFormat
 
             }
 
-            if(!empty($entry['additionalInfo'])) {
-                if($entry["title"] == "Sommerlager Bergclub Jugend"){
+            if (!empty($entry['additionalInfo'])) {
+                if ($entry["title"] == "Sommerlager Bergclub Jugend") {
                     print_r($entry['additionalInfo']);
                     exit;
                 }
@@ -151,39 +163,39 @@ class DocxFormat extends AbstractFormat
                 $table->addCell(2100)->addText('Besonderes', $contentSmallItalic);
                 $textrun = $table->addCell(7000)->addTextRun();
                 $textrun->addText(array_shift($lines), $contentSmall);
-                foreach($lines as $line){
+                foreach ($lines as $line) {
                     $textrun->addTextBreak();
                     $textrun->addText($line, $contentSmall);
                 }
             }
 
-            if(!empty($entry['equipment'])) {
+            if (!empty($entry['equipment'])) {
                 $lines = $entry['equipment'];
                 $table->addRow();
                 $table->addCell(2100)->addText('Ausrüstung', $contentSmallItalic);
                 $textrun = $table->addCell(7000)->addTextRun();
                 $textrun->addText(array_shift($lines), $contentSmall);
-                foreach($lines as $line){
+                foreach ($lines as $line) {
                     $textrun->addTextBreak();
                     $textrun->addText($line, $contentSmall);
                 }
             }
 
-            if(!empty($entry['mapMaterial'])) {
+            if (!empty($entry['mapMaterial'])) {
                 $table->addRow();
                 $table->addCell(2100)->addText('Kartenmaterial', $contentSmallItalic);
                 $table->addCell(7000)->addText($entry['mapMaterial'], $contentSmall);
             }
 
-            if(!empty($entry['food'])) {
+            if (!empty($entry['food'])) {
                 $table->addRow();
                 $table->addCell(2100)->addText('Verpflegung', $contentSmallItalic);
                 $table->addCell(7000)->addText($entry['food'], $contentSmall);
             }
 
-            if(!empty($entry['costs'])) {
+            if (!empty($entry['costs'])) {
                 $costs = "CHF " . $entry['costs'];
-                if(!empty($entry['costsFor'])){
+                if (!empty($entry['costsFor'])) {
                     $costs .= " für " . $entry['costsFor'];
                 }
                 $table->addRow();
@@ -191,15 +203,15 @@ class DocxFormat extends AbstractFormat
                 $table->addCell(7000)->addText($costs, $contentSmall);
             }
 
-            if(!empty($entry['returnBack'])) {
+            if (!empty($entry['returnBack'])) {
                 $table->addRow();
                 $table->addCell(2100)->addText('Rückkehr', $contentSmallItalic);
                 $table->addCell(7000)->addText($entry['returnBack'], $contentSmall);
             }
 
-            if(!empty($entry['signupUntil'])) {
+            if (!empty($entry['signupUntil'])) {
                 $signup = "bis " . $entry['signupUntil'];
-                if(!empty($entry['signupTo'])){
+                if (!empty($entry['signupTo'])) {
                     $signup .= " an " . $entry['signupTo'];
                 }
                 $table->addRow();
@@ -213,9 +225,10 @@ class DocxFormat extends AbstractFormat
         }
     }
 
-    private function createOutput(){
+    private function createOutput()
+    {
         header('Cache-Control: max-age=0');
 
-        $this->word->save($this->name . ' '.date("Y-m-d_H-i-s").'.docx', 'Word2007', true);
+        $this->word->save($this->name . ' ' . date("Y-m-d_H-i-s") . '.docx', 'Word2007', true);
     }
 }

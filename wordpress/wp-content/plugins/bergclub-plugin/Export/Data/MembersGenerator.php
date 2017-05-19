@@ -11,13 +11,52 @@ namespace BergclubPlugin\Export\Data;
 
 use BergclubPlugin\MVC\Models\User;
 
+/**
+ * Generates the data needed for creating a member list.
+ *
+ * @see AbstractGenerator
+ * @package BergclubPlugin\Export\Data
+ */
 class MembersGenerator extends AbstractGenerator
 {
+
+    /**
+     * Generates and returns an array which holds rows with member information.
+     * <p>
+     * Example:
+     * <code>
+     * [
+     *   ['Type' => 'Aktivmitglied'],
+     *   ['Anrede' => 'Herr'],
+     *   ['Nachname' => 'Muster'],
+     *   ['Vorname' => 'Fritz'],
+     *   ['Zusatz'] => 'Postfach'],
+     *   ['Strasse'] => 'Musterstrasse'],
+     *   ['PLZ'] => '9999',
+     *   ['Ort'] => 'Musterlingen',
+     *   ['Telefon (P)'] => '031 234 56 78',
+     *   ['Telefon (G)'] => '031 901 23 45',
+     *   ['Telefon (M)'] => '079 678 90 01',
+     *   ['Email'] => 'fritz@muster.com',
+     *   ['Geburtsdatum'] => '01.02.1983',
+     *   ['Ehepartner'] => 'Sabine Muster',
+     *   ['Funktionen'] => 'Präsident, Leiter',
+     * ],
+     * [...]
+     * </code>
+     * <p>
+     * Note:
+     * - Every row always have the same amount of entries with the same keys. The value of an entry can be null.
+     * - The entry with the key 'Funktionen' contains a list with comma separated functionary roles of the member (if
+     *   user has functionary roles, null otherwise)
+     *
+     * @return array a list of members as described in the class comment.
+     */
     public function getData()
     {
         $data = [];
         $users = User::findMitglieder();
-        foreach($users as $user){
+        foreach ($users as $user) {
             /* @var User $user */
             $row['Typ'] = $user->address_role_name;
             $row['Anrede'] = $user->gender;
@@ -32,22 +71,25 @@ class MembersGenerator extends AbstractGenerator
             $row['Telefon (M)'] = $user->phone_mobile;
             $row['Email'] = $user->email;
             $row['Geburtsdatum'] = $user->birthdate;
-            $row['Ehepartner'] = "";
+            $row['Ehepartner'] = null;
+            $row['Funktionen'] = null;
 
             /* @var User $spouse */
             $spouse = $user->spouse;
-            if($spouse){
+            if ($spouse) {
                 $row["Ehepartner"] = $spouse->last_name . ' ' . $spouse->first_name;
             }
 
             $roles = $user->functionary_roles;
             $arr = [];
-            foreach($roles as $role){
+            foreach ($roles as $role) {
                 /* @var \BergclubPlugin\MVC\Models\Role $role */
                 $arr[] = $role->getName();
             }
 
-            $row['Funktionen'] = join(', ', $arr);
+            if (!empty($arr)) {
+                $row['Funktionen'] = join(', ', $arr);
+            }
             $data[] = $row;
         }
 
