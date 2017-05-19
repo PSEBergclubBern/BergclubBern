@@ -9,7 +9,8 @@
                     <select name="address_type" id="address_type">
                         <option value="">-- Bitte wählen --</option>
                         @foreach($address_roles as $role)
-                            <option value="{{ $role->getKey() }}" @if($role->getKey() == $user->address_role_key) selected @endif>{{ $role->getName() }}</option>
+                            <option value="{{ $role->getKey() }}"
+                                    @if($role->getKey() == $user->address_role_key) selected @endif>{{ $role->getName() }}</option>
                         @endforeach
                     </select>
                 </td>
@@ -19,12 +20,17 @@
         @elseif ( $key == 'leaving_reason' )
 
             <tr>
-                <td class="td-leaving_reason"><label id="label-leaving_reason" for="leaving_reason">Austrittsgrund</label></td>
+                <td class="td-leaving_reason"><label id="label-leaving_reason"
+                                                     for="leaving_reason">Austrittsgrund</label></td>
                 <td class="td-leaving_reason">
                     <select id="leaving_reason" name="leaving_reason">
                         <option value="">-- Bitte wählen --</option>
-                        <option value="1" @if($user->leaving_reason=='Ausgetreten') selected="selected" @endif>Ausgetreten</option>
-                        <option value="2" @if($user->leaving_reason=='Verstorben') selected="selected" @endif>Verstorben</option>
+                        <option value="1" @if($user->leaving_reason=='Ausgetreten') selected="selected" @endif>
+                            Ausgetreten
+                        </option>
+                        <option value="2" @if($user->leaving_reason=='Verstorben') selected="selected" @endif>
+                            Verstorben
+                        </option>
                     </select>
                 </td>
             </tr>
@@ -63,22 +69,27 @@
 
         @elseif( $key == 'spouse')
             @if( $_GET['view']!='new' )
-            <tr>
-                <td class="td-{{ $key }}"><label id="label-{{ $key }}" for="{{ $key }}">{{ $value }}</label></td>
+                <tr>
+                    <td class="td-{{ $key }}"><label id="label-{{ $key }}" for="{{ $key }}">{{ $value }}</label></td>
 
-                @if( $spouse != null )
-                    <td class="td-{{ $key }}">{{ $spouse->first_name }} {{ $spouse->last_name  }} <a href="?page={{ $_GET['page'] }}&view=detail&tab=data&id={{ $_GET['id'] }}&edit=1&action=deleteSpouse"><span class="dashicons dashicons-trash"></span></a></td>
-                @else
-                    <td class="td-{{ $key }}"><a href="?page={{ $_GET['page'] }}&view=detail&tab=spouse&id={{ $_GET['id'] }}&edit=1">Zuweisen</a></td>
-                @endif
+                    @if( $spouse != null )
+                        <td class="td-{{ $key }}">{{ $spouse->first_name }} {{ $spouse->last_name  }} <a
+                                    href="?page={{ $_GET['page'] }}&view=detail&tab=data&id={{ $_GET['id'] }}&edit=1&action=deleteSpouse"><span
+                                        class="dashicons dashicons-trash"></span></a></td>
+                    @else
+                        <td class="td-{{ $key }}"><a
+                                    href="?page={{ $_GET['page'] }}&view=detail&tab=spouse&id={{ $_GET['id'] }}&edit=1">Zuweisen</a>
+                        </td>
+                    @endif
 
-            </tr>
+                </tr>
             @endif
         @else
 
             <tr>
                 <td class="td-{{ $key }}"><label id="label-{{ $key }}" for="{{ $key }}">{{ $value }}</label></td>
-                <td class="td-{{ $key }}"><input type="text" id="{{ $key }}" name="{{ $key }}" value='{{ $user->$key }}' /></td>
+                <td class="td-{{ $key }}"><input type="text" id="{{ $key }}" name="{{ $key }}"
+                                                 value='{{ $user->$key }}'/></td>
             </tr>
 
         @endif

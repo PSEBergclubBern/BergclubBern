@@ -1,47 +1,47 @@
 <script>
-    jQuery(document).ready(function($) {
+    jQuery(document).ready(function ($) {
         jQuery(".datepicker").datepicker();
     });
 
     @if(($tab=='data' && $edit) || $_GET['view'] == 'new')
-        jQuery(document).ready(function() {
+        jQuery(document).ready(function () {
         displayForm();
 
         var $arrRequired = <?= json_encode($required) ?>;
 
-        var $unset = $arrRequired[ 'bcb_unset' ];
+        var $unset = $arrRequired['bcb_unset'];
         setFieldsNotRequired($unset);
 
         var $selected = getAddressType();
-        var $required = $arrRequired[ $selected ];
+        var $required = $arrRequired[$selected];
 
-        jQuery.each($required, function( index, value ){
-            setFieldRequired( index );
+        jQuery.each($required, function (index, value) {
+            setFieldRequired(index);
         });
 
     });
 
-    jQuery("#address_type").change( function(){
+    jQuery("#address_type").change(function () {
         displayForm();
 
         var $arrRequired = <?= json_encode($required) ?>;
 
-        var $unset = $arrRequired[ 'bcb_unset' ];
+        var $unset = $arrRequired['bcb_unset'];
         setFieldsNotRequired($unset);
 
         var $selected = getAddressType();
-        var $required = $arrRequired[ $selected ];
+        var $required = $arrRequired[$selected];
 
-        jQuery.each($required, function( index, value ){
-            setFieldRequired( index );
+        jQuery.each($required, function (index, value) {
+            setFieldRequired(index);
         });
 
     });
 
-    function displayForm(){
+    function displayForm() {
         var $selected = getAddressType();
 
-        if ( $selected == 'bcb_institution' || $selected == 'bcb_inserent' ){
+        if ($selected == 'bcb_institution' || $selected == 'bcb_inserent') {
             hide('phone_private');
             hide('birthdate');
             hide('spouse');
@@ -49,7 +49,7 @@
             show('company');
         }
 
-        else if ( $selected == 'bcb_interessent' || $selected == 'bcb_interessent_jugend' || $selected == 'bcb_ehrenmitglied' || $selected == 'bcb_freimitglied' ){
+        else if ($selected == 'bcb_interessent' || $selected == 'bcb_interessent_jugend' || $selected == 'bcb_ehrenmitglied' || $selected == 'bcb_freimitglied') {
             hide('leaving_reason');
             hide('company');
             show('phone_private');
@@ -57,7 +57,7 @@
             hide('spouse');
         }
 
-        else if ( $selected == 'bcb_aktivmitglied' || $selected == 'bcb_aktivmitglied_jugend' ){
+        else if ($selected == 'bcb_aktivmitglied' || $selected == 'bcb_aktivmitglied_jugend') {
             hide('leaving_reason');
             hide('company');
             show('phone_private');
@@ -65,7 +65,7 @@
             show('spouse');
         }
 
-        else if ($selected == 'bcb_ehemalig'){
+        else if ($selected == 'bcb_ehemalig') {
             hide('company');
             show('phone_private');
             show('birthdate');
@@ -73,7 +73,7 @@
             show('leaving_reason');
         }
 
-        else{
+        else {
             hide('leaving_reason');
             hide('company');
             hide('birthdate');
@@ -83,25 +83,25 @@
 
     }
 
-    function show(field){
+    function show(field) {
         jQuery(".td-" + field).show();
     }
 
-    function hide(field){
+    function hide(field) {
         jQuery(".td-" + field).hide();
         jQuery("#" + field).val('');
     }
 
-    function getAddressType(){
+    function getAddressType() {
         return jQuery("#address_type").val();
     }
 
-    function setFieldRequired(field){
+    function setFieldRequired(field) {
         jQuery("#label-" + field).addClass("required");
     }
 
-    function setFieldsNotRequired(arrFields){
-        jQuery.each(arrFields, function( index, value ){
+    function setFieldsNotRequired(arrFields) {
+        jQuery.each(arrFields, function (index, value) {
             jQuery("#label-" + index).removeClass("required");
         });
     }

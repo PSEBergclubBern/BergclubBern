@@ -33,7 +33,13 @@
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->address_role_name }}</td>
                 <td>{{ join('<br/>', $user->functionary_role_names) }}</td>
-                <td class="dt-right"><a href="?page={{ $_GET['page'] }}&view=detail&id={{ $user->ID }}" title="Anzeigen"><span class="dashicons dashicons-visibility"></span></a> @if($showEdit) <a class="delete" data-id="{{ $user->ID }}" title="Löschen" href="javascript:void(0)"><span class="dashicons dashicons-trash"></span></a> @endif</td>
+                <td class="dt-right"><a href="?page={{ $_GET['page'] }}&view=detail&id={{ $user->ID }}"
+                                        title="Anzeigen"><span
+                                class="dashicons dashicons-visibility"></span></a> @if($showEdit) <a class="delete"
+                                                                                                     data-id="{{ $user->ID }}"
+                                                                                                     title="Löschen"
+                                                                                                     href="javascript:void(0)"><span
+                                class="dashicons dashicons-trash"></span></a> @endif</td>
             </tr>
         @endforeach
         </tbody>
@@ -41,17 +47,17 @@
 
         @section('scripts')
             <script type="text/javascript">
-                jQuery(document).ready(function() {
+                jQuery(document).ready(function () {
                     jQuery('#mitglieder').DataTable({
                         language: {
                             url: "//cdn.datatables.net/plug-ins/1.10.13/i18n/German.json"
                         },
                         columnDefs: [
-                            { targets: 'no-sort', orderable: false }
+                            {targets: 'no-sort', orderable: false}
                         ]
                     });
 
-                    jQuery('.delete').click(function(){
+                    jQuery('.delete').click(function () {
                         var id = jQuery(this).data('id');
                         swal({
                             title: 'Sind Sie sicher?',
@@ -66,6 +72,6 @@
                             document.location.href = document.location.href + '&action=delete&id=' + id;
                         })
                     });
-                } );
+                });
             </script>
 @endsection

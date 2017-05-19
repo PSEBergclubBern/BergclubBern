@@ -1,7 +1,7 @@
 <?php
-use BergclubPlugin\MVC\Models\User;
 use BergclubPlugin\MVC\Models\Role;
 
+//add address roles (do not have admin access)
 $role = new Role(Role::TYPE_ADDRESS, 'institution', 'Institution');
 $role->addCapability('read', false);
 $role->save();
@@ -38,13 +38,13 @@ $role = new Role(Role::TYPE_ADDRESS, 'freimitglied', 'Freimitglied');
 $role->addCapability('read', false);
 $role->save();
 
-/**
- * Load array with Functionary roles and assigned capabilities.
- */
-require_once 'activate_functionary_roles.php';
 
-foreach($functionaryRoles as $slug => $item){
-    remove_role( $slug );
+// load array with functionary roles and assigned capabilities.
+$functionaryRoles = json_decode(file_get_contents(__DIR__ . '/data/functionary_roles.json'), true);
+
+// create functionary roles and set the capabilities
+foreach ($functionaryRoles as $slug => $item) {
+    remove_role($slug);
     $role = new Role(Role::TYPE_FUNCTIONARY, $slug, $item['name']);
     $role->setCapabilities($item['capabilities']);
     $role->save();
@@ -58,32 +58,31 @@ foreach($functionaryRoles as $slug => $item){
 $roleInternet = new Role(Role::TYPE_FUNCTIONARY, 'internet', 'Internet');
 
 $roles = Role::findByType(Role::TYPE_FUNCTIONARY);
-foreach($roles as $role){
+foreach ($roles as $role) {
     /* @var Role $role */
-    foreach($role->getCapabilities() as $capability => $grant){
-        if($grant) {
+    foreach ($role->getCapabilities() as $capability => $grant) {
+        if ($grant) {
             $roleInternet->addCapability($capability, $grant);
         }
     }
 }
 
-//add capability theme_images
+// add capability theme_images
 $roleInternet->addCapability('theme_images', true);
 
+// add administrator capabilities except for capabilities which end with "_users"
 $roleAdministrator = Role::find('administrator');
-foreach($roleAdministrator->getCapabilities() as $capability => $grant){
-    if(substr($capability, -6) != "_users") {
+foreach ($roleAdministrator->getCapabilities() as $capability => $grant) {
+    if (substr($capability, -6) != "_users") {
         $roleInternet->addCapability($capability, $grant);
     }
 }
 
 $roleInternet->save();
 
-/**
- * Also add the custom capabilities to WP administrator
- */
-foreach($roleInternet->getCapabilities() as $capability => $grant){
-    if(substr($capability, -6) != "_users") {
+// also add all the custom capabilities to WP administrator
+foreach ($roleInternet->getCapabilities() as $capability => $grant) {
+    if (substr($capability, -6) != "_users") {
         $roleAdministrator->addCapability($capability, $grant);
     }
 }

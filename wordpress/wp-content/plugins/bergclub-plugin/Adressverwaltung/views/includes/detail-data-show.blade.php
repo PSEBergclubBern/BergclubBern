@@ -15,7 +15,8 @@
         </tr>
     @endif
     <tr>
-        <td></td><td>&nbsp;</td>
+        <td></td>
+        <td>&nbsp;</td>
     </tr>
     @if($user->company)
         <tr>
@@ -60,7 +61,8 @@
         </tr>
     @endif
     <tr>
-        <td></td><td>&nbsp;</td>
+        <td></td>
+        <td>&nbsp;</td>
     </tr>
     @if($user->phone_private)
         <tr>
@@ -87,7 +89,8 @@
         </tr>
     @endif
     <tr>
-        <td></td><td>&nbsp;</td>
+        <td></td>
+        <td>&nbsp;</td>
     </tr>
     @if($user->birthdate)
         <tr>
@@ -96,12 +99,15 @@
         </tr>
     @endif
     <tr>
-        <td></td><td>&nbsp;</td>
+        <td></td>
+        <td>&nbsp;</td>
     </tr>
     @if($user->spouse)
         <tr>
             <td>Ehepartner:</td>
-            <td><a href="?page={{ $_GET['page'] }}&view=detail&id={{ $spouse->ID }}">{{ $user->spouse->first_name }} {{ $user->spouse->last_name }}</a></td>
+            <td>
+                <a href="?page={{ $_GET['page'] }}&view=detail&id={{ $spouse->ID }}">{{ $user->spouse->first_name }} {{ $user->spouse->last_name }}</a>
+            </td>
         </tr>
     @endif
     @if($user->comments)
