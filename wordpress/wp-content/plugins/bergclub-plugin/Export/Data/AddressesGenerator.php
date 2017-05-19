@@ -17,6 +17,7 @@ class AddressesGenerator extends AbstractAddressLineGenerator
      *
      * @see AbstractAddressLineGenerator::getUsers()
      * @see AbstractAddressLineGenerator::addRow()
+     * @see User::findAllWithoutSpouse()
      *
      * @return array as described in method comment.
      */

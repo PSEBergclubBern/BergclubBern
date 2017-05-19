@@ -1,21 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mathi
- * Date: 14.05.2017
- * Time: 22:23
- */
 
 namespace BergclubPlugin\Export\Data;
 
-
-use BergclubPlugin\MVC\Models\User;
-
+/**
+ * Generates the data needed for "Touren" export.
+ *
+ * @package BergclubPlugin\Export\Data
+ */
 class TourenGenerator extends AbstractGenerator
 {
     public function getData()
     {
-        if(isset($this->args['status']) && isset($this->args['from']) && isset($this->args['to'])) {
+        if(!empty($this->args['status']) && !empty($this->args['from']) && !empty($this->args['to'])) {
             $status = explode(",", $this->args['status']);
             $from = $this->args['from'];
             $to = $this->args['to'];

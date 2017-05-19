@@ -21,6 +21,7 @@ class ContributionsGenerator extends AbstractAddressLineGenerator
      *
      * @see AbstractAddressLineGenerator::getUsers()
      * @see AbstractAddressLineGenerator::addRow()
+     * @see User::findMitgliederWithoutSpouse()
      *
      * @return array as described in method comment.
      */
@@ -49,10 +50,10 @@ class ContributionsGenerator extends AbstractAddressLineGenerator
     /**
      * Adds membership type and payment fee to the given address line
      *
+     * @see AbstractAddressLineGenerator::addRow()
+     *
      * @param array $row the generated address line for the given user
      * @param User $user the user associated with the address line
-     *
-     * @see AbstractAddressLineGenerator::addRow()
      */
     protected function addAdditionalData(&$row, User $user)
     {

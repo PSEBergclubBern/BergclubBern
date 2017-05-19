@@ -2,7 +2,11 @@
 
 namespace BergclubPlugin\Export\Data;
 
-
+/**
+ * Generates the data needed for "Pfarrblatt"
+ *
+ * @package BergclubPlugin\Export\Data
+ */
 class ProgramGenerator extends AbstractGenerator
 {
 
@@ -57,8 +61,9 @@ class ProgramGenerator extends AbstractGenerator
      *
      * @see AbstractGenerator
      *
-     * @return array a list of "Touren" information as described in the class comment. If touren-from or to attribute was not
-     * specified trough the constructor, the following array will be returned: `['data' => [], 'anmeldeTermine' => []]`.
+     * @return array a list of "Touren" information as described in the class comment. If touren-from or touren-to
+     * attribute was not specified trough the constructor, the following array will be returned:
+     * `['data' => [], 'anmeldeTermine' => []]`.
      */
     public function getData()
     {
