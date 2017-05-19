@@ -1,13 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kevstuder
- * Date: 03.04.17
- * Time: 12:59
- */
 
 namespace BergclubPlugin\Commands\Entities;
 
+/**
+ * Class TourBericht
+ *
+ * This class represents a report to a tour from the old website
+ *
+ * @package BergclubPlugin\Commands\Entities
+ */
 class TourBericht
 {
     public $id;
@@ -15,6 +16,10 @@ class TourBericht
     public $text;
     public $title;
 
+    /**
+     * TourBericht constructor.
+     * @param $array    array   An array with the values of the report
+     */
     public function __construct($array)
     {
         $this->id = $array['id'];

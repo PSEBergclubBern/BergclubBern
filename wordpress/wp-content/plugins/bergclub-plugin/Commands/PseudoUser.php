@@ -5,6 +5,13 @@ namespace BergclubPlugin\Commands;
 use BergclubPlugin\MVC\Models\Role;
 use BergclubPlugin\MVC\Models\User;
 
+/**
+ * Class PseudoUser
+ *
+ * This class can import users from a dump
+ *
+ * @package BergclubPlugin\Commands
+ */
 class PseudoUser extends Init
 {
 
@@ -36,48 +43,54 @@ class PseudoUser extends Init
 
         if (!file_exists($filename)) {
             \WP_CLI::error('Input file not found, aborting!');
+
             return;
         }
 
         require $filename;
 
-        if(empty($pseudoUsers) || !is_array($pseudoUsers)){
+        if (empty($pseudoUsers) || !is_array($pseudoUsers)) {
             \WP_CLI::error('Data format incorrect!');
+
             return;
         }
 
-        foreach($pseudoUsers as $pseudoUser){
-            if(is_array($pseudoUser)){
+        foreach ($pseudoUsers as $pseudoUser) {
+            if (is_array($pseudoUser)) {
                 $this->createUser($pseudoUser);
             }
         }
     }
 
-    function createUser(array $userData){
-        if(!empty($userData['user']) && !empty($userData['address_role']) && is_array($userData['user'])){
-            if(!empty($userData['user']['user_login'])) {
+    function createUser(array $userData)
+    {
+        if (!empty($userData['user']) && !empty($userData['address_role']) && is_array($userData['user'])) {
+            if (!empty($userData['user']['user_login'])) {
                 $existingUser = User::findByLogin($userData['user']['user_login']);
                 if ($existingUser) {
                     \WP_CLI::warning('Could not create user ' . $userData['user']['user_login'] . ' - user already exists.');
+
                     return;
                 }
             }
 
             $user = new User();
-            foreach($userData['user'] as $key => $value){
+            foreach ($userData['user'] as $key => $value) {
                 $user->$key = $value;
             }
 
             $role = Role::find($userData['address_role']);
-            if(!$role){
+            if (!$role) {
                 \WP_CLI::warning('Could not create user, address role ' . $userData['address_role'] . ' does not exist.');
+
                 return;
             }
             $user->addRole($role);
-            if(isset($userData['functionary_role'])){
+            if (isset($userData['functionary_role'])) {
                 $role = Role::find($userData['functionary_role']);
-                if(!$role){
+                if (!$role) {
                     \WP_CLI::warning('Could not create user, functionary role ' . $userData['functionary_role'] . ' does not exist.');
+
                     return;
                 }
                 $user->addRole($role);

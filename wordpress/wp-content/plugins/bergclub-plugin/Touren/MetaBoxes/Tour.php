@@ -1,16 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kevstuder
- * Date: 21.03.17
- * Time: 16:56
- */
 
 namespace BergclubPlugin\Touren\MetaBoxes;
 
-
 use BergclubPlugin\FlashMessage;
 
+/**
+ * Class Tour
+ *
+ * This metabox renders general information about the tour
+ *
+ * @package BergclubPlugin\Touren\MetaBoxes
+ */
 class Tour extends MetaBox {
 
 	const TYPE = '_type';

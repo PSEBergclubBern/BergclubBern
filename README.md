@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/PSEBergclubBern/BergclubBern.svg?branch=master)](https://travis-ci.org/PSEBergclubBern/BergclubBern)
 
-To see the concept, click [here.](CONCEPT.md)
+To install the product, look [here](INSTALL.md).
 
 ## HowTo
 

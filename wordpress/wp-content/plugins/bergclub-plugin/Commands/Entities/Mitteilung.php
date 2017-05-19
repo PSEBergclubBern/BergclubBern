@@ -1,14 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kevstuder
- * Date: 14.03.17
- * Time: 16:38
- */
 
 namespace BergclubPlugin\Commands\Entities;
 
-
+/**
+ * Class Mitteilung
+ *
+ * This class represents a message from the old website
+ *
+ * @package BergclubPlugin\Commands\Entities
+ */
 class Mitteilung implements Entity
 {
     public $id;
@@ -16,6 +16,13 @@ class Mitteilung implements Entity
     public $titel;
     public $text;
 
+    /**
+     * Mitteilung constructor.
+     * @param $id       String  the id of the message
+     * @param $datum    String  the date of the message in the format yyyy-mm-dd
+     * @param $titel    String  the title of the message
+     * @param $text     String  the content of the message
+     */
     public function __construct($id, $datum, $titel, $text)
     {
         $this->id = $id;
