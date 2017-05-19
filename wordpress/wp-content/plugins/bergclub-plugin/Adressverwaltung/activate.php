@@ -43,8 +43,8 @@ $role->save();
 $functionaryRoles = json_decode(file_get_contents(__DIR__ . '/data/functionary_roles.json'), true);
 
 // create functionary roles and set the capabilities
-foreach($functionaryRoles as $slug => $item){
-    remove_role( $slug );
+foreach ($functionaryRoles as $slug => $item) {
+    remove_role($slug);
     $role = new Role(Role::TYPE_FUNCTIONARY, $slug, $item['name']);
     $role->setCapabilities($item['capabilities']);
     $role->save();
@@ -58,10 +58,10 @@ foreach($functionaryRoles as $slug => $item){
 $roleInternet = new Role(Role::TYPE_FUNCTIONARY, 'internet', 'Internet');
 
 $roles = Role::findByType(Role::TYPE_FUNCTIONARY);
-foreach($roles as $role){
+foreach ($roles as $role) {
     /* @var Role $role */
-    foreach($role->getCapabilities() as $capability => $grant){
-        if($grant) {
+    foreach ($role->getCapabilities() as $capability => $grant) {
+        if ($grant) {
             $roleInternet->addCapability($capability, $grant);
         }
     }
@@ -72,8 +72,8 @@ $roleInternet->addCapability('theme_images', true);
 
 // add administrator capabilities except for capabilities which end with "_users"
 $roleAdministrator = Role::find('administrator');
-foreach($roleAdministrator->getCapabilities() as $capability => $grant){
-    if(substr($capability, -6) != "_users") {
+foreach ($roleAdministrator->getCapabilities() as $capability => $grant) {
+    if (substr($capability, -6) != "_users") {
         $roleInternet->addCapability($capability, $grant);
     }
 }
@@ -81,8 +81,8 @@ foreach($roleAdministrator->getCapabilities() as $capability => $grant){
 $roleInternet->save();
 
 // also add all the custom capabilities to WP administrator
-foreach($roleInternet->getCapabilities() as $capability => $grant){
-    if(substr($capability, -6) != "_users") {
+foreach ($roleInternet->getCapabilities() as $capability => $grant) {
+    if (substr($capability, -6) != "_users") {
         $roleAdministrator->addCapability($capability, $grant);
     }
 }

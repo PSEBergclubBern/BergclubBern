@@ -11,15 +11,18 @@
         @foreach($user->history as $key => $item)
             <tr>
                 <td>{{ $item['name'] }}</td>
-                <td><input type="text" class="datepicker" name="history[{{ $key }}][date_from]" value='{{ $item['date_from'] }}'></td>
+                <td><input type="text" class="datepicker" name="history[{{ $key }}][date_from]"
+                           value='{{ $item['date_from'] }}'></td>
                 <td>
                     @if(!empty($item['date_to']))
-                        <input type="text" class="datepicker" name="history[{{ $key }}][date_to]" value='{{ $item['date_to'] }}'>
+                        <input type="text" class="datepicker" name="history[{{ $key }}][date_to]"
+                               value='{{ $item['date_to'] }}'>
                     @endif
                 </td>
                 <td class="dt-right no-link-underline">
                     @if(!empty($item['date_to']))
-                    <a class="delete" data-key="{{ $key }}" title="Löschen" href="javascript:void(0)"><span class="dashicons dashicons-trash"></span></a>
+                        <a class="delete" data-key="{{ $key }}" title="Löschen" href="javascript:void(0)"><span
+                                    class="dashicons dashicons-trash"></span></a>
                     @endif
                 </td>
             </tr>
@@ -29,7 +32,7 @@
 </form>
 
 <script type="text/javascript">
-    jQuery(".delete").click(function(){
+    jQuery(".delete").click(function () {
         var key = jQuery(this).data('key');
         swal({
             title: 'Sind Sie sicher?',

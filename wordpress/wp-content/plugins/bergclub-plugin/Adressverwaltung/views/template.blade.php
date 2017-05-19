@@ -3,7 +3,7 @@
 {!! \BergclubPlugin\FlashMessage::show() !!}
 
 <div class="wrapper">
-        @yield('content')
+    @yield('content')
 </div>
 
 @yield('scripts')

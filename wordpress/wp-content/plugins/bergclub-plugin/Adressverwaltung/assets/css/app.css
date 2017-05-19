@@ -1,50 +1,52 @@
-.wrapper{
+.wrapper {
     padding-right: 20px;
 }
-.no-link-underline a{
+
+.no-link-underline a {
     text-decoration: none;
 }
-td .dashicons{
+
+td .dashicons {
     font-size: 1.9em;
 }
 
-.container{
+.container {
     padding: 25px;
     background-color: white;
-    margin-bottom:25px;
+    margin-bottom: 25px;
 }
 
-.action-buttons{
-    margin-top:25px;
+.action-buttons {
+    margin-top: 25px;
 }
 
-table.user-detail tr td{
+table.user-detail tr td {
     font-weight: bold;
     vertical-align: bottom;
 }
 
-table.user-detail tr td:first-child{
+table.user-detail tr td:first-child {
     font-size: 90%;
     font-weight: normal;
     text-align: right;
     padding-right: 20px;
 }
 
-.edit-list{
+.edit-list {
     border-spacing: 0;
     font-size: 1.2em;
 }
 
-.edit-list th{
+.edit-list th {
     text-align: left;
     padding: 5px 10px;
 }
 
-.edit-list td{
+.edit-list td {
     padding: 10px;
 }
 
-.edit-list tbody tr:nth-child(odd){
+.edit-list tbody tr:nth-child(odd) {
     background-color: #f9f9f9;
 }
 
