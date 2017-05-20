@@ -3,6 +3,7 @@
 namespace BergclubPlugin\Export\Data;
 
 
+use BergclubPlugin\MVC\Models\IUser;
 use BergclubPlugin\MVC\Models\User;
 
 /**
@@ -11,6 +12,9 @@ use BergclubPlugin\MVC\Models\User;
  */
 class AddressesGenerator extends AbstractAddressLineGenerator
 {
+    use UserClassInjector;
+
+
     /**
      * Creates and returns an array with all users that have no spouse or users that have a spouse and are marked as
      * main address entry. The spouse information will be added in `AbstractAddressLineGenerator::addRow`
@@ -23,7 +27,7 @@ class AddressesGenerator extends AbstractAddressLineGenerator
      */
     protected function getUsers()
     {
-        return User::findAllWithoutSpouse();
+        return call_user_func($this->getUserClass() . '::findAllWithoutSpouse');
     }
 
     /**
@@ -32,7 +36,7 @@ class AddressesGenerator extends AbstractAddressLineGenerator
      * @param array $row
      * @param User $user
      */
-    protected function addAdditionalData(array &$row, User $user)
+    protected function addAdditionalData(array &$row, IUser $user)
     {
 
     }

@@ -3,6 +3,7 @@
 namespace BergclubPlugin\Export\Data;
 
 
+use BergclubPlugin\MVC\Models\IUser;
 use BergclubPlugin\MVC\Models\Option;
 use BergclubPlugin\MVC\Models\User;
 
@@ -55,7 +56,7 @@ class ContributionsGenerator extends AbstractAddressLineGenerator
      * @param array $row the generated address line for the given user
      * @param User $user the user associated with the address line
      */
-    protected function addAdditionalData(array &$row, User $user)
+    protected function addAdditionalData(array &$row, IUser $user)
     {
         $contributions = Option::get('mitgliederbeitraege');
         $contributionType = $contributions['bcb']['name'];
