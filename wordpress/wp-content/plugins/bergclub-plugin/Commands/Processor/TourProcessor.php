@@ -6,10 +6,10 @@ namespace BergclubPlugin\Commands\Processor;
 use BergclubPlugin\Commands\Entities\Entity;
 use BergclubPlugin\Commands\Entities\Tour;
 use BergclubPlugin\Commands\Entities\TourBericht;
+use BergclubPlugin\MVC\Models\Option;
 use BergclubPlugin\Touren\MetaBoxes\Common;
 use BergclubPlugin\Touren\MetaBoxes\MeetingPoint;
 use BergclubPlugin\Touren\MetaBoxes\Tour as TourMetabox;
-use BergclubPlugin\MVC\Models\Option;
 
 /**
  * Class TourProcessor handles all tours and the reports
@@ -119,101 +119,6 @@ class TourProcessor extends Processor
     }
 
     /**
-     * Save the generated entities
-     *
-     * @param Entity $entity
-     * @param bool   $noOp
-     * @return void
-     */
-    public function save(Entity $entity, $noOp = true)
-    {
-        /** @var $entity Tour */
-        $this->logger->log('Processing tour ' . $entity);
-
-        if (!$noOp) {
-            $generatedId = wp_insert_post(
-                array(
-                    'post_title'   => $entity->title,
-                    'post_author'  => 1,
-                    'post_status'  => 'publish',
-                    'post_content' => '-',
-                    'post_type'    => 'touren',
-                    'post_date'    => date('Y-01-01', strtotime($entity->dateFrom)),
-                ),
-                true
-            );
-            if (!is_numeric($generatedId)) {
-                /** @var \WP_Error $generatedId */
-                $this->logger->warning('While creating tour ' . $entity . ': ERROR: ' . $generatedId->get_error_message());
-            } else {
-
-                $this->logger->debug('generated tour with id ' . $generatedId);
-                $customFields = array(
-                    Common::DATE_FROM_IDENTIFIER          => date('d.m.Y', strtotime($entity->dateFrom)),
-                    Common::DATE_TO_IDENTIFIER            => date('d.m.Y', strtotime($entity->dateTo)),
-                    Common::DATE_FROM_DB                  => date('Y-m-d', strtotime($entity->dateFrom)),
-                    Common::DATE_TO_DB                    => date('Y-m-d', strtotime($entity->dateTo)),
-                    Common::LEADER                        => $entity->leader,
-                    Common::CO_LEADER                     => $entity->coLeader,
-                    Common::IS_ADULT_OR_YOUTH             => $entity->isYouth,
-                    TourMetabox::PROGRAM                  => $entity->program,
-                    TourMetaBox::COSTS                    => $entity->costs,
-                    TourMetaBox::COSTS_FOR                => $entity->costsFor,
-                    TourMetaBox::EQUIPMENT                => $entity->equiptment,
-                    TourMetaBox::RISE_UP_METERS           => $entity->up,
-                    TourMetaBox::RISE_DOWN_METERS         => $entity->down,
-                    TourMetaBox::ADDITIONAL_INFO          => $entity->special,
-                    TourMetaBox::TYPE                     => $entity->type,
-                    TourMetaBox::REQUIREMENTS_TECHNICAL   => $entity->requirementsTechnical,
-                    TourMetaBox::REQUIREMENTS_CONDITIONAL => $entity->requirementsConditional,
-                    TourMetaBox::JSEVENT                  => $entity->jsEvent,
-                    MeetingPoint::FOOD                    => $entity->food,
-                    MeetingPoint::RETURNBACK              => $entity->returnBack,
-                    MeetingPoint::MEETPOINT               => $entity->meetingPointKey,
-                    MeetingPoint::MEETPOINT_DIFFERENT     => $entity->meetingPointKey == MeetingPoint::MEETPOINT_DIFFERENT_KEY ? $entity->meetingPoint : '',
-                );
-
-                foreach ($customFields as $key => $value) {
-                    update_post_meta($generatedId, $key, $value);
-                }
-
-                if ($entity->tourBericht != null) {
-                    $generatedReportId = wp_insert_post(
-                        array(
-                            'post_title'   => $entity->title,
-                            'post_author'  => 1,
-                            'post_status'  => 'publish',
-                            'post_date'    => $entity->tourBericht->date,
-                            'post_content' => $entity->tourBericht->text,
-                            'post_type'    => 'tourenberichte',
-                        ),
-                        true
-                    );
-
-                    if (is_numeric($generatedReportId)) {
-                        update_post_meta($generatedReportId, '_touren', $generatedId);
-                        update_post_meta($generatedReportId, '_isYouth', $entity->isYouth);
-                    } else {
-                        $this->logger->warning('While creating tourbericht for tour ' . $entity . ': ERROR: ' . $generatedReportId->get_error_message());
-                    }
-                }
-
-                $this->logger->success('Finished processing of tour');
-            }
-        }
-    }
-
-    /**
-     * get the entity name
-     *
-     * @return string
-     */
-    public function getEntityName()
-    {
-        return 'Touren';
-    }
-
-    /**
      * get the tourenarten as array with id as key
      *
      * @param $art
@@ -290,11 +195,11 @@ class TourProcessor extends Processor
             $queryArgs = [
                 'meta_query' => [
                     [
-                        'key'   => 'first_name',
+                        'key' => 'first_name',
                         'value' => $args['first_name'],
                     ],
                     [
-                        'key'   => 'last_name',
+                        'key' => 'last_name',
                         'value' => $args['last_name'],
                     ],
                 ]
@@ -307,5 +212,100 @@ class TourProcessor extends Processor
         }
 
         return 0;
+    }
+
+    /**
+     * Save the generated entities
+     *
+     * @param Entity $entity
+     * @param bool $noOp
+     * @return void
+     */
+    public function save(Entity $entity, $noOp = true)
+    {
+        /** @var $entity Tour */
+        $this->logger->log('Processing tour ' . $entity);
+
+        if (!$noOp) {
+            $generatedId = wp_insert_post(
+                array(
+                    'post_title' => $entity->title,
+                    'post_author' => 1,
+                    'post_status' => 'publish',
+                    'post_content' => '-',
+                    'post_type' => 'touren',
+                    'post_date' => date('Y-01-01', strtotime($entity->dateFrom)),
+                ),
+                true
+            );
+            if (!is_numeric($generatedId)) {
+                /** @var \WP_Error $generatedId */
+                $this->logger->warning('While creating tour ' . $entity . ': ERROR: ' . $generatedId->get_error_message());
+            } else {
+
+                $this->logger->debug('generated tour with id ' . $generatedId);
+                $customFields = array(
+                    Common::DATE_FROM_IDENTIFIER => date('d.m.Y', strtotime($entity->dateFrom)),
+                    Common::DATE_TO_IDENTIFIER => date('d.m.Y', strtotime($entity->dateTo)),
+                    Common::DATE_FROM_DB => date('Y-m-d', strtotime($entity->dateFrom)),
+                    Common::DATE_TO_DB => date('Y-m-d', strtotime($entity->dateTo)),
+                    Common::LEADER => $entity->leader,
+                    Common::CO_LEADER => $entity->coLeader,
+                    Common::IS_ADULT_OR_YOUTH => $entity->isYouth,
+                    TourMetabox::PROGRAM => $entity->program,
+                    TourMetaBox::COSTS => $entity->costs,
+                    TourMetaBox::COSTS_FOR => $entity->costsFor,
+                    TourMetaBox::EQUIPMENT => $entity->equiptment,
+                    TourMetaBox::RISE_UP_METERS => $entity->up,
+                    TourMetaBox::RISE_DOWN_METERS => $entity->down,
+                    TourMetaBox::ADDITIONAL_INFO => $entity->special,
+                    TourMetaBox::TYPE => $entity->type,
+                    TourMetaBox::REQUIREMENTS_TECHNICAL => $entity->requirementsTechnical,
+                    TourMetaBox::REQUIREMENTS_CONDITIONAL => $entity->requirementsConditional,
+                    TourMetaBox::JSEVENT => $entity->jsEvent,
+                    MeetingPoint::FOOD => $entity->food,
+                    MeetingPoint::RETURNBACK => $entity->returnBack,
+                    MeetingPoint::MEETPOINT => $entity->meetingPointKey,
+                    MeetingPoint::MEETPOINT_DIFFERENT => $entity->meetingPointKey == MeetingPoint::MEETPOINT_DIFFERENT_KEY ? $entity->meetingPoint : '',
+                );
+
+                foreach ($customFields as $key => $value) {
+                    update_post_meta($generatedId, $key, $value);
+                }
+
+                if ($entity->tourBericht != null) {
+                    $generatedReportId = wp_insert_post(
+                        array(
+                            'post_title' => $entity->title,
+                            'post_author' => 1,
+                            'post_status' => 'publish',
+                            'post_date' => $entity->tourBericht->date,
+                            'post_content' => $entity->tourBericht->text,
+                            'post_type' => 'tourenberichte',
+                        ),
+                        true
+                    );
+
+                    if (is_numeric($generatedReportId)) {
+                        update_post_meta($generatedReportId, '_touren', $generatedId);
+                        update_post_meta($generatedReportId, '_isYouth', $entity->isYouth);
+                    } else {
+                        $this->logger->warning('While creating tourbericht for tour ' . $entity . ': ERROR: ' . $generatedReportId->get_error_message());
+                    }
+                }
+
+                $this->logger->success('Finished processing of tour');
+            }
+        }
+    }
+
+    /**
+     * get the entity name
+     *
+     * @return string
+     */
+    public function getEntityName()
+    {
+        return 'Touren';
     }
 }

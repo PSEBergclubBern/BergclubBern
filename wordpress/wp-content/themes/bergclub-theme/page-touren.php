@@ -6,7 +6,7 @@ get_header(); ?>
 
     <?php
     $args = [
-        'post_type'      => 'touren',
+        'post_type' => 'touren',
         'posts_per_page' => 10,
     ];
     $loop = new WP_Query($args);

@@ -38,7 +38,7 @@ abstract class Processor
     /**
      * save an entity
      *
-     * @param Entity  $entity
+     * @param Entity $entity
      * @param boolean $noOp true if no operation should be executed
      * @return void
      */
@@ -63,19 +63,6 @@ abstract class Processor
     }
 
     /**
-     * Convert a text field for the new database
-     *
-     * @param $text
-     * @return mixed|string
-     */
-    protected function convertTextField($text)
-    {
-        $text = $this->convertEncoding($text);
-
-        return $this->cleanUp($text);
-    }
-
-    /**
      * cleanup old field
      *
      * @param $text
@@ -90,6 +77,19 @@ abstract class Processor
         $text = trim($text);
 
         return $text;
+    }
+
+    /**
+     * Convert a text field for the new database
+     *
+     * @param $text
+     * @return mixed|string
+     */
+    protected function convertTextField($text)
+    {
+        $text = $this->convertEncoding($text);
+
+        return $this->cleanUp($text);
     }
 
     /**

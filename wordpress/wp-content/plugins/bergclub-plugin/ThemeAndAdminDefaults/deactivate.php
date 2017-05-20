@@ -9,7 +9,7 @@ function bcb_delete_pages($pages)
 {
     foreach ($pages as $slug => $item) {
         $page = get_page_by_path($slug);
-        if($page) {
+        if ($page) {
             wp_delete_post($page->ID, true);
         }
     }

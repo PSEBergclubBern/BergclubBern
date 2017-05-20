@@ -4,7 +4,7 @@ get_header();
 $tourenarten = get_option('bcb_tourenarten');
 asort($tourenarten);
 $currentTourenart = '';
-if(isset($_GET['type'])){
+if (isset($_GET['type'])) {
     $currentTourenart = $_GET['type'];
 }
 ?>
@@ -12,16 +12,19 @@ if(isset($_GET['type'])){
         <h1>
             <div class="row">
                 <div class="col-sm-6"><?php the_archive_title(); ?></div>
-                <div class="col-sm-3 title-right type-select">Art: <select id="tourenart"><option value="">Alle</option>
-                        <?php foreach($tourenarten as $key => $tourenart){ ?>
-                            <option value="<?= $key ?>"<?php if($key == $currentTourenart){ ?> selected<?php } ?>><?= $tourenart ?></option>
+                <div class="col-sm-3 title-right type-select">Art: <select id="tourenart">
+                        <option value="">Alle</option>
+                        <?php foreach ($tourenarten as $key => $tourenart) { ?>
+                            <option value="<?= $key ?>"<?php if ($key == $currentTourenart) { ?> selected<?php } ?>><?= $tourenart ?></option>
                         <?php } ?>
                     </select></div>
-                <div class="col-sm-3 title-right download"><a target="_blank" href="<?= BCB_CALENDAR_URL ?>"><span class="glyphicon glyphicon-download-alt"></span> Kalender <?= date('Y') ?> herunterladen</a></div>
+                <div class="col-sm-3 title-right download"><a target="_blank" href="<?= BCB_CALENDAR_URL ?>"><span
+                                class="glyphicon glyphicon-download-alt"></span> Kalender <?= date('Y') ?> herunterladen</a>
+                </div>
             </div>
         </h1>
 
-        <?php if ( have_posts() ){ ?>
+        <?php if (have_posts()) { ?>
             <div class="container-fluid grid-table hide-links row-hover">
                 <div class="row row-header hidden-xs">
                     <div class="col-sm-2">
@@ -55,7 +58,7 @@ if(isset($_GET['type'])){
             <div class="container">
                 <?php bcb_pagination(); ?>
             </div>
-        <?php }else{ ?>
+        <?php } else { ?>
             <div class="container">
                 <p>Keine Beiträge vorhanden.</p>
             </div>

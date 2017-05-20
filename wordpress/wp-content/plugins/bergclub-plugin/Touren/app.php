@@ -12,8 +12,10 @@ foreach ($metaBoxes as $metaBox) {
     add_action('add_meta_boxes', [$metaBox, 'add']);
 }
 
-add_action('admin_notices', function() { echo \BergclubPlugin\FlashMessage::show(); } );
-add_action('admin_enqueue_scripts', function() {
+add_action('admin_notices', function () {
+    echo \BergclubPlugin\FlashMessage::show();
+});
+add_action('admin_enqueue_scripts', function () {
     wp_enqueue_script('jquery-ui-datepicker');
     wp_register_style('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css');
     wp_enqueue_style('jquery-ui');
@@ -35,8 +37,9 @@ add_action('admin_enqueue_scripts', function() {
 });
 
 
-function bcb_create_new_metabox_context( $post ) {
-    do_meta_boxes( null, 'bcb-metabox-holder', $post );
+function bcb_create_new_metabox_context($post)
+{
+    do_meta_boxes(null, 'bcb-metabox-holder', $post);
 }
 
-add_action( 'edit_form_after_title', 'bcb_create_new_metabox_context' );
+add_action('edit_form_after_title', 'bcb_create_new_metabox_context');

@@ -2,19 +2,10 @@
 
 namespace BergclubPlugin\Commands;
 
-use BergclubPlugin\Commands\Entities\Adressen;
-use BergclubPlugin\Commands\Entities\Tour;
-use BergclubPlugin\Commands\Entities\TourBericht;
 use BergclubPlugin\Commands\Processor\AddressProcessor;
 use BergclubPlugin\Commands\Processor\MitteilungProcessor;
 use BergclubPlugin\Commands\Processor\Processor;
 use BergclubPlugin\Commands\Processor\TourProcessor;
-use BergclubPlugin\MVC\Models\Option;
-use BergclubPlugin\MVC\Models\Role;
-use BergclubPlugin\MVC\Models\User as ModelUser;
-use BergclubPlugin\Touren\MetaBoxes\Common;
-use BergclubPlugin\Touren\MetaBoxes\MeetingPoint;
-use \BergclubPlugin\Touren\MetaBoxes\Tour as TourMetaBox;
 
 /**
  * Class Import

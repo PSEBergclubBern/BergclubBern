@@ -9,9 +9,9 @@
 namespace BergclubPlugin\Tests\Commands;
 
 
-use PHPUnit\Framework\TestCase;
 use BergclubPlugin\Commands\Logger;
 use BergclubPlugin\Commands\Processor\MitteilungProcessor;
+use PHPUnit\Framework\TestCase;
 
 class MitteilungProcessorTest extends TestCase
 {
@@ -32,10 +32,10 @@ class MitteilungProcessorTest extends TestCase
     public function standardMessageHasOneEntity()
     {
         $mitteilung = array(
-            'id'        => '1',
-            'datum'     => '01-01-2017',
-            'titel'     => 'Testtitel',
-            'text'      => 'judihui',
+            'id' => '1',
+            'datum' => '01-01-2017',
+            'titel' => 'Testtitel',
+            'text' => 'judihui',
         );
 
         $entities = $this->processor->process(array(array($mitteilung)));
@@ -49,10 +49,10 @@ class MitteilungProcessorTest extends TestCase
     public function messageHasRightId()
     {
         $mitteilung = array(
-            'id'        => '1',
-            'datum'     => '01-01-2017',
-            'titel'     => 'Testtitel',
-            'text'      => 'judihui',
+            'id' => '1',
+            'datum' => '01-01-2017',
+            'titel' => 'Testtitel',
+            'text' => 'judihui',
         );
 
         $entities = $this->processor->process(array(array($mitteilung)));
@@ -66,10 +66,10 @@ class MitteilungProcessorTest extends TestCase
     public function messageHasRightTitle()
     {
         $mitteilung = array(
-            'id'        => '1',
-            'datum'     => '01-01-2017',
-            'titel'     => 'Testtitel',
-            'text'      => 'judihui',
+            'id' => '1',
+            'datum' => '01-01-2017',
+            'titel' => 'Testtitel',
+            'text' => 'judihui',
         );
 
         $entities = $this->processor->process(array(array($mitteilung)));
@@ -83,10 +83,10 @@ class MitteilungProcessorTest extends TestCase
     public function messageHasRightText()
     {
         $mitteilung = array(
-            'id'        => '1',
-            'datum'     => '01-01-2017',
-            'titel'     => 'Testtitel',
-            'text'      => 'judihui',
+            'id' => '1',
+            'datum' => '01-01-2017',
+            'titel' => 'Testtitel',
+            'text' => 'judihui',
         );
 
         $entities = $this->processor->process(array(array($mitteilung)));
@@ -100,10 +100,10 @@ class MitteilungProcessorTest extends TestCase
     public function messageHasRightDatum()
     {
         $mitteilung = array(
-            'id'        => '1',
-            'datum'     => '01-01-2017',
-            'titel'     => 'Testtitel',
-            'text'      => 'judihui',
+            'id' => '1',
+            'datum' => '01-01-2017',
+            'titel' => 'Testtitel',
+            'text' => 'judihui',
         );
 
         $entities = $this->processor->process(array(array($mitteilung)));

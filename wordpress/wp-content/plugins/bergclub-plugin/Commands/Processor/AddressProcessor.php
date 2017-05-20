@@ -82,37 +82,6 @@ class AddressProcessor extends Processor
     }
 
     /**
-     * Save one entity in the db
-     *
-     * @param Entity $entity
-     * @param bool   $noOp
-     * @return void
-     */
-    public function save(Entity $entity, $noOp = true)
-    {
-        if (!($entity instanceof Adressen)) {
-            $this->logger->error('Entity not importable by this processor');
-        }
-        /** @var $entity Adressen */
-        $this->logger->log('Processing ' . $entity);
-        $model = new User($entity->toArray());
-        $model->addRole(Role::find($entity->determinateRole()));
-        $model->history = $entity->getUserHistory();
-        if (!$noOp) {
-            $model->save();
-            if ($entity->getSpouse() && isset($this->processedAddressen[$entity->getSpouse()->id])) {
-                $model->spouse = $this->processedAddressen[$entity->getSpouse()->id];
-                $model->main_address = true;
-                $this->processedAddressen[$entity->getSpouse()->id]->spouse = $model;
-                $model->save();
-                $this->processedAddressen[$entity->getSpouse()->id]->save();
-            }
-        }
-
-        $this->processedAddressen[$entity->id] = $model;
-    }
-
-    /**
      * generate address entity from an array key
      *
      * @param $array
@@ -178,6 +147,37 @@ class AddressProcessor extends Processor
         $addressEntity->sendProgram = empty($a['versenden']) || $a['versenden'] == 0 ? false : true;
 
         return $addressEntity;
+    }
+
+    /**
+     * Save one entity in the db
+     *
+     * @param Entity $entity
+     * @param bool $noOp
+     * @return void
+     */
+    public function save(Entity $entity, $noOp = true)
+    {
+        if (!($entity instanceof Adressen)) {
+            $this->logger->error('Entity not importable by this processor');
+        }
+        /** @var $entity Adressen */
+        $this->logger->log('Processing ' . $entity);
+        $model = new User($entity->toArray());
+        $model->addRole(Role::find($entity->determinateRole()));
+        $model->history = $entity->getUserHistory();
+        if (!$noOp) {
+            $model->save();
+            if ($entity->getSpouse() && isset($this->processedAddressen[$entity->getSpouse()->id])) {
+                $model->spouse = $this->processedAddressen[$entity->getSpouse()->id];
+                $model->main_address = true;
+                $this->processedAddressen[$entity->getSpouse()->id]->spouse = $model;
+                $model->save();
+                $this->processedAddressen[$entity->getSpouse()->id]->save();
+            }
+        }
+
+        $this->processedAddressen[$entity->id] = $model;
     }
 
     /**

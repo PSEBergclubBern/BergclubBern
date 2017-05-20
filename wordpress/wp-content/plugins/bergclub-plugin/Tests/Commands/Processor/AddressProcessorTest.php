@@ -9,9 +9,9 @@
 namespace BergclubPlugin\Tests\Commands;
 
 
-use PHPUnit\Framework\TestCase;
 use BergclubPlugin\Commands\Logger;
 use BergclubPlugin\Commands\Processor\AddressProcessor;
+use PHPUnit\Framework\TestCase;
 
 class AddressProcessorTest extends TestCase
 {
@@ -40,48 +40,6 @@ class AddressProcessorTest extends TestCase
 
         $this->assertEquals('Mustermann', $entity->lastName);
         $this->assertEquals('Max', $entity->firstName);
-    }
-
-    /**
-     * @test
-     */
-    public function standardAddressWillResultInRightGender()
-    {
-        $values = array(array($this->getStandardAddress()));
-
-        $entities = $this->processor->process($values);
-        $entity = current($entities);
-
-        $this->assertEquals('M', $entity->toArray()['gender']);
-    }
-
-
-    /**
-     * @test
-     */
-    public function sendProgramIsFalseWhen0()
-    {
-        $address = $this->getStandardAddress();
-        $address['versenden'] = 0;
-        $values = array(array($address));
-
-        $entities = $this->processor->process($values);
-        $entity = current($entities);
-
-        $this->assertEquals('0', $entity->toArray()['program_shipment']);
-    }
-
-    /**
-     * @test
-     */
-    public function sendProgramIsTrueWhen1()
-    {
-        $values = array(array($this->getStandardAddress()));
-
-        $entities = $this->processor->process($values);
-        $entity = current($entities);
-
-        $this->assertEquals('1', $entity->toArray()['program_shipment']);
     }
 
     private function getStandardAddress()
@@ -139,5 +97,46 @@ class AddressProcessorTest extends TestCase
             'id2' => '1',
             'zusatz' => ''
         );
+    }
+
+    /**
+     * @test
+     */
+    public function standardAddressWillResultInRightGender()
+    {
+        $values = array(array($this->getStandardAddress()));
+
+        $entities = $this->processor->process($values);
+        $entity = current($entities);
+
+        $this->assertEquals('M', $entity->toArray()['gender']);
+    }
+
+    /**
+     * @test
+     */
+    public function sendProgramIsFalseWhen0()
+    {
+        $address = $this->getStandardAddress();
+        $address['versenden'] = 0;
+        $values = array(array($address));
+
+        $entities = $this->processor->process($values);
+        $entity = current($entities);
+
+        $this->assertEquals('0', $entity->toArray()['program_shipment']);
+    }
+
+    /**
+     * @test
+     */
+    public function sendProgramIsTrueWhen1()
+    {
+        $values = array(array($this->getStandardAddress()));
+
+        $entities = $this->processor->process($values);
+        $entity = current($entities);
+
+        $this->assertEquals('1', $entity->toArray()['program_shipment']);
     }
 }

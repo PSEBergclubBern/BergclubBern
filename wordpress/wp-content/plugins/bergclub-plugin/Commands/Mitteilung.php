@@ -13,6 +13,12 @@ class Mitteilung extends Init
 {
 
     /**
+     * Used to store the category of mitteilungen
+     * @var int
+     */
+    private $categoryId;
+
+    /**
      * Add a mitteilung.
      *
      * ## OPTIONS
@@ -44,9 +50,9 @@ class Mitteilung extends Init
         list($filename) = $args;
 
         $options = array(
-            'return'     => true,
-            'parse'      => 'json',
-            'launch'     => false,
+            'return' => true,
+            'parse' => 'json',
+            'launch' => false,
             'exit_error' => false,
         );
 
@@ -71,11 +77,5 @@ class Mitteilung extends Init
             );
         }
     }
-
-    /**
-     * Used to store the category of mitteilungen
-     * @var int
-     */
-    private $categoryId;
 
 }

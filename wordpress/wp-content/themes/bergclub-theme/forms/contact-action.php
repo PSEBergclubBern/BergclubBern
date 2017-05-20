@@ -131,7 +131,7 @@ $fieldSettingsSame = [
     ],
 ];
 
-foreach($fieldSettings as &$arr){
+foreach ($fieldSettings as &$arr) {
     $arr = array_merge($arr, $fieldSettingsSame);
 }
 
@@ -141,48 +141,48 @@ $success = false;
 
 $missingFields = [];
 
-if (!empty($_POST)){
+if (!empty($_POST)) {
     $posted = $_POST;
-    foreach($_POST as $key => $value){
+    foreach ($_POST as $key => $value) {
         $value = trim($value);
         $posted[$value] = $value;
         $enquirytype = $_POST["enquirytype"];
 
-        if($key == "email"){
+        if ($key == "email") {
             $value = sanitize_email($value);
-        }else{
-            if($key == 'comment'){
+        } else {
+            if ($key == 'comment') {
                 $value = str_replace(PHP_EOL, '%br%', $value);
             }
 
             $value = sanitize_text_field($value);
 
-            if($key == 'comment'){
+            if ($key == 'comment') {
                 $value = str_replace('%br%', PHP_EOL, $value);
             }
         }
 
-        if(!isset($fieldSettings[$enquirytype][$key]) || !$fieldSettings[$enquirytype][$key]["show"]){
+        if (!isset($fieldSettings[$enquirytype][$key]) || !$fieldSettings[$enquirytype][$key]["show"]) {
             unset($_POST[$key]);
-        }elseif($fieldSettings[$_POST["enquirytype"]][$key]["required"]){
-            if($key == "email" && !filter_var($value, FILTER_VALIDATE_EMAIL)){
+        } elseif ($fieldSettings[$_POST["enquirytype"]][$key]["required"]) {
+            if ($key == "email" && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
                 $missingFields[] = $key;
-            }elseif(empty($value)){
+            } elseif (empty($value)) {
                 $missingFields[] = $key;
             }
         }
         $_POST[$key] = $value;
     }
 
-    if(!bcb_captcha_is_solved()){
+    if (!bcb_captcha_is_solved()) {
         bcb_captcha_check_answer($_POST['captcha']);
-        if(!bcb_captcha_is_solved()){
+        if (!bcb_captcha_is_solved()) {
             $missingFields[] = "captcha";
         }
     }
 
 
-    if(empty($missingFields) && bcb_captcha_is_solved()) {
+    if (empty($missingFields) && bcb_captcha_is_solved()) {
         $to = 'bergclubadmin@bergclub.ch';
         $message = '';
         $headers = [];
@@ -202,9 +202,9 @@ if (!empty($_POST)){
 
         foreach ($_POST as $key => $value) {
             if (isset($_POST[$key]) && !empty($_POST[$key]) && array_key_exists($key, $fields)) {
-                if($key != 'comment') {
+                if ($key != 'comment') {
                     $message .= '<tr><td style="width:150px;" valign="top">' . $fields[$key] . ':</td><td style="width:350px;"> ' . $value . "</td></tr>";
-                }else{
+                } else {
                     $message .= '<tr><td style="width:150px;" valign="top">' . $fields[$key] . ':</td></tr>';
                     $message .= '<tr><td style="width:150px;" valign="top">' . nl2br($value) . '</xmp></td></tr>';
                 }
@@ -214,23 +214,23 @@ if (!empty($_POST)){
         $message .= "</table></body></html>";
 
         $success = wp_mail($to, $subject, $message, $headers);
-        if($success){
+        if ($success) {
             bcb_add_notice('success', 'Besten Dank für Ihre Nachricht.<br/>Diese wurde erfolgreich versendet', true);
             unset($_POST);
         }
-    }else{
+    } else {
         bcb_add_notice('danger', 'Bitte ergänzen Sie die rot markierten Felder.', true);
     }
-}else{
-    if($page == "mitgliedschaft"){
+} else {
+    if ($page == "mitgliedschaft") {
         $_POST["enquirytype"] = "membership";
-    }else{
+    } else {
         $_POST["enquirytype"] = "message";
     }
 
     $_POST['gender'] = "Frau";
     $_POST['enquirytype'] = "message";
-    if(is_page('mitgliedschaft')){
+    if (is_page('mitgliedschaft')) {
         $_POST['enquirytype'] = "membership";
     }
 
@@ -242,5 +242,5 @@ wp_enqueue_script('contact-form', get_template_directory_uri() . '/js/contact-fo
 wp_add_inline_script('contact-form', "
 var fieldSettings = " . json_encode($fieldSettings) . "
 var missingFields = " . json_encode($missingFields)
-, 'before' );
+    , 'before');
 ?>

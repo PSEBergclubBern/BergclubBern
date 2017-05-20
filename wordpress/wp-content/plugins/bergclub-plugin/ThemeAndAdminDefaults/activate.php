@@ -3,13 +3,13 @@ use BergclubPlugin\MVC\Models\Option;
 
 //remove sample page
 $page = get_page_by_path('sample-page');
-if($page) {
+if ($page) {
     wp_delete_post($page->ID, true);
 }
 
 //remove sample post
 $posts = get_posts(['name' => 'hello-world']);
-if(is_array($posts) && isset($posts[0])){
+if (is_array($posts) && isset($posts[0])) {
     wp_delete_post($posts[0]->ID, true);
 }
 
@@ -63,7 +63,8 @@ bcb_create_pages($pages);
  * @param array $itemArgs needed arguments (see bcb_menu_args and bcb_create_menu)
  * @return int|WP_Error
  */
-function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, array $itemArgs){
+function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, array $itemArgs)
+{
     $page = $itemArgs['page'];
     $category = $itemArgs['category'];
     $type = $itemArgs['type'];
@@ -76,25 +77,25 @@ function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, arra
         'menu-item-status' => 'publish',
     ];
 
-    if(!empty($page)){
+    if (!empty($page)) {
         $wpPage = get_page_by_path($page);
-        if($wpPage) {
+        if ($wpPage) {
             $args['menu-item-type'] = 'post_type';
             $args['menu-item-object'] = 'page';
             $args['menu-item-object-id'] = $wpPage->ID;
         }
     }
 
-    if(!empty($category)){
+    if (!empty($category)) {
         $categoryId = get_category_by_slug($category)->term_id;
-        if($categoryId){
+        if ($categoryId) {
             $args['menu-item-type'] = 'taxonomy';
             $args['menu-item-object'] = 'category';
             $args['menu-item-object-id'] = $categoryId;
         }
     }
 
-    if(!empty($type)){
+    if (!empty($type)) {
         $args['menu-item-type'] = 'post_type_archive';
         $args['menu-item-object'] = $type;
         $args['menu-item-url'] = get_post_type_archive_link($type);
@@ -109,17 +110,18 @@ function bcb_create_menu_item($menuId, $parentId, $slug, $title, $position, arra
  * @param array $menuItem the menu item which is extracted from data/menu.json
  * @return array An array which can be used as $itemArgs parameter for bcb_create_menu_item
  */
-function bcb_menu_args(array $menuItem){
+function bcb_menu_args(array $menuItem)
+{
     $page = null;
     $category = null;
     $type = null;
-    if(!empty($menuItem['page'])){
+    if (!empty($menuItem['page'])) {
         $page = $menuItem['page'];
     }
-    if(!empty($menuItem['category'])){
+    if (!empty($menuItem['category'])) {
         $category = $menuItem['category'];
     }
-    if(!empty($menuItem['type'])){
+    if (!empty($menuItem['type'])) {
         $type = $menuItem['type'];
     }
     return ['page' => $page, 'category' => $category, 'type' => $type];
@@ -130,8 +132,9 @@ function bcb_menu_args(array $menuItem){
  *
  * @param array $menu the array which is extracted and json decoded from data/menu.json
  */
-function bcb_create_menu(array $menu){
-    foreach($menu as $menuEntry) {
+function bcb_create_menu(array $menu)
+{
+    foreach ($menu as $menuEntry) {
         wp_delete_nav_menu($menuEntry['title']);
 
         $menuId = wp_create_nav_menu($menuEntry['title']);
