@@ -5,8 +5,8 @@ $(".add-link").click(function () {
     }
 });
 
-$(document).ready(function(){
-    $('a.email').each(function(){
+$(document).ready(function () {
+    $('a.email').each(function () {
         var email = atob($(this).data('id'));
         $(this).attr('href', 'mailto:' + email);
         $(this).html(email);
@@ -17,9 +17,9 @@ $(document).ready(function(){
     })
 });
 
-$('#tourenart').change(function(){
+$('#tourenart').change(function () {
     var url = '//' + window.location.hostname + window.location.pathname;
-    if($(this).val() != ''){
+    if ($(this).val() != '') {
         url += '?type=' + $(this).val();
     }
     document.location.href = url;
@@ -27,11 +27,11 @@ $('#tourenart').change(function(){
 
 function highlight() {
     var body = $('body');
-    if(body.hasClass('highlight')){
+    if (body.hasClass('highlight')) {
         body.removeClass('highlight');
         body.addClass('highlight_reverse');
         setTimeout("$('body').removeClass('highlight_reverse')", 4000);
-    }else{
+    } else {
         body.addClass('highlight');
     }
 }

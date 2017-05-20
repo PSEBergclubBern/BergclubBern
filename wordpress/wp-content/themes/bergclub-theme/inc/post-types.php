@@ -2,28 +2,29 @@
 /**
  * Registers the custom post types
  */
-function bcb_register_custom_post_types() {
+function bcb_register_custom_post_types()
+{
 
     /**
      * Post Type: Touren.
      */
 
     $labels = array(
-        "name" => __( 'Touren', '' ),
-        "singular_name" => __( 'Tour', '' ),
-        "menu_name" => __( 'Touren', '' ),
-        "all_items" => __( 'Touren', '' ),
-        "add_new" => __( 'Tour erfassen', '' ),
-        "add_new_item" => __( 'Neue Tour erfassen', '' ),
-        "edit_item" => __( 'Tour anpassen', '' ),
-        "new_item" => __( 'Neue Tour', '' ),
-        "view_item" => __( 'Tour ansehen', '' ),
-        "view_items" => __( 'Touren ansehen', '' ),
-        "search_items" => __( 'Tour suchen', '' ),
+        "name" => __('Touren', ''),
+        "singular_name" => __('Tour', ''),
+        "menu_name" => __('Touren', ''),
+        "all_items" => __('Touren', ''),
+        "add_new" => __('Tour erfassen', ''),
+        "add_new_item" => __('Neue Tour erfassen', ''),
+        "edit_item" => __('Tour anpassen', ''),
+        "new_item" => __('Neue Tour', ''),
+        "view_item" => __('Tour ansehen', ''),
+        "view_items" => __('Touren ansehen', ''),
+        "search_items" => __('Tour suchen', ''),
     );
 
     $args = array(
-        "label" => __( 'Touren', '' ),
+        "label" => __('Touren', ''),
         "labels" => $labels,
         "description" => "Touren des Bergclubs Bern",
         "public" => true,
@@ -52,15 +53,15 @@ function bcb_register_custom_post_types() {
         "map_meta_cap" => false,
         "hierarchical" => false,
         "query_var" => true,
-        "supports" => array( "title", "editor", "thumbnail" ),
+        "supports" => array("title", "editor", "thumbnail"),
         "menu_position" => 5,
         "rewrite" => ['slug' => 'tourenprogramm'],
     );
 
-    register_post_type( "touren", $args );
+    register_post_type("touren", $args);
 
     //disable editor for post type 'touren';
-    remove_post_type_support( 'touren', 'editor' );
+    remove_post_type_support('touren', 'editor');
 
 
     /**
@@ -68,21 +69,21 @@ function bcb_register_custom_post_types() {
      */
 
     $labels = array(
-        "name" => __( 'Tourenberichte', '' ),
-        "singular_name" => __( 'Tourenbericht', '' ),
-        "menu_name" => __( 'Tourenberichte', '' ),
-        "all_items" => __( 'Tourenberichte', '' ),
-        "add_new" => __( 'Tourenbericht erfassen', '' ),
-        "add_new_item" => __( 'Neuen Tourenbericht erfassen', '' ),
-        "edit_item" => __( 'Tourenbericht anpassen', '' ),
-        "new_item" => __( 'Neuer Tourenbericht', '' ),
-        "view_item" => __( 'Tourenbericht ansehen', '' ),
-        "view_items" => __( 'Tourenberichte ansehen', '' ),
-        "search_items" => __( 'Tourenbericht suchen', '' ),
+        "name" => __('Tourenberichte', ''),
+        "singular_name" => __('Tourenbericht', ''),
+        "menu_name" => __('Tourenberichte', ''),
+        "all_items" => __('Tourenberichte', ''),
+        "add_new" => __('Tourenbericht erfassen', ''),
+        "add_new_item" => __('Neuen Tourenbericht erfassen', ''),
+        "edit_item" => __('Tourenbericht anpassen', ''),
+        "new_item" => __('Neuer Tourenbericht', ''),
+        "view_item" => __('Tourenbericht ansehen', ''),
+        "view_items" => __('Tourenberichte ansehen', ''),
+        "search_items" => __('Tourenbericht suchen', ''),
     );
 
     $args = array(
-        "label" => __( 'Tourenberichte', '' ),
+        "label" => __('Tourenberichte', ''),
         "labels" => $labels,
         "description" => "Tourenberichte des Bergclubs Bern",
         "public" => true,
@@ -109,16 +110,16 @@ function bcb_register_custom_post_types() {
         "map_meta_cap" => false,
         "hierarchical" => false,
         "query_var" => true,
-        "supports" => array( "title", "editor" ),
+        "supports" => array("title", "editor"),
         "menu_position" => 6,
     );
 
-    register_post_type( "tourenberichte", $args );
+    register_post_type("tourenberichte", $args);
 
-    remove_post_type_support( 'tourenberichte', 'title' );
+    remove_post_type_support('tourenberichte', 'title');
 }
 
-add_action( 'init', 'bcb_register_custom_post_types' );
+add_action('init', 'bcb_register_custom_post_types');
 
 /**
  * Maps the custom capabilites for the custom post list in admin
@@ -128,7 +129,8 @@ add_action( 'init', 'bcb_register_custom_post_types' );
  * @param $args
  * @return array
  */
-function bcb_map_meta_cap( $caps, $cap, $user_id, $args ) {
+function bcb_map_meta_cap($caps, $cap, $user_id, $args)
+{
     $post = null;
     $post_type = null;
 
@@ -140,13 +142,13 @@ function bcb_map_meta_cap( $caps, $cap, $user_id, $args ) {
     $capArr = explode("_", $cap);
 
     /* If editing, deleting, or reading a tour, get the post and post type object. */
-    if (isset($args[0]) && count($capArr) == 2 && in_array($capArr[1], $checkCaps) && ($capArr[0] == 'edit' || $capArr[0] = 'delete' || $capArr[0] = 'read') ) {
-        $post = get_post( $args[0] );
-        $post_type = get_post_type_object( $post->post_type );
+    if (isset($args[0]) && count($capArr) == 2 && in_array($capArr[1], $checkCaps) && ($capArr[0] == 'edit' || $capArr[0] = 'delete' || $capArr[0] = 'read')) {
+        $post = get_post($args[0]);
+        $post_type = get_post_type_object($post->post_type);
         $caps = array();
     }
 
-    if($post) {
+    if ($post) {
         /* If editing a tour, assign the required capability. */
         if ($capArr[0] == 'edit') {
             if ($user_id == $post->post_author)
@@ -175,47 +177,51 @@ function bcb_map_meta_cap( $caps, $cap, $user_id, $args ) {
     return $caps;
 }
 
-add_filter( 'map_meta_cap', 'bcb_map_meta_cap', 10, 4 );
+add_filter('map_meta_cap', 'bcb_map_meta_cap', 10, 4);
 
-function bcb_touren_columns($columns) {
+function bcb_touren_columns($columns)
+{
     $user = \BergclubPlugin\MVC\Models\User::findCurrent();
 
-    if(!$user->hasCapability('touren_jugend') || !$user->hasCapability('touren_bcb')) {
-        return array_merge( $columns,
+    if (!$user->hasCapability('touren_jugend') || !$user->hasCapability('touren_bcb')) {
+        return array_merge($columns,
             ['type' => 'Art', 'dateFrom' => 'Von', 'dateTo' => 'Bis']
         );
-    }else{
-        return array_merge( $columns,
+    } else {
+        return array_merge($columns,
             ['isYouth' => 'BCB/Jugend', 'type' => 'Art', 'dateFrom' => 'Von', 'dateTo' => 'Bis']
         );
     }
 }
 
-function bcb_touren_sortable_columns($columns){
+function bcb_touren_sortable_columns($columns)
+{
     $user = \BergclubPlugin\MVC\Models\User::findCurrent();
 
-    if(!$user->hasCapability('touren_jugend') || !$user->hasCapability('touren_bcb')) {
+    if (!$user->hasCapability('touren_jugend') || !$user->hasCapability('touren_bcb')) {
         return array_merge($columns,
             ['type' => 'type', 'dateFrom' => 'dateFrom', 'dateTo' => 'dateTo']
         );
-    }else{
+    } else {
         return array_merge($columns,
             ['isYouth' => 'BCB/Jugend', 'type' => 'type', 'dateFrom' => 'dateFrom', 'dateTo' => 'dateTo']
         );
     }
 }
 
-function bcb_touren_custom_columns($column, $postId){
+function bcb_touren_custom_columns($column, $postId)
+{
     echo bcb_touren_meta($postId, $column);
 }
 
-function bcb_pre_get_posts(WP_Query $query){
-    if (is_admin() && $query->is_main_query() && ($query->query['post_type'] == 'touren' || $query->query['post_type'] == 'tourenberichte') && !is_singular() ) {
+function bcb_pre_get_posts(WP_Query $query)
+{
+    if (is_admin() && $query->is_main_query() && ($query->query['post_type'] == 'touren' || $query->query['post_type'] == 'tourenberichte') && !is_singular()) {
 
 
         $user = \BergclubPlugin\MVC\Models\User::findCurrent();
 
-        if(!$user->hasCapability('touren_jugend')){
+        if (!$user->hasCapability('touren_jugend')) {
             $metaQuery = $query->get('meta_query');
             $metaQuery[] = [
                 'relation' => 'OR',
@@ -231,7 +237,7 @@ function bcb_pre_get_posts(WP_Query $query){
                 ],
             ];
             $query->set('meta_query', $metaQuery);
-        }elseif(!$user->hasCapability('touren_bcb')){
+        } elseif (!$user->hasCapability('touren_bcb')) {
             $metaQuery = $query->get('meta_query');
             $metaQuery[] = [
                 'relation' => 'OR',
@@ -250,7 +256,7 @@ function bcb_pre_get_posts(WP_Query $query){
         }
 
 
-        if(($orderby = $query->get( 'orderby' )) && $query->query['post_type'] == 'touren') {
+        if (($orderby = $query->get('orderby')) && $query->query['post_type'] == 'touren') {
             switch ($orderby) {
                 case 'type':
                     $query->set('meta_key', '_type');
@@ -274,14 +280,14 @@ function bcb_pre_get_posts(WP_Query $query){
 
     }
 
-    if(!is_admin() && isset($query->query['post_type']) && ($query->query['post_type'] == 'touren' || $query->query['post_type'] == 'tourenberichte') && !is_singular()){
+    if (!is_admin() && isset($query->query['post_type']) && ($query->query['post_type'] == 'touren' || $query->query['post_type'] == 'tourenberichte') && !is_singular()) {
         $currentTourenart = '';
-        if(isset($_GET['type'])){
+        if (isset($_GET['type'])) {
             $currentTourenart = $_GET['type'];
         }
 
-        if(bcb_is_jugend()) {
-            if($query->query['post_type'] == 'tourenberichte') {
+        if (bcb_is_jugend()) {
+            if ($query->query['post_type'] == 'tourenberichte') {
                 $query->set('meta_query', [
                     'relation' => 'OR',
                     [
@@ -295,11 +301,11 @@ function bcb_pre_get_posts(WP_Query $query){
                         'compare' => '='
                     ],
                 ]);
-            }else{
+            } else {
                 $query->set('order', 'ASC');
                 $query->set('orderby', '_dateFromDB');
 
-                if(empty($currentTourenart)) {
+                if (empty($currentTourenart)) {
                     $query->set('meta_query', [
                         'relation' => 'AND',
                         [
@@ -322,7 +328,7 @@ function bcb_pre_get_posts(WP_Query $query){
                             ],
                         ],
                     ]);
-                }else{
+                } else {
                     $query->set('meta_query', [
                         'relation' => 'AND',
                         [
@@ -352,8 +358,8 @@ function bcb_pre_get_posts(WP_Query $query){
                     ]);
                 }
             }
-        }else{
-            if($query->query['post_type'] == 'tourenberichte') {
+        } else {
+            if ($query->query['post_type'] == 'tourenberichte') {
                 $query->set('meta_query', [
                     'relation' => 'OR',
                     [
@@ -371,11 +377,11 @@ function bcb_pre_get_posts(WP_Query $query){
                         'compare' => '='
                     ],
                 ]);
-            }else{
+            } else {
                 $query->set('order', 'ASC');
                 $query->set('orderby', '_dateFromDB');
 
-                if(empty($currentTourenart)) {
+                if (empty($currentTourenart)) {
                     $query->set('meta_query', [
                         'relation' => 'AND',
                         [
@@ -398,7 +404,7 @@ function bcb_pre_get_posts(WP_Query $query){
                             ],
                         ],
                     ]);
-                }else{
+                } else {
                     $query->set('meta_query', [
                         'relation' => 'AND',
                         [
@@ -434,9 +440,9 @@ function bcb_pre_get_posts(WP_Query $query){
     return $query;
 }
 
-add_filter('manage_touren_posts_columns' , 'bcb_touren_columns');
+add_filter('manage_touren_posts_columns', 'bcb_touren_columns');
 add_filter('manage_edit-touren_sortable_columns', 'bcb_touren_sortable_columns');
-add_action('manage_touren_posts_custom_column' , 'bcb_touren_custom_columns', 10, 2);
+add_action('manage_touren_posts_custom_column', 'bcb_touren_custom_columns', 10, 2);
 
 
-add_action( 'pre_get_posts', 'bcb_pre_get_posts', 1 );
+add_action('pre_get_posts', 'bcb_pre_get_posts', 1);

@@ -31,22 +31,25 @@ while (have_posts()) : the_post();
             <h1>
                 <?php
                 $isYouth = bcb_touren_meta(get_the_ID(), 'isYouth');
-                if($isYouth == 1 || $isYouth == 2){
+                if ($isYouth == 1 || $isYouth == 2) {
                     ?>
-                    <img class="pull-right hidden-xs" src="<?= get_template_directory_uri() ?>/img/bergclub-jugend-sm.png" style="margin-left:20px">
-                <?php }if($isYouth == 0 || $isYouth == 2){ ?>
-                    <img class="pull-right hidden-xs" src="<?= get_template_directory_uri() ?>/img/bergclub-sm.png" style="margin-left:20px">
+                    <img class="pull-right hidden-xs"
+                         src="<?= get_template_directory_uri() ?>/img/bergclub-jugend-sm.png" style="margin-left:20px">
+                <?php }
+                if ($isYouth == 0 || $isYouth == 2) { ?>
+                    <img class="pull-right hidden-xs" src="<?= get_template_directory_uri() ?>/img/bergclub-sm.png"
+                         style="margin-left:20px">
                 <?php } ?>
                 <?php the_title(); ?>
             </h1>
         </div>
         <div class="row article-block">
             <h3>Toureninfo</h3>
-            <?php foreach($generalInfo as $key => $value): ?>
-                <?php if(!empty($value)): ?>
+            <?php foreach ($generalInfo as $key => $value): ?>
+                <?php if (!empty($value)): ?>
                     <div class="row article-line">
-                        <div class="col-md-3 col-xs-5"><?=$key?></div>
-                        <div class="col-md-9 col-xs-7"><?=$value?></div>
+                        <div class="col-md-3 col-xs-5"><?= $key ?></div>
+                        <div class="col-md-9 col-xs-7"><?= $value ?></div>
                     </div>
                 <?php endif; ?>
             <?php endforeach; ?>

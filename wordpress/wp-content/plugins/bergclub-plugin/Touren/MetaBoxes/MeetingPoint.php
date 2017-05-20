@@ -31,19 +31,6 @@ class MeetingPoint extends MetaBox
         );
     }
 
-
-    protected function addAdditionalValuesForView()
-    {
-        return array(
-            'meetingPoints' => array(
-                array('id' => 1, 'text' => 'Bern HB, Treffpunkt'),
-                array('id' => 2, 'text' => 'Bern HB, auf dem Abfahrtsperron'),
-                array('id' => 3, 'text' => 'Bern, auf der Welle'),
-                array('id' => self::MEETPOINT_DIFFERENT_KEY, 'text' => 'Anderer'),
-            ),
-        );
-    }
-
     public function getUniqueMetaBoxName()
     {
         return 'meetingpoint';
@@ -54,6 +41,14 @@ class MeetingPoint extends MetaBox
         return 'Treffpunkt';
     }
 
+    /**
+     * Checks whether or not the MeetingPoint is valid or not. That means, are all required input fields not empty, and do the values make sense.
+     * In case a MeetingPoint cannot be validated a message is shown.
+     *
+     * @param $values - this are the values of the MeetingPoint itself
+     * @param $posttype - gives the current step in the lifecycle of the post. When "draft" no validation happens.
+     * @return bool
+     */
     public function isValid($values, $posttype)
     {
         $errors = array();
@@ -100,5 +95,17 @@ class MeetingPoint extends MetaBox
         }
 
         return count($errors) == 0;
+    }
+
+    protected function addAdditionalValuesForView()
+    {
+        return array(
+            'meetingPoints' => array(
+                array('id' => 1, 'text' => 'Bern HB, Treffpunkt'),
+                array('id' => 2, 'text' => 'Bern HB, auf dem Abfahrtsperron'),
+                array('id' => 3, 'text' => 'Bern, auf der Welle'),
+                array('id' => self::MEETPOINT_DIFFERENT_KEY, 'text' => 'Anderer'),
+            ),
+        );
     }
 }

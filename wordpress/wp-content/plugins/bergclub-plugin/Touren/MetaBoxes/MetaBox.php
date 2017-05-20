@@ -31,68 +31,6 @@ abstract class MetaBox
         }
     }
 
-    /**
-     * get the view for this element
-     * @return string filename of the view
-     */
-    public function getViewName()
-    {
-        $reflect = new \ReflectionClass($this);
-
-        return 'fields.' . strtolower($reflect->getShortName());
-    }
-
-    /**
-     * get unique field names
-     * @return unique field names
-     */
-    abstract protected function getUniqueFieldNames();
-
-    /**
-     * get unique meta-box name
-     * @return unique meta-box name
-     */
-    abstract public function getUniqueMetaBoxName();
-
-    /**
-     * get meta-box title
-     * @return meta-box title
-     */
-    abstract public function getUniqueMetaBoxTitle();
-
-    /**
-     * check if fields are valid
-     * @param $values
-     * @param $posttype
-     * @return bool
-     */
-    public function isValid($values, $posttype)
-    {
-        return true;
-    }
-
-    /**
-     * adds an array as additional data for the view
-     *
-     * @return array
-     */
-    protected function addAdditionalValuesForView()
-    {
-        return array();
-    }
-
-    /**
-     * this function will be called before the save function
-     * it has to return all values which are processed / filtered
-     *
-     * @param $values array of transmitted values
-     * @return array
-     */
-    protected function preSave($values)
-    {
-        return $values;
-    }
-
     public function add()
     {
         $screens = [BCB_CUSTOM_POST_TYPE_TOUREN];
@@ -106,6 +44,18 @@ abstract class MetaBox
             );
         }
     }
+
+    /**
+     * get unique meta-box name
+     * @return unique meta-box name
+     */
+    abstract public function getUniqueMetaBoxName();
+
+    /**
+     * get meta-box title
+     * @return meta-box title
+     */
+    abstract public function getUniqueMetaBoxTitle();
 
     /**
      * save the post
@@ -190,6 +140,35 @@ abstract class MetaBox
     }
 
     /**
+     * this function will be called before the save function
+     * it has to return all values which are processed / filtered
+     *
+     * @param $values array of transmitted values
+     * @return array
+     */
+    protected function preSave($values)
+    {
+        return $values;
+    }
+
+    /**
+     * get unique field names
+     * @return unique field names
+     */
+    abstract protected function getUniqueFieldNames();
+
+    /**
+     * check if fields are valid
+     * @param $values
+     * @param $posttype
+     * @return bool
+     */
+    public function isValid($values, $posttype)
+    {
+        return true;
+    }
+
+    /**
      * @param $location
      * @param $postId
      * @return string
@@ -229,6 +208,27 @@ abstract class MetaBox
             $arguments
         );
 
+    }
+
+    /**
+     * adds an array as additional data for the view
+     *
+     * @return array
+     */
+    protected function addAdditionalValuesForView()
+    {
+        return array();
+    }
+
+    /**
+     * get the view for this element
+     * @return string filename of the view
+     */
+    public function getViewName()
+    {
+        $reflect = new \ReflectionClass($this);
+
+        return 'fields.' . strtolower($reflect->getShortName());
     }
 
     /**

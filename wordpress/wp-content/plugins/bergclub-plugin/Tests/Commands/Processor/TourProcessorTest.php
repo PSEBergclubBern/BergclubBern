@@ -10,10 +10,10 @@ namespace BergclubPlugin\Tests\Commands;
 
 
 use BergclubPlugin\Commands\Entities\Tour;
-use BergclubPlugin\Touren\MetaBoxes\MeetingPoint;
-use PHPUnit\Framework\TestCase;
 use BergclubPlugin\Commands\Logger;
 use BergclubPlugin\Commands\Processor\TourProcessor;
+use BergclubPlugin\Touren\MetaBoxes\MeetingPoint;
+use PHPUnit\Framework\TestCase;
 
 class TourProcessorTest extends TestCase
 {
@@ -52,6 +52,71 @@ class TourProcessorTest extends TestCase
         $entity = current($entities);
         /** @var Tour $entity */
         $this->assertNotNull($entity->tourBericht);
+    }
+
+    private function getStandardTour()
+    {
+        return array(
+            'id' => '19',
+            'user_id' => '46',
+            'von' => '2006-04-21',
+            'bis' => '2006-04-22',
+            'titel' => 'Skitour',
+            'leiter_a' => '188',
+            'leiter_b' => '0',
+            'bcb' => '1',
+            'bcbj' => '1',
+            'art_id' => '3',
+            'anf_t' => '2',
+            'bes' => '',
+            'anf_k' => '3',
+            'auf' => '1436 m / 5 1/2 Std.',
+            'ab' => '1436 m / 2 Std.',
+            'karte' => 'LK-Blatt 1',
+            'js' => '',
+            'treff_o' => 'Freitag, 19:15 h Ostermundigen, Banhof SBB',
+            'prog' => 'Programm',
+            'rueck_o' => 'Bern an ca. 18:00 h, Samstag',
+            'andere' => '',
+            'ausr' => 'Skitour',
+            'verpf' => 'Rucksack',
+            'ueb' => 'Restaurant',
+            'kosten' => '110',
+            'fuer' => 'Fahrt, Übernachtung, Morgenessen',
+            'besonderes' => 'Etwas zum Bräteln mitnehmen',
+            'adat' => '2006-04-18',
+            'an' => 'Vorname Nachname',
+            'tel' => '031 123 45 67',
+            'email' => '',
+            'rueck' => '1',
+            'anz' => '7',
+            'tl' => '',
+            'tn' => '',
+            'abw' => '',
+            'ang' => 'Tagwacht um 4.00 Kosten Teilnehmer 40+25=65.-',
+            'ber' => 'Tourberichterfasser',
+            'ver' => 'Tourberichterfasser',
+            'vs' => '',
+            'vb' => '0.00',
+            'rs' => 'Auto',
+            'rb' => '40.00',
+            'us' => '',
+            'ub' => '25.00',
+            'ds' => '',
+            'db' => '7.00',
+            'hf' => '12.00',
+            'empf' => 'Max Mustermann / Strasse / 3072 Ostermundigen',
+            'zh' => '',
+            'pc' => '11-11111-1',
+            'cl' => '',
+            'examine' => '28.04.2006 A Name',
+            'archive' => '13.05.2006 P Name',
+            'a_date' => '2001-01-02',
+            'a_name' => 'A Name',
+            'p_date' => '2001-01-01',
+            'p_name' => 'P Name',
+            'ausb' => NULL,
+        );
     }
 
     /**
@@ -162,8 +227,6 @@ class TourProcessorTest extends TestCase
         $this->assertEquals('Freitag, 19:15 h Ostermundigen, Banhof SBB', $entity->meetingPoint);
     }
 
-
-
     /**
      * @test
      */
@@ -180,70 +243,5 @@ class TourProcessorTest extends TestCase
         /** @var Tour $entity */
         $this->assertEquals(1, $entity->meetingPointKey);
         $this->assertTrue(empty($entity->meetingPoint));
-    }
-
-    private function getStandardTour()
-    {
-        return array(
-            'id' => '19',
-            'user_id' => '46',
-            'von' => '2006-04-21',
-            'bis' => '2006-04-22',
-            'titel' => 'Skitour',
-            'leiter_a' => '188',
-            'leiter_b' => '0',
-            'bcb' => '1',
-            'bcbj' => '1',
-            'art_id' => '3',
-            'anf_t' => '2',
-            'bes' => '',
-            'anf_k' => '3',
-            'auf' => '1436 m / 5 1/2 Std.',
-            'ab' => '1436 m / 2 Std.',
-            'karte' => 'LK-Blatt 1',
-            'js' => '',
-            'treff_o' => 'Freitag, 19:15 h Ostermundigen, Banhof SBB',
-            'prog' => 'Programm',
-            'rueck_o' => 'Bern an ca. 18:00 h, Samstag',
-            'andere' => '',
-            'ausr' => 'Skitour',
-            'verpf' => 'Rucksack',
-            'ueb' => 'Restaurant',
-            'kosten' => '110',
-            'fuer' => 'Fahrt, Übernachtung, Morgenessen',
-            'besonderes' => 'Etwas zum Bräteln mitnehmen',
-            'adat' => '2006-04-18',
-            'an' => 'Vorname Nachname',
-            'tel' => '031 123 45 67',
-            'email' => '',
-            'rueck' => '1',
-            'anz' => '7',
-            'tl' => '',
-            'tn' => '',
-            'abw' => '',
-            'ang' => 'Tagwacht um 4.00 Kosten Teilnehmer 40+25=65.-',
-            'ber' => 'Tourberichterfasser',
-            'ver' => 'Tourberichterfasser',
-            'vs' => '',
-            'vb' => '0.00',
-            'rs' => 'Auto',
-            'rb' => '40.00',
-            'us' => '',
-            'ub' => '25.00',
-            'ds' => '',
-            'db' => '7.00',
-            'hf' => '12.00',
-            'empf' => 'Max Mustermann / Strasse / 3072 Ostermundigen',
-            'zh' => '',
-            'pc' => '11-11111-1',
-            'cl' => '',
-            'examine' => '28.04.2006 A Name',
-            'archive' => '13.05.2006 P Name',
-            'a_date' => '2001-01-02',
-            'a_name' => 'A Name',
-            'p_date' => '2001-01-01',
-            'p_name' => 'P Name',
-            'ausb' => NULL,
-        );
     }
 }

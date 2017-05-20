@@ -2,26 +2,32 @@ html {
     position: relative;
     min-height: 100%;
 }
+
 .carousel-fade .carousel-inner .item {
     opacity: 0;
     transition-property: opacity;
 }
+
 .carousel-fade .carousel-inner .active {
     opacity: 1;
 }
+
 .carousel-fade .carousel-inner .active.left,
 .carousel-fade .carousel-inner .active.right {
     left: 0;
     opacity: 0;
     z-index: 1;
 }
+
 .carousel-fade .carousel-inner .next.left,
 .carousel-fade .carousel-inner .prev.right {
     opacity: 1;
 }
+
 .carousel-fade .carousel-control {
     z-index: 2;
 }
+
 @media all and (transform-3d),
 (-webkit-transform-3d) {
     .carousel-fade .carousel-inner > .item.next,
@@ -30,12 +36,14 @@ html {
         -webkit-transform: translate3d(0, 0, 0);
         transform: translate3d(0, 0, 0);
     }
+
     .carousel-fade .carousel-inner > .item.prev,
     .carousel-fade .carousel-inner > .item.active.left {
         opacity: 0;
         -webkit-transform: translate3d(0, 0, 0);
         transform: translate3d(0, 0, 0);
     }
+
     .carousel-fade .carousel-inner > .item.next.left,
     .carousel-fade .carousel-inner > .item.prev.right,
     .carousel-fade .carousel-inner > .item.active {
@@ -44,15 +52,18 @@ html {
         transform: translate3d(0, 0, 0);
     }
 }
-.item{
+
+.item {
     -webkit-background-size: cover !important;
     -moz-background-size: cover !important;
     -o-background-size: cover !important;
     background-size: cover !important;
 }
+
 .carousel {
     z-index: -99;
 }
+
 .carousel .item {
     position: fixed;
     bottom: 0;

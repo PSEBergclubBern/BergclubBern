@@ -9,8 +9,8 @@
 namespace BergclubPlugin\Tests\Commands;
 
 
-use PHPUnit\Framework\TestCase;
 use BergclubPlugin\Commands\Import;
+use PHPUnit\Framework\TestCase;
 
 class ImportTest extends TestCase
 {

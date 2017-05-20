@@ -1,7 +1,7 @@
 /**
  * Created by kevstuder on 22.03.17.
  */
-jQuery(document).ready(function($){
+jQuery(document).ready(function ($) {
     $('.bcb-date-picker-field').datepicker();
     $('.bcb-time-picker-field').timepicker({
         'scrollDefault': 'now',
@@ -62,7 +62,7 @@ function updateSignUpTo() {
     var leaderText = jQuery('#_leader option:selected').text();
     var coLeaderText = jQuery('#_coLeader option:selected').text();
 
-    var selectedId =  jQuery('#_signupTo').val();
+    var selectedId = jQuery('#_signupTo').val();
 
     jQuery('#_signupTo')
         .find('option')
@@ -78,7 +78,7 @@ function updateSignUpTo() {
         text: coLeaderText
     }));
 
-    jQuery('#_signupTo option').filter(function(){
+    jQuery('#_signupTo option').filter(function () {
         return this.value === selectedId
     }).prop('selected', true);
 }

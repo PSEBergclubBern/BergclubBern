@@ -15,7 +15,7 @@ get_header(); ?>
 
     <div class="container">
         <h1><?php the_archive_title(); ?></h1>
-        <?php if ( have_posts() ){ ?>
+        <?php if (have_posts()) { ?>
             <div class="container-fluid grid-table hide-links row-hover">
                 <div class="row row-header hidden-xs">
                     <div class="col-sm-3">
@@ -39,7 +39,7 @@ get_header(); ?>
             <div class="container">
                 <?php bcb_pagination(); ?>
             </div>
-        <?php }else{ ?>
+        <?php } else { ?>
             <div class="container">
                 <p>Keine Beiträge vorhanden.</p>
             </div>

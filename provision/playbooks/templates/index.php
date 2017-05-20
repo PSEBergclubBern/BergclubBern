@@ -1,4 +1,3 @@
-
 <?php
 /**
  * Front to the WordPress application. This file doesn't do anything, but loads
@@ -15,4 +14,4 @@
 define('WP_USE_THEMES', true);
 
 /** Loads the WordPress Environment and Template */
-require( '{{ vccw.wp_siteurl }}/wp-blog-header.php' );
+require('{{ vccw.wp_siteurl }}/wp-blog-header.php');

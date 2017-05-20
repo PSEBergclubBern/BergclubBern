@@ -3,8 +3,9 @@
 /**
  * Adds a new menu entry for "Hintergrundbilder" under "Design" in admin.
  */
-function bcb_theme_background_menu() {
-    add_theme_page( 'Hintergrundbilder', 'Hintergrundbilder', 'bcb_theme_images', 'bcb_theme_background', 'bcb_theme_background' );
+function bcb_theme_background_menu()
+{
+    add_theme_page('Hintergrundbilder', 'Hintergrundbilder', 'bcb_theme_images', 'bcb_theme_background', 'bcb_theme_background');
 }
 
 add_action('admin_menu', 'bcb_theme_background_menu');
@@ -14,7 +15,8 @@ add_action('admin_menu', 'bcb_theme_background_menu');
  * @param string $file The file path to the image
  * @return bool true if the image has at least 1920x1080 pixel, false otherwise
  */
-function bcb_theme_background_check_size($file){
+function bcb_theme_background_check_size($file)
+{
     $size = getimagesize($file);
     return $size[0] >= 1920 && $size[1] >= 1080;
 }
@@ -25,17 +27,18 @@ function bcb_theme_background_check_size($file){
  * @param string $file The file path to the image
  * @return resource A gd image resource
  */
-function bcb_theme_background_resize($file){
+function bcb_theme_background_resize($file)
+{
     $size = getimagesize($file);
     $width_orig = $size[0];
     $height_orig = $size[1];
     $image = imagecreatefromjpeg($file);
-    if($width_orig > 1920 || $height_orig > 1080){
+    if ($width_orig > 1920 || $height_orig > 1080) {
         $width_new = 1920;
         $ratio = $width_new / $width_orig;
         $height_new = round($height_orig * $ratio);
 
-        if($height_new < 1080){
+        if ($height_new < 1080) {
             $height_new = 1080;
             $ratio = $height_new / $height_orig;
             $width_new = round($width_orig * $ratio);
@@ -54,13 +57,14 @@ function bcb_theme_background_resize($file){
  * filename and updates the WP Option (bcb_background_images).
  * @param string $file the temporary file path of the image.
  */
-function bcb_theme_background_save($file){
+function bcb_theme_background_save($file)
+{
     $image = bcb_theme_background_resize($file);
     $key = md5(time() . uniqid());
     $filename = '/img/carousel/' . $key . '.jpg';
     imagejpeg($image, __DIR__ . $filename, 60);
     $images = get_option('bcb_background_images');
-    if(empty($images)){
+    if (empty($images)) {
         $images = [];
     }
 
@@ -72,9 +76,10 @@ function bcb_theme_background_save($file){
 /**
  * Handles POST requests for the "Hintergrundbilder" page in WP Admin (Design > Hintergrundbilder)
  */
-function bcb_theme_background_action(){
-    if($_SERVER['REQUEST_METHOD'] == 'POST') {
-        if($_POST['action'] == 'upload') {
+function bcb_theme_background_action()
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($_POST['action'] == 'upload') {
             $tmp_name = $_FILES['background-image']['tmp_name'];
             $type = $_FILES['background-image']['type'];
             if (empty($tmp_name)) {
@@ -87,17 +92,17 @@ function bcb_theme_background_action(){
                 bcb_theme_background_save($tmp_name);
                 bcb_add_notice('success', 'Das Bild wurde erfolgreich hochgeladen. Sie müssen es noch aktivieren.', true, true);
             }
-        }else{
+        } else {
             $images = get_option('bcb_background_images');
-            if($_POST['action'] == 'save'){
-                foreach($_POST['background_images'] as $key => $arr){
+            if ($_POST['action'] == 'save') {
+                foreach ($_POST['background_images'] as $key => $arr) {
                     $images[$key] = array_merge($images[$key], $arr);
                 }
-            }elseif($_POST['action'] == 'delete'){
+            } elseif ($_POST['action'] == 'delete') {
                 $key = $_POST['key'];
                 $file = __DIR__ . $images[$key]['filename'];
 
-                if(file_exists($file)){
+                if (file_exists($file)) {
                     unlink($file);
                 }
                 unset($images[$key]);
@@ -111,7 +116,8 @@ function bcb_theme_background_action(){
 /**
  * Displays the "Hintergrundbilder" page in WP Admin (Design > Hintergrundbilder)
  */
-function bcb_theme_background(){
+function bcb_theme_background()
+{
     bcb_theme_background_action();
     echo "<h1>Hintergrundbilder</h1>";
     bcb_show_notice();
@@ -125,9 +131,9 @@ function bcb_theme_background(){
     echo "<h2>Vorhandene Hintergrundbilder:</h2>";
 
     $images = get_option('bcb_background_images');
-    if(empty($images)){
+    if (empty($images)) {
         echo "<p>Noch keine Hintergrundbilder vorhanden.</p>";
-    }else{
+    } else {
         echo "<form id='images-form' method = 'post'>";
         echo "<input type='hidden' name='action' id='images-action' value='save'/>";
         echo "<input type='hidden' name='key' id='images-key' value=''/>";
@@ -139,45 +145,45 @@ function bcb_theme_background(){
         echo "<td><strong>Aktiv</strong></td>";
         echo "<td>&nbsp;</td>";
         echo "</tr>";
-        foreach($images as $key => $image){
+        foreach ($images as $key => $image) {
             echo "<tr>";
             echo "<td><img src='" . get_template_directory_uri() . $image['filename'] . "' style='max-width: 250px'/></td>";
             echo "<td>";
             echo "<input type='radio' name='background_images[" . $key . "][horizontal]' value='left'";
-            if($image['horizontal'] == 'left'){
+            if ($image['horizontal'] == 'left') {
                 echo " checked";
             }
             echo "/> Links ";
             echo "<input type='radio' name='background_images[" . $key . "][horizontal]' value='center'";
-            if($image['horizontal'] == 'center'){
+            if ($image['horizontal'] == 'center') {
                 echo " checked";
             }
             echo "/> Mitte ";
             echo "<input type='radio' name='background_images[" . $key . "][horizontal]' value='right'";
-            if($image['horizontal'] == 'right'){
+            if ($image['horizontal'] == 'right') {
                 echo " checked";
             }
             echo "/> Rechts";
             echo "</td>";
             echo "<td>";
             echo "<input type='radio' name='background_images[" . $key . "][vertical]' value='top'";
-            if($image['vertical'] == 'top'){
+            if ($image['vertical'] == 'top') {
                 echo " checked";
             }
             echo "/> Oben ";
             echo "<input type='radio' name='background_images[" . $key . "][vertical]' value='center'";
-            if($image['vertical'] == 'center'){
+            if ($image['vertical'] == 'center') {
                 echo " checked";
             }
             echo "/> Mitte ";
             echo "<input type='radio' name='background_images[" . $key . "][vertical]' value='bottom'";
-            if($image['vertical'] == 'bottom'){
+            if ($image['vertical'] == 'bottom') {
                 echo " checked";
             }
             echo "/> Unten";
             echo "</td>";
             echo "<td><select name='background_images[" . $key . "][active]'><option value='0'>Nein</option><option value='1'";
-            if($image['active']){
+            if ($image['active']) {
                 echo " selected";
             }
             echo ">Ja</option></select></td>";
@@ -190,7 +196,6 @@ function bcb_theme_background(){
         echo "</table>";
         echo "</form>";
     }
-
 
 
     echo "<script type='text/javascript' src='" . get_template_directory_uri() . "/js/theme-background-image.js'></script>";

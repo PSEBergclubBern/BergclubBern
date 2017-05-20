@@ -9,8 +9,8 @@
 namespace BergclubPlugin\Tests\Touren\MetaBoxes;
 
 use BergclubPlugin\FlashMessage;
-use PHPUnit\Framework\TestCase;
 use BergclubPlugin\Touren\MetaBoxes\Common;
+use PHPUnit\Framework\TestCase;
 
 class CommonTest extends TestCase
 {
@@ -22,14 +22,16 @@ class CommonTest extends TestCase
     /**
      * @Before
      */
-    public function setUp() {
+    public function setUp()
+    {
         $this->common = new Common();
     }
 
     /**
      * @test
      */
-    public function hasStringAsIdentifier() {
+    public function hasStringAsIdentifier()
+    {
         $this->assertNotEmpty($this->common->getUniqueMetaBoxName());
         $this->assertTrue(is_string($this->common->getUniqueMetaBoxName()));
     }
@@ -37,7 +39,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function hasStringAsTitle() {
+    public function hasStringAsTitle()
+    {
         $this->assertNotEmpty($this->common->getUniqueMetaBoxTitle());
         $this->assertTrue(is_string($this->common->getUniqueMetaBoxTitle()));
     }
@@ -45,7 +48,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function fieldsReturnFieldAsArray() {
+    public function fieldsReturnFieldAsArray()
+    {
         $this->assertNotEmpty($this->common->getUniqueFieldNames());
         $this->assertTrue(is_array($this->common->getUniqueFieldNames()));
     }
@@ -53,7 +57,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function fieldDateIsNotAcceptingInvalidDate() {
+    public function fieldDateIsNotAcceptingInvalidDate()
+    {
         $this->assertFalse($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => 'test'), "publish"));
         $this->assertNotEmpty(FlashMessage::show());
     }
@@ -61,7 +66,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function fieldDateIsNotAcceptingInvalidDateForDraft() {
+    public function fieldDateIsNotAcceptingInvalidDateForDraft()
+    {
         $this->assertFalse($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => 'test'), "draft"));
         $this->assertNotEmpty(FlashMessage::show());
     }
@@ -69,7 +75,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function fieldDateIsAcceptingValidDates() {
+    public function fieldDateIsAcceptingValidDates()
+    {
         $this->assertTrue($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
@@ -77,7 +84,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function fieldDateIsAcceptingValidDatesForDraft() {
+    public function fieldDateIsAcceptingValidDatesForDraft()
+    {
         $this->assertTrue($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000'), "draft"));
         $this->assertEmpty(FlashMessage::show());
     }
@@ -85,7 +93,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function dateToIsAcceptingValidDates() {
+    public function dateToIsAcceptingValidDates()
+    {
         $this->assertTrue($this->common->isValid(array(Common::DATE_TO_IDENTIFIER => '01.01.2000'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
@@ -93,7 +102,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function dateToIsEqualDateFrom() {
+    public function dateToIsEqualDateFrom()
+    {
         $this->assertTrue($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
             Common::DATE_TO_IDENTIFIER => '01.01.2000',
             Common::SLEEPOVER => ""), "publish"));
@@ -103,7 +113,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function dateToIsEqualDateFromButSleepoverJa() {
+    public function dateToIsEqualDateFromButSleepoverJa()
+    {
         $this->assertFalse($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
             Common::DATE_TO_IDENTIFIER => '01.01.2000',
             Common::SLEEPOVER => "Something"), "publish"));
@@ -113,7 +124,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function dateToIsAfterDateFromAndSleepoverIsSet() {
+    public function dateToIsAfterDateFromAndSleepoverIsSet()
+    {
         $this->assertTrue($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
             Common::DATE_TO_IDENTIFIER => '01.02.2000',
             Common::SLEEPOVER => "Test"), "publish"));
@@ -123,7 +135,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function dateToIsAfterDateFromAndSleepoverIsEmpty() {
+    public function dateToIsAfterDateFromAndSleepoverIsEmpty()
+    {
         $this->assertFalse($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
             Common::DATE_TO_IDENTIFIER => '01.02.2000',
             Common::SLEEPOVER => ""), "publish"));
@@ -133,7 +146,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function dateToIsAfterDateFromAndSleepoverIsNotSet() {
+    public function dateToIsAfterDateFromAndSleepoverIsNotSet()
+    {
         $this->assertFalse($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.01.2000',
             Common::DATE_TO_IDENTIFIER => '01.02.2000'), "publish"));
         $this->assertNotEmpty(FlashMessage::show());
@@ -142,7 +156,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function dateToIsBeforeDateFrom() {
+    public function dateToIsBeforeDateFrom()
+    {
         $this->assertFalse($this->common->isValid(array(Common::DATE_FROM_IDENTIFIER => '01.02.2000',
             Common::DATE_TO_IDENTIFIER => '01.01.2000'), "publish"));
         $this->assertNotEmpty(FlashMessage::show());
@@ -151,7 +166,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function signUpUntilHasInValidDate() {
+    public function signUpUntilHasInValidDate()
+    {
         $this->assertFalse($this->common->isValid(array(Common::SIGNUP_UNTIL => 'test'), "publish"));
         $this->assertNotEmpty(FlashMessage::show());
     }
@@ -159,7 +175,8 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function signUpUntilHasValidValue() {
+    public function signUpUntilHasValidValue()
+    {
         $this->assertTrue($this->common->isValid(array(Common::SIGNUP_UNTIL => '01.01.2017'), "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
@@ -167,34 +184,39 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function signUpUntilIsAfterTourBeginn() {
-	    $values = array( Common::SIGNUP_UNTIL => '01.01.2017', Common::DATE_FROM_IDENTIFIER => '01.06.2017' );
-	    $this->assertTrue($this->common->isValid($values, "publish"));
+    public function signUpUntilIsAfterTourBeginn()
+    {
+        $values = array(Common::SIGNUP_UNTIL => '01.01.2017', Common::DATE_FROM_IDENTIFIER => '01.06.2017');
+        $this->assertTrue($this->common->isValid($values, "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
 
     /**
      * @test
      */
-    public function signUpUntilIsEqualToTourBeginn() {
-	    $values = array( Common::SIGNUP_UNTIL => '01.01.2017', Common::DATE_FROM_IDENTIFIER => '01.01.2017' );
-	    $this->assertTrue($this->common->isValid($values, "publish"));
+    public function signUpUntilIsEqualToTourBeginn()
+    {
+        $values = array(Common::SIGNUP_UNTIL => '01.01.2017', Common::DATE_FROM_IDENTIFIER => '01.01.2017');
+        $this->assertTrue($this->common->isValid($values, "publish"));
         $this->assertEmpty(FlashMessage::show());
     }
+
     /**
      * @test
      */
-    public function signUpUntilIsBeforeTourBeginn() {
-	    $values = array( Common::SIGNUP_UNTIL => '01.01.2017', Common::DATE_FROM_IDENTIFIER => '01.01.2000' );
-	    $this->assertFalse($this->common->isValid($values, "publish"));
+    public function signUpUntilIsBeforeTourBeginn()
+    {
+        $values = array(Common::SIGNUP_UNTIL => '01.01.2017', Common::DATE_FROM_IDENTIFIER => '01.01.2000');
+        $this->assertFalse($this->common->isValid($values, "publish"));
         $this->assertNotEmpty(FlashMessage::show());
     }
 
     /**
      * @test
      */
-    public function dateFromIsRequired() {
-        $values = array( Common::DATE_FROM_IDENTIFIER => '' );
+    public function dateFromIsRequired()
+    {
+        $values = array(Common::DATE_FROM_IDENTIFIER => '');
         $this->assertFalse($this->common->isValid($values, "publish"));
         $this->assertFalse($this->common->isValid($values, "draft"));
     }
@@ -202,8 +224,9 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function leaderIsRequired() {
-        $values = array( Common::LEADER => '' );
+    public function leaderIsRequired()
+    {
+        $values = array(Common::LEADER => '');
         $this->assertFalse($this->common->isValid($values, "publish"));
         $this->assertFalse($this->common->isValid($values, "draft"));
     }
@@ -211,32 +234,36 @@ class CommonTest extends TestCase
     /**
      * @test
      */
-    public function signUpToIsRequiredForPublish() {
-        $values = array( Common::SIGNUP_TO => '' );
+    public function signUpToIsRequiredForPublish()
+    {
+        $values = array(Common::SIGNUP_TO => '');
         $this->assertFalse($this->common->isValid($values, "publish"));
     }
 
     /**
      * @test
      */
-    public function signUpToIsOptionalForDraft() {
-        $values = array( Common::SIGNUP_TO => '' );
+    public function signUpToIsOptionalForDraft()
+    {
+        $values = array(Common::SIGNUP_TO => '');
         $this->assertTrue($this->common->isValid($values, "draft"));
     }
 
     /**
      * @test
      */
-    public function signUpUntilIsRequiredForPublish() {
-        $values = array( Common::SIGNUP_UNTIL => '' );
+    public function signUpUntilIsRequiredForPublish()
+    {
+        $values = array(Common::SIGNUP_UNTIL => '');
         $this->assertFalse($this->common->isValid($values, "publish"));
     }
 
     /**
      * @test
      */
-    public function signUpUntilIsOptionalForDraft() {
-        $values = array( Common::SIGNUP_UNTIL => '' );
+    public function signUpUntilIsOptionalForDraft()
+    {
+        $values = array(Common::SIGNUP_UNTIL => '');
         $this->assertTrue($this->common->isValid($values, "draft"));
     }
 }

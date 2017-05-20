@@ -4,6 +4,7 @@ namespace {
 }
 
 namespace BergclubPlugin\Tests\MVC\Models {
+
     use BergclubPlugin\MVC\Models\Option;
     use PHPUnit\Framework\TestCase;
 
@@ -12,7 +13,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @Before
          */
-        public function setUp(){
+        public function setUp()
+        {
             global $wpOptions;
             $wpOptions = [];
         }
@@ -20,7 +22,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function setAndGet(){
+        public function setAndGet()
+        {
             Option::set('test', 'A');
             $this->assertEquals('A', Option::get('test'));
         }
@@ -28,7 +31,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function saveAndFind(){
+        public function saveAndFind()
+        {
             $option = new Option('test', 'B');
             $option->save();
             $this->assertEquals($option, Option::find('test'));
@@ -37,7 +41,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function delete(){
+        public function delete()
+        {
             $option = new Option('test', 'C');
             $option->save();
             $this->assertEquals($option, Option::find('test'));
@@ -49,7 +54,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function remove(){
+        public function remove()
+        {
             $option = new Option('test', 'C');
             $option->save();
 

@@ -4,6 +4,7 @@ namespace {
 }
 
 namespace BergclubPlugin\Tests\MVC\Models {
+
     use BergclubPlugin\MVC\Exceptions\NotABergClubUserException;
     use BergclubPlugin\MVC\Models\Role;
     use BergclubPlugin\MVC\Models\User;
@@ -12,7 +13,43 @@ namespace BergclubPlugin\Tests\MVC\Models {
     class UserTest extends TestCase
     {
 
-        protected function createTestUser($id, $roles = ['bcb_aktivmitglied'], $spouse = null, $main_address = null, $leaving_reason = null){
+        /**
+         * @Before
+         */
+        public function setUp()
+        {
+            global $wpOptions;
+            $wpOptions['bcb_roles'] = unserialize('a:2:{s:7:"address";a:9:{s:15:"bcb_institution";s:11:"Institution";s:12:"bcb_inserent";s:8:"Inserent";s:15:"bcb_interessent";s:11:"Interessent";s:22:"bcb_interessent_jugend";s:18:"Interessent Jugend";s:17:"bcb_aktivmitglied";s:13:"Aktivmitglied";s:24:"bcb_aktivmitglied_jugend";s:20:"Aktivmitglied Jugend";s:17:"bcb_ehrenmitglied";s:13:"Ehrenmitglied";s:12:"bcb_ehemalig";s:8:"Ehemalig";s:16:"bcb_freimitglied";s:12:"Freimitglied";}s:11:"functionary";a:14:{s:10:"bcb_leiter";s:9:"Leiter/in";s:17:"bcb_leiter_jugend";s:16:"Leiter/in Jugend";s:14:"bcb_tourenchef";s:13:"Tourenchef/in";s:21:"bcb_tourenchef_jugend";s:20:"Tourenchef/in Jugend";s:13:"bcb_redaktion";s:9:"Redaktion";s:15:"bcb_sekretariat";s:11:"Sekretariat";s:14:"bcb_mutationen";s:10:"Mutationen";s:9:"bcb_kasse";s:5:"Kasse";s:14:"bcb_praesident";s:13:"Präsident/in";s:16:"bcb_materialchef";s:15:"Materialchef/in";s:23:"bcb_materialchef_jugend";s:22:"Materialchef/in Jugend";s:12:"bcb_js_coach";s:9:"J&S-Coach";s:11:"bcb_versand";s:7:"Versand";s:12:"bcb_internet";s:8:"Internet";}}');
+            $wpOptions['bcb_roles']['system'] = ['administrator' => null];
+
+            global $wp_roles;
+            $rolesByType = get_option('bcb_roles');
+            foreach ($rolesByType as $type => $rolesArray) {
+                foreach ($rolesArray as $key => $name) {
+                    $wp_roles->roles[$key] = ['name' => $name, 'capabilities' => ['read' => true]];
+                }
+            }
+
+            global $wpMail;
+            $wpMail = [];
+
+            global $wpUsers;
+            $wpUsers = [];
+
+            $this->createTestUser(1, ['bcb_aktivmitglied']);
+            $this->createTestUser(2, ['bcb_aktivmitglied'], 3, true);
+            $this->createTestUser(3, ['bcb_aktivmitglied'], 2, false);
+            $this->createTestUser(4, ['bcb_inserent']);
+            $this->createTestUser(5, ['bcb_ehemalig'], 6, true, 2);
+            $this->createTestUser(6, ['bcb_ehemalig'], 5, false, 1);
+            $this->createTestUser(7, ['administrator']);
+            $this->createTestUser(8, ['bcb_aktivmitglied', 'bcb_tourenchef']);
+            $this->createTestUser(9, ['bcb_aktivmitglied', 'bcb_materialchef']);
+            $this->createTestUser(10, ['bcb_aktivmitglied', 'bcb_leiter']);
+        }
+
+        protected function createTestUser($id, $roles = ['bcb_aktivmitglied'], $spouse = null, $main_address = null, $leaving_reason = null)
+        {
             global $wpUsers;
             global $wpUsersMeta;
 
@@ -35,7 +72,7 @@ namespace BergclubPlugin\Tests\MVC\Models {
 
             $wpUser->ID = $id;
 
-            foreach($roles as $role){
+            foreach ($roles as $role) {
                 $wpUser->caps[$role] = 1;
                 $wpUser->all_caps[$role] = 1;
                 $wpUser->roles[] = $role;
@@ -81,65 +118,11 @@ namespace BergclubPlugin\Tests\MVC\Models {
             ];
         }
 
-
-        /**
-         * @Before
-         */
-        public function setUp()
-        {
-            global $wpOptions;
-            $wpOptions['bcb_roles'] = unserialize('a:2:{s:7:"address";a:9:{s:15:"bcb_institution";s:11:"Institution";s:12:"bcb_inserent";s:8:"Inserent";s:15:"bcb_interessent";s:11:"Interessent";s:22:"bcb_interessent_jugend";s:18:"Interessent Jugend";s:17:"bcb_aktivmitglied";s:13:"Aktivmitglied";s:24:"bcb_aktivmitglied_jugend";s:20:"Aktivmitglied Jugend";s:17:"bcb_ehrenmitglied";s:13:"Ehrenmitglied";s:12:"bcb_ehemalig";s:8:"Ehemalig";s:16:"bcb_freimitglied";s:12:"Freimitglied";}s:11:"functionary";a:14:{s:10:"bcb_leiter";s:9:"Leiter/in";s:17:"bcb_leiter_jugend";s:16:"Leiter/in Jugend";s:14:"bcb_tourenchef";s:13:"Tourenchef/in";s:21:"bcb_tourenchef_jugend";s:20:"Tourenchef/in Jugend";s:13:"bcb_redaktion";s:9:"Redaktion";s:15:"bcb_sekretariat";s:11:"Sekretariat";s:14:"bcb_mutationen";s:10:"Mutationen";s:9:"bcb_kasse";s:5:"Kasse";s:14:"bcb_praesident";s:13:"Präsident/in";s:16:"bcb_materialchef";s:15:"Materialchef/in";s:23:"bcb_materialchef_jugend";s:22:"Materialchef/in Jugend";s:12:"bcb_js_coach";s:9:"J&S-Coach";s:11:"bcb_versand";s:7:"Versand";s:12:"bcb_internet";s:8:"Internet";}}');
-            $wpOptions['bcb_roles']['system'] = ['administrator' => null];
-
-            global $wp_roles;
-            $rolesByType = get_option('bcb_roles');
-            foreach($rolesByType as $type => $rolesArray){
-                foreach($rolesArray as $key => $name){
-                    $wp_roles->roles[$key] = ['name' => $name, 'capabilities' => ['read' => true]];
-                }
-            }
-
-            global $wpMail;
-            $wpMail = [];
-
-            global $wpUsers;
-            $wpUsers = [];
-
-            $this->createTestUser(1, ['bcb_aktivmitglied']);
-            $this->createTestUser(2, ['bcb_aktivmitglied'], 3, true);
-            $this->createTestUser(3, ['bcb_aktivmitglied'], 2, false);
-            $this->createTestUser(4, ['bcb_inserent']);
-            $this->createTestUser(5, ['bcb_ehemalig'], 6, true, 2);
-            $this->createTestUser(6, ['bcb_ehemalig'], 5, false, 1);
-            $this->createTestUser(7, ['administrator']);
-            $this->createTestUser(8, ['bcb_aktivmitglied', 'bcb_tourenchef']);
-            $this->createTestUser(9, ['bcb_aktivmitglied', 'bcb_materialchef']);
-            $this->createTestUser(10, ['bcb_aktivmitglied', 'bcb_leiter']);
-        }
-
-        protected function getNewUser(){
-            $user = new User();
-            $user->first_name = "Test 11";
-            $user->last_name = "User";
-            $user->gender = "M";
-            $user->address_addition = "Postfach";
-            $user->street = "Teststrasse 1";
-            $user->zip = 9999;
-            $user->location = "Testlingen";
-            $user->phone_private = "031 123 45 67";
-            $user->phone_work = "031 890 12 34";
-            $user->phone_mobile = "079 567 89 01";
-            $user->email = "test11@user.com";
-            $user->birthdate = "1970-01-01";
-            $user->comments = "Bemerkung";
-
-            return $user;
-        }
-
         /**
          * @test
          */
-        public function findWithAddressRoleDontAllowWPUsersToBeFound(){
+        public function findWithAddressRoleDontAllowWPUsersToBeFound()
+        {
             $user = User::find(1);
             $this->assertEquals(1, $user->ID);
         }
@@ -147,7 +130,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findWithoutAddressRoleDontAllowWPUsersToBeFound(){
+        public function findWithoutAddressRoleDontAllowWPUsersToBeFound()
+        {
             global $wpUsers;
             $user = User::find(7);
             $this->assertEquals(null, $user);
@@ -156,7 +140,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findWithoutAddressRoleAllowWPUsersToBeFound(){
+        public function findWithoutAddressRoleAllowWPUsersToBeFound()
+        {
             global $wpUsers;
             $user = User::find(7, true);
             $this->assertEquals(7, $user->ID);
@@ -165,7 +150,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findCurrentUser(){
+        public function findCurrentUser()
+        {
             $user = User::findCurrent();
             $this->assertEquals(1, $user->ID);
         }
@@ -173,10 +159,11 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findAllWithoutSpouse(){
+        public function findAllWithoutSpouse()
+        {
             $users = User::findAllWithoutSpouse();
             $ids = [];
-            foreach($users as $user){
+            foreach ($users as $user) {
                 $ids[] = $user->ID;
             }
             //$this->assertEquals(7, count($ids));
@@ -195,10 +182,11 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findAll(){
+        public function findAll()
+        {
             $users = User::findAll();
             $ids = [];
-            foreach($users as $user){
+            foreach ($users as $user) {
                 $ids[] = $user->ID;
             }
 
@@ -218,7 +206,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findByLogin(){
+        public function findByLogin()
+        {
             $user = User::findByLogin('usertest1');
             $this->assertEquals(1, $user->ID);
         }
@@ -226,10 +215,11 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findMitgliederWithoutSpouse(){
+        public function findMitgliederWithoutSpouse()
+        {
             $users = User::findMitgliederWithoutSpouse();
             $ids = [];
-            foreach($users as $user){
+            foreach ($users as $user) {
                 $ids[] = $user->ID;
             }
 
@@ -249,10 +239,11 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findMitglieder(){
+        public function findMitglieder()
+        {
             $users = User::findMitglieder();
             $ids = [];
-            foreach($users as $user){
+            foreach ($users as $user) {
                 $ids[] = $user->ID;
             }
 
@@ -272,7 +263,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findVorstand(){
+        public function findVorstand()
+        {
             $vorstand = User::findVorstand();
             $this->assertEquals(1, count($vorstand));
             $this->assertEquals('Tourenchef/in', $vorstand[0]['title']);
@@ -291,7 +283,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findErweiterterVorstand(){
+        public function findErweiterterVorstand()
+        {
             $vorstand = User::findErweiterterVorstand();
             $this->assertEquals(1, count($vorstand));
             $this->assertEquals('Materialchef/in', $vorstand[0]['title']);
@@ -302,7 +295,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findLeiter(){
+        public function findLeiter()
+        {
             $leiter = User::findLeiter();
             $this->assertEquals(2, count($leiter));
             $this->assertEquals('Tourenchef/in', $leiter[0]['title']);
@@ -317,7 +311,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findLeiterJugend(){
+        public function findLeiterJugend()
+        {
             $wpUser = get_user_by('ID', 1);
             $wpUser->roles[] = 'bcb_leiter_jugend';
             $wpUser = get_user_by('ID', 2);
@@ -336,10 +331,11 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findByRoles(){
+        public function findByRoles()
+        {
             $users = User::findByRoles(['bcb_tourenchef', 'bcb_materialchef']);
             $ids = [];
-            foreach($users as $user){
+            foreach ($users as $user) {
                 $ids[] = $user->ID;
             }
 
@@ -351,10 +347,11 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function findByRole(){
+        public function findByRole()
+        {
             $users = User::findByRole('bcb_tourenchef');
             $ids = [];
-            foreach($users as $user){
+            foreach ($users as $user) {
                 $ids[] = $user->ID;
             }
 
@@ -365,7 +362,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function saveNewWithoutFunctionaryRole(){
+        public function saveNewWithoutFunctionaryRole()
+        {
             global $wpUsers;
             global $wpUsersMeta;
 
@@ -399,10 +397,31 @@ namespace BergclubPlugin\Tests\MVC\Models {
             $this->assertEquals("Bemerkung", $wpUserMeta['comments'][0]);
         }
 
+        protected function getNewUser()
+        {
+            $user = new User();
+            $user->first_name = "Test 11";
+            $user->last_name = "User";
+            $user->gender = "M";
+            $user->address_addition = "Postfach";
+            $user->street = "Teststrasse 1";
+            $user->zip = 9999;
+            $user->location = "Testlingen";
+            $user->phone_private = "031 123 45 67";
+            $user->phone_work = "031 890 12 34";
+            $user->phone_mobile = "079 567 89 01";
+            $user->email = "test11@user.com";
+            $user->birthdate = "1970-01-01";
+            $user->comments = "Bemerkung";
+
+            return $user;
+        }
+
         /**
          * @test
          */
-        public function saveNewWithoutAddressRole(){
+        public function saveNewWithoutAddressRole()
+        {
             $this->expectException(NotABergClubUserException::class);
 
             /* @var User $user */
@@ -414,7 +433,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function saveNewWithFunctionaryRole(){
+        public function saveNewWithFunctionaryRole()
+        {
             global $wpMail;
             global $wpUsers;
 
@@ -450,7 +470,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function addAndRemoveRole(){
+        public function addAndRemoveRole()
+        {
             global $wpMail;
             global $wpUsers;
 
@@ -599,7 +620,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function removeRole(){
+        public function removeRole()
+        {
             $user = User::find(1);
 
             $this->assertArrayHasKey('bcb_aktivmitglied', $user->roles);
@@ -618,7 +640,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function removeRoleWithoutUpdatingHistory(){
+        public function removeRoleWithoutUpdatingHistory()
+        {
             $user = User::find(1);
 
             $history = $user->history;
@@ -631,7 +654,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function removeSystemRole(){
+        public function removeSystemRole()
+        {
             $user = User::find(1);
             $history = $user->history;
 
@@ -649,7 +673,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function hasCapability(){
+        public function hasCapability()
+        {
             $user = User::find(1);
             $this->assertTrue($user->hasCapability('read'));
         }
@@ -657,7 +682,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function hasRole(){
+        public function hasRole()
+        {
             $user = User::find(1);
 
             $this->assertTrue($user->hasRole('bcb_aktivmitglied'));
@@ -667,7 +693,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function unsetSpouse(){
+        public function unsetSpouse()
+        {
             $user = User::find(2);
 
             $this->assertNotNull($user->spouse);
@@ -681,7 +708,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function setHistory(){
+        public function setHistory()
+        {
             $user = User::find(1);
 
             $history = [
@@ -703,7 +731,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function setHistoryWithoutDateTo(){
+        public function setHistoryWithoutDateTo()
+        {
             $user = User::find(1);
 
             $history = [
@@ -721,7 +750,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function setHistoryWithoutDateFrom(){
+        public function setHistoryWithoutDateFrom()
+        {
             $user = User::find(1);
 
             $history = [
@@ -741,7 +771,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function setHistoryWithoutDates(){
+        public function setHistoryWithoutDates()
+        {
             $user = User::find(1);
 
             $history = [
@@ -756,7 +787,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function setHistoryWithoutData(){
+        public function setHistoryWithoutData()
+        {
             $user = User::find(1);
 
             $history = [];
@@ -770,7 +802,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function roles(){
+        public function roles()
+        {
             $user = User::find(1);
             $user->addRole(Role::find('bcb_tourenchef'));
 
@@ -792,7 +825,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function spouse(){
+        public function spouse()
+        {
             $user = User::find(2);
             $spouse = User::find(3);
 
@@ -803,7 +837,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function spouseName(){
+        public function spouseName()
+        {
             $user = User::find(2);
             $spouse = User::find(3);
 
@@ -814,7 +849,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function setSpouse(){
+        public function setSpouse()
+        {
             $user = User::find(8);
             $spouse = User::find(9);
 
@@ -828,7 +864,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function setSpouseId(){
+        public function setSpouseId()
+        {
             $user = User::find(8);
             $spouse = User::find(9);
 
@@ -842,7 +879,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function leavingReason(){
+        public function leavingReason()
+        {
             $user = new User();
             $user->leaving_reason = null;
             $this->assertNull($user->leaving_reason);
@@ -860,7 +898,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function programShipment(){
+        public function programShipment()
+        {
             $user = new User();
             $user->program_shipment = null;
             $this->assertEquals(null, $user->program_shipment);
@@ -878,7 +917,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function gender(){
+        public function gender()
+        {
             $user = new User();
             $user->gender = null;
             $this->assertEquals(null, $user->gender);
@@ -896,7 +936,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function displayName(){
+        public function displayName()
+        {
             $user = new User();
             $this->assertEmpty($user->displayName);
 
@@ -913,7 +954,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function address(){
+        public function address()
+        {
             $user = new User();
             $this->assertEmpty($user->address);
 
@@ -942,7 +984,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function birthdate(){
+        public function birthdate()
+        {
             $user = new User();
             $this->assertNull($user->birthdate);
 
@@ -968,7 +1011,8 @@ namespace BergclubPlugin\Tests\MVC\Models {
         /**
          * @test
          */
-        public function userName(){
+        public function userName()
+        {
             $firstName = md5(time() . uniqid());
             $lastName = "User";
 
@@ -980,9 +1024,9 @@ namespace BergclubPlugin\Tests\MVC\Models {
 
             $userName = $user->user_login;
 
-            $this->assertEquals(strtolower(substr($lastName.$firstName, 0, 8)), $userName);
+            $this->assertEquals(strtolower(substr($lastName . $firstName, 0, 8)), $userName);
 
-            for($i = 1; $i <= 100; $i++){
+            for ($i = 1; $i <= 100; $i++) {
                 $user = new User();
                 $user->first_name = $firstName;
                 $user->last_name = $lastName;

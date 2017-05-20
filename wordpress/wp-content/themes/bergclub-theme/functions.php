@@ -70,30 +70,31 @@ if (!function_exists('bcb_setup')) {
 
 add_action('after_setup_theme', 'bcb_setup');
 
-if ( ! function_exists( 'bcb_post_thumbnail' ) ) {
+if (!function_exists('bcb_post_thumbnail')) {
     /**
      * Display an optional post thumbnail.
      *
      * Wraps the post thumbnail in an anchor element on index views, or a div
      * element when on single views.
      */
-    function bcb_post_thumbnail() {
-        if ( post_password_required() || is_attachment() || ! has_post_thumbnail() ) {
+    function bcb_post_thumbnail()
+    {
+        if (post_password_required() || is_attachment() || !has_post_thumbnail()) {
             return;
         }
 
-        if ( is_singular() ) {
+        if (is_singular()) {
             ?>
 
             <div class="post-thumbnail">
                 <?php the_post_thumbnail(); ?>
             </div><!-- .post-thumbnail -->
 
-        <?php }else{ ?>
+        <?php } else { ?>
 
             <a class="post-thumbnail" href="<?php the_permalink(); ?>" aria-hidden="true">
                 <?php
-                the_post_thumbnail( 'post-thumbnail', array( 'alt' => get_the_title() ) );
+                the_post_thumbnail('post-thumbnail', array('alt' => get_the_title()));
                 ?>
             </a>
 
@@ -101,7 +102,7 @@ if ( ! function_exists( 'bcb_post_thumbnail' ) ) {
     }
 }
 
-if ( ! function_exists( 'bcb_enqueue_scripts' ) ) {
+if (!function_exists('bcb_enqueue_scripts')) {
     /**
      * Adds needed style and script files
      */
@@ -133,11 +134,11 @@ if ( ! function_exists( 'bcb_enqueue_scripts' ) ) {
     }
 }
 
-add_action( 'wp_enqueue_scripts', 'bcb_enqueue_scripts' );
+add_action('wp_enqueue_scripts', 'bcb_enqueue_scripts');
 
-add_editor_style(  get_template_directory_uri() . '/css/bergclub.css' );
+add_editor_style(get_template_directory_uri() . '/css/bergclub.css');
 
-if ( ! function_exists( 'bcb_carousel_images_css' ) ) {
+if (!function_exists('bcb_carousel_images_css')) {
     /**
      * Creates inline css for the background images located in folder img/carousel.
      * Adds the images in random order.
@@ -153,7 +154,7 @@ if ( ! function_exists( 'bcb_carousel_images_css' ) ) {
         foreach ($images as $image) {
             if ($image['active']) {
                 $index++;
-                $carouselImages .= ".item:nth-child(" . $index . "){background: url(" . bcb_add_jugend_to_url(get_template_directory_uri() . $image['filename'], true) . ") no-repeat " . $image['vertical'] . " ". $image['horizontal'] . " fixed;}";
+                $carouselImages .= ".item:nth-child(" . $index . "){background: url(" . bcb_add_jugend_to_url(get_template_directory_uri() . $image['filename'], true) . ") no-repeat " . $image['vertical'] . " " . $image['horizontal'] . " fixed;}";
             }
         }
         return $carouselImages;
@@ -182,7 +183,7 @@ require_once __DIR__ . '/inc/captcha.php';
 require_once __DIR__ . '/inc/background-images.php';
 
 //Ensures that only the category name is shown as title in archive
-add_filter( 'get_the_archive_title', function ( $title ) {
+add_filter('get_the_archive_title', function ($title) {
     return trim(str_replace('Kategorie:', '', str_replace('Archive:', '', $title)));
 });
 
@@ -190,15 +191,16 @@ add_filter( 'get_the_archive_title', function ( $title ) {
 add_filter('show_admin_bar', '__return_false');
 
 //adds Training and JS to the Title
-function add_additional_info_to_title( $title, $id = null ) {
-    if ( "touren" == get_post_type(get_post($id)) ) {
+function add_additional_info_to_title($title, $id = null)
+{
+    if ("touren" == get_post_type(get_post($id))) {
         $training = get_post_meta($id, "_training", true);
         $jsEvent = get_post_meta($id, "_jsEvent", true);
-        if(!empty($training) || !empty($jsEvent)) {
+        if (!empty($training) || !empty($jsEvent)) {
             $title .= " (";
-            if(!empty($training)){
+            if (!empty($training)) {
                 $title .= "Training";
-                if(!empty($jsEvent))
+                if (!empty($jsEvent))
                     $title .= ", JS-Event";
             } else {
                 $title .= "JS-Event";
@@ -209,8 +211,9 @@ function add_additional_info_to_title( $title, $id = null ) {
 
     return $title;
 }
+
 //adds the filter for the title
-add_filter( 'the_title', 'add_additional_info_to_title', 10, 2 );
+add_filter('the_title', 'add_additional_info_to_title', 10, 2);
 
 
 //removes all images from the content and reinserts them at the beginning with as lightbox images
@@ -221,7 +224,7 @@ function move_images_to_lightbox($content)
     //searches the gallery ids in the content and places them in the $img_ids array
     $gallery_ids = array();
     preg_match_all('/gallery ids="(?<ids>[\d+,?]+)"/', $content, $gallery_ids);
-    if(array_key_exists('ids', $gallery_ids)) {
+    if (array_key_exists('ids', $gallery_ids)) {
         foreach ($gallery_ids['ids'] as $ids) {
             $img_ids = array_merge($img_ids, explode(",", $ids));
         }
@@ -230,7 +233,7 @@ function move_images_to_lightbox($content)
     //searches single image ids in the content and places them in the $img_ids array
     $single_img_ids = array();
     preg_match_all('/wp-image-(?<id>\d+)/', $content, $single_img_ids);
-    if(array_key_exists('id', $single_img_ids)) {
+    if (array_key_exists('id', $single_img_ids)) {
         foreach ($single_img_ids['id'] as $id) {
             array_push($img_ids, $id);
         }
@@ -242,7 +245,7 @@ function move_images_to_lightbox($content)
     $content = preg_replace("/<img[^>]+\>/i", " ", $content);  //replaces single images without caption
 
     //if there were no image ids found, return
-    if(empty($img_ids)){
+    if (empty($img_ids)) {
         return $content;
     }
 
@@ -253,10 +256,10 @@ function move_images_to_lightbox($content)
         $lightbox_html .= "<a href=\"" . wp_get_attachment_url($id) . "\" data-lightbox=\"report-gallery\" data-title=\"" . nl2br($imgDescription) . "\">
                 <img alt=\"" . $imgDescription . "\" title=\"" . $imgDescription . "\" src=\"" . wp_get_attachment_thumb_url($id) . "\" class=\"report-image\"></a>";
     }
-    $lightbox_html .="</div>";
+    $lightbox_html .= "</div>";
     return $lightbox_html . $content;
 }
 
 //adds the filter for the content
-add_filter( 'the_content', 'move_images_to_lightbox' );
+add_filter('the_content', 'move_images_to_lightbox');
 

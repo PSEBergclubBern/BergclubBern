@@ -90,16 +90,6 @@ class Adressen implements Entity
     }
 
     /**
-     * return true if this entity is a company
-     *
-     * @return bool
-     */
-    public function isCompany()
-    {
-        return self::CATEGORY_INSTITUTION == $this->category;
-    }
-
-    /**
      * return data as array
      * @return array
      * @see \BergclubPlugin\MVC\Models\User
@@ -107,22 +97,32 @@ class Adressen implements Entity
     public function toArray()
     {
         return array(
-            'first_name'       => $this->firstName,
-            'last_name'        => $this->lastName,
-            'company'          => $this->isCompany() ? $this->lastName : '',
-            'street'           => $this->street,
-            'zip'              => $this->plz,
-            'location'         => $this->place,
-            'phone_private'    => $this->phonePrivate,
-            'phone_work'       => $this->phoneBusiness,
-            'phone_mobile'     => $this->phoneMobile,
-            'email'            => $this->email,
-            'birthdate'        => $this->birthday,
-            'comments'         => $this->comment,
+            'first_name' => $this->firstName,
+            'last_name' => $this->lastName,
+            'company' => $this->isCompany() ? $this->lastName : '',
+            'street' => $this->street,
+            'zip' => $this->plz,
+            'location' => $this->place,
+            'phone_private' => $this->phonePrivate,
+            'phone_work' => $this->phoneBusiness,
+            'phone_mobile' => $this->phoneMobile,
+            'email' => $this->email,
+            'birthdate' => $this->birthday,
+            'comments' => $this->comment,
             'program_shipment' => $this->sendProgram ? '1' : '0',
-            'gender'           => $this->salutation == 'Frau' ? 'F' : 'M',
+            'gender' => $this->salutation == 'Frau' ? 'F' : 'M',
             'address_addition' => $this->addition,
         );
+    }
+
+    /**
+     * return true if this entity is a company
+     *
+     * @return bool
+     */
+    public function isCompany()
+    {
+        return self::CATEGORY_INSTITUTION == $this->category;
     }
 
     /**
@@ -235,85 +235,9 @@ class Adressen implements Entity
         return array(
             'bcb_aktivmitglied' => array(
                 'date_from' => $activeMemberDateFrom->format('Y-m-d'),
-                'date_to'   => $activeMemberDateTo,
+                'date_to' => $activeMemberDateTo,
             )
         );
-    }
-
-    /**
-     * get the active youth member history
-     *
-     * @return array
-     */
-    private function getActiveYouthMemberHistory()
-    {
-        if ($this->activeYouthMemberDate && $this->activeYouthMemberDate != '0000-00-00') {
-            return array(
-                'bcb_aktivmitglied_jugend' => array(
-                    'date_from' => $this->activeYouthMemberDate,
-                    'date_to'   => $this->getNextActiveDateOrNull(new \DateTime($this->activeYouthMemberDate)),
-                )
-            );
-        }
-
-        return array();
-    }
-
-    /**
-     * get the history entry for the honor member role
-     *
-     * @return array
-     */
-    private function getHonorMemberHistory()
-    {
-        if ($this->honorMemberDate && $this->honorMemberDate != '0000-00-00') {
-            return array(
-                'bcb_ehrenmitglied' => array(
-                    'date_from' => $this->honorMemberDate,
-                    'date_to'   => $this->getNextActiveDateOrNull(new \DateTime($this->honorMemberDate)),
-                )
-            );
-        }
-
-        return array();
-    }
-
-    /**
-     * get the history entry for the free member role
-     *
-     * @return array
-     */
-    private function getFreeMemberHistory()
-    {
-        if ($this->freeMemberDate && $this->freeMemberDate != '0000-00-00') {
-            return array(
-                'bcb_freimitglied' => array(
-                    'date_from' => $this->freeMemberDate,
-                    'date_to'   => $this->getNextActiveDateOrNull(new \DateTime($this->freeMemberDate)),
-                )
-            );
-        }
-
-        return array();
-    }
-
-    /**
-     * get the history entry for interested in members
-     *
-     * @return array
-     */
-    private function getInterestedMemberHistory()
-    {
-        if ($this->interessentDate && $this->interessentDate != '0000-00-00') {
-            return array(
-                'bcb_interessent' => array(
-                    'date_from' => $this->interessentDate,
-                    'date_to'   => $this->getNextActiveDateOrNull(new \DateTime($this->interessentDate)),
-                )
-            );
-        }
-
-        return array();
     }
 
     /**
@@ -369,5 +293,81 @@ class Adressen implements Entity
         }
 
         return $returnDates;
+    }
+
+    /**
+     * get the active youth member history
+     *
+     * @return array
+     */
+    private function getActiveYouthMemberHistory()
+    {
+        if ($this->activeYouthMemberDate && $this->activeYouthMemberDate != '0000-00-00') {
+            return array(
+                'bcb_aktivmitglied_jugend' => array(
+                    'date_from' => $this->activeYouthMemberDate,
+                    'date_to' => $this->getNextActiveDateOrNull(new \DateTime($this->activeYouthMemberDate)),
+                )
+            );
+        }
+
+        return array();
+    }
+
+    /**
+     * get the history entry for the free member role
+     *
+     * @return array
+     */
+    private function getFreeMemberHistory()
+    {
+        if ($this->freeMemberDate && $this->freeMemberDate != '0000-00-00') {
+            return array(
+                'bcb_freimitglied' => array(
+                    'date_from' => $this->freeMemberDate,
+                    'date_to' => $this->getNextActiveDateOrNull(new \DateTime($this->freeMemberDate)),
+                )
+            );
+        }
+
+        return array();
+    }
+
+    /**
+     * get the history entry for the honor member role
+     *
+     * @return array
+     */
+    private function getHonorMemberHistory()
+    {
+        if ($this->honorMemberDate && $this->honorMemberDate != '0000-00-00') {
+            return array(
+                'bcb_ehrenmitglied' => array(
+                    'date_from' => $this->honorMemberDate,
+                    'date_to' => $this->getNextActiveDateOrNull(new \DateTime($this->honorMemberDate)),
+                )
+            );
+        }
+
+        return array();
+    }
+
+    /**
+     * get the history entry for interested in members
+     *
+     * @return array
+     */
+    private function getInterestedMemberHistory()
+    {
+        if ($this->interessentDate && $this->interessentDate != '0000-00-00') {
+            return array(
+                'bcb_interessent' => array(
+                    'date_from' => $this->interessentDate,
+                    'date_to' => $this->getNextActiveDateOrNull(new \DateTime($this->interessentDate)),
+                )
+            );
+        }
+
+        return array();
     }
 }

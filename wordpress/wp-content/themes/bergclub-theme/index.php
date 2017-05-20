@@ -21,18 +21,22 @@ get_header() ?>
         </div>
 
         <img class="img-responsive header-logo"
-             src="<?php echo esc_url(get_template_directory_uri()); ?>/img/logo<?php if(bcb_is_jugend()){ echo "-jugend"; } ?>.png" alt="Logo">
+             src="<?php echo esc_url(get_template_directory_uri()); ?>/img/logo<?php if (bcb_is_jugend()) {
+                 echo "-jugend";
+             } ?>.png" alt="Logo">
 
         <div class="row">
 
             <div class="col-md-6 col-md-offset-6 col-lg-4 col-lg-offset-8 newest-posts">
                 <!--<div class="hidden-lg hidden-md mobile-placeholder">&nbsp;</div>-->
                 <div class="well well-home">
-                    <h3>Nächste Touren <?php if(bcb_is_jugend()){ echo "Jugend"; } ?></h3>
+                    <h3>Nächste Touren <?php if (bcb_is_jugend()) {
+                            echo "Jugend";
+                        } ?></h3>
                     <ul class="list-group hide-links">
                         <?php
 
-                        $query =  new WP_Query( array(
+                        $query = new WP_Query(array(
                             'post_type' => 'touren',
                             'posts_per_page' => 5,
                             'order' => 'ASC',
@@ -50,16 +54,22 @@ get_header() ?>
                                     <a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
                                 </div>
                                 <div class="row additional-info">
-                                    <div class="pull-left additional-info-item"><div class="icon icon-date"></div> <?= $dateDisplay ?></div>
-                                    <div class="pull-left additional-info-item"><div class="icon icon-type"></div> <?= $typeWithTechnicalRequirementsDisplay ?></div>
-                                    <?php if(!empty($riseUpDisplay)){ ?>
-                                        <div class="pull-left additional-info-item"><div class="icon icon-up"></div> <?= $riseUpDisplay ?></div>
+                                    <div class="pull-left additional-info-item">
+                                        <div class="icon icon-date"></div> <?= $dateDisplay ?></div>
+                                    <div class="pull-left additional-info-item">
+                                        <div class="icon icon-type"></div> <?= $typeWithTechnicalRequirementsDisplay ?>
+                                    </div>
+                                    <?php if (!empty($riseUpDisplay)) { ?>
+                                        <div class="pull-left additional-info-item">
+                                            <div class="icon icon-up"></div> <?= $riseUpDisplay ?></div>
                                     <?php } ?>
-                                    <?php if(!empty($riseDownDisplay)){ ?>
-                                        <div class="pull-left additional-info-item"><div class="icon icon-down"></div> <?= $riseDownDisplay ?></div>
+                                    <?php if (!empty($riseDownDisplay)) { ?>
+                                        <div class="pull-left additional-info-item">
+                                            <div class="icon icon-down"></div> <?= $riseDownDisplay ?></div>
                                     <?php } ?>
-                                    <?php if(!empty($durationDisplay)){ ?>
-                                        <div class="pull-left additional-info-item"><div class="icon icon-duration"></div> <?= $durationDisplay ?></div>
+                                    <?php if (!empty($durationDisplay)) { ?>
+                                        <div class="pull-left additional-info-item">
+                                            <div class="icon icon-duration"></div> <?= $durationDisplay ?></div>
                                     <?php } ?>
                                 </div>
                             </li>
@@ -77,7 +87,8 @@ get_header() ?>
                         <?php
                         $query = new WP_Query(array('category_name' => 'mitteilungen', 'posts_per_page' => 3));
                         while ($query->have_posts()) : $query->the_post(); ?>
-                            <li class="list-group-item"><a href="<?php the_permalink(); ?>"><?php the_title() ?></a></li>
+                            <li class="list-group-item"><a href="<?php the_permalink(); ?>"><?php the_title() ?></a>
+                            </li>
                             <?php
                         endwhile;
                         wp_reset_postdata();

@@ -26,7 +26,7 @@ while (have_posts()) : the_post();
 
     $costs = get_post_meta(get_the_ID(), "_costs", true);
     $costsDisplay = "Keine Angabe";
-    if(is_numeric($costs) && $costs > 0){
+    if (is_numeric($costs) && $costs > 0) {
         $costsDisplay = "CHF " . number_format($costs, 2, '.', '');
     }
     $costsForDisplay = get_post_meta(get_the_ID(), "_costsFor", true);
@@ -77,23 +77,26 @@ while (have_posts()) : the_post();
             <h1>
                 <?php
                 $isYouth = bcb_touren_meta(get_the_ID(), 'isYouthRaw');
-                if($isYouth == 1 || $isYouth == 2){
+                if ($isYouth == 1 || $isYouth == 2) {
                     ?>
-                    <img class="pull-right hidden-xs" src="<?= get_template_directory_uri() ?>/img/bergclub-jugend-sm.png" style="margin-left:20px">
-                <?php }if($isYouth == 0 || $isYouth == 2){ ?>
-                    <img class="pull-right hidden-xs" src="<?= get_template_directory_uri() ?>/img/bergclub-sm.png" style="margin-left:20px">
+                    <img class="pull-right hidden-xs"
+                         src="<?= get_template_directory_uri() ?>/img/bergclub-jugend-sm.png" style="margin-left:20px">
+                <?php }
+                if ($isYouth == 0 || $isYouth == 2) { ?>
+                    <img class="pull-right hidden-xs" src="<?= get_template_directory_uri() ?>/img/bergclub-sm.png"
+                         style="margin-left:20px">
                 <?php } ?>
                 <?php the_title(); ?>
             </h1>
         </div>
-        <?php foreach($rows as $title => $array): ?>
+        <?php foreach ($rows as $title => $array): ?>
             <div class="row article-block">
-                <h3><?=$title?></h3>
-                <?php foreach($array as $key => $value): ?>
-                    <?php if(!empty($value)): ?>
+                <h3><?= $title ?></h3>
+                <?php foreach ($array as $key => $value): ?>
+                    <?php if (!empty($value)): ?>
                         <div class="row article-line">
-                            <div class="col-md-3 col-xs-5"><?=$key?></div>
-                            <div class="col-md-9 col-xs-7"><?=$value?></div>
+                            <div class="col-md-3 col-xs-5"><?= $key ?></div>
+                            <div class="col-md-9 col-xs-7"><?= $value ?></div>
                         </div>
                     <?php endif; ?>
                 <?php endforeach; ?>
