@@ -1,7 +1,7 @@
 /**
  * Created by kevstuder on 22.03.17.
  */
-jQuery(document).ready(function($){
+jQuery(document).ready(function ($) {
     $('.bcb-date-picker-field').datepicker();
     $('.bcb-time-picker-field').timepicker({
         'scrollDefault': 'now',

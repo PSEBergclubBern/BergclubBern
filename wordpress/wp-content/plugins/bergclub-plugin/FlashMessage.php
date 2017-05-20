@@ -24,8 +24,9 @@ class FlashMessage
      * @param bool $closeable if set to true, the flash message can be closed by the user.
      * @throws \UnexpectedValueException if $type is not one of the class constants.
      */
-    public static function add($type, $message, $closeable = false){
-        if(!self::isInConstants($type)){
+    public static function add($type, $message, $closeable = false)
+    {
+        if (!self::isInConstants($type)) {
             throw new \UnexpectedValueException($type . ' is not a valid type for FlashMessage.');
         }
 
@@ -36,31 +37,33 @@ class FlashMessage
         ];
     }
 
+    private static function isInConstants($value)
+    {
+        $reflection = new \ReflectionClass(__CLASS__);
+        return in_array($value, $reflection->getConstants());
+    }
+
     /**
      * Generates and returns the messages as html and removes them from the session.
      *
      * @return string the flash messages as html
      */
-    public static function show(){
+    public static function show()
+    {
         $html = "";
-        if(isset($_SESSION['bcb_flashmessages'])){
-            foreach($_SESSION['bcb_flashmessages'] as $flashMessage){
+        if (isset($_SESSION['bcb_flashmessages'])) {
+            foreach ($_SESSION['bcb_flashmessages'] as $flashMessage) {
                 $html .= '<div class="notice ' . $flashMessage['type'];
-                if($flashMessage['closeable']){
+                if ($flashMessage['closeable']) {
                     $html .= ' is-dismissible';
                 }
                 $html .= '"><p>' . $flashMessage['message'] . '</p></div>';
             }
-            $html .='<p></p>';
+            $html .= '<p></p>';
         }
 
         unset($_SESSION['bcb_flashmessages']);
 
         return $html;
-    }
-
-    private static function isInConstants($value){
-        $reflection = new \ReflectionClass(__CLASS__);
-        return in_array($value, $reflection->getConstants());
     }
 }

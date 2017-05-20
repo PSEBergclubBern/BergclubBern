@@ -1,1 +1,8 @@
-{"toolbar_1":"formatselect,bold,italic,blockquote,bullist,numlist,alignleft,aligncenter,alignright,link,unlink,undo,redo","toolbar_2":"outdent,indent,pastetext,removeformat,charmap,wp_more,forecolor,table,wp_help","toolbar_3":"","toolbar_4":"","options":"menubar,advlist","plugins":"table,advlist"}
+{
+  "toolbar_1": "formatselect,bold,italic,blockquote,bullist,numlist,alignleft,aligncenter,alignright,link,unlink,undo,redo",
+  "toolbar_2": "outdent,indent,pastetext,removeformat,charmap,wp_more,forecolor,table,wp_help",
+  "toolbar_3": "",
+  "toolbar_4": "",
+  "options": "menubar,advlist",
+  "plugins": "table,advlist"
+}

@@ -1,1 +1,26 @@
-{"99528509e757ff867095b769c500de1b":{"filename":"\/img\/carousel\/99528509e757ff867095b769c500de1b.jpg","horizontal":"center","vertical":"top","active":"1"},"4b3b05c2daf8cca35d32c6ea863f2402":{"filename":"\/img\/carousel\/4b3b05c2daf8cca35d32c6ea863f2402.jpg","horizontal":"center","vertical":"top","active":"1"},"2db7180d0c29890bc5ece5226c3d8d9e":{"filename":"\/img\/carousel\/2db7180d0c29890bc5ece5226c3d8d9e.jpg","horizontal":"center","vertical":"top","active":"1"},"2ee3a797c9fdca79cc691c15f4822f7d":{"filename":"\/img\/carousel\/2ee3a797c9fdca79cc691c15f4822f7d.jpg","horizontal":"center","vertical":"top","active":"1"}}
+{
+  "99528509e757ff867095b769c500de1b": {
+    "filename": "\/img\/carousel\/99528509e757ff867095b769c500de1b.jpg",
+    "horizontal": "center",
+    "vertical": "top",
+    "active": "1"
+  },
+  "4b3b05c2daf8cca35d32c6ea863f2402": {
+    "filename": "\/img\/carousel\/4b3b05c2daf8cca35d32c6ea863f2402.jpg",
+    "horizontal": "center",
+    "vertical": "top",
+    "active": "1"
+  },
+  "2db7180d0c29890bc5ece5226c3d8d9e": {
+    "filename": "\/img\/carousel\/2db7180d0c29890bc5ece5226c3d8d9e.jpg",
+    "horizontal": "center",
+    "vertical": "top",
+    "active": "1"
+  },
+  "2ee3a797c9fdca79cc691c15f4822f7d": {
+    "filename": "\/img\/carousel\/2ee3a797c9fdca79cc691c15f4822f7d.jpg",
+    "horizontal": "center",
+    "vertical": "top",
+    "active": "1"
+  }
+}

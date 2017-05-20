@@ -30,69 +30,6 @@ abstract class MetaBox
         }
     }
 
-    /**
-     * get the view for this element
-     * @return string filename of the view
-     */
-    public function getViewName()
-    {
-        $reflect = new \ReflectionClass($this);
-
-        return 'fields.' . strtolower($reflect->getShortName());
-    }
-
-    /**
-     * get unique field names
-     * @return unique field names
-     */
-    abstract protected function getUniqueFieldNames();
-
-    /**
-     * get unique meta-box name
-     * @return unique meta-box name
-     */
-    abstract public function getUniqueMetaBoxName();
-
-    /**
-     * get meta-box title
-     * @return meta-box title
-     */
-    abstract public function getUniqueMetaBoxTitle();
-
-    /**
-     * check if fields are valid
-     * @param $values
-     * @param $posttype
-     * @return bool
-     */
-    public function isValid($values, $posttype)
-    {
-        return true;
-    }
-
-    /**
-     * this function will be called before the save function
-     * it has to return all values which are processed / filtered
-     *
-     * @param $values array of transmitted values
-     * @return array
-     */
-    protected function preSave($values)
-    {
-        return $values;
-    }
-
-    /**
-     * adds an array as additional data for the view
-     *
-     * @param \WP_Post $post
-     * @return array
-     */
-    protected function addAdditionalValuesForView(\WP_Post $post)
-    {
-        return array();
-    }
-
     public function add()
     {
         $screens = [BCB_CUSTOM_POST_TYPE_TOURENBERICHTE];
@@ -106,6 +43,18 @@ abstract class MetaBox
             );
         }
     }
+
+    /**
+     * get unique meta-box name
+     * @return unique meta-box name
+     */
+    abstract public function getUniqueMetaBoxName();
+
+    /**
+     * get meta-box title
+     * @return meta-box title
+     */
+    abstract public function getUniqueMetaBoxTitle();
 
     public function save($postId)
     {
@@ -187,6 +136,35 @@ abstract class MetaBox
         }
     }
 
+    /**
+     * this function will be called before the save function
+     * it has to return all values which are processed / filtered
+     *
+     * @param $values array of transmitted values
+     * @return array
+     */
+    protected function preSave($values)
+    {
+        return $values;
+    }
+
+    /**
+     * get unique field names
+     * @return unique field names
+     */
+    abstract protected function getUniqueFieldNames();
+
+    /**
+     * check if fields are valid
+     * @param $values
+     * @param $posttype
+     * @return bool
+     */
+    public function isValid($values, $posttype)
+    {
+        return true;
+    }
+
     public function redirectPostLocation($location, $postId)
     {
         $status = get_post_status($postId);
@@ -219,6 +197,28 @@ abstract class MetaBox
             $arguments
         );
 
+    }
+
+    /**
+     * adds an array as additional data for the view
+     *
+     * @param \WP_Post $post
+     * @return array
+     */
+    protected function addAdditionalValuesForView(\WP_Post $post)
+    {
+        return array();
+    }
+
+    /**
+     * get the view for this element
+     * @return string filename of the view
+     */
+    public function getViewName()
+    {
+        $reflect = new \ReflectionClass($this);
+
+        return 'fields.' . strtolower($reflect->getShortName());
     }
 
     /**

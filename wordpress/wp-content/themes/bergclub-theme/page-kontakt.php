@@ -17,9 +17,9 @@ require_once __DIR__ . '/forms/contact-action.php';
         endwhile;
         ?>
     </div>
-    <br />
+    <br/>
     <?php require_once __DIR__ . '/forms/contact.php'; ?>
-    <br />
+    <br/>
 </div>
 
 <?php get_footer(); ?>

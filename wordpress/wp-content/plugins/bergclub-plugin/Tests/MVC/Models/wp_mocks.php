@@ -2,22 +2,25 @@
 
 global $wpOptions;
 
-function get_option($key){
+function get_option($key)
+{
     global $wpOptions;
 
-    if(isset($wpOptions[$key])){
+    if (isset($wpOptions[$key])) {
         return $wpOptions[$key];
     }
 
     return null;
 }
 
-function update_option($key, $value){
+function update_option($key, $value)
+{
     global $wpOptions;
     $wpOptions[$key] = $value;
 }
 
-function delete_option($key){
+function delete_option($key)
+{
     global $wpOptions;
     unset($wpOptions[$key]);
 }
@@ -25,15 +28,15 @@ function delete_option($key){
 function get_user_by($field, $value)
 {
     global $wpUsers;
-    if($field == 'ID') {
-        foreach($wpUsers as $wpUser){
-            if($wpUser->ID == $value){
+    if ($field == 'ID') {
+        foreach ($wpUsers as $wpUser) {
+            if ($wpUser->ID == $value) {
                 return $wpUser;
             }
         }
-    }elseif($field == 'login'){
-        foreach($wpUsers as $wpUser){
-            if($wpUser->data['user_login'] == $value){
+    } elseif ($field == 'login') {
+        foreach ($wpUsers as $wpUser) {
+            if ($wpUser->data['user_login'] == $value) {
                 return $wpUser;
             }
         }
@@ -42,14 +45,15 @@ function get_user_by($field, $value)
     return null;
 }
 
-function get_users($args = null){
+function get_users($args = null)
+{
     global $wpUsers;
-    if(!$args) {
+    if (!$args) {
         return $wpUsers;
-    }elseif(isset($args['role'])){
+    } elseif (isset($args['role'])) {
         $result = [];
-        foreach($wpUsers as $wpUser){
-            if(in_array($args['role'], $wpUser->roles)){
+        foreach ($wpUsers as $wpUser) {
+            if (in_array($args['role'], $wpUser->roles)) {
                 $result[] = $wpUser;
             }
         }
@@ -59,20 +63,23 @@ function get_users($args = null){
     return [];
 }
 
-function get_user_meta($id){
+function get_user_meta($id)
+{
     global $wpUsersMeta;
-    if(isset($wpUsersMeta[$id])){
+    if (isset($wpUsersMeta[$id])) {
         return $wpUsersMeta[$id];
     }
 
     return null;
 }
 
-function get_current_user_id(){
+function get_current_user_id()
+{
     return 1;
 }
 
-function wp_insert_user($args){
+function wp_insert_user($args)
+{
     global $wpUsers;
     global $wpUsersMeta;
 
@@ -119,9 +126,10 @@ function wp_insert_user($args){
     return $id;
 }
 
-function wp_update_user($args){
+function wp_update_user($args)
+{
     global $wpUsers;
-    if(isset($args['ID'])) {
+    if (isset($args['ID'])) {
         $id = $args['ID'];
         $wpUser = get_user_by('ID', $id);
         foreach ($args as $key => $value) {
@@ -130,19 +138,21 @@ function wp_update_user($args){
     }
 }
 
-function update_user_meta($id, $field, $value){
+function update_user_meta($id, $field, $value)
+{
     global $wpUsersMeta;
-    if(is_array($value) || is_object($value)){
+    if (is_array($value) || is_object($value)) {
         $value = serialize($value);
     }
     $wpUsersMeta[$id][$field] = [$value];
 }
 
-function wp_delete_user($id){
+function wp_delete_user($id)
+{
     global $wpUsers;
     global $wpUsersMeta;
-    foreach($wpUsers as $key => $wpUser){
-        if($wpUser->ID == $id){
+    foreach ($wpUsers as $key => $wpUser) {
+        if ($wpUser->ID == $id) {
             unset($wpUsers[$key]);
             $wpUsers = array_values($wpUsers);
             break;
@@ -151,11 +161,12 @@ function wp_delete_user($id){
     unset($wpUsersMeta[$id]);
 }
 
-function username_exists($username){
+function username_exists($username)
+{
     global $wpUsers;
 
-    foreach($wpUsers as $wpUser){
-        if($wpUser->data['user_login'] == $username){
+    foreach ($wpUsers as $wpUser) {
+        if ($wpUser->data['user_login'] == $username) {
             return true;
         }
     }
@@ -163,46 +174,53 @@ function username_exists($username){
     return false;
 }
 
-function sanitize_email($value){
+function sanitize_email($value)
+{
     return $value;
 }
 
-function sanitize_text_field($value){
+function sanitize_text_field($value)
+{
     return $value;
 }
 
-function wp_lostpassword_url(){
+function wp_lostpassword_url()
+{
     return "http://lostpassword.com";
 }
 
-function wp_mail($to, $subject, $message){
+function wp_mail($to, $subject, $message)
+{
     global $wpMail;
     $wpMail[] = ['to' => $to, 'subject' => $subject, 'message' => $message];
 }
 
-function get_role($name){
+function get_role($name)
+{
     global $wp_roles;
 
-    if(isset($wp_roles->roles[$name])){
+    if (isset($wp_roles->roles[$name])) {
         return new WP_Role($name, $wp_roles->roles[$name]['capabilities']);
     }
 
     return null;
 }
 
-function add_role($key, $name, $capabilities){
+function add_role($key, $name, $capabilities)
+{
     global $wp_roles;
     $wp_roles->roles[$key] = ['name' => $name, 'capabilities' => $capabilities];
 }
 
-function remove_role($name){
+function remove_role($name)
+{
     global $wp_roles;
     unset($wp_roles->roles[$name]);
 }
 
 
-
-class WP_User {
+class WP_User
+{
     public $ID;
     public $data;
     public $caps = [];
@@ -210,8 +228,9 @@ class WP_User {
     public $roles = [];
     public $allcaps = ["read" => null];
 
-    public function add_role($role){
-        if($this->ID) {
+    public function add_role($role)
+    {
+        if ($this->ID) {
             $this->caps[$role] = 1;
             if (!in_array($role, $this->roles)) {
                 $this->roles[] = $role;
@@ -222,11 +241,12 @@ class WP_User {
         }
     }
 
-    public function remove_role($role){
-        if($this->ID) {
+    public function remove_role($role)
+    {
+        if ($this->ID) {
             unset($this->caps[$role]);
-            foreach($this->roles as $key => $value){
-                if($value == $role){
+            foreach ($this->roles as $key => $value) {
+                if ($value == $role) {
                     unset($this->roles[$key]);
                 }
             }
@@ -237,16 +257,19 @@ class WP_User {
     }
 }
 
-class WP_Role{
+class WP_Role
+{
     public $name;
-    public $capabilities=[];
+    public $capabilities = [];
 
-    public function __construct($name, array $capabilities){
+    public function __construct($name, array $capabilities)
+    {
         $this->name = $name;
         $this->capabilities = $capabilities;
     }
 
-    public function add_cap($capability, $grant){
+    public function add_cap($capability, $grant)
+    {
         global $wp_roles;
         $this->capabilities[$capability] = $grant;
         $wp_roles->roles[$this->name]['capabilities'][$capability] = $grant;

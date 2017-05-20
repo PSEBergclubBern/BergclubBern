@@ -76,7 +76,7 @@ class AdressenTest extends TestCase
         $expectedArray = array(
             'bcb_freimitglied' => array(
                 'date_from' => '2016-11-13',
-                'date_to'   => null,
+                'date_to' => null,
             )
         );
         $this->entity->freeMemberDate = '2016-11-13';

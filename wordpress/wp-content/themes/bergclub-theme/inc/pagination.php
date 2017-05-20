@@ -3,7 +3,8 @@
 /**
  * Creates a custom pagination
  */
-function bcb_pagination() {
+function bcb_pagination()
+{
 
     $pagerange = 5;
 
@@ -15,22 +16,22 @@ function bcb_pagination() {
     global $wp_query;
     $numpages = $wp_query->max_num_pages;
 
-    if(!$numpages) {
+    if (!$numpages) {
         $numpages = 1;
     }
 
     $pagination_args = [
-        'total'           => $numpages,
-        'show_all'        => false,
-        'end_size'        => 1,
-        'mid_size'        => $pagerange,
-        'prev_next'       => false,
-        'type'            => 'array',
+        'total' => $numpages,
+        'show_all' => false,
+        'end_size' => 1,
+        'mid_size' => $pagerange,
+        'prev_next' => false,
+        'type' => 'array',
     ];
 
     $pagination = "";
     $paginate = paginate_links($pagination_args);
-    if(!empty($paginate)) {
+    if (!empty($paginate)) {
         $paginate = str_replace("<span class='page-numbers current'>", "", $paginate);
         $paginate = str_replace("</span>", "", $paginate);
         $paginate = str_replace(" class='page-numbers'", "", $paginate);
@@ -50,7 +51,7 @@ function bcb_pagination() {
         $pagination .= "</ul>";
     }
 
-    if(bcb_is_jugend()){
+    if (bcb_is_jugend()) {
         $pagination = str_replace(bcb_host(), bcb_jugend_host(), $pagination);
     }
 
@@ -60,23 +61,24 @@ function bcb_pagination() {
 /**
  * Creates custom previous / next links
  */
-function bcb_prev_next_links(){
+function bcb_prev_next_links()
+{
     $prev = "";
     $post = get_previous_post(true);
-    if($post){
+    if ($post) {
         $prev = "<li><a href='" . $post->guid . "'>&laquo; " . $post->post_title . "</a></li>";
     }
 
     $next = "";
     $post = get_next_post(true);
-    if($post){
+    if ($post) {
         $next = "<li><a href='" . $post->guid . "'>" . $post->post_title . " &raquo;</a></li>";
     }
 
 
     $wpCategory = get_the_category();
     $category = "";
-    if(!empty($wpCategory)){
+    if (!empty($wpCategory)) {
         $categoryId = $wpCategory[0]->term_id;
         $category = "<li><a href='" . get_category_link($categoryId) . "'>Alle " . $wpCategory[0]->name . "</a></li>";
         $prev = str_replace('/uncategorized/', '/' . $wpCategory[0]->slug . '/', $prev);
@@ -85,7 +87,7 @@ function bcb_prev_next_links(){
 
     $links = $prev . $category . $next;
 
-    if(bcb_is_jugend()){
+    if (bcb_is_jugend()) {
         $links = str_replace(bcb_host(), bcb_jugend_host(), $links);
     }
 

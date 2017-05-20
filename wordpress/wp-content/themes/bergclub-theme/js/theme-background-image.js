@@ -1,16 +1,16 @@
-jQuery('#upload-button').click(function(){
+jQuery('#upload-button').click(function () {
     jQuery(this).html('Bitte warten...').attr('disabled', true);
     jQuery('#upload-form').submit();
 });
 
-jQuery('.save-button').click(function(){
+jQuery('.save-button').click(function () {
     jQuery(this).html('Bitte warten...');
     jQuery('.save-button').attr('disabled', true);
     jQuery('.delete-button').attr('disabled', true);
     jQuery('#images-form').submit();
 });
 
-jQuery('.delete-button').click(function(){
+jQuery('.delete-button').click(function () {
     jQuery(this).html('Bitte warten...');
     jQuery('.save-button').attr('disabled', true);
     jQuery('.delete-button').attr('disabled', true);
