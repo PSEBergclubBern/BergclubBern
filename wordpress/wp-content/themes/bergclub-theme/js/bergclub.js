@@ -24,3 +24,14 @@ $('#tourenart').change(function(){
     }
     document.location.href = url;
 });
+
+function highlight() {
+    var body = $('body');
+    if(body.hasClass('highlight')){
+        body.removeClass('highlight');
+        body.addClass('highlight_reverse');
+        setTimeout("$('body').removeClass('highlight_reverse')", 4000);
+    }else{
+        body.addClass('highlight');
+    }
+}

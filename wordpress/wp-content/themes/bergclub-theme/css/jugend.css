@@ -44,7 +44,7 @@
   content: "\65"; }
 
 html {
-  overflow-y: scroll; }
+  overflow-y: schighlight; }
 
 body {
   padding-top: 50px;
@@ -329,5 +329,25 @@ label.error {
 .report-images {
   margin-bottom: 25px;
   padding: 0px 20px; }
+
+.highlight {
+  -webkit-transition: -webkit-transform 4s ease;
+  -webkit-transform: rotate(180deg);
+  -moz-transition: -moz-transform 4s ease;
+  -moz-transform: rotate(180deg);
+  -o-transition: -o-transform 4s ease;
+  -o-transform: rotate(180deg);
+  transition: transform 4s ease;
+  transform: rotate(180deg); }
+
+.highlight_reverse {
+  -webkit-transition: -webkit-transform 4s ease;
+  -webkit-transform: rotate(0deg);
+  -moz-transition: -moz-transform 4s ease;
+  -moz-transform: rotate(0deg);
+  -o-transition: -o-transform 4s ease;
+  -o-transform: rotate(0deg);
+  transition: transform 4s ease;
+  transform: rotate(0deg); }
 
 /*# sourceMappingURL=jugend.css.map */
