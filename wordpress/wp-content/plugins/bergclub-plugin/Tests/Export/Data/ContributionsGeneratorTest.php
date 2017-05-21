@@ -2,15 +2,15 @@
 
 namespace BergclubPlugin\Tests\Export\Data;
 
-use BergclubPlugin\Export\Data\ShippingGenerator;
+use BergclubPlugin\Export\Data\ContributionsGenerator;
 use BergclubPlugin\Tests\Export\DataSeeder\AddressDataSeeder;
 use BergclubPlugin\Tests\Mocks\UserMock;
 use PHPUnit\Framework\TestCase;
 
-class ShippingGeneratorTest extends TestCase
+class ContributionsGeneratorTest extends TestCase
 {
     /**
-     * @var ShippingGenerator
+     * @var ContributionsGenerator
      */
     public static $generator;
 
@@ -20,10 +20,11 @@ class ShippingGeneratorTest extends TestCase
     public static $expectedResult = [];
 
     public static function setUpBeforeClass(){
-        AddressDataSeeder::seedShipping(UserMock::$findAllWithoutSpouse, static::$expectedResult);
+        AddressDataSeeder::seedContributions(UserMock::$findMitgliederWithoutSpouse, static::$expectedResult);
 
-        static::$generator = new ShippingGenerator();
+        static::$generator = new ContributionsGenerator();
         static::$generator->setUserClass("BergclubPlugin\\Tests\\Mocks\\UserMock");
+        static::$generator->setOptionClass("BergclubPlugin\\Tests\\Mocks\\OptionMock");
     }
 
     /**
@@ -31,13 +32,5 @@ class ShippingGeneratorTest extends TestCase
      */
     public function getData(){
         $this->assertEquals(static::$expectedResult, static::$generator->getData());
-    }
-
-    /**
-     * @test
-     */
-    public function ensureThatResultIsEmptyIfNoUserIsMarkedForShipment(){
-        AddressDataSeeder::seedAddresses(UserMock::$findAllWithoutSpouse, static::$expectedResult);
-        $this->assertEmpty(static::$generator->getData());
     }
 }

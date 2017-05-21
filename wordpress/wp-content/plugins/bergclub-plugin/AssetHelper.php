@@ -18,9 +18,10 @@ class AssetHelper
     /**
      * Called on admin_enqueue_scripts hook.
      */
-    public static function getAssets()
+    public static function registerAssets()
     {
         $page = self::getPage();
+
         if ($page && isset(self::$assets[$page])) {
             foreach (self::$assets[$page] as $key => $url) {
                 if (substr($url, -4) == ".css") {

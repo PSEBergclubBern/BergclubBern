@@ -9,6 +9,7 @@
 namespace BergclubPlugin\Export\Data;
 
 
+use BergclubPlugin\MVC\Injectors\UserClassInjector;
 use BergclubPlugin\MVC\Models\User;
 
 /**
@@ -19,6 +20,8 @@ use BergclubPlugin\MVC\Models\User;
  */
 class MembersGenerator extends AbstractGenerator
 {
+
+    use UserClassInjector;
 
     /**
      * Generates and returns an array which holds rows with member information.
@@ -55,7 +58,7 @@ class MembersGenerator extends AbstractGenerator
     public function getData()
     {
         $data = [];
-        $users = User::findMitglieder();
+        $users = call_user_func($this->getUserClass() . '::findMitglieder');
         foreach ($users as $user) {
             /* @var User $user */
             $row['Typ'] = $user->address_role_name;

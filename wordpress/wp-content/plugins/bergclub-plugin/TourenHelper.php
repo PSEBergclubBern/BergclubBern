@@ -2,8 +2,8 @@
 
 namespace BergclubPlugin;
 
-use BergclubPlugin\MVC\Models\Option;
-use BergclubPlugin\MVC\Models\User;
+use BergclubPlugin\MVC\Injectors\OptionClassInjector;
+use BergclubPlugin\MVC\Injectors\UserClassInjector;
 
 /**
  * Helps to convert the touren post meta data as needed in theme and export.
@@ -19,6 +19,9 @@ use BergclubPlugin\MVC\Models\User;
 class TourenHelper
 {
 
+    use UserClassInjector;
+    use OptionClassInjector;
+
     /**
      * Returns 'BCB', 'Jugend' or 'Beides' based on the 'isYouth' meta value (0, 1 or 2).
      *
@@ -29,11 +32,6 @@ class TourenHelper
     {
         $isYouth = ['BCB', 'Jugend', 'Beides'];
         return $isYouth[self::getMeta($postId, 'isYouth')];
-    }
-
-    private static function getMeta($postId, $key)
-    {
-        return trim(get_post_meta($postId, '_' . $key, true));
     }
 
     /**
@@ -153,35 +151,6 @@ class TourenHelper
         return self::getUser(self::getMeta($postId, 'leader'));
     }
 
-    private static function getUser($id, $contact = false, $noLinks = false)
-    {
-        $user = User::find($id);
-        if ($user) {
-            $result = [$user->last_name . ' ' . $user->first_name];
-            if ($contact) {
-                if ($user->email) {
-                    if (!$noLinks) {
-                        $result[] = bcb_email($user->email);
-                    } else {
-                        $result[] = $user->email;
-                    }
-                }
-                if ($user->phone_private) {
-                    $result[] = $user->phone_private . " (P)";
-                }
-                if ($user->phone_work) {
-                    $result[] = $user->phone_work . " (G)";
-                }
-                if ($user->phone_mobile) {
-                    $result[] = $user->phone_mobile . " (M)";
-                }
-            }
-            return join(', ', $result);
-        }
-
-        return null;
-    }
-
     /**
      * Returns the data for the "Co-Leiter"
      * <code>
@@ -208,27 +177,16 @@ class TourenHelper
     public static function getLeaderAndCoLeader($postId)
     {
         $leaderId = self::getMeta($postId, "leader");
-        $leaderName = self::getFullName($leaderId);
+        $leader = call_user_func(static::getUserClassStatic() . '::find', $leaderId);
+        $leaderName = $leader->last_name . ' ' . $leader->first_name;
+
         $coLeaderId = self::getMeta($postId, "coLeader");
+
         if (!empty($coLeaderId)) {
-            $coLeaderFullName = self::getFullName($coLeaderId);
-            $leaderName .= ", " . $coLeaderFullName . " (Co-Leiter)";
+            $coLeader = call_user_func(static::getUserClassStatic() . '::find', $coLeaderId);
+            $leaderName .= ", " . $coLeader->last_name . ' ' . $coLeader->first_name . " (Co-Leiter)";
         }
         return $leaderName;
-    }
-
-    /**
-     * Returns the full name (`first_name last_name`) for the given user id
-     *
-     * @param $userId
-     * @return string
-     */
-    public static function getFullName($userId)
-    {
-        $firstName = get_user_meta($userId, "first_name", true);
-        $lastName = get_user_meta($userId, "last_name", true);
-        $fullName = $firstName . " " . $lastName;
-        return $fullName;
     }
 
     /**
@@ -267,27 +225,6 @@ class TourenHelper
     public static function getSignupToNoLinks($postId)
     {
         return self::getUser(self::getMeta($postId, 'signupTo'), true, true);
-    }
-
-    /**
-     * Returns the "Treffpunkt" information together with the meta field 'meetingPointTime' value.
-     * <code>
-     * meetpoint[, meetingPointTime Uhr]
-     * </code>
-     *
-     * @see TourenHelper::getMeetpoint()
-     *
-     * @param $postId
-     * @return string
-     */
-    public static function getMeetpointWithTime($postId)
-    {
-        $meetpoint = self::getMeetpoint($postId);
-        $time = self::getMeta($postId, "meetingPointTime");
-        if (!empty($meetpoint) && !empty($time)) {
-            return $meetpoint . ", " . $time . " Uhr";
-        }
-        return null;
     }
 
     /**
@@ -346,6 +283,24 @@ class TourenHelper
     }
 
     /**
+     * Returns the type of the tour.
+     * See the module "Stammdaten" for more information.
+     *
+     * @param $postId
+     * @return null|string
+     */
+    public static function getType($postId)
+    {
+        $slug = self::getMeta($postId, 'type');
+        $tourenarten = call_user_func(static::getOptionClassStatic() . '::get', 'tourenarten');
+        if (isset($tourenarten[$slug])) {
+            return $tourenarten[$slug];
+        }
+
+        return null;
+    }
+
+    /**
      * Returns the type of the tour together with the technical requirements.
      * <code>
      * type[, requirementsTechnical]
@@ -361,24 +316,6 @@ class TourenHelper
         if (!empty($reqTechnical)) {
             return $type . ", " . $reqTechnical;
         }
-        return null;
-    }
-
-    /**
-     * Returns the type of the tour.
-     * See the module "Stammdaten" for more information.
-     *
-     * @param $postId
-     * @return null|string
-     */
-    public static function getType($postId)
-    {
-        $slug = self::getMeta($postId, 'type');
-        $tourenarten = Option::get('tourenarten');
-        if (isset($tourenarten[$slug])) {
-            return $tourenarten[$slug];
-        }
-
         return null;
     }
 
@@ -400,21 +337,6 @@ class TourenHelper
         } else {
             return "<div class=\"icon icon-up\" title=\"Aufstieg\"></div>" . $riseUp . " <div class=\"icon icon-down\" title=\"Abstieg\"></div>" . $riseDown;
         }
-    }
-
-    /**
-     * Returns the data for "Gesamtdauer"
-     *
-     * @param $postId
-     * @return mixed|null
-     */
-    public static function getDuration($postId)
-    {
-        $duration = get_post_meta($postId, "_duration", true);
-        if (!empty($duration)) {
-            return $duration;
-        }
-        return null;
     }
 
     /**
@@ -482,5 +404,39 @@ class TourenHelper
         $metaKey = substr($method, 3);
         $metaKey = strtolower(substr($metaKey, 0, 1)) . substr($metaKey, 1);
         return self::getMeta($args[0], $metaKey);
+    }
+
+    private static function getMeta($postId, $key)
+    {
+        return trim(get_post_meta($postId, '_' . $key, true));
+    }
+
+    private static function getUser($id, $contact = false, $noLinks = false)
+    {
+        $user = call_user_func(static::getUserClassStatic() . '::find', $id);
+        if ($user) {
+            $result = [$user->last_name . ' ' . $user->first_name];
+            if ($contact) {
+                if ($user->email) {
+                    if (!$noLinks) {
+                        $result[] = bcb_email($user->email);
+                    } else {
+                        $result[] = $user->email;
+                    }
+                }
+                if ($user->phone_private) {
+                    $result[] = $user->phone_private . " (P)";
+                }
+                if ($user->phone_work) {
+                    $result[] = $user->phone_work . " (G)";
+                }
+                if ($user->phone_mobile) {
+                    $result[] = $user->phone_mobile . " (M)";
+                }
+            }
+            return join(', ', $result);
+        }
+
+        return null;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace BergclubPlugin\Tests\Export\Data;
+namespace BergclubPlugin\Tests\Mocks;
 
 use BergclubPlugin\MVC\Models\IUser;
 
@@ -16,10 +16,11 @@ class UserMock implements IUser
     public static $findAllWithoutSpouse = [];
     public static $findByLogin;
     public static $findMitgliederWithoutSpouse = [];
-    public static $findMitglieder;
-    public static $findByRoles;
-    public static $findByRole;
+    public static $findMitglieder = [];
+    public static $findByRoles = [];
+    public static $findByRole = [];
 
+    public $ID;
     public $program_shipment;
     public $company;
     public $gender;
@@ -34,9 +35,11 @@ class UserMock implements IUser
     public $phone_mobile;
     public $email;
     public $main_address;
-    public $roles = [];
+    public $address_role;
+    public $functionary_roles = [];
     public $spouse;
     public $raw_program_shipment;
+    public $hasFunctionaryRole;
 
 
     public static function findCurrent()
@@ -46,6 +49,9 @@ class UserMock implements IUser
 
     public static function find($id, $allowWpUsers = false)
     {
+        if(is_array(static::$find)){
+            return array_shift(static::$find);
+        }
         return static::$find;
     }
 
@@ -77,5 +83,17 @@ class UserMock implements IUser
     public static function findByRole($role)
     {
         return static::$findByRole;
+    }
+
+    public function hasFunctionaryRole(){
+        return $this->hasFunctionaryRole;
+    }
+
+    public function __get($key){
+        if($key = 'address_role_name' && $this->address_role){
+            return $this->address_role->getName();
+        }
+
+        return null;
     }
 }

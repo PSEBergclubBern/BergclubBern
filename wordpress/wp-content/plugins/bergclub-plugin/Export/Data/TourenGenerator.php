@@ -103,7 +103,7 @@ class TourenGenerator extends AbstractGenerator
                     $status = $post_status[$post->post_status];
                 }
                 $data[] = [
-                    'Satus' => $status,
+                    'Status' => $status,
                     'Erstellt am' => date('d.m.Y', strtotime($post->post_date)),
                     'Geändert am' => date('d.m.Y', strtotime($post->post_modified)),
                     'Datum von' => bcb_touren_meta($post->ID, "dateFrom"),
@@ -120,7 +120,7 @@ class TourenGenerator extends AbstractGenerator
                     'Abstieg' => bcb_touren_meta($post->ID, 'riseDownMeters'),
                     'Dauer' => bcb_touren_meta($post->ID, 'duration'),
                     'Treffpunkt' => bcb_touren_meta($post->ID, 'meetpoint'),
-                    'Zeit' => bcb_touren_meta($post->ID, 'meetingpointTime'),
+                    'Zeit' => bcb_touren_meta($post->ID, 'meetingPointTime'),
                     'Rückkehr' => bcb_touren_meta($post->ID, 'returnBack'),
                     'Kosten' => bcb_touren_meta($post->ID, 'costs'),
                     'Kosten für' => bcb_touren_meta($post->ID, 'costsFor'),

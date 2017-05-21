@@ -77,8 +77,8 @@ function bcb_remove_admin_pages()
     }
 }
 
-// register our AssetHelper::getAssets method to the WP admin_enqueue_scripts function
-add_action('admin_enqueue_scripts', ['BergclubPlugin\\AssetHelper', 'getAssets']);
+// register our AssetHelper::registerAssets method to the WP admin_enqueue_scripts function
+add_action('admin_enqueue_scripts', ['BergclubPlugin\\AssetHelper', 'registerAssets']);
 
 /*
  * Returns a special mail link for the admin email (main email for the system), which will be encoded in the Bergclub theme.

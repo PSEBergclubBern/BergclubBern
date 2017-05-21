@@ -77,7 +77,12 @@ class CalendarGenerator extends AbstractGenerator
                     $item['date_to'] = "bis " . date("d.m.", strtotime($date_to));
                 }
 
-                $data[date('Y-m-d', strtotime($date_from))][] = $title . " (" . join(', ', $item) . ")";
+                $tour = $title;
+                if(count($item) > 0){
+                    $tour .= " (" . join(', ', $item) . ")";
+                }
+
+                $data[date('Y-m-d', strtotime($date_from))][] = $tour;
             }
         }
 

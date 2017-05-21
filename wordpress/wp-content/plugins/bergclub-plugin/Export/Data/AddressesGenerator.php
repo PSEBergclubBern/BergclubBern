@@ -3,6 +3,7 @@
 namespace BergclubPlugin\Export\Data;
 
 
+use BergclubPlugin\MVC\Injectors\UserClassInjector;
 use BergclubPlugin\MVC\Models\IUser;
 use BergclubPlugin\MVC\Models\User;
 
