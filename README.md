@@ -14,7 +14,7 @@ This project has a Vagrant configuration File in the root. The general procedure
 3. Clone this repository in a directory
 4. Navigate to that directory in a terminal and run the command `vagrant up`
 
-Now a virtual machine is created and provisioned. If for some reason the configuration failes, you can retry the provisioning with `vagrant provision`. If for some reason this also fails, try to destroy the local environment with `vagrant destroy` and do a `vagrant up` afterwards.
+Now a virtual machine is created and provisioned. If for some reason the configuration fails, you can retry the provisioning with `vagrant provision`. If for some reason this also fails, try to destroy the local environment with `vagrant destroy` and do a `vagrant up` afterwards.
 
 If you are finished with your work, you can commit your changes (bear in mind our git workflow) and halt the virtual machine with `vagrant halt`.
 
