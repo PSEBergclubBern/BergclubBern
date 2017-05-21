@@ -107,7 +107,6 @@ abstract class MetaBox
                     }
                     //we don't want to validate a freshly created post (status: 'auto-draft')
                     if ($status != 'auto-draft') {
-                        //IRGENDWO HIER MÜSST IHR EINE LÖSUNG FINDEN UM GEWISSE FELDER NUR ZU VALIDIEREN, WENN $status = 'pending' ODER 'publish'
                         if (!$box->isValid($filteredValues, $status)) {
                             $valid = false;
                         }
