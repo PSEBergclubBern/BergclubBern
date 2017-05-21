@@ -17,7 +17,7 @@ use BergclubPlugin\MVC\Helpers;
  *
  * @package BergclubPlugin\MVC\Models
  */
-class User implements IModel
+class User implements IModel, IUser
 {
     const LEAVING_REASON_1 = 'Ausgetreten';
     const LEAVING_REASON_2 = 'Verstorben';
@@ -363,6 +363,8 @@ class User implements IModel
     }
 
     /**
+     * Finds a User by the given WP login.
+     *
      * @param string $login The username of the user to find.
      * @return User|null The user with the given username, null if not found.
      */
@@ -376,7 +378,9 @@ class User implements IModel
     }
 
     /**
-     * @return array An array with all User objects that have assigned one of the 'Mitglieder' roles except for spouses that are not set as main address.
+     * Finds User which are members and which do not have a spouse or which have a spouse and are marked as main entry.
+     *
+     * @return array An array with all User objects that match the constraints.
      */
     public static function findMitgliederWithoutSpouse()
     {
@@ -392,7 +396,9 @@ class User implements IModel
     }
 
     /**
-     * @return array An array with all User objects that have assigned one of the 'Mitglieder' roles.
+     * Finds User which are members.
+     *
+     * @return array An array with all User objects that match the constraints.
      */
     public static function findMitglieder()
     {
@@ -400,8 +406,10 @@ class User implements IModel
     }
 
     /**
+     * Finds Users by the given roles.
+     *
      * @param array $roleList a list of role slugs
-     * @return array An array with User objects that have one of the given roles assigned.
+     * @return array An array with User objects that have at least one of the given roles assigned.
      */
     public static function findByRoles(array $roleList)
     {
@@ -423,6 +431,8 @@ class User implements IModel
     }
 
     /**
+     * Finds User by the given role.
+     *
      * @param String $role A role slug.
      * @return array An array with User objects that have the given role assigned.
      */

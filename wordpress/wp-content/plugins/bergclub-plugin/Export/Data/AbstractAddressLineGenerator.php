@@ -3,6 +3,7 @@
 namespace BergclubPlugin\Export\Data;
 
 
+use BergclubPlugin\MVC\Models\IUser;
 use BergclubPlugin\MVC\Models\User;
 
 /**
@@ -30,7 +31,7 @@ abstract class AbstractAddressLineGenerator extends AbstractGenerator
      */
     public function getData()
     {
-        $data = [];
+        $this->data = [];
         $users = [];
 
         $users = $this->getUsers();
@@ -39,7 +40,7 @@ abstract class AbstractAddressLineGenerator extends AbstractGenerator
             $this->addRow($user);
         }
 
-        foreach ($data as &$row) {
+        foreach ($this->data as &$row) {
             for ($i = 1; $i <= $this->maxIndex; $i++) {
                 if (!isset($row["Adresszeile " . $i])) {
                     $row["Adresszeile " . $i] = null;
@@ -102,14 +103,13 @@ abstract class AbstractAddressLineGenerator extends AbstractGenerator
      * @param User $user the user for which an address line array needs to be generated.
      * @see AbstractAddressLineGenerator::addAdditionalData()
      */
-    protected function addRow(User $user)
+    protected function addRow(IUser $user)
     {
         $currentIndex = 0;
         $row = [];
         for ($i = 1; $i < 7; $i++) {
             $row["Adresszeile " . $i] = "";
         }
-        $role = $user->address_role->getKey();
         if ($user->company) {
             $currentIndex++;
             $row["Adresszeile " . $currentIndex] = $user->company;
@@ -154,7 +154,7 @@ abstract class AbstractAddressLineGenerator extends AbstractGenerator
 
         if (!empty($user->address_addition)) {
             $currentIndex++;
-            $row["Adresszeile " . $currentIndex] = $user->addressAddition;
+            $row["Adresszeile " . $currentIndex] = $user->address_addition;
         }
 
         $currentIndex++;
@@ -181,5 +181,5 @@ abstract class AbstractAddressLineGenerator extends AbstractGenerator
      *
      * @see AbstractAddressLineGenerator::addRow()
      */
-    abstract protected function addAdditionalData(array &$row, User $user);
+    abstract protected function addAdditionalData(array &$row, IUser $user);
 }

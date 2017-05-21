@@ -3,7 +3,9 @@
 namespace BergclubPlugin\Export\Data;
 
 
-use BergclubPlugin\MVC\Models\Option;
+use BergclubPlugin\MVC\Injectors\OptionClassInjector;
+use BergclubPlugin\MVC\Injectors\UserClassInjector;
+use BergclubPlugin\MVC\Models\IUser;
 use BergclubPlugin\MVC\Models\User;
 
 /**
@@ -14,6 +16,9 @@ use BergclubPlugin\MVC\Models\User;
  */
 class ContributionsGenerator extends AbstractAddressLineGenerator
 {
+    use UserClassInjector;
+    use OptionClassInjector;
+
     /**
      * Creates and returns an array with all users that have to pay a membership fee. If the user has a spouse, the user
      * will only be added to the array if marked as main entry. The spouse information will be added in
@@ -27,19 +32,23 @@ class ContributionsGenerator extends AbstractAddressLineGenerator
      */
     protected function getUsers()
     {
-        $users = User::findMitgliederWithoutSpouse();
+        $users =  call_user_func($this->getUserClass() . '::findMitgliederWithoutSpouse');
         foreach ($users as $key => $user) {
             /* @var User $user */
-            if ($user->hasFunctionaryRole()) {
+
+            // if the user is not an "Aktivmitglied" or has a functionary role he does not have to pay a membership fee
+            if(!strstr($user->address_role->getKey(), "aktivmitglied") || $user->hasFunctionaryRole()){
                 unset($users[$key]);
-            }
+            }else {
 
-            /* @var User $spouse */
-            $spouse = $user->spouse;
+                /* @var User $spouse */
+                $spouse = $user->spouse;
 
-            if (!is_null($spouse)) {
-                if ($spouse->hasFunctionaryRole()) {
-                    unset($users[$key]);
+                if (!is_null($spouse)) {
+                    // if the users spouse has a functionary role, the user does not have to pay a membership fee
+                    if ($spouse->hasFunctionaryRole()) {
+                        unset($users[$key]);
+                    }
                 }
             }
         }
@@ -55,9 +64,9 @@ class ContributionsGenerator extends AbstractAddressLineGenerator
      * @param array $row the generated address line for the given user
      * @param User $user the user associated with the address line
      */
-    protected function addAdditionalData(array &$row, User $user)
+    protected function addAdditionalData(array &$row, IUser $user)
     {
-        $contributions = Option::get('mitgliederbeitraege');
+        $contributions = call_user_func($this->getOptionClass() . '::get', 'mitgliederbeitraege');
         $contributionType = $contributions['bcb']['name'];
         $contributionAmount = $contributions['bcb']['amount'];
 

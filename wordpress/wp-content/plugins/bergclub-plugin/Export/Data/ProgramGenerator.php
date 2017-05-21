@@ -128,9 +128,14 @@ class ProgramGenerator extends AbstractGenerator
             $anmeldeTermine = [];
             foreach ($data as $entry) {
                 if (!empty($entry['signupUntil'])) {
+                    $items = [];
+                    if($entry['type']){
+                        $items[] = $entry['type'];
+                    }
+                    $items[] = $entry['dateDisplayShort'];
                     $anmeldeTermine[date('Y-m-d', strtotime($entry['signupUntil']))][] = [
                         'signupUntil' => date('d.m.', strtotime($entry['signupUntil'])),
-                        'info' => $entry['title'] . ' (' . $entry['type'] . ', ' . $entry['dateDisplayShort'] . ')',
+                        'info' => $entry['title'] . ' (' . join(', ', $items) . ')',
                     ];
                 }
             }
@@ -150,7 +155,9 @@ class ProgramGenerator extends AbstractGenerator
 
             foreach ($anmeldeTermine as &$arr) {
                 foreach ($arr as &$item) {
-                    $item = html_entity_decode(strip_tags($item));
+                    foreach($item as &$item2) {
+                        $item2 = html_entity_decode(strip_tags($item2));
+                    }
                 }
             }
             return ['data' => $data, 'anmeldeTermine' => $anmeldeTermine];

@@ -3,6 +3,8 @@
 namespace BergclubPlugin\Export\Data;
 
 
+use BergclubPlugin\MVC\Injectors\UserClassInjector;
+use BergclubPlugin\MVC\Models\IUser;
 use BergclubPlugin\MVC\Models\User;
 
 /**
@@ -11,6 +13,7 @@ use BergclubPlugin\MVC\Models\User;
  */
 class ShippingGenerator extends AbstractAddressLineGenerator
 {
+    use UserClassInjector;
 
     /**
      * Creates and returns an array with all users that have program shipment activated. Only users which have no spouse
@@ -25,7 +28,7 @@ class ShippingGenerator extends AbstractAddressLineGenerator
      */
     protected function getUsers()
     {
-        $users = User::findAllWithoutSpouse();
+        $users = call_user_func($this->getUserClass() . '::findAllWithoutSpouse');
         foreach ($users as $key => $user) {
             /* @var User $user */
             if (!$user->raw_program_shipment) {
@@ -42,7 +45,7 @@ class ShippingGenerator extends AbstractAddressLineGenerator
      * @param array $row
      * @param User $user
      */
-    protected function addAdditionalData(array &$row, User $user)
+    protected function addAdditionalData(array &$row, IUser $user)
     {
 
     }

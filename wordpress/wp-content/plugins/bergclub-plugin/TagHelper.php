@@ -14,7 +14,7 @@ class TagHelper
      * Registers a tag and a callable.
      *
      * @param string $key the key for the tag that will be paste in the content (e.g. [bcb_tag] => $key = 'bcb_tag').
-     * @param string $method the method that returns the content for the given tag. Needs to be an array for class calls
+     * @param mixed $method the method that returns the content for the given tag. Needs to be an array for class calls
      * (e.g. [$object, $method])
      */
     public static function addTag($key, $method)

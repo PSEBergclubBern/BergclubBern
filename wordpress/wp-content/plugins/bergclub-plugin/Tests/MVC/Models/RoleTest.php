@@ -173,7 +173,6 @@ namespace BergclubPlugin\Tests\MVC\Models {
             Role::remove('bcb_test_a');
 
             $role = Role::find('test_a');
-            print_r($role);
             $this->assertNull($role);
         }
 
