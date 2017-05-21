@@ -5,12 +5,14 @@ namespace BergclubPlugin\Tests;
 use BergclubPlugin\FlashMessage;
 use PHPUnit\Framework\TestCase;
 
-class FlashMessageTest extends TestCase{
+class FlashMessageTest extends TestCase
+{
 
     /**
      * @test
      */
-    public function warning(){
+    public function warning()
+    {
         FlashMessage::add(FlashMessage::TYPE_WARNING, 'Warning Message');
         $this->assertEquals('<div class="notice notice-warning"><p>Warning Message</p></div><p></p>', FlashMessage::show());
         $this->assertEmpty(FlashMessage::show());
@@ -19,7 +21,8 @@ class FlashMessageTest extends TestCase{
     /**
      * @test
      */
-    public function error(){
+    public function error()
+    {
         FlashMessage::add(FlashMessage::TYPE_ERROR, 'Error Message');
         $this->assertEquals('<div class="notice notice-error"><p>Error Message</p></div><p></p>', FlashMessage::show());
         $this->assertEmpty(FlashMessage::show());
@@ -28,7 +31,8 @@ class FlashMessageTest extends TestCase{
     /**
      * @test
      */
-    public function info(){
+    public function info()
+    {
         FlashMessage::add(FlashMessage::TYPE_INFO, 'Info Message');
         $this->assertEquals('<div class="notice notice-info"><p>Info Message</p></div><p></p>', FlashMessage::show());
         $this->assertEmpty(FlashMessage::show());
@@ -37,7 +41,8 @@ class FlashMessageTest extends TestCase{
     /**
      * @test
      */
-    public function success(){
+    public function success()
+    {
         FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Success Message');
         $this->assertEquals('<div class="notice notice-success"><p>Success Message</p></div><p></p>', FlashMessage::show());
         $this->assertEmpty(FlashMessage::show());
@@ -46,7 +51,8 @@ class FlashMessageTest extends TestCase{
     /**
      * @test
      */
-    public function twoMessages(){
+    public function twoMessages()
+    {
         FlashMessage::add(FlashMessage::TYPE_INFO, 'Info Message');
         FlashMessage::add(FlashMessage::TYPE_SUCCESS, 'Success Message');
         $this->assertEquals('<div class="notice notice-info"><p>Info Message</p></div><div class="notice notice-success"><p>Success Message</p></div><p></p>', FlashMessage::show());

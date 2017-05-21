@@ -49,7 +49,7 @@ class UserMock implements IUser
 
     public static function find($id, $allowWpUsers = false)
     {
-        if(is_array(static::$find)){
+        if (is_array(static::$find)) {
             return array_shift(static::$find);
         }
         return static::$find;
@@ -85,12 +85,14 @@ class UserMock implements IUser
         return static::$findByRole;
     }
 
-    public function hasFunctionaryRole(){
+    public function hasFunctionaryRole()
+    {
         return $this->hasFunctionaryRole;
     }
 
-    public function __get($key){
-        if($key = 'address_role_name' && $this->address_role){
+    public function __get($key)
+    {
+        if ($key = 'address_role_name' && $this->address_role) {
             return $this->address_role->getName();
         }
 

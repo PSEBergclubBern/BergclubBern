@@ -129,7 +129,7 @@ class ProgramGenerator extends AbstractGenerator
             foreach ($data as $entry) {
                 if (!empty($entry['signupUntil'])) {
                     $items = [];
-                    if($entry['type']){
+                    if ($entry['type']) {
                         $items[] = $entry['type'];
                     }
                     $items[] = $entry['dateDisplayShort'];
@@ -155,7 +155,7 @@ class ProgramGenerator extends AbstractGenerator
 
             foreach ($anmeldeTermine as &$arr) {
                 foreach ($arr as &$item) {
-                    foreach($item as &$item2) {
+                    foreach ($item as &$item2) {
                         $item2 = html_entity_decode(strip_tags($item2));
                     }
                 }

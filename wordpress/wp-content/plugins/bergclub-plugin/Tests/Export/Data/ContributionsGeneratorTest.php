@@ -19,7 +19,8 @@ class ContributionsGeneratorTest extends TestCase
      */
     public static $expectedResult = [];
 
-    public static function setUpBeforeClass(){
+    public static function setUpBeforeClass()
+    {
         AddressDataSeeder::seedContributions(UserMock::$findMitgliederWithoutSpouse, static::$expectedResult);
 
         static::$generator = new ContributionsGenerator();
@@ -30,7 +31,8 @@ class ContributionsGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function getData(){
+    public function getData()
+    {
         $this->assertEquals(static::$expectedResult, static::$generator->getData());
     }
 }

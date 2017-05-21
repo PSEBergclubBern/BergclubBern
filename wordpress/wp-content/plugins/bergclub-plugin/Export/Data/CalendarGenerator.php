@@ -78,7 +78,7 @@ class CalendarGenerator extends AbstractGenerator
                 }
 
                 $tour = $title;
-                if(count($item) > 0){
+                if (count($item) > 0) {
                     $tour .= " (" . join(', ', $item) . ")";
                 }
 

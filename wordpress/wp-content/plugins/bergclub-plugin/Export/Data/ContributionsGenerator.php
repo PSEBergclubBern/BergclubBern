@@ -32,14 +32,14 @@ class ContributionsGenerator extends AbstractAddressLineGenerator
      */
     protected function getUsers()
     {
-        $users =  call_user_func($this->getUserClass() . '::findMitgliederWithoutSpouse');
+        $users = call_user_func($this->getUserClass() . '::findMitgliederWithoutSpouse');
         foreach ($users as $key => $user) {
             /* @var User $user */
 
             // if the user is not an "Aktivmitglied" or has a functionary role he does not have to pay a membership fee
-            if(!strstr($user->address_role->getKey(), "aktivmitglied") || $user->hasFunctionaryRole()){
+            if (!strstr($user->address_role->getKey(), "aktivmitglied") || $user->hasFunctionaryRole()) {
                 unset($users[$key]);
-            }else {
+            } else {
 
                 /* @var User $spouse */
                 $spouse = $user->spouse;

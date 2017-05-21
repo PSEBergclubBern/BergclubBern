@@ -19,7 +19,8 @@ class AddressesGeneratorTest extends TestCase
      */
     public static $expectedResult = [];
 
-    public static function setUpBeforeClass(){
+    public static function setUpBeforeClass()
+    {
         AddressDataSeeder::seedAddresses(UserMock::$findAllWithoutSpouse, static::$expectedResult);
 
         static::$generator = new AddressesGenerator();
@@ -29,7 +30,8 @@ class AddressesGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function getData(){
+    public function getData()
+    {
         $this->assertEquals(static::$expectedResult, static::$generator->getData());
     }
 }

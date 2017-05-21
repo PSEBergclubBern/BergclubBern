@@ -19,7 +19,8 @@ class MembersGeneratorTest extends TestCase
      */
     public static $expectedResult = [];
 
-    public static function setUpBeforeClass(){
+    public static function setUpBeforeClass()
+    {
         AddressDataSeeder::seedMembers(UserMock::$findMitglieder, static::$expectedResult);
 
         static::$generator = new MembersGenerator();
@@ -29,7 +30,8 @@ class MembersGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function getData(){
+    public function getData()
+    {
         $this->assertEquals(static::$expectedResult, static::$generator->getData());
     }
 }

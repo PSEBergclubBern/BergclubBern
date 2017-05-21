@@ -11,7 +11,8 @@ namespace BergclubPlugin\Tests\Export\DataSeeder;
 
 class TourenDataSeeder
 {
-    public static function seedCalendar(&$mockedPostData, &$expectedResult){
+    public static function seedCalendar(&$mockedPostData, &$expectedResult)
+    {
         $mockedPostData = static::getTourenData();
 
         $expectedResult = [
@@ -34,7 +35,190 @@ class TourenDataSeeder
         ];
     }
 
-    public static function seedPfarrblatt(&$mockedPostData, &$expectedResult){
+    private static function getTourenData()
+    {
+        $result = [];
+
+        // one-day tour, BCB
+        $result[] = [
+            'post_status' => 'publish',
+            'post_date' => '2017-01-01 12:00:00',
+            'post_modified' => '2017-02-01 12:00:00',
+            'title' => 'Tour1',
+            'leader' => 'Leader1',
+            'coLeader' => 'CoLeader1',
+            'training' => 0,
+            'jsEvent' => 0,
+            'dateFrom' => '20.05.2017',
+            'dateTo' => '20.05.2017',
+            'dateDisplayShort' => '20.5.',
+            'type' => 'Typ1',
+            'requirementsTechnical' => 'T1',
+            'requirementsConditional' => 'leicht',
+            'riseUpMeters' => '100 m up',
+            'riseDownMeters' => '100 m down',
+            'duration' => '1:00',
+            'meetpoint' => 'Meetpoint1',
+            'meetingPointTime' => '7:00',
+            'returnBack' => '17:00',
+            'costs' => '20.00',
+            'costsFor' => 'Reason1',
+            'isYouthRaw' => 0,
+            'isSeveralDays' => false,
+            'signupUntil' => '19.05.2017',
+            'signUpToNoLinks' => 'SignupToNoLinks1',
+        ];
+
+        // one-day tour, no technical requirements, no "signup to" BCB with additional info, equipment, food, map material
+        $result[] = [
+            'leader' => 'Leader2',
+            'training' => 0,
+            'jsEvent' => 0,
+            'post_status' => 'future',
+            'post_date' => '2017-01-02 12:00:00',
+            'post_modified' => '2017-02-02 12:00:00',
+            'title' => 'Tour2',
+            'dateFrom' => '21.05.2017',
+            'dateTo' => '21.05.2017',
+            'dateDisplayShort' => '21.5.',
+            'type' => 'Typ2',
+            'requirementsConditional' => 'mittel',
+            'riseUpMeters' => '200 m up',
+            'riseDownMeters' => '200 m down',
+            'duration' => '2:00',
+            'meetpoint' => 'Meetpoint2',
+            'meetingPointTime' => '7:15',
+            'returnBack' => '17:15',
+            'costs' => '30.00',
+            'costsFor' => 'Reason2',
+            'isYouthRaw' => 0,
+            'isSeveralDays' => false,
+            'signupUntil' => '20.05.2017',
+            'additionalInfo' => 'AdditionalInfo1',
+            'equipment' => 'Equipment1',
+            'food' => 'Food1',
+            'mapMaterial' => 'MapMaterial1',
+        ];
+
+        // one-day tour, no technical requirements, no type, BCB
+        $result[] = [
+            'leader' => 'Leader3',
+            'coLeader' => 'CoLeader3',
+            'training' => 0,
+            'jsEvent' => 0,
+            'post_status' => 'draft',
+            'post_date' => '2017-01-03 12:00:00',
+            'post_modified' => '2017-02-03 12:00:00',
+            'title' => 'Tour3',
+            'dateFrom' => '22.05.2017',
+            'dateTo' => '22.05.2017',
+            'dateDisplayShort' => '22.5.',
+            'riseUpMeters' => '300 m up',
+            'riseDownMeters' => '300 m down',
+            'duration' => '3:00',
+            'meetpoint' => 'Meetpoint3',
+            'meetingPointTime' => '7:30',
+            'returnBack' => '17:30',
+            'costs' => '40.00',
+            'costsFor' => 'Reason3',
+            'isYouthRaw' => 0,
+            'isSeveralDays' => false,
+            'signupUntil' => '21.05.2017',
+            'signUpToNoLinks' => 'SignupToNoLinks3',
+        ];
+
+        // multiple-day tour, BCB
+        $result[] = [
+            'leader' => 'Leader4',
+            'training' => 0,
+            'jsEvent' => 0,
+            'post_status' => 'pending',
+            'post_date' => '2017-01-04 12:00:00',
+            'post_modified' => '2017-02-04 12:00:00',
+            'title' => 'Tour4',
+            'dateFrom' => '23.05.2017',
+            'dateTo' => '25.05.2017',
+            'dateDisplayShort' => '23. - 24.5.',
+            'type' => 'Typ4',
+            'requirementsTechnical' => 'T4',
+            'requirementsConditional' => 'schwer',
+            'riseUpMeters' => '400 m up',
+            'riseDownMeters' => '400 m down',
+            'duration' => '4:00',
+            'meetpoint' => 'Meetpoint4',
+            'meetingPointTime' => '7:45',
+            'returnBack' => '17:45',
+            'costs' => '50.00',
+            'costsFor' => 'Reason4',
+            'isYouthRaw' => 0,
+            'isSeveralDays' => true,
+            'signupUntil' => '22.05.2017',
+            'signUpToNoLinks' => 'SignupToNoLinks4',
+        ];
+
+        // one-day tour, Jugend, same day as first BCB tour
+        $result[] = [
+            'leader' => 'Leader5',
+            'coLeader' => 'CoLeader5',
+            'training' => 0,
+            'jsEvent' => 1,
+            'post_status' => 'publish',
+            'post_date' => '2017-01-05 12:00:00',
+            'post_modified' => '2017-02-05 12:00:00',
+            'title' => 'TourJ1',
+            'dateFrom' => '20.05.2017',
+            'dateTo' => '20.05.2017',
+            'dateDisplayShort' => '20.5.',
+            'type' => 'TypJ1',
+            'requirementsTechnical' => 'TJ1',
+            'requirementsConditional' => 'leicht',
+            'riseUpMeters' => '500 m up',
+            'riseDownMeters' => '500 m down',
+            'duration' => '5:00',
+            'meetpoint' => 'Meetpoint5',
+            'meetingPointTime' => '8:00',
+            'returnBack' => '18:00',
+            'costs' => '60.00',
+            'costsFor' => 'Reason5',
+            'isYouthRaw' => 1,
+            'isSeveralDays' => false,
+            'signupUntil' => '18.05.2017',
+            'signUpToNoLinks' => 'SignupToNoLinksJ1',
+        ];
+
+        // one-day tour, BCB + Jugend, same day as first BCB tour, no duration, no signup deadline
+        $result[] = [
+            'leader' => 'Leader6',
+            'coLeader' => 'CoLeader6',
+            'training' => 1,
+            'jsEvent' => 0,
+            'post_status' => 'future',
+            'post_date' => '2017-01-06 12:00:00',
+            'post_modified' => '2017-02-06 12:00:00',
+            'title' => 'TourB1',
+            'dateFrom' => '26.05.2017',
+            'dateTo' => '26.05.2017',
+            'dateDisplayShort' => '26.5.',
+            'type' => 'TypB1',
+            'requirementsTechnical' => 'TB1',
+            'requirementsConditional' => 'mittel',
+            'riseUpMeters' => '600 m up',
+            'riseDownMeters' => '600 m down',
+            'meetpoint' => 'Meetpoint6',
+            'meetingPointTime' => '8:15',
+            'returnBack' => '18:15',
+            'costs' => '70.00',
+            'costsFor' => 'Reason6',
+            'isYouthRaw' => 2,
+            'isSeveralDays' => false,
+            'signUpToNoLinks' => 'SignupToNoLinksB1',
+        ];
+
+        return $result;
+    }
+
+    public static function seedPfarrblatt(&$mockedPostData, &$expectedResult)
+    {
         $mockedPostData = static::getTourenData();
 
         $expectedResult = [
@@ -47,7 +231,8 @@ class TourenDataSeeder
         ];
     }
 
-    public static function seedProgram(&$mockedPostData, &$expectedResult){
+    public static function seedProgram(&$mockedPostData, &$expectedResult)
+    {
         $mockedPostData = static::getTourenData();
 
         $expectedResult = [
@@ -264,7 +449,8 @@ class TourenDataSeeder
         ];
     }
 
-    public static function seedTouren(&$mockedPostData, &$expectedResult){
+    public static function seedTouren(&$mockedPostData, &$expectedResult)
+    {
         $mockedPostData = static::getTourenData();
 
         $expectedResult = [
@@ -425,187 +611,5 @@ class TourenDataSeeder
                     'Anmeldung an' => NULL,
                 ],
         ];
-    }
-
-
-    private static function getTourenData(){
-        $result = [];
-
-        // one-day tour, BCB
-        $result[] = [
-            'post_status' => 'publish',
-            'post_date' => '2017-01-01 12:00:00',
-            'post_modified' => '2017-02-01 12:00:00',
-            'title' => 'Tour1',
-            'leader' => 'Leader1',
-            'coLeader' => 'CoLeader1',
-            'training' => 0,
-            'jsEvent' => 0,
-            'dateFrom' => '20.05.2017',
-            'dateTo' => '20.05.2017',
-            'dateDisplayShort' => '20.5.',
-            'type' => 'Typ1',
-            'requirementsTechnical' => 'T1',
-            'requirementsConditional' => 'leicht',
-            'riseUpMeters' => '100 m up',
-            'riseDownMeters' => '100 m down',
-            'duration' => '1:00',
-            'meetpoint' => 'Meetpoint1',
-            'meetingPointTime' => '7:00',
-            'returnBack' => '17:00',
-            'costs' => '20.00',
-            'costsFor' => 'Reason1',
-            'isYouthRaw' => 0,
-            'isSeveralDays' => false,
-            'signupUntil' => '19.05.2017',
-            'signUpToNoLinks' => 'SignupToNoLinks1',
-        ];
-
-        // one-day tour, no technical requirements, no "signup to" BCB with additional info, equipment, food, map material
-        $result[] = [
-            'leader' => 'Leader2',
-            'training' => 0,
-            'jsEvent' => 0,
-            'post_status' => 'future',
-            'post_date' => '2017-01-02 12:00:00',
-            'post_modified' => '2017-02-02 12:00:00',
-            'title' => 'Tour2',
-            'dateFrom' => '21.05.2017',
-            'dateTo' => '21.05.2017',
-            'dateDisplayShort' => '21.5.',
-            'type' => 'Typ2',
-            'requirementsConditional' => 'mittel',
-            'riseUpMeters' => '200 m up',
-            'riseDownMeters' => '200 m down',
-            'duration' => '2:00',
-            'meetpoint' => 'Meetpoint2',
-            'meetingPointTime' => '7:15',
-            'returnBack' => '17:15',
-            'costs' => '30.00',
-            'costsFor' => 'Reason2',
-            'isYouthRaw' => 0,
-            'isSeveralDays' => false,
-            'signupUntil' => '20.05.2017',
-            'additionalInfo' => 'AdditionalInfo1',
-            'equipment' => 'Equipment1',
-            'food' => 'Food1',
-            'mapMaterial' => 'MapMaterial1',
-        ];
-
-        // one-day tour, no technical requirements, no type, BCB
-        $result[] = [
-            'leader' => 'Leader3',
-            'coLeader' => 'CoLeader3',
-            'training' => 0,
-            'jsEvent' => 0,
-            'post_status' => 'draft',
-            'post_date' => '2017-01-03 12:00:00',
-            'post_modified' => '2017-02-03 12:00:00',
-            'title' => 'Tour3',
-            'dateFrom' => '22.05.2017',
-            'dateTo' => '22.05.2017',
-            'dateDisplayShort' => '22.5.',
-            'riseUpMeters' => '300 m up',
-            'riseDownMeters' => '300 m down',
-            'duration' => '3:00',
-            'meetpoint' => 'Meetpoint3',
-            'meetingPointTime' => '7:30',
-            'returnBack' => '17:30',
-            'costs' => '40.00',
-            'costsFor' => 'Reason3',
-            'isYouthRaw' => 0,
-            'isSeveralDays' => false,
-            'signupUntil' => '21.05.2017',
-            'signUpToNoLinks' => 'SignupToNoLinks3',
-        ];
-
-        // multiple-day tour, BCB
-        $result[] = [
-            'leader' => 'Leader4',
-            'training' => 0,
-            'jsEvent' => 0,
-            'post_status' => 'pending',
-            'post_date' => '2017-01-04 12:00:00',
-            'post_modified' => '2017-02-04 12:00:00',
-            'title' => 'Tour4',
-            'dateFrom' => '23.05.2017',
-            'dateTo' => '25.05.2017',
-            'dateDisplayShort' => '23. - 24.5.',
-            'type' => 'Typ4',
-            'requirementsTechnical' => 'T4',
-            'requirementsConditional' => 'schwer',
-            'riseUpMeters' => '400 m up',
-            'riseDownMeters' => '400 m down',
-            'duration' => '4:00',
-            'meetpoint' => 'Meetpoint4',
-            'meetingPointTime' => '7:45',
-            'returnBack' => '17:45',
-            'costs' => '50.00',
-            'costsFor' => 'Reason4',
-            'isYouthRaw' => 0,
-            'isSeveralDays' => true,
-            'signupUntil' => '22.05.2017',
-            'signUpToNoLinks' => 'SignupToNoLinks4',
-        ];
-
-        // one-day tour, Jugend, same day as first BCB tour
-        $result[] = [
-            'leader' => 'Leader5',
-            'coLeader' => 'CoLeader5',
-            'training' => 0,
-            'jsEvent' => 1,
-            'post_status' => 'publish',
-            'post_date' => '2017-01-05 12:00:00',
-            'post_modified' => '2017-02-05 12:00:00',
-            'title' => 'TourJ1',
-            'dateFrom' => '20.05.2017',
-            'dateTo' => '20.05.2017',
-            'dateDisplayShort' => '20.5.',
-            'type' => 'TypJ1',
-            'requirementsTechnical' => 'TJ1',
-            'requirementsConditional' => 'leicht',
-            'riseUpMeters' => '500 m up',
-            'riseDownMeters' => '500 m down',
-            'duration' => '5:00',
-            'meetpoint' => 'Meetpoint5',
-            'meetingPointTime' => '8:00',
-            'returnBack' => '18:00',
-            'costs' => '60.00',
-            'costsFor' => 'Reason5',
-            'isYouthRaw' => 1,
-            'isSeveralDays' => false,
-            'signupUntil' => '18.05.2017',
-            'signUpToNoLinks' => 'SignupToNoLinksJ1',
-        ];
-
-        // one-day tour, BCB + Jugend, same day as first BCB tour, no duration, no signup deadline
-        $result[] = [
-            'leader' => 'Leader6',
-            'coLeader' => 'CoLeader6',
-            'training' => 1,
-            'jsEvent' => 0,
-            'post_status' => 'future',
-            'post_date' => '2017-01-06 12:00:00',
-            'post_modified' => '2017-02-06 12:00:00',
-            'title' => 'TourB1',
-            'dateFrom' => '26.05.2017',
-            'dateTo' => '26.05.2017',
-            'dateDisplayShort' => '26.5.',
-            'type' => 'TypB1',
-            'requirementsTechnical' => 'TB1',
-            'requirementsConditional' => 'mittel',
-            'riseUpMeters' => '600 m up',
-            'riseDownMeters' => '600 m down',
-            'meetpoint' => 'Meetpoint6',
-            'meetingPointTime' => '8:15',
-            'returnBack' => '18:15',
-            'costs' => '70.00',
-            'costsFor' => 'Reason6',
-            'isYouthRaw' => 2,
-            'isSeveralDays' => false,
-            'signUpToNoLinks' => 'SignupToNoLinksB1',
-        ];
-
-        return $result;
     }
 }

@@ -34,6 +34,11 @@ class TourenHelper
         return $isYouth[self::getMeta($postId, 'isYouth')];
     }
 
+    private static function getMeta($postId, $key)
+    {
+        return trim(get_post_meta($postId, '_' . $key, true));
+    }
+
     /**
      * Returns the raw value of the 'isYouth' meta value (0, 1, 2).
      *
@@ -149,6 +154,35 @@ class TourenHelper
     public static function getLeader($postId)
     {
         return self::getUser(self::getMeta($postId, 'leader'));
+    }
+
+    private static function getUser($id, $contact = false, $noLinks = false)
+    {
+        $user = call_user_func(static::getUserClassStatic() . '::find', $id);
+        if ($user) {
+            $result = [$user->last_name . ' ' . $user->first_name];
+            if ($contact) {
+                if ($user->email) {
+                    if (!$noLinks) {
+                        $result[] = bcb_email($user->email);
+                    } else {
+                        $result[] = $user->email;
+                    }
+                }
+                if ($user->phone_private) {
+                    $result[] = $user->phone_private . " (P)";
+                }
+                if ($user->phone_work) {
+                    $result[] = $user->phone_work . " (G)";
+                }
+                if ($user->phone_mobile) {
+                    $result[] = $user->phone_mobile . " (M)";
+                }
+            }
+            return join(', ', $result);
+        }
+
+        return null;
     }
 
     /**
@@ -283,24 +317,6 @@ class TourenHelper
     }
 
     /**
-     * Returns the type of the tour.
-     * See the module "Stammdaten" for more information.
-     *
-     * @param $postId
-     * @return null|string
-     */
-    public static function getType($postId)
-    {
-        $slug = self::getMeta($postId, 'type');
-        $tourenarten = call_user_func(static::getOptionClassStatic() . '::get', 'tourenarten');
-        if (isset($tourenarten[$slug])) {
-            return $tourenarten[$slug];
-        }
-
-        return null;
-    }
-
-    /**
      * Returns the type of the tour together with the technical requirements.
      * <code>
      * type[, requirementsTechnical]
@@ -316,6 +332,24 @@ class TourenHelper
         if (!empty($reqTechnical)) {
             return $type . ", " . $reqTechnical;
         }
+        return null;
+    }
+
+    /**
+     * Returns the type of the tour.
+     * See the module "Stammdaten" for more information.
+     *
+     * @param $postId
+     * @return null|string
+     */
+    public static function getType($postId)
+    {
+        $slug = self::getMeta($postId, 'type');
+        $tourenarten = call_user_func(static::getOptionClassStatic() . '::get', 'tourenarten');
+        if (isset($tourenarten[$slug])) {
+            return $tourenarten[$slug];
+        }
+
         return null;
     }
 
@@ -404,39 +438,5 @@ class TourenHelper
         $metaKey = substr($method, 3);
         $metaKey = strtolower(substr($metaKey, 0, 1)) . substr($metaKey, 1);
         return self::getMeta($args[0], $metaKey);
-    }
-
-    private static function getMeta($postId, $key)
-    {
-        return trim(get_post_meta($postId, '_' . $key, true));
-    }
-
-    private static function getUser($id, $contact = false, $noLinks = false)
-    {
-        $user = call_user_func(static::getUserClassStatic() . '::find', $id);
-        if ($user) {
-            $result = [$user->last_name . ' ' . $user->first_name];
-            if ($contact) {
-                if ($user->email) {
-                    if (!$noLinks) {
-                        $result[] = bcb_email($user->email);
-                    } else {
-                        $result[] = $user->email;
-                    }
-                }
-                if ($user->phone_private) {
-                    $result[] = $user->phone_private . " (P)";
-                }
-                if ($user->phone_work) {
-                    $result[] = $user->phone_work . " (G)";
-                }
-                if ($user->phone_mobile) {
-                    $result[] = $user->phone_mobile . " (M)";
-                }
-            }
-            return join(', ', $result);
-        }
-
-        return null;
     }
 }

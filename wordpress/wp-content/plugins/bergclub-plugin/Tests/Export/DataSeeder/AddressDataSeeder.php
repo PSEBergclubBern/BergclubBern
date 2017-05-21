@@ -14,7 +14,8 @@ use BergclubPlugin\Tests\Mocks\UserMock;
 
 class AddressDataSeeder
 {
-    static function seedMembers(array &$users, array &$expected){
+    static function seedMembers(array &$users, array &$expected)
+    {
         static::seedAddresses($users, $expected);
 
         $roles = [
@@ -30,7 +31,7 @@ class AddressDataSeeder
 
         // lets assign address roles to our users
         $roleIndex = 0;
-        foreach($users as &$user){
+        foreach ($users as &$user) {
             $user->address_role = new RoleMock($roles[$roleIndex]['key'], $roles[$roleIndex]['name']);
             $roleIndex = $roleIndex = count($roles) - 1 ? 0 : $roleIndex++;
         }
@@ -189,69 +190,9 @@ class AddressDataSeeder
                 ],
         ];
     }
-    static function seedContributions(array &$users, array &$expected){
-        static::seedAddresses($users, $expected);
-        // we are not interessted in the company entries here so we remove them
-        array_shift($users);
-        array_shift($users);
-        array_shift($expected);
-        array_shift($expected);
 
-        // the first male single user will be "Aktivmitglied"
-        $users[0]->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
-        $expected[0]['Beitragstyp'] = 'Mitgliederbeitrag BCB';
-        $expected[0]['Betrag'] = '50.00';
-
-        // the second femal single user wil be "Aktivmitlglieder Jugend"
-        $users[1]->address_role = new RoleMock('bcb_aktivmitglied_jugend', 'Aktivmitglied Jugend');
-        $expected[1]['Beitragstyp'] = 'Mitgliederbeitrag Jugend';
-        $expected[1]['Betrag'] = '20.00';
-
-        // the first "Ehepaar" will both be "Aktivmitglieder"
-        $users[2]->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
-        $users[2]->spouse->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
-        $expected[2]['Beitragstyp'] = 'Mitgliederbeitrag Ehepaar';
-        $expected[2]['Betrag'] = '80.00';
-
-        // in the second "Ehepaar" the main address will be "Freimitglied", the spouse "Aktivmitglied" which means that
-        // both don't have to pay and should be not in the final dataset.
-        $users[3]->address_role = new RoleMock('bcb_freimitglied', 'Freimitglied');
-        $users[3]->spouse->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
-        unset($expected[3]);
-
-        // in the third "Ehepaar" the main address will be "Ehrenmitglied", the spouse "Aktivmitglied" which means that
-        // both don't have to pay and should be not in the final dataset.
-        $users[4]->address_role = new RoleMock('bcb_ehrenmitglied', 'Ehrenmitglied');
-        $users[4]->spouse->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
-        unset($expected[4]);
-
-        // in the fourth "Ehepaar" the main address will have a functionary role, the spouse "Aktivmitglied" which means
-        // that both don't have to pay and should be not in the final dataset.
-        $users[5]->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
-        $users[5]->hasFunctionaryRole = true;
-        $users[5]->spouse->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
-        unset($expected[5]);
-
-
-        // we don't need the further test users so lets remove them
-        unset($users[6]);
-        unset($expected[6]);
-        unset($users[7]);
-        unset($expected[7]);
-    }
-
-    static function seedShipping(array &$users, array &$expected){
-        static::seedAddresses($users, $expected);
-
-        //the first user will not be marked to receive the program, so we remove him from expected
-        array_shift($expected);
-
-        //we mark every other user to receive the program
-        for($i = 1; $i < count($users); $i++){
-            $users[$i]->raw_program_shipment = true;
-        }
-    }
-    static function seedAddresses(array &$users, array &$expected){
+    static function seedAddresses(array &$users, array &$expected)
+    {
         $users = [];
         $expected = [];
 
@@ -610,5 +551,70 @@ class AddressDataSeeder
             'Adresszeile 5' => '',
             'Adresszeile 6' => '',
         ];
+    }
+
+    static function seedContributions(array &$users, array &$expected)
+    {
+        static::seedAddresses($users, $expected);
+        // we are not interessted in the company entries here so we remove them
+        array_shift($users);
+        array_shift($users);
+        array_shift($expected);
+        array_shift($expected);
+
+        // the first male single user will be "Aktivmitglied"
+        $users[0]->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
+        $expected[0]['Beitragstyp'] = 'Mitgliederbeitrag BCB';
+        $expected[0]['Betrag'] = '50.00';
+
+        // the second femal single user wil be "Aktivmitlglieder Jugend"
+        $users[1]->address_role = new RoleMock('bcb_aktivmitglied_jugend', 'Aktivmitglied Jugend');
+        $expected[1]['Beitragstyp'] = 'Mitgliederbeitrag Jugend';
+        $expected[1]['Betrag'] = '20.00';
+
+        // the first "Ehepaar" will both be "Aktivmitglieder"
+        $users[2]->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
+        $users[2]->spouse->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
+        $expected[2]['Beitragstyp'] = 'Mitgliederbeitrag Ehepaar';
+        $expected[2]['Betrag'] = '80.00';
+
+        // in the second "Ehepaar" the main address will be "Freimitglied", the spouse "Aktivmitglied" which means that
+        // both don't have to pay and should be not in the final dataset.
+        $users[3]->address_role = new RoleMock('bcb_freimitglied', 'Freimitglied');
+        $users[3]->spouse->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
+        unset($expected[3]);
+
+        // in the third "Ehepaar" the main address will be "Ehrenmitglied", the spouse "Aktivmitglied" which means that
+        // both don't have to pay and should be not in the final dataset.
+        $users[4]->address_role = new RoleMock('bcb_ehrenmitglied', 'Ehrenmitglied');
+        $users[4]->spouse->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
+        unset($expected[4]);
+
+        // in the fourth "Ehepaar" the main address will have a functionary role, the spouse "Aktivmitglied" which means
+        // that both don't have to pay and should be not in the final dataset.
+        $users[5]->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
+        $users[5]->hasFunctionaryRole = true;
+        $users[5]->spouse->address_role = new RoleMock('bcb_aktivmitglied', 'Aktivmitglied');
+        unset($expected[5]);
+
+
+        // we don't need the further test users so lets remove them
+        unset($users[6]);
+        unset($expected[6]);
+        unset($users[7]);
+        unset($expected[7]);
+    }
+
+    static function seedShipping(array &$users, array &$expected)
+    {
+        static::seedAddresses($users, $expected);
+
+        //the first user will not be marked to receive the program, so we remove him from expected
+        array_shift($expected);
+
+        //we mark every other user to receive the program
+        for ($i = 1; $i < count($users); $i++) {
+            $users[$i]->raw_program_shipment = true;
+        }
     }
 }

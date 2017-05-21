@@ -1,6 +1,6 @@
 <?php
 
-namespace{
+namespace {
     require_once __DIR__ . '/../../wp_bcb_functions_mocks.php';
 }
 

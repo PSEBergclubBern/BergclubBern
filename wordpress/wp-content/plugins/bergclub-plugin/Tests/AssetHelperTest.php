@@ -9,9 +9,11 @@ namespace BergclubPlugin\Tests {
     use BergclubPlugin\AssetHelper;
     use PHPUnit\Framework\TestCase;
 
-    class AssetHelperTest extends TestCase{
+    class AssetHelperTest extends TestCase
+    {
 
-        public static function setUpBeforeClass(){
+        public static function setUpBeforeClass()
+        {
             AssetHelper::addAsset('test1', 'stylesheet1.css');
             AssetHelper::addAsset('test2', 'stylesheet1.css');
             AssetHelper::addAsset('test2', 'stylesheet2.css');
@@ -20,7 +22,8 @@ namespace BergclubPlugin\Tests {
             AssetHelper::addAsset('test4', 'javascript2.js');
         }
 
-        public function setUp(){
+        public function setUp()
+        {
             global $wpEnqueuedStyles;
             global $wpEnqueuedScripts;
 
@@ -31,7 +34,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        public function noStyleSheetAndJs(){
+        public function noStyleSheetAndJs()
+        {
             global $wpEnqueuedStyles;
             global $wpEnqueuedScripts;
 
@@ -44,7 +48,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        public function oneStyleSheetAndNoJs(){
+        public function oneStyleSheetAndNoJs()
+        {
             global $wpEnqueuedStyles;
             global $wpEnqueuedScripts;
 
@@ -57,7 +62,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        public function twoStyleSheetAndNoJs(){
+        public function twoStyleSheetAndNoJs()
+        {
             global $wpEnqueuedStyles;
             global $wpEnqueuedScripts;
 
@@ -70,7 +76,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        public function oneStyleSheetAndOneJs(){
+        public function oneStyleSheetAndOneJs()
+        {
             global $wpEnqueuedStyles;
             global $wpEnqueuedScripts;
 
@@ -83,7 +90,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        public function noStyleSheetAndOneJs(){
+        public function noStyleSheetAndOneJs()
+        {
             global $wpEnqueuedStyles;
             global $wpEnqueuedScripts;
 

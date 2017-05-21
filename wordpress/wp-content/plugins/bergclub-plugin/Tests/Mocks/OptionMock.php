@@ -11,8 +11,9 @@ namespace BergclubPlugin\Tests\Mocks;
 
 class OptionMock
 {
-    public static function get($key){
-        if($key == 'mitgliederbeitraege'){
+    public static function get($key)
+    {
+        if ($key == 'mitgliederbeitraege') {
             return [
                 'bcb' => [
                     'name' => 'Mitgliederbeitrag BCB',
@@ -27,7 +28,7 @@ class OptionMock
                     'amount' => 80,
                 ],
             ];
-        }elseif($key == 'tourenarten'){
+        } elseif ($key == 'tourenarten') {
             return [
                 'bcb_bergtour' => 'Bergtour',
                 'bcb_skitour' => 'Skitour',

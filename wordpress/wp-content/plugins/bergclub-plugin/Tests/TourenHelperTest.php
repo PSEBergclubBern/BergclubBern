@@ -7,7 +7,6 @@ namespace {
 
 namespace BergclubPlugin\Tests {
 
-    use BergclubPlugin\MVC\Models\User;
     use BergclubPlugin\Tests\Mocks\UserMock;
     use BergclubPlugin\TourenHelper;
     use PHPUnit\Framework\TestCase;
@@ -15,7 +14,8 @@ namespace BergclubPlugin\Tests {
     class TourenHelperTest extends TestCase
     {
 
-        public static function setUpBeforeClass(){
+        public static function setUpBeforeClass()
+        {
             TourenHelper::setUserClassStatic("BergclubPlugin\\Tests\\Mocks\\UserMock");
             TourenHelper::setOptionClassStatic("BergclubPlugin\\Tests\\Mocks\\OptionMock");
         }
@@ -23,7 +23,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getIsYouth(){
+        function getIsYouth()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 0;
@@ -39,7 +40,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getIsYouthRaw(){
+        function getIsYouthRaw()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 0;
@@ -55,7 +57,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getDateDisplayShort(){
+        function getDateDisplayShort()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = [];
@@ -72,7 +75,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getIsSeveralDays(){
+        function getIsSeveralDays()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = [];
@@ -93,7 +97,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getDateFrom(){
+        function getDateFrom()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = [];
@@ -105,7 +110,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getDateTo(){
+        function getDateTo()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = [];
@@ -117,7 +123,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getDisplayDateFull(){
+        function getDisplayDateFull()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = [];
@@ -142,7 +149,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getLeader(){
+        function getLeader()
+        {
             global $currentMetaValue;
             $currentMetaValue = 1;
 
@@ -158,7 +166,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getCoLeader(){
+        function getCoLeader()
+        {
             global $currentMetaValue;
             $currentMetaValue = 1;
 
@@ -174,7 +183,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getLeaderAndCoLeader(){
+        function getLeaderAndCoLeader()
+        {
             global $currentMetaValue;
             $currentMetaValue = 1;
 
@@ -194,7 +204,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getSignupUntil(){
+        function getSignupUntil()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = '1.7.2017';
@@ -204,7 +215,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getSignupToFullData(){
+        function getSignupToFullData()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 1;
@@ -225,7 +237,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getSignupToEmailAndMobile(){
+        function getSignupToEmailAndMobile()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 1;
@@ -244,7 +257,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getSignupToEmail(){
+        function getSignupToEmail()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 1;
@@ -262,7 +276,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getSignupToPhonePrivate(){
+        function getSignupToPhonePrivate()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 1;
@@ -280,7 +295,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getSignupToNoContactData(){
+        function getSignupToNoContactData()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 1;
@@ -297,7 +313,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getSignupToNoLinks(){
+        function getSignupToNoLinks()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 1;
@@ -318,7 +335,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getMeetpointOne(){
+        function getMeetpointOne()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 1;
@@ -329,7 +347,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getMeetpointTwo(){
+        function getMeetpointTwo()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 2;
@@ -340,7 +359,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getMeetpointThree(){
+        function getMeetpointThree()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 3;
@@ -351,7 +371,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getMeetpointDifferent(){
+        function getMeetpointDifferent()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = ['_meetpoint' => 0, '_meetpointDifferent' => 'Zytglogge'];
@@ -362,7 +383,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getRequirementsConditionalZero(){
+        function getRequirementsConditionalZero()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 0;
@@ -373,7 +395,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getRequirementsConditionalOne(){
+        function getRequirementsConditionalOne()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 1;
@@ -384,7 +407,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getRequirementsConditionalTwo(){
+        function getRequirementsConditionalTwo()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 2;
@@ -395,7 +419,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getRequirementsConditionalThree(){
+        function getRequirementsConditionalThree()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 3;
@@ -406,7 +431,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getType(){
+        function getType()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 'bcb_bergtour';
@@ -416,7 +442,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getTypeWithTechnicalRequirements(){
+        function getTypeWithTechnicalRequirements()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = ['_type' => 'bcb_bergtour', '_requirementsTechnical' => 'T3'];
@@ -426,7 +453,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getRiseUpAndDown(){
+        function getRiseUpAndDown()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = ['_riseUpMeters' => 1200, '_riseDownMeters' => 600];
@@ -436,7 +464,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getAdditionalInfo(){
+        function getAdditionalInfo()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = "Additional Info";
@@ -446,7 +475,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getTrainingNo(){
+        function getTrainingNo()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 0;
@@ -456,7 +486,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getTrainingYes(){
+        function getTrainingYes()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 1;
@@ -466,7 +497,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getJsEventNo(){
+        function getJsEventNo()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 0;
@@ -476,7 +508,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getJsEventYes(){
+        function getJsEventYes()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = 1;
@@ -486,7 +519,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getProgram(){
+        function getProgram()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = "Program";
@@ -496,7 +530,8 @@ namespace BergclubPlugin\Tests {
         /**
          * @test
          */
-        function getEquipment(){
+        function getEquipment()
+        {
             global $currentMetaValue;
 
             $currentMetaValue = "Equipment";

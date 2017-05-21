@@ -19,7 +19,8 @@ class ShippingGeneratorTest extends TestCase
      */
     public static $expectedResult = [];
 
-    public static function setUpBeforeClass(){
+    public static function setUpBeforeClass()
+    {
         AddressDataSeeder::seedShipping(UserMock::$findAllWithoutSpouse, static::$expectedResult);
 
         static::$generator = new ShippingGenerator();
@@ -29,14 +30,16 @@ class ShippingGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function getData(){
+    public function getData()
+    {
         $this->assertEquals(static::$expectedResult, static::$generator->getData());
     }
 
     /**
      * @test
      */
-    public function ensureThatResultIsEmptyIfNoUserIsMarkedForShipment(){
+    public function ensureThatResultIsEmptyIfNoUserIsMarkedForShipment()
+    {
         AddressDataSeeder::seedAddresses(UserMock::$findAllWithoutSpouse, static::$expectedResult);
         $this->assertEmpty(static::$generator->getData());
     }

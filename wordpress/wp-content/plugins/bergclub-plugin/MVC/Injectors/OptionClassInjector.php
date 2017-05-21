@@ -13,21 +13,25 @@ trait OptionClassInjector
 {
     private static $optionClass = "BergclubPlugin\\MVC\\Models\\Option";
 
-    public function setOptionClass($optionClass){
+    public function setOptionClass($optionClass)
+    {
         static::setOptionClassStatic($optionClass);
     }
 
-    public static function setOptionClassStatic($optionClass){
+    public static function setOptionClassStatic($optionClass)
+    {
         if (class_exists($optionClass)) {
             static::$optionClass = $optionClass;
         }
     }
 
-    public function getOptionClass(){
+    public function getOptionClass()
+    {
         return self::getOptionClassStatic();
     }
 
-    public static function getOptionClassStatic(){
+    public static function getOptionClassStatic()
+    {
         return static::$optionClass;
     }
 }
