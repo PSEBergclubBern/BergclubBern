@@ -17,7 +17,7 @@ bergclub-plugin
 
 **Commands**
 
-@Kevin kannst du das noch ergänzen
+Hier wird die WP-Cli erweitert. Die vorhandenen Klassen kümmern sich um den Import von den alten Website-Daten.
 
 **MVC**
 
