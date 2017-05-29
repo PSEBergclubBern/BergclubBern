@@ -8,3 +8,4 @@
       command: composer update
       args:
         chdir: "{{ path }}/wp-content/plugins/bergclub-plugin"
+...

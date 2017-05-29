@@ -1,6 +1,6 @@
 # encoding: utf-8
 # vim: ft=ruby expandtab shiftwidth=2 tabstop=2
-
+---
 #
 # General Settings
 #
@@ -164,3 +164,5 @@ php_ini:
 
 synced_folder: wordpress
 document_root: /var/www/html
+
+...

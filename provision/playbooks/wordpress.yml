@@ -257,3 +257,4 @@
 
   - name: Update tinymce plugin
     shell: wp option update tadv_settings --format=json < {{ ansible_env.HOME }}/tinymce-settings.json
+...
