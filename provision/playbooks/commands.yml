@@ -131,3 +131,4 @@
         dest: "{{ ansible_env.HOME }}/.wp-i18n/"
       ignore_errors: yes
       when: vccw.wp_i18n_tools
+...
